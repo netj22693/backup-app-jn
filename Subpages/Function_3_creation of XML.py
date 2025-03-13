@@ -305,12 +305,14 @@ if customer_input == '' or product_name_inp == '' or category_selb == '' or curr
 else:
     st.success("Fulfiled properly")
 
-# Calculation of final price 
-final_price_fl = price + calc_transport_price + service_price_fn
-final_price_fl_str = str(final_price_fl)
-
+# Submit button
 if st.button("submit"):
     st.write("Jane ty jsi genius")
+
+    # Calculation of final price 
+    # important to keep the calculation after SUBMIT button, if not TypeError: unsupported operand type(s) for +: 'float' and 'NoneType'
+    final_price_fl = price + calc_transport_price + service_price_fn
+    final_price_fl_str = str(final_price_fl)
     
 
     st.write(f" - Customer name: {customer_input}")
