@@ -29,6 +29,12 @@ def id_generator(size=6, chars=string.digits):
 a = id_generator()
 invoice_number_generated = 'INV-' + a
 
+# Function for generating random 12 digits for invoice number
+def order_generator(size=20, chars=string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
+order_num_generated = order_generator()
+
 
 
 # Generation of date for <date> element
@@ -40,7 +46,7 @@ date_input = time.strftime("%Y-%m-%d", now)
 st.write("### Delivery details:")
 ''
 
-st.write("Please provide details about your order...")
+st.write("Please provide details about order...")
 ''
 with st. expander("Buyer"):
     customer_input = st.text_input(
@@ -73,10 +79,10 @@ with st. expander("Price"):
         )
     
     price = st.number_input(
-        "Price:",
+        "Product price:",
         min_value=0.00,
         step = 10.00,
-        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals wrrte it."
+        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it."
         )
 
 
@@ -101,7 +107,7 @@ with st.expander("Transportation"):
         options=["Czech Republic","Slovakia"],
         index = None,
         placeholder="Select...",
-        help = "Select one of the options - there is different price for service for each city"
+        help = "Select one of the options - there is different price for service for each country -> see the pricing table below."
          )
       
     transport_co_selb = st.selectbox(
@@ -109,7 +115,7 @@ with st.expander("Transportation"):
         options=["DHL","Fedex"],
         index = None,
         placeholder="Select...",
-        help = "Select one of the options - there is different price for each company"
+        help = "Select one of the options - there is different price for each company -> see the pricing table below."
          )
     
     size_selb = st.selectbox(
@@ -117,8 +123,11 @@ with st.expander("Transportation"):
         options=["small","medium","large"],
         index = None,
         placeholder="Select...",
-        help = "Select one of the options - there is different price for each size"
+        help = "Select one of the options - there is different price for each size. Sum of the lengths of all three sides of the parcel max: Small - 50 cm (e.g. 20 cm x 20 cm x 10 cm). Medium 100 cm. Large 200 cm."
+        
         )
+    ''
+    st.image("Pictures/Function_3/Sizes.png")
     ''
     st.write("Pricing table:")
     ''
@@ -327,19 +336,20 @@ if st.button("Submit"):
     st.write("#### Sumary of your order:")
 
     st.write(f" - Customer name: {customer_input}")
+    st.write(f" - Order number: {order_num_generated}")
     ''
     st.write(f" - Product name: {product_name_inp}")
     st.write(f" - Category: {category_selb}")
     st.write(f" - Price: {price:.2f} {currency_selb}")
     ''
-    st.write(f" - Extra service: {add_service_select}")
-    st.write(f" - Price for the extra service: {service_price_fn:.2f} {currency_selb}")
+    #st.write(f" - Extra service: {add_service_select}")
+    st.write(f" - Price for the extra service: {service_price_fn:.2f} {currency_selb} - Extra service: {add_service_select} ")
     ''
-    st.write(f" - Price transport: {calc_transport_price:.2f} {currency_selb}")
+    st.write(f" - Price for transport: {calc_transport_price:.2f} {currency_selb} - Transport company: {transport_co_selb} - Country: {city_selb}")
     ''
     st.write(f" - Total price to pay: {final_price_fl:.2f} {currency_selb}")
 
-    st.info("If this is what you expect you can proceed with Download button which will create XML file. If not, you can go up and change your inputs and then use the Submit button again.")
+    st.info("If this is what you expect, you can proceed with Download button which will create XML file. If not, you can go up and change your inputs and then use the Submit button again.")
     
     # Change of data type
     calc_transport_price_str = str(calc_transport_price)
@@ -347,7 +357,7 @@ if st.button("Submit"):
    
     xml_doc = ET.Element("invoice")
     header = ET.SubElement(xml_doc, 'header')
-    order_number = ET.SubElement(header, 'order_number')
+    order_number = ET.SubElement(header, 'order_number').text = order_num_generated
     customer = ET.SubElement(header, 'customer').text = customer_input
     invoice_number = ET.SubElement(header, 'invoice_number').text = invoice_number_generated
     date = ET.SubElement(header, 'date').text = date_input
@@ -377,6 +387,8 @@ if st.button("Submit"):
     tree.write('Data/Function_3_do NOT delete.xml', encoding='UTF-8', xml_declaration=True)
 
 st.write("------")
+''
+st.write("Once you Submit your inputs -> push this Download button to produce final XML document.")
 
 file_name_fstring = f"{invoice_number_generated}.xml"
 
