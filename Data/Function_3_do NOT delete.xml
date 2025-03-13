@@ -2,28 +2,28 @@
 <invoice>
   <header>
     <order_number />
-    <customer>Jan</customer>
-    <invoice_number>INV-103843</invoice_number>
+    <customer>MAN</customer>
+    <invoice_number>INV-471999</invoice_number>
     <date>2025-03-13</date>
     <price>
-      <total_sum>165.0</total_sum>
-      <currency>Kč</currency>
+      <total_sum>222.61</total_sum>
+      <currency>US dollar</currency>
   </price>
   </header>
   <detail>
-    <category>Major Appliances</category>
-    <product_name>s</product_name>
-    <price_amount>100.0</price_amount>
+    <category>TV</category>
+    <product_name>Kan</product_name>
+    <price_amount>200.0</price_amount>
     <additional_service>
       <service>Y</service>
-      <service_type>insurance</service_type>
-      <service_price>15.0</service_price>
+      <service_type>extended varanty</service_type>
+      <service_price>20.0</service_price>
   </additional_service>
   </detail>
   <transportation>
-    <transporter>DHL</transporter>
-    <to_city>Prague</to_city>
+    <transporter>Fedex</transporter>
+    <country>Czech Republic</country>
     <size>small</size>
-    <transport_price>50.0</transport_price>
+    <transport_price>2.61</transport_price>
   </transportation>
 </invoice>

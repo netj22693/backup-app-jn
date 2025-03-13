@@ -36,10 +36,16 @@ now = time.localtime()
 print(now)
 date_input = time.strftime("%Y-%m-%d", now)
 
+# Application Frontend:
+st.write("### Delivery details:")
+''
+
+st.write("Please provide details about your order...")
+''
 with st. expander("Buyer"):
     customer_input = st.text_input(
-        "Customer:",
-        help = "Write a customer name"
+        "Customer/Company name:",
+        help = "Write a customer name/company name"
         )
 
 with st. expander("Product"):
@@ -50,7 +56,7 @@ with st. expander("Product"):
         )
 
     category_selb = st.selectbox(
-        "Category" ,
+        "Category:" ,
         index = None,
         placeholder= "Select...",
         options=["PC","TV","Gaming","Mobile phones","Tablets","Major Appliances","Households"],
@@ -59,7 +65,7 @@ with st. expander("Product"):
 
 with st. expander("Price"):
     currency_selb = st.selectbox(
-        "Currency" ,
+        "Currency:" ,
         index = None,
         placeholder= "Select...",
         options=["euro","US dollar","Kč"],
@@ -67,7 +73,7 @@ with st. expander("Price"):
         )
     
     price = st.number_input(
-        "Price",
+        "Price:",
         min_value=0.00,
         step = 10.00,
         help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals wrrte it."
@@ -77,7 +83,7 @@ with st. expander("Price"):
 with st.expander("Extra purchase"):
 
     add_service_select = st.selectbox(
-        "Additional service" ,
+        "Additional service:" ,
         options=["No additional service","Insurance","Extended varanty"],
         help = "Select one of the options"
          )
@@ -91,15 +97,15 @@ with st.expander("Extra purchase"):
 with st.expander("Transportation"):
 
     city_selb = st.selectbox(
-        "Select city for delivery" ,
-        options=["Prague","Berlin"],
+        "Country:" ,
+        options=["Czech Republic","Slovakia"],
         index = None,
         placeholder="Select...",
         help = "Select one of the options - there is different price for service for each city"
          )
       
     transport_co_selb = st.selectbox(
-        "Transporting compeny" ,
+        "Transporting company:" ,
         options=["DHL","Fedex"],
         index = None,
         placeholder="Select...",
@@ -107,148 +113,153 @@ with st.expander("Transportation"):
          )
     
     size_selb = st.selectbox(
-        "Size of package" ,
+        "Size of package:" ,
         options=["small","medium","large"],
         index = None,
         placeholder="Select...",
         help = "Select one of the options - there is different price for each size"
         )
-    
+    ''
+    st.write("Pricing table:")
+    ''
     st.image("Pictures/Function_3/Price_list.png")
+
+''
+''
 
 price_str = str(price)
 
 # logika pro transport
 
 def calculation_transport(city_selb,size_selb,transport_co_selb, currency_selb):   
-    # Prague, DHL, small
-    if city_selb == 'Prague' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'euro':
+    # Czech Republic, DHL, small
+    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'euro':
         return 2.00
     
-    if city_selb == 'Prague' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'US dollar':
+    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'US dollar':
         return 2.17
     
-    if city_selb == 'Prague' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'Kč':
+    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'Kč':
         return 50.00
 
-    # Prague, DHL, medium
-    if city_selb == 'Prague' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'euro':
+    # Czech Republic, DHL, medium
+    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'euro':
         return 3.20
     
-    if city_selb == 'Prague' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'US dollar':
+    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'US dollar':
         return 3.48
     
-    if city_selb == 'Prague' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'Kč':
+    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'Kč':
         return 80.00
 
-    # Prague, DHL, large
-    if city_selb == 'Prague' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'euro':
+    # Czech Republic, DHL, large
+    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'euro':
         return 4.00
     
-    if city_selb == 'Prague' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'US dollar':
+    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'US dollar':
         return 4.35
     
-    if city_selb == 'Prague' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'Kč':
+    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'Kč':
         return 100.00
     
-    # Prague, Fedex, small
-    if city_selb == 'Prague' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'euro':
+    # Czech Republic, Fedex, small
+    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'euro':
         return 2.40
     
-    if city_selb == 'Prague' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'US dollar':
+    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'US dollar':
         return 2.61
     
-    if city_selb == 'Prague' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'Kč':
+    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'Kč':
         return 60.00
     
-    # Prague, Fedex, medium
-    if city_selb == 'Prague' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'euro':
+    # Czech Republic, Fedex, medium
+    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'euro':
         return 3.20
     
-    if city_selb == 'Prague' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'US dollar':
+    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'US dollar':
         return 3.48
     
-    if city_selb == 'Prague' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'Kč':
+    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'Kč':
         return 80.00
     
-    # Prague, Fedex, large
-    if city_selb == 'Prague' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'euro':
+    # Czech Republic, Fedex, large
+    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'euro':
         return 4.40
     
-    if city_selb == 'Prague' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'US dollar':
+    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'US dollar':
         return 4.78
     
-    if city_selb == 'Prague' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'Kč':
+    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'Kč':
         return 110.00
     
-    # Berlin, DHL, small
-    if city_selb == 'Berlin' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'euro':
+    # Slovakia, DHL, small
+    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'euro':
         return 2.80
     
-    if city_selb == 'Berlin' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'US dollar':
+    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'US dollar':
         return 3.04
     
-    if city_selb == 'Berlin' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'Kč':
+    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'Kč':
         return 70.00
     
-    # Berlin, DHL, medium
-    if city_selb == 'Berlin' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'euro':
+    # Slovakia, DHL, medium
+    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'euro':
         return 4.00
     
-    if city_selb == 'Berlin' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'US dollar':
+    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'US dollar':
         return 4.35
     
-    if city_selb == 'Berlin' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'Kč':
+    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'Kč':
         return 100.00
     
-    # Berlin, DHL, small
-    if city_selb == 'Berlin' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'euro':
+    # Slovakia, DHL, small
+    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'euro':
         return 2.80
     
-    if city_selb == 'Berlin' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'US dollar':
+    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'US dollar':
         return 3.04
     
-    if city_selb == 'Berlin' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'Kč':
+    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'Kč':
         return 70.00
     
-    # Berlin, DHL, large
-    if city_selb == 'Berlin' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'euro':
+    # Slovakia, DHL, large
+    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'euro':
         return 6.00
     
-    if city_selb == 'Berlin' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'US dollar':
+    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'US dollar':
         return 6.52
     
-    if city_selb == 'Berlin' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'Kč':
+    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'Kč':
         return 150.00
 
-    # Berlin, Fedex, small
-    if city_selb == 'Berlin' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'euro':
+    # Slovakia, Fedex, small
+    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'euro':
         return 2.60
     
-    if city_selb == 'Berlin' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'US dollar':
+    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'US dollar':
         return 2.83
     
-    if city_selb == 'Berlin' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'Kč':
+    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'Kč':
         return 65.00
     
-    # Berlin, Fedex, medium
-    if city_selb == 'Berlin' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'euro':
+    # Slovakia, Fedex, medium
+    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'euro':
         return 4.80
     
-    if city_selb == 'Berlin' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'US dollar':
+    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'US dollar':
         return 5.22
     
-    if city_selb == 'Berlin' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'Kč':
+    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'Kč':
         return 120.00
     
-    # Berlin, Fedex, large
-    if city_selb == 'Berlin' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'euro':
+    # Slovakia, Fedex, large
+    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'euro':
         return 6.00
     
-    if city_selb == 'Berlin' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'US dollar':
+    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'US dollar':
         return 6.52
     
-    if city_selb == 'Berlin' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'Kč':
+    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'Kč':
         return 150.00
 
 calc_transport_price = calculation_transport(city_selb,size_selb,transport_co_selb, currency_selb)
@@ -271,7 +282,7 @@ service_type_fn = fun_add_service_1(add_service_select)
 def fun_add_service_2(option, price):
     
     if option == 'No additional service':
-        return '0.00'
+        return 0.00
 
     elif option == 'Insurance':
         ins = price * 0.15
@@ -298,22 +309,22 @@ def fun_add_service_3(option):
 
 service_fn = fun_add_service_3(add_service_select)
 
-
-if customer_input == '' or product_name_inp == '' or category_selb == '' or currency_selb == '' or price == '' or add_service_select == '':
-    st.warning("One of the inputs is still not available")
+# Logic / notification guidence when fullfiled properly
+if customer_input == '' or product_name_inp == '' or category_selb == None or currency_selb == None or price == 0.00 or add_service_select == '' or city_selb == None or transport_co_selb == None or size_selb == None :
+    st.warning("One of the inputs is still not available - if Submit button is pushed the application might not work properly ")
 
 else:
     st.success("Fulfiled properly")
 
 # Submit button
-if st.button("submit"):
-    st.write("Jane ty jsi genius")
-
+if st.button("Submit"):
+    
     # Calculation of final price 
     # important to keep the calculation after SUBMIT button, if not TypeError: unsupported operand type(s) for +: 'float' and 'NoneType'
     final_price_fl = price + calc_transport_price + service_price_fn
     final_price_fl_str = str(final_price_fl)
     
+    st.write("#### Sumary of your order:")
 
     st.write(f" - Customer name: {customer_input}")
     ''
@@ -356,7 +367,7 @@ if st.button("submit"):
 
     transportation = ET.SubElement(xml_doc, 'transportation')
     transporter = ET.SubElement(transportation, 'transporter').text = transport_co_selb
-    to_city = ET.SubElement(transportation, 'to_city').text = city_selb
+    country = ET.SubElement(transportation, 'country').text = city_selb
     size = ET.SubElement(transportation, 'size').text = size_selb
     transport_price = ET.SubElement(transportation, 'transport_price').text = calc_transport_price_str
     prettify(xml_doc)
@@ -364,7 +375,8 @@ if st.button("submit"):
     tree = ET.ElementTree(xml_doc)
     # xml_declaration=Tru -> generuje XML prolog
     tree.write('Data/Function_3_do NOT delete.xml', encoding='UTF-8', xml_declaration=True)
- 
+
+st.write("------")
 
 file_name_fstring = f"{invoice_number_generated}.xml"
 
