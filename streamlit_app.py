@@ -46,6 +46,16 @@ function_3 = st.Page(
     title="3. XML - Creation of XML"
     )
 
+function_3_xml = st.Page(
+    "Subpages/Function_3_xml description.py",
+    title="Description - XSD, XML Schema"
+    )
+
+function_3_BPMN = st.Page(
+    "Subpages/Function_3_BPMN.py",
+    title="Description - BPMN"
+    )
+
 
 # Navigation:
 pg = st.navigation(
@@ -56,8 +66,10 @@ pg = st.navigation(
             #download,
             #parsing,
             function_3,
+            function_3_xml,
+            function_3_BPMN
             ]
     }
 )
 
-pg.run()
+#pg.run()

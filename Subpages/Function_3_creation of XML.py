@@ -84,6 +84,9 @@ with st. expander("Price"):
         step = 10.00,
         help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it."
         )
+    
+    if price == 0.00:
+        st.warning("Please change the value to reflect money to be paid (0.00 is not billable)")
 
 
 with st.expander("Extra purchase"):
@@ -320,7 +323,7 @@ service_fn = fun_add_service_3(add_service_select)
 
 # Logic / notification guidence when fullfiled properly
 if customer_input == '' or product_name_inp == '' or category_selb == None or currency_selb == None or price == 0.00 or add_service_select == '' or city_selb == None or transport_co_selb == None or size_selb == None :
-    st.warning("One of the inputs is still not available - if Submit button is pushed the application might not work properly ")
+    st.warning("One/Some of the inputs still not entered - if Submit button is pushed the application might not work properly. Please check and make sure that you have correctly fullfiled all. Also the application doesn't aceept 0.00 as price -> 0.01 is minimum.")
 
 else:
     st.success("Fulfiled properly")

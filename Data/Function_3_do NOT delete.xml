@@ -1,29 +1,29 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <invoice>
   <header>
-    <order_number>33228808880513765067</order_number>
-    <customer>ABC s.r.o.</customer>
-    <invoice_number>INV-087925</invoice_number>
-    <date>2025-03-13</date>
+    <order_number>43011298387913952538</order_number>
+    <customer>Jan</customer>
+    <invoice_number>INV-988872</invoice_number>
+    <date>2025-03-14</date>
     <price>
-      <total_sum>11550.0</total_sum>
-      <currency>Kč</currency>
+      <total_sum>178.83</total_sum>
+      <currency>US dollar</currency>
   </price>
   </header>
   <detail>
-    <category>Mobile phones</category>
-    <product_name>Samsung 22</product_name>
-    <price_amount>10000.0</price_amount>
+    <category>TV</category>
+    <product_name>A</product_name>
+    <price_amount>160.0</price_amount>
     <additional_service>
       <service>Y</service>
-      <service_type>insurance</service_type>
-      <service_price>1500.0</service_price>
+      <service_type>extended varanty</service_type>
+      <service_price>16.0</service_price>
   </additional_service>
   </detail>
   <transportation>
-    <transporter>DHL</transporter>
-    <country>Czech Republic</country>
+    <transporter>Fedex</transporter>
+    <country>Slovakia</country>
     <size>small</size>
-    <transport_price>50.0</transport_price>
+    <transport_price>2.83</transport_price>
   </transportation>
 </invoice>
