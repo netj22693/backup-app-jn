@@ -1,0 +1,28 @@
+{
+    "header": {
+        "order_number": 12334,
+        "customer": "18-Mar-2025",
+        "invoice_number": "18-Mar-2025",
+        "date": "2025-03-10",
+        "price": {
+            "total_sum": "476462",
+            "currency": "K\u010d"
+        }
+    },
+    "detail": {
+        "category": "PC",
+        "product_name": "String",
+        "price_amount": 0,
+        "additional_service": {
+            "service": "N",
+            "service_type": "None",
+            "service_price": 0
+        }
+    },
+    "transportation": {
+        "transporter": "DHL",
+        "country": "Slovakia",
+        "size": "large",
+        "transport_price": 0
+    }
+}

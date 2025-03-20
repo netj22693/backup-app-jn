@@ -221,3 +221,5 @@ if st.download_button("Download",data = xsd_as_string  , file_name="XML Schema f
     st.info("Download will happen in few seconds")
 
 st.write("------")
+
+st.code(xsd_as_string, language= 'xml', line_numbers=True, height=700)

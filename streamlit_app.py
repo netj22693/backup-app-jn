@@ -6,10 +6,10 @@ import streamlit as st
 
 
 # Pages as objects
-# testing = st.Page(
-#     "Subpages/testuju.py",
-#     title="TESTING"
-#     )
+testing = st.Page(
+    "Subpages/testuju.py",
+    title="TESTING"
+    )
 
 # app_purpose = st.Page(
 #     "Subpages/Purpose_of_app.py",
@@ -56,12 +56,16 @@ function_3_BPMN = st.Page(
     title="Description - BPMN"
     )
 
+testuju_stsession = st.Page(
+    "Subpages/sessionstate.py",
+    title="Session state"
+)
 
 # Navigation:
 pg = st.navigation(
     {
         #"About this application": [app_purpose , app_description_ArM , app_description_BPMN , xsd],
-        #"TESTING": [testing],
+        "TESTING": [testing, testuju_stsession],
         "Application functions": [
             #download,
             #parsing,
@@ -72,4 +76,4 @@ pg = st.navigation(
     }
 )
 
-#pg.run()
+pg.run()

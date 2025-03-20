@@ -1,0 +1,28 @@
+{
+    "header": {
+        "order_number": "87783552488365616757",
+        "customer": "A",
+        "invoice_number": "INV-479753",
+        "date": "2025-03-20",
+        "price": {
+            "total_sum": 26.04,
+            "currency": "US dollar"
+        }
+    },
+    "detail": {
+        "category": "Gaming",
+        "product_name": "A",
+        "price_amount": 20.0,
+        "additional_service": {
+            "service": "Y",
+            "service_type": "insurance",
+            "service_price": 3.0
+        }
+    },
+    "transportation": {
+        "transporter": "DHL",
+        "country": "Slovakia",
+        "size": "small",
+        "transport_price": 3.04
+    }
+}
