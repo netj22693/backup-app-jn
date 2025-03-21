@@ -65,7 +65,6 @@ Also the predefined options in drop-down lists are set as xs:restriction in the 
 '' 
 st.image("Pictures/Function_3/XSD dropdowns.png")
 
-st.write("----") 
 
 
 xsd_as_string ='''<?xml version="1.0" encoding="UTF-8"?>
@@ -209,6 +208,14 @@ xsd_as_string ='''<?xml version="1.0" encoding="UTF-8"?>
 	</xs:element>
 </xs:schema>
 '''
+''
+''
+''
+''
+with st.expander("Show XSD structure - code"):
+	st.code(xsd_as_string, language= 'xml', line_numbers=True, height=700)
+
+st.write("----") 
 
 st.write("#### XSD - download as .txt:")
 if st.download_button("Download",data = xsd_as_string  , file_name="XML Schema for function 3.txt"):
@@ -221,5 +228,3 @@ if st.download_button("Download",data = xsd_as_string  , file_name="XML Schema f
     st.info("Download will happen in few seconds")
 
 st.write("------")
-
-st.code(xsd_as_string, language= 'xml', line_numbers=True, height=700)

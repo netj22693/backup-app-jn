@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 import string
 import random
 import time
+import json
 
 
 
@@ -26,8 +27,8 @@ def prettify(element, indent='  '):
 def id_generator(size=6, chars=string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
-a = id_generator()
-invoice_number_generated = 'INV-' + a
+# a = id_generator()
+# invoice_number_generated = 'INV-' + a
 
 # Function for generating random 12 digits for invoice number
 def order_generator(size=20, chars=string.digits):
@@ -140,6 +141,11 @@ with st.expander("Transportation"):
 ''
 
 price_str = str(price)
+price_fl = float(price)
+price_fl = float("{:.2f}".format(price_fl))
+
+
+
 
 # logika pro transport
 
@@ -308,7 +314,7 @@ def fun_add_service_2(option, price):
 
 service_price_fn = fun_add_service_2(add_service_select, price)
 service_price_fn_str = str(service_price_fn)
-
+service_price_fl = float(service_price_fn)
 
 def fun_add_service_3(option):
     
@@ -323,13 +329,16 @@ service_fn = fun_add_service_3(add_service_select)
 
 # Logic / notification guidence when fullfiled properly
 if customer_input == '' or product_name_inp == '' or category_selb == None or currency_selb == None or price == 0.00 or add_service_select == '' or city_selb == None or transport_co_selb == None or size_selb == None :
-    st.warning("One/Some of the inputs still not entered - if Submit button is pushed the application might not work properly. Please check and make sure that you have correctly fullfiled all. Also the application doesn't aceept 0.00 as price -> 0.01 is minimum.")
+    st.warning("One/Some of the inputs still not entered - if Submit button is pushed the application will not work properly. Please check and make sure that you have correctly fullfiled all. Also the application doesn't accept 0.00 as price -> 0.01 is minimum.")
 
 else:
     st.success("Fulfiled properly")
 
 # Submit button
 if st.button("Submit"):
+
+    a = id_generator()
+    invoice_number_generated = 'INV-' + a
     
     # Calculation of final price 
     # important to keep the calculation after SUBMIT button, if not TypeError: unsupported operand type(s) for +: 'float' and 'NoneType'
@@ -352,7 +361,7 @@ if st.button("Submit"):
     ''
     st.write(f" - Total price to pay: {final_price_fl:.2f} {currency_selb}")
 
-    st.info("If this is what you expect, you can proceed with Download button which will create XML file. If not, you can go up and change your inputs and then use the Submit button again.")
+    st.info("If this is what you expect, you can proceed with Download button which will create a file (XML or JSON). If not, you can go up and change your inputs and then use the Submit button again.")
     
     # Change of data type
     calc_transport_price_str = str(calc_transport_price)
@@ -389,12 +398,62 @@ if st.button("Submit"):
     # xml_declaration=Tru -> generuje XML prolog
     tree.write('Data/Function_3_do NOT delete.xml', encoding='UTF-8', xml_declaration=True)
 
-st.write("------")
-''
-st.write("Once you Submit your inputs -> push this Download button to produce final XML document.")
 
-file_name_fstring = f"{invoice_number_generated}.xml"
+    data_json = {
+    "header" : {
+        "order_number" : order_num_generated,
+        "customer": customer_input,
+        "invoice_number": invoice_number_generated,
+        "date": date_input,
+        "price": {
+            "total_sum": final_price_fl,
+            "currency": currency_selb
+        }
+    },
+    "detail": {
+        "category": category_selb,
+        "product_name": product_name_inp,
+        "price_amount": price_fl,
+        "additional_service": {
+            "service": service_fn,
+            "service_type": service_type_fn,
+            "service_price": service_price_fl
+        }
+    },
+    "transportation": {
+        "transporter": transport_co_selb,
+        "country": city_selb,
+        "size": size_selb,
+        "transport_price": calc_transport_price
+    }
+    }
 
-with open('Data/Function_3_do NOT delete.xml') as f:
-    if st.download_button('Download', f, file_name = file_name_fstring):
-        st.info("download will start in few seconds")
+    json_object = json.dumps(data_json, indent=4)
+
+    with open("Data/Function_3_do NOT delete - JSON.json", "w") as outfile:
+        outfile.write(json_object)
+        outfile.close()
+
+
+
+    file_name_xml_fstring = f"{invoice_number_generated}.xml"
+    file_name_json_fstring = f"{invoice_number_generated}.json"
+
+    st.write("------")
+    st.write("### Download:")
+    st.write("Choose if you want XML or JSON...")
+    ''
+    st.write("XML:")
+
+    with open('Data/Function_3_do NOT delete.xml') as f:
+        if st.download_button('Download', f, file_name = file_name_xml_fstring):
+            st.write("download will start in few seconds")
+
+    ''
+    ''
+    st.write("JSON:")
+
+    with open('Data/Function_3_do NOT delete - JSON.json') as j:
+        if st.download_button('Download', j, file_name = file_name_json_fstring):
+            st.info("download will start in few seconds")
+

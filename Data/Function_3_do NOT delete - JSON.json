@@ -1,28 +1,28 @@
 {
     "header": {
-        "order_number": "87783552488365616757",
-        "customer": "A",
-        "invoice_number": "INV-479753",
-        "date": "2025-03-20",
+        "order_number": "73694838176547610765",
+        "customer": "j",
+        "invoice_number": "INV-303204",
+        "date": "2025-03-21",
         "price": {
-            "total_sum": 26.04,
-            "currency": "US dollar"
+            "total_sum": 12.8,
+            "currency": "euro"
         }
     },
     "detail": {
-        "category": "Gaming",
-        "product_name": "A",
-        "price_amount": 20.0,
+        "category": "Major Appliances",
+        "product_name": "j",
+        "price_amount": 10.0,
         "additional_service": {
-            "service": "Y",
-            "service_type": "insurance",
-            "service_price": 3.0
+            "service": "N",
+            "service_type": "None",
+            "service_price": 0.0
         }
     },
     "transportation": {
         "transporter": "DHL",
         "country": "Slovakia",
         "size": "small",
-        "transport_price": 3.04
+        "transport_price": 2.8
     }
 }
