@@ -1,17 +1,17 @@
 {
     "header": {
-        "order_number": "73694838176547610765",
-        "customer": "j",
-        "invoice_number": "INV-303204",
+        "order_number": "57264601857132706937",
+        "customer": "A",
+        "invoice_number": "INV-375965",
         "date": "2025-03-21",
         "price": {
-            "total_sum": 12.8,
+            "total_sum": 12.0,
             "currency": "euro"
         }
     },
     "detail": {
-        "category": "Major Appliances",
-        "product_name": "j",
+        "category": "PC",
+        "product_name": "s",
         "price_amount": 10.0,
         "additional_service": {
             "service": "N",
@@ -21,8 +21,8 @@
     },
     "transportation": {
         "transporter": "DHL",
-        "country": "Slovakia",
+        "country": "Czech Republic",
         "size": "small",
-        "transport_price": 2.8
+        "transport_price": 2.0
     }
 }

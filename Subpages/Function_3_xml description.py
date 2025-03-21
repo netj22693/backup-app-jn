@@ -208,12 +208,47 @@ xsd_as_string ='''<?xml version="1.0" encoding="UTF-8"?>
 	</xs:element>
 </xs:schema>
 '''
+
+xml_as_string ='''
+<?xml version="1.0" encoding="UTF-8"?>
+<invoice>
+	<header>
+		<order_number>String</order_number>
+		<customer>String</customer>
+		<invoice_number>INV-000000</invoice_number>
+		<date>2025-03-10</date>
+		<price>
+			<total_sum>0.01</total_sum>
+			<currency>Kč</currency>
+		</price>
+	</header>
+	<detail>
+		<category>PC</category>
+		<product_name>String</product_name>
+		<price_amount>0</price_amount>
+		<additional_service>
+			<service>N</service>
+			<service_type>None</service_type>
+			<service_price>0</service_price>
+		</additional_service>
+	</detail>
+	<transportation>
+		<transporter>DHL</transporter>
+		<country>Slovakia</country>
+		<size>large</size>
+		<transport_price>0</transport_price>
+	</transportation>
+</invoice>
+'''
 ''
 ''
 ''
 ''
 with st.expander("Show XSD structure - code"):
 	st.code(xsd_as_string, language= 'xml', line_numbers=True, height=700)
+      
+with st.expander("Show XML structure - code"):
+	st.code(xml_as_string, language= 'xml', line_numbers=True, height=700)
 
 st.write("----") 
 

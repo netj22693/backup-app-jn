@@ -52,14 +52,16 @@ st.write("Please provide details about order...")
 with st. expander("Buyer"):
     customer_input = st.text_input(
         "Customer/Company name:",
-        help = "Write a customer name/company name"
+        help = "Write a customer name/company name",
+        key= "k_customer"
         )
 
 with st. expander("Product"):
 
     product_name_inp = st.text_input(
         "Product name:",
-        help = "Write a product name"
+        help = "Write a product name",
+        key= "k_product"
         )
 
     category_selb = st.selectbox(
@@ -67,7 +69,8 @@ with st. expander("Product"):
         index = None,
         placeholder= "Select...",
         options=["PC","TV","Gaming","Mobile phones","Tablets","Major Appliances","Households"],
-        help = "Select category from which the product is"
+        help = "Select category from which the product is",
+        key= "k_category"
          )
 
 with st. expander("Price"):
@@ -76,14 +79,16 @@ with st. expander("Price"):
         index = None,
         placeholder= "Select...",
         options=["euro","US dollar","Kč"],
-        help = "Select one from the predefined currencies"
+        help = "Select one from the predefined currencies",
+        key= "k_currency"
         )
     
     price = st.number_input(
         "Product price:",
         min_value=0.00,
         step = 10.00,
-        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it."
+        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it.",
+        key= "k_price"
         )
     
     if price == 0.00:
@@ -95,7 +100,8 @@ with st.expander("Extra purchase"):
     add_service_select = st.selectbox(
         "Additional service:" ,
         options=["No additional service","Insurance","Extended varanty"],
-        help = "Select one of the options"
+        help = "Select one of the options",
+        key= "k_add_service"
          )
 
     if add_service_select == 'Insurance':
@@ -111,7 +117,8 @@ with st.expander("Transportation"):
         options=["Czech Republic","Slovakia"],
         index = None,
         placeholder="Select...",
-        help = "Select one of the options - there is different price for service for each country -> see the pricing table below."
+        help = "Select one of the options - there is different price for service for each country -> see the pricing table below.",
+        key= "k_country"
          )
       
     transport_co_selb = st.selectbox(
@@ -119,7 +126,8 @@ with st.expander("Transportation"):
         options=["DHL","Fedex"],
         index = None,
         placeholder="Select...",
-        help = "Select one of the options - there is different price for each company -> see the pricing table below."
+        help = "Select one of the options - there is different price for each company -> see the pricing table below.",
+        key= "k_transp"
          )
     
     size_selb = st.selectbox(
@@ -127,8 +135,8 @@ with st.expander("Transportation"):
         options=["small","medium","large"],
         index = None,
         placeholder="Select...",
-        help = "Select one of the options - there is different price for each size. Sum of the lengths of all three sides of the parcel max: Small - 50 cm (e.g. 20 cm x 20 cm x 10 cm). Medium 100 cm. Large 200 cm."
-        
+        help = "Select one of the options - there is different price for each size. Sum of the lengths of all three sides of the parcel max: Small - 50 cm (e.g. 20 cm x 20 cm x 10 cm). Medium 100 cm. Large 200 cm.",
+        key= "k_size"        
         )
     ''
     st.image("Pictures/Function_3/Sizes.png")
@@ -334,8 +342,28 @@ if customer_input == '' or product_name_inp == '' or category_selb == None or cu
 else:
     st.success("Fulfiled properly")
 
+
+# Clear of inputs
+
+def reset():
+    st.session_state["k_customer"] = None
+    st.session_state["k_product"] = None
+    st.session_state["k_category"] = None
+    st.session_state["k_currency"] = None
+    st.session_state["k_price"] = 0.00
+    st.session_state["k_add_service"] = "No additional service"
+    st.session_state["k_country"] = None
+    st.session_state["k_transp"] = None
+    st.session_state["k_size"] = None
+
+
+
 # Submit button
-if st.button("Submit"):
+if st.button(
+    "Submit",
+    use_container_width=True,
+    help = "Submit runs the application -> provide calculation -> summary of the invoice and option of generationg either XML or JSON file"
+    ):
 
     a = id_generator()
     invoice_number_generated = 'INV-' + a
@@ -439,21 +467,34 @@ if st.button("Submit"):
     file_name_xml_fstring = f"{invoice_number_generated}.xml"
     file_name_json_fstring = f"{invoice_number_generated}.json"
 
-    st.write("------")
-    st.write("### Download:")
-    st.write("Choose if you want XML or JSON...")
     ''
-    st.write("XML:")
-
+    st.write("###### Download:")
+        
+        
     with open('Data/Function_3_do NOT delete.xml') as f:
-        if st.download_button('Download', f, file_name = file_name_xml_fstring):
-            st.write("download will start in few seconds")
+        if st.download_button(
+            'Download - XML',
+            f, file_name = file_name_xml_fstring,
+            use_container_width=True
+            ):
 
-    ''
-    ''
-    st.write("JSON:")
+            st.session_state["Submit"]
 
+    
+     
     with open('Data/Function_3_do NOT delete - JSON.json') as j:
-        if st.download_button('Download', j, file_name = file_name_json_fstring):
+        if st.download_button(
+            'Download - JSON',
+            j, file_name = file_name_json_fstring,
+            use_container_width=True
+            ):
+
             st.info("download will start in few seconds")
+
+("---------")
+st.button(
+    "Reset",
+    use_container_width= True,
+    on_click = reset,
+    help = "Clear all text/number inputs from the form and reset this page")
 

@@ -53,7 +53,7 @@ with st. expander("Buyer"):
     customer_input = st.text_input(
         "Customer/Company name:",
         help = "Write a customer name/company name",
-        key = "k_customer"
+        key= "k_customer"
         )
 
 with st. expander("Product"):
@@ -61,7 +61,7 @@ with st. expander("Product"):
     product_name_inp = st.text_input(
         "Product name:",
         help = "Write a product name",
-        key = "k_productname"
+        key= "k_product"
         )
 
     category_selb = st.selectbox(
@@ -70,8 +70,7 @@ with st. expander("Product"):
         placeholder= "Select...",
         options=["PC","TV","Gaming","Mobile phones","Tablets","Major Appliances","Households"],
         help = "Select category from which the product is",
-        key = "k_category"
-
+        key= "k_category"
          )
 
 with st. expander("Price"):
@@ -81,7 +80,7 @@ with st. expander("Price"):
         placeholder= "Select...",
         options=["euro","US dollar","Kč"],
         help = "Select one from the predefined currencies",
-        key= "k_price"
+        key= "k_currency"
         )
     
     price = st.number_input(
@@ -89,7 +88,7 @@ with st. expander("Price"):
         min_value=0.00,
         step = 10.00,
         help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it.",
-        key= "k_prod_price"
+        key= "k_price"
         )
     
     if price == 0.00:
@@ -102,7 +101,7 @@ with st.expander("Extra purchase"):
         "Additional service:" ,
         options=["No additional service","Insurance","Extended varanty"],
         help = "Select one of the options",
-        key = "k_add_service"
+        key= "k_add_service"
          )
 
     if add_service_select == 'Insurance':
@@ -128,7 +127,7 @@ with st.expander("Transportation"):
         index = None,
         placeholder="Select...",
         help = "Select one of the options - there is different price for each company -> see the pricing table below.",
-        key="k_transp"
+        key= "k_transp"
          )
     
     size_selb = st.selectbox(
@@ -137,7 +136,7 @@ with st.expander("Transportation"):
         index = None,
         placeholder="Select...",
         help = "Select one of the options - there is different price for each size. Sum of the lengths of all three sides of the parcel max: Small - 50 cm (e.g. 20 cm x 20 cm x 10 cm). Medium 100 cm. Large 200 cm.",
-        key= "k_size"
+        key= "k_size"        
         )
     ''
     st.image("Pictures/Function_3/Sizes.png")
@@ -344,22 +343,27 @@ else:
     st.success("Fulfiled properly")
 
 
-# Initialization
-if "Submit" not in st.session_state:
-    st.session_state["Submit"] = False
+# Clear of inputs
+
+def reset():
+    st.session_state["k_customer"] = None
+    st.session_state["k_product"] = None
+    st.session_state["k_category"] = None
+    st.session_state["k_currency"] = None
+    st.session_state["k_price"] = 0.00
+    st.session_state["k_add_service"] = "No additional service"
+    st.session_state["k_country"] = None
+    st.session_state["k_transp"] = None
+    st.session_state["k_size"] = None
 
 
 
 # Submit button
-if st.button("Submit"):
-    st.session_state["Submit"] = not st.session_state["Submit"]
-
-
-# Form reset:
-
-
-
-if st.session_state["Submit"]:
+if st.button(
+    "Submit",
+    use_container_width=True,
+    help = "Submit runs the application -> provide calculation -> summary of the invoice and option of generationg either XML or JSON file"
+    ):
 
     a = id_generator()
     invoice_number_generated = 'INV-' + a
@@ -385,7 +389,7 @@ if st.session_state["Submit"]:
     ''
     st.write(f" - Total price to pay: {final_price_fl:.2f} {currency_selb}")
 
-    st.info("If this is what you expect, you can proceed with Download button which will create a file (XML or JSON). If not, you can go up and change your inputs - It will be AUTOMATICALLY recalculated/changed in this summary")
+    st.info("If this is what you expect, you can proceed with Download button which will create a file (XML or JSON). If not, you can go up and change your inputs and then use the Submit button again.")
     
     # Change of data type
     calc_transport_price_str = str(calc_transport_price)
@@ -463,21 +467,33 @@ if st.session_state["Submit"]:
     file_name_xml_fstring = f"{invoice_number_generated}.xml"
     file_name_json_fstring = f"{invoice_number_generated}.json"
 
-   
-    
-    st.write("### Download:")
     ''
-    
-    col1, col2 = st.columns(2)
-    
+    st.write("###### Download:")
+        
+        
     with open('Data/Function_3_do NOT delete.xml') as f:
-        if col1.download_button('Download - XML', f, file_name = file_name_xml_fstring):
+        if st.download_button(
+            'Download - XML',
+            f, file_name = file_name_xml_fstring,
+            use_container_width=True
+            ):
+
             st.session_state["Submit"]
 
-    ''
-    ''    
+    
+     
     with open('Data/Function_3_do NOT delete - JSON.json') as j:
-        if col2.download_button('Download - JSON', j, file_name = file_name_json_fstring):
+        if st.download_button(
+            'Download - JSON',
+            j, file_name = file_name_json_fstring,
+            use_container_width=True
+            ):
+
             st.info("download will start in few seconds")
 
-    
+("---------")
+st.button(
+    "Reset",
+    use_container_width= True,
+    on_click = reset,
+    help = "Clear all text/number inputs from the form and reset this page")

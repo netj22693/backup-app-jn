@@ -1,18 +1,18 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <invoice>
   <header>
-    <order_number>73694838176547610765</order_number>
-    <customer>j</customer>
-    <invoice_number>INV-303204</invoice_number>
+    <order_number>57264601857132706937</order_number>
+    <customer>A</customer>
+    <invoice_number>INV-375965</invoice_number>
     <date>2025-03-21</date>
     <price>
-      <total_sum>12.8</total_sum>
+      <total_sum>12.0</total_sum>
       <currency>euro</currency>
   </price>
   </header>
   <detail>
-    <category>Major Appliances</category>
-    <product_name>j</product_name>
+    <category>PC</category>
+    <product_name>s</product_name>
     <price_amount>10.0</price_amount>
     <additional_service>
       <service>N</service>
@@ -22,8 +22,8 @@
   </detail>
   <transportation>
     <transporter>DHL</transporter>
-    <country>Slovakia</country>
+    <country>Czech Republic</country>
     <size>small</size>
-    <transport_price>2.8</transport_price>
+    <transport_price>2.0</transport_price>
   </transportation>
 </invoice>
