@@ -44,7 +44,7 @@ print(now)
 date_input = time.strftime("%Y-%m-%d", now)
 
 # Application Frontend:
-st.write("### Delivery details:")
+st.write("# Delivery details:")
 ''
 
 st.write("Please provide details about order...")

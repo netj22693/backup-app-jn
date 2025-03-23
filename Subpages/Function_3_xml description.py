@@ -209,8 +209,7 @@ xsd_as_string ='''<?xml version="1.0" encoding="UTF-8"?>
 </xs:schema>
 '''
 
-xml_as_string ='''
-<?xml version="1.0" encoding="UTF-8"?>
+xml_as_string ='''<?xml version="1.0" encoding="UTF-8"?>
 <invoice>
 	<header>
 		<order_number>String</order_number>

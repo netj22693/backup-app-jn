@@ -1,18 +1,18 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <invoice>
   <header>
-    <order_number>57264601857132706937</order_number>
-    <customer>A</customer>
-    <invoice_number>INV-375965</invoice_number>
-    <date>2025-03-21</date>
+    <order_number>01428556724953407012</order_number>
+    <customer>Jan s.r.o.</customer>
+    <invoice_number>INV-679747</invoice_number>
+    <date>2025-03-23</date>
     <price>
       <total_sum>12.0</total_sum>
       <currency>euro</currency>
   </price>
   </header>
   <detail>
-    <category>PC</category>
-    <product_name>s</product_name>
+    <category>TV</category>
+    <product_name>A22</product_name>
     <price_amount>10.0</price_amount>
     <additional_service>
       <service>N</service>
