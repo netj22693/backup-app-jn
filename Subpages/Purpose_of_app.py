@@ -12,12 +12,12 @@ st.write("""
     """)
 ''
 st.write("""
-    - **Function 3:** Creation of XML or JSON (slightly different one than used in F1 and F2) through the application screen (manual inputs)
+    - **Function 3:** Creation of XML (slightly different one than used in F1 and F2) or JSON through the application screen (manual inputs)
     - **Function 4:** Mapping/change of file format XML -> JSON or JSON -> XML 
     """)
 ''
 ''
-"More details about the functions can be seen in the subpages like what the functions do, what data structures are used."
+"More details about the functions can be seen in the subpages - what the functions do, what data structures are used, etc."
 
 st.write("enjoy... :)") 
 
