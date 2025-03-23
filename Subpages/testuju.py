@@ -59,4 +59,22 @@ a = {
 y = json.dumps(a)
  
 st.write(y)
-st.write(type(y))
+print(type(y))
+
+col1, col2 = st.columns(2)
+
+object_upl_json = col2.file_uploader("",key= "json")
+
+if object_upl_json is None:
+    col2.info("When a file uploaded, translation to XML will happen")
+        
+
+if object_upl_json is not None:
+    col2.success("Upload complete")
+    
+
+    
+resp = json.load(object_upl_json )
+    
+
+print(type(object_upl_json ))

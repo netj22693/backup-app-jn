@@ -5,7 +5,7 @@ st.set_page_config(page_title="XSD, XML Schema")
 st.write("# XSD, XML Schema")
 st.write(
     '''
-Description of XML structure/XML Schema with which this Function 3 works. There is a download button at the end of this page to download XML Schema in both .txt and .xsd format.
+Description of XML structure/XML Schema with which this Functions 3 and 4 work. There is a download button at the end of this page to download XML Schema in both .txt and .xsd format.
 
 '''
 )
@@ -40,7 +40,7 @@ st.image("Pictures/Function_3/XSD detail.png")
 ''
 st.write("###### Transportation:")
 '''
-New element for this Function 3 (in comparison with Function 1 and 2 in this app) is element transportation. Also few nested elements which have information about transportation/delivery. 
+Different element for this Function 3 (in comparison with Function 1 and 2 in this app) is element transportation. Also few nested elements which have information about transportation/delivery. 
 '''
 '' 
 st.image("Pictures/Function_3/XSD transportation.png")
@@ -48,7 +48,7 @@ st.write("----")
 
 st.write("#### Principle of the XML in context of the Function 3:")
 '''
-In the application user provides key inputs about the product through input fields.Based on the inputs, function culculates and provides the remaining details (about your order) also necessary/to fulfill this predefined xml. 
+In the application user provides key inputs about the product through input fields. Based on the inputs, function culculates and provides the remaining details (about your order) necessary/to fulfill this predefined xml.  
 '''
 '' 
 st.image("Pictures/Function_3/XML produced.png")

@@ -40,3 +40,15 @@ The predefined values for calculations are:
 '''
 ''
 st.image("Pictures/Function_3/Price_list.png")
+''
+''
+st.write("-----")
+st.write("#### Function 4 process flow:")
+''
+''
+'''
+In case that user wants to change file format of invoice generated in Function 3 step there is a possibility to use Function 4 for mapping into the other format than has been selected. Reason why to do this? The existing inovice file from Function 3 has uniquie ID and order number specific for the invoice and thus this conversion into the other file format will keep these unique IDs.
+'''
+''
+''
+st.image("Pictures/Function_4/Function_4_BPMN.png")

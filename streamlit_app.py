@@ -43,7 +43,7 @@ parsing = st.Page(
 
 function_3 = st.Page(
     "Subpages/Function_3_creation of XML.py",
-    title="3. XML - Creation of XML"
+    title="3. XML - Creation of XML or JSON"
     )
 
 function_3_xml = st.Page(
@@ -66,9 +66,24 @@ fun_1and2_descrip = st.Page(
     title="Description - Functions"
 )
 
+fun_3_archm = st.Page(
+    "Subpages/Function_3_Archimate.py",
+    title="Description - Archimate"
+)
+
 fun_4 = st.Page(
     "Subpages/Function_4_xml to json json to xml.py",
     title="4. Mapping XML to JSON, JSON to XML"
+)
+
+fun_3_json = st.Page(
+    "Subpages/Function_3 and 4_json description.py",
+    title="Description - JSON Schema"
+)
+
+fun_3and4_descrip = st.Page(
+    "Subpages/Function_3 and 4_description.py",
+    title="Description - Functions"
 )
 
 
@@ -81,7 +96,7 @@ pg = st.navigation(
             #app_description_BPMN,
             #xsd
             ],
-        "TESTING": [testing, testuju_stsession],
+        # "TESTING": [testing, testuju_stsession],
         # "Application functions": [
         #     #download,
         #     #parsing,
@@ -100,8 +115,11 @@ pg = st.navigation(
         "Function 3 and 4": [
             #download,
             #parsing,
+            fun_3and4_descrip,
             function_3_BPMN,
+            fun_3_archm,
             function_3_xml,
+            fun_3_json,
             function_3,
             fun_4
             ]

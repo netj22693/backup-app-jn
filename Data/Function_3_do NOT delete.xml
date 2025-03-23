@@ -1,19 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <invoice>
   <header>
-    <order_number>01428556724953407012</order_number>
-    <customer>Jan s.r.o.</customer>
-    <invoice_number>INV-679747</invoice_number>
+    <order_number>40385036041662741983</order_number>
+    <customer>s</customer>
+    <invoice_number>INV-011798</invoice_number>
     <date>2025-03-23</date>
     <price>
-      <total_sum>12.0</total_sum>
-      <currency>euro</currency>
+      <total_sum>34.35</total_sum>
+      <currency>US dollar</currency>
   </price>
   </header>
   <detail>
-    <category>TV</category>
-    <product_name>A22</product_name>
-    <price_amount>10.0</price_amount>
+    <category>Gaming</category>
+    <product_name>s</product_name>
+    <price_amount>30.0</price_amount>
     <additional_service>
       <service>N</service>
       <service_type>None</service_type>
@@ -22,8 +22,8 @@
   </detail>
   <transportation>
     <transporter>DHL</transporter>
-    <country>Czech Republic</country>
-    <size>small</size>
-    <transport_price>2.0</transport_price>
+    <country>Slovakia</country>
+    <size>medium</size>
+    <transport_price>4.35</transport_price>
   </transportation>
 </invoice>

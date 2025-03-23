@@ -126,10 +126,10 @@ if object_upl_json is not None:
     col2.success("Upload complete")
 
     #dumps the json object into an element
-    json_str = json.dumps(object_upl_json)
+    # json_str = json.dumps(object_upl_json)
 
     #load the json to a string
-    resp = json.loads(json_str)
+    resp = json.load(object_upl_json)
 
    
     
@@ -206,18 +206,18 @@ if object_upl_json is not None:
 
     prettify(xml_doc)
 
-    # tree = ET.ElementTree(xml_doc)
-    # # xml_declaration=Tru -> generuje XML prolog
-    # tree.write('Data/Function_4_JSONtoXML_do NOT delete - JSON.xml', encoding='UTF-8', xml_declaration=True)
+    tree = ET.ElementTree(xml_doc)
+    # xml_declaration=Tru -> generuje XML prolog
+    tree.write('Data/Function_4_JSONtoXML_do NOT delete - JSON.xml', encoding='UTF-8', xml_declaration=True)
 
-    # st.write("sucess")
-    # file_name_xml_fstring = f"{invoice_number}.json"
+    st.write("sucess")
+    file_name_xml_fstring = f"{invoice_number}.xml"
 
-    # with open('Data/Function_4_JSONtoXML_do NOT delete - JSON.xml') as j:
-    #         if col2.download_button(
-    #             'Download - JSON',
-    #             j, file_name = file_name_xml_fstring,
-    #             use_container_width=True
-    #             ):
+    with open('Data/Function_4_JSONtoXML_do NOT delete - JSON.xml') as j:
+            if col2.download_button(
+                'Download - XML',
+                j, file_name = file_name_xml_fstring,
+                use_container_width=True
+                ):
 
-    #             col2.info("download will start in few seconds")
+                col2.info("download will start in few seconds")

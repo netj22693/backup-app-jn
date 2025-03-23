@@ -20,3 +20,10 @@ st.write("""
 "More details about the functions can be seen in the subpages like what the functions do, what data structures are used."
 
 st.write("enjoy... :)") 
+
+''
+''
+st.image(
+    "Pictures/ArchM Functions overview_3.drawio.png.drawio.png",
+    caption= "ArchiMate - Overview of functions"
+    )
