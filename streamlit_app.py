@@ -106,18 +106,9 @@ pg = st.navigation(
     {
         "About this application": [
             app_purpose,
-            #app_description_ArM,
-            #app_description_BPMN,
-            #xsd
             ],
         # "TESTING": [testing, testuju_stsession],
-        # "Application functions": [
-        #     #download,
-        #     #parsing,
-        #     function_3,
-        #     function_3_xml,
-        #     function_3_BPMN
-        #     ],
+
         "Functions 1 and 2" : [
             fun_1and2_descrip,
             app_description_BPMN,
@@ -127,8 +118,6 @@ pg = st.navigation(
             parsing
             ],
         "Functions 3 and 4": [
-            #download,
-            #parsing,
             fun_3and4_descrip,
             function_3_BPMN,
             fun_3_archm,
