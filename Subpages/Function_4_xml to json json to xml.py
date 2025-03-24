@@ -100,7 +100,8 @@ if object_upl_xml is not None:
             if col1.download_button(
                 'Download - JSON',
                 j, file_name = file_name_json_fstring,
-                use_container_width=True
+                use_container_width=True,
+                icon = ":material/download:"
                 ):
 
                 col1.info("download will start in few seconds")
@@ -210,14 +211,15 @@ if object_upl_json is not None:
     # xml_declaration=Tru -> generuje XML prolog
     tree.write('Data/Function_4_JSONtoXML_do NOT delete - JSON.xml', encoding='UTF-8', xml_declaration=True)
 
-    st.write("sucess")
+    
     file_name_xml_fstring = f"{invoice_number}.xml"
 
     with open('Data/Function_4_JSONtoXML_do NOT delete - JSON.xml') as j:
             if col2.download_button(
                 'Download - XML',
                 j, file_name = file_name_xml_fstring,
-                use_container_width=True
+                use_container_width=True,
+                icon = ":material/download:"
                 ):
 
                 col2.info("download will start in few seconds")

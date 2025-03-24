@@ -603,14 +603,14 @@ st.image("Pictures/V2_pictures/XML download - scenario 1.png")
 with st.expander("Show XML structure - code"):
 	st.code(xml_data_euro, language= 'xml', line_numbers=True, height=700)
 
-if st.download_button("Download",data = xml_data_euro  , file_name="XML_euro_sum matches.xml"):
+if st.download_button("Download",data = xml_data_euro  , file_name="XML_euro_sum matches.xml", icon = ":material/download:"):
     st.info("Download will happen in few seconds")
 
 st.write("------")
 
 
 # Option 2
-st.write("#### 2) Predefind file - sum matches - currency: koruna - 12 detail lines")
+st.write("#### 2) Predefind file - sum matches - currency: Koruna - 12 detail lines")
 st.write(
     '''
 Scenario where <total_sum> and <total_sum_services> values match the sum of <price_amount> and sum of <service_price> in detail elements. Validation in application will be passed. Currency: Kč Koruna
@@ -621,7 +621,7 @@ st.image("Pictures/V2_pictures/XML download - scenario 2.png")
 with st.expander("Show XML structure - code"):
 	st.code(xml_data_koruna, language= 'xml', line_numbers=True, height=700)
      
-if st.download_button("Download",data = xml_data_koruna  , file_name="XML_koruna_sum matches.xml"):
+if st.download_button("Download",data = xml_data_koruna  , file_name="XML_koruna_sum matches.xml", icon = ":material/download:"):
     st.info("Download will happen in few seconds")
 
 st.write("------")
@@ -638,7 +638,7 @@ st.image("Pictures/V2_pictures/XML download - scenario 3.png")
 with st.expander("Show XML structure - code"):
 	st.code(xml_data_usdollar, language= 'xml', line_numbers=True, height=700)
       
-if st.download_button("Download",data = xml_data_usdollar , file_name="XML_usdollar_sum not match.xml"):
+if st.download_button("Download",data = xml_data_usdollar , file_name="XML_usdollar_sum not match.xml", icon = ":material/download:"):
     st.info("Download will happen in few seconds")
 
 st.write("------")
@@ -657,7 +657,7 @@ st.image("Pictures/V2_pictures/XML download - scenario 4.png")
 with st.expander("Show XML structure - code"):
 	st.code(xml_empty_template, language= 'xml', line_numbers=True, height=700)
       
-if st.download_button("Download",data = xml_empty_template , file_name="XML_empty_template.xml"):
+if st.download_button("Download",data = xml_empty_template , file_name="XML_empty_template.xml", icon = ":material/download:"):
     st.info("Download will happen in few seconds")
 
 st.write("------")

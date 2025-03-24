@@ -1,28 +1,28 @@
 {
     "header": {
-        "order_number": "50378022490289946438",
-        "customer": "Jan s.r.o.",
-        "invoice_number": "INV-694977",
-        "date": "2025-03-23",
+        "order_number": "91818163653277073250",
+        "customer": "x",
+        "invoice_number": "INV-322172",
+        "date": "2025-03-24",
         "price": {
-            "total_sum": 17.5,
-            "currency": "euro"
+            "total_sum": 60.0,
+            "currency": "K\u010d"
         }
     },
     "detail": {
-        "category": "PC",
-        "product_name": "A22",
+        "category": "Gaming",
+        "product_name": "x",
         "price_amount": 10.0,
         "additional_service": {
-            "service": "Y",
-            "service_type": "insurance",
-            "service_price": 1.5
+            "service": "N",
+            "service_type": "None",
+            "service_price": 0.0
         }
     },
     "transportation": {
         "transporter": "DHL",
-        "country": "Slovakia",
-        "size": "large",
-        "transport_price": 6.0
+        "country": "Czech Republic",
+        "size": "small",
+        "transport_price": 50.0
     }
 }

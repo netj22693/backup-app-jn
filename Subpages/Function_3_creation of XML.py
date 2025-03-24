@@ -49,14 +49,14 @@ st.write("# Delivery details:")
 
 st.write("Please provide details about order...")
 ''
-with st. expander("Buyer"):
+with st. expander("Buyer", icon=":material/tag_faces:"):
     customer_input = st.text_input(
         "Customer/Company name:",
         help = "Write a customer name/company name",
         key= "k_customer"
         )
 
-with st. expander("Product"):
+with st. expander("Product", icon=":material/devices:"):
 
     product_name_inp = st.text_input(
         "Product name:",
@@ -73,7 +73,7 @@ with st. expander("Product"):
         key= "k_category"
          )
 
-with st. expander("Price"):
+with st. expander("Price", icon = ":material/euro_symbol:"):
     currency_selb = st.selectbox(
         "Currency:" ,
         index = None,
@@ -95,7 +95,7 @@ with st. expander("Price"):
         st.warning("Please change the value to reflect money to be paid (0.00 is not billable)")
 
 
-with st.expander("Extra purchase"):
+with st.expander("Extra purchase", icon = ":material/exposure_plus_1:"):
 
     add_service_select = st.selectbox(
         "Additional service:" ,
@@ -110,7 +110,7 @@ with st.expander("Extra purchase"):
     if add_service_select == 'Extended varanty':
         st.info("costs 10% from product price")
 
-with st.expander("Transportation"):
+with st.expander("Transportation", icon = ":material/directions_bus:"):
 
     city_selb = st.selectbox(
         "Country:" ,
@@ -475,7 +475,8 @@ if st.button(
         if st.download_button(
             'Download - XML',
             f, file_name = file_name_xml_fstring,
-            use_container_width=True
+            use_container_width=True,
+            icon = ":material/download:"
             ):
 
             st.session_state["Submit"]
@@ -486,7 +487,8 @@ if st.button(
         if st.download_button(
             'Download - JSON',
             j, file_name = file_name_json_fstring,
-            use_container_width=True
+            use_container_width=True,
+            icon = ":material/download:"
             ):
 
             st.info("download will start in few seconds")

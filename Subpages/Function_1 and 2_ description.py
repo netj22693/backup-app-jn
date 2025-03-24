@@ -6,8 +6,8 @@ st.write(
     )
 
 st.write("""
-    - Function 1: Download XML file
-    - Function 2: Parse data from the XML
+    - **Function 1**: Download XML file
+    - **Function 2**: Parse data from the XML
     """
     )
 

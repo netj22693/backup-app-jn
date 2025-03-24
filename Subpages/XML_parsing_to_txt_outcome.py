@@ -172,7 +172,7 @@ if object_from_upload is not None:
     st.write("#### Data Visualization:")
     ''
     ''
-    if st.button("Summary overview"):
+    if st.button("Summary overview", use_container_width= True, icon = ":material/apps:", help="To show highlights of parsed data from the invoice"):
         st.write(f"Sumary:")
         st.write(f" - Invoice number: {value_invoice_num}")
         st.write(f" - Receiver of the invoice: {value_customer}")
@@ -290,7 +290,10 @@ if object_from_upload is not None:
 
     file_name_fstring = f"Summary-{value_invoice_num}.txt"
 
-    if st.download_button("Download", data= final_outcome, file_name= file_name_fstring):
+    ''
+    ''
+    ''
+    if st.download_button("Download", data= final_outcome, file_name= file_name_fstring, icon = ":material/download:", use_container_width=True):
             
         # file = open("print.txt","w")
 

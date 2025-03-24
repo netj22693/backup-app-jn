@@ -243,22 +243,22 @@ xml_as_string ='''<?xml version="1.0" encoding="UTF-8"?>
 ''
 ''
 ''
-with st.expander("Show XSD structure - code"):
+with st.expander("Show XSD structure - code", icon= ":material/code:"):
 	st.code(xsd_as_string, language= 'xml', line_numbers=True, height=700)
       
-with st.expander("Show XML structure - code"):
+with st.expander("Show XML structure - code", icon= ":material/code:"):
 	st.code(xml_as_string, language= 'xml', line_numbers=True, height=700)
 
 st.write("----") 
 
 st.write("#### XSD - download as .txt:")
-if st.download_button("Download",data = xsd_as_string  , file_name="XML Schema for function 3.txt"):
+if st.download_button("Download",data = xsd_as_string  , file_name="XML Schema for function 3.txt", icon = ":material/download:"):
     st.info("Download will happen in few seconds")
 
 st.write("------")
 
 st.write("#### XSD - download as .xsd:")
-if st.download_button("Download",data = xsd_as_string  , file_name="XML Schema for function 3.xsd"):
+if st.download_button("Download",data = xsd_as_string  , file_name="XML Schema for function 3.xsd", icon = ":material/download:"):
     st.info("Download will happen in few seconds")
 
 st.write("------")

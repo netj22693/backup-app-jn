@@ -193,10 +193,10 @@ Different element for this Function 3 (in comparison with Function 1 and 2 in th
 st.image("Pictures/Function_3/Function_3_json transportation.png")
 ''
 ''
-with st.expander("Show JSON structure - code"):
+with st.expander("Show JSON structure - code", icon= ":material/code:"):
 	st.code(json_structure, language= 'json', line_numbers=True, height=700)
 
-with st.expander("Show JSON Schema structure - code"):
+with st.expander("Show JSON Schema structure - code", icon= ":material/code:"):
 	st.code(json_schema, language= 'json', line_numbers=True, height=700)
 	
 
@@ -212,11 +212,11 @@ st.image("Pictures/Function_3/Function_3_JSON produced.png")
 
 st.write("-----")
 st.write("#### JSON Schema - download as .txt:")
-if st.download_button("Download",data = json_schema  , file_name="JSON schema functions 3 and 4.txt"):
+if st.download_button("Download",data = json_schema  , file_name="JSON schema functions 3 and 4.txt", icon = ":material/download:"):
     st.info("Download will happen in few seconds")
 	
 st.write("-----")
 st.write("#### JSON Schema - download as .json:")
-if st.download_button("Download",data = json_schema  , file_name="JSON schema functions 3 and 4.json"):
+if st.download_button("Download",data = json_schema  , file_name="JSON schema functions 3 and 4.json", icon = ":material/download:"):
     st.info("Download will happen in few seconds")
 st.write("-----")

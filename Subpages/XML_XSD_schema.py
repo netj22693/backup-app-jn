@@ -161,7 +161,7 @@ st.image("Pictures/V2_pictures/detail properties.png")
 st.image("Pictures/V2_pictures/xsd_detail.png")
 ''
 ''
-with st.expander("Show XSD structure - code"):
+with st.expander("Show XSD structure - code", icon= ":material/code:"):
 	st.code(xsd_structure, language= 'xml', line_numbers=True, height=700)
 
 st.write("----")
@@ -228,13 +228,13 @@ st.write("------")
 # Download of XSD
 
 st.write("#### XSD - download as .txt:")
-if st.download_button("Download",data = xsd_structure  , file_name="XML Schema.txt"):
+if st.download_button("Download",data = xsd_structure  , file_name="XML Schema.txt", icon = ":material/download:"):
     st.info("Download will happen in few seconds")
 
 st.write("------")
 
 st.write("#### XSD - download as .xsd:")
-if st.download_button("Download",data = xsd_structure  , file_name="XML Schema.xsd"):
+if st.download_button("Download",data = xsd_structure  , file_name="XML Schema.xsd",icon = ":material/download:"):
     st.info("Download will happen in few seconds")
 
 st.write("------")
