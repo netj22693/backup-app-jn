@@ -2,7 +2,7 @@ import streamlit as st
 
 
  #--- SHARED ON ALL PAGES ---
-st.logo("Pictures/Logo2.png", size='large')
+st.logo("Pictures/V2_pictures/Logo_6.png", size='large')
 
 
 # Pages as objects
