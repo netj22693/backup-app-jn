@@ -1,17 +1,17 @@
 {
     "header": {
-        "order_number": "91818163653277073250",
-        "customer": "x",
-        "invoice_number": "INV-322172",
+        "order_number": "14856832710440289535",
+        "customer": "Jan s.r.o.",
+        "invoice_number": "INV-048336",
         "date": "2025-03-24",
         "price": {
-            "total_sum": 60.0,
-            "currency": "K\u010d"
+            "total_sum": 14.0,
+            "currency": "euro"
         }
     },
     "detail": {
-        "category": "Gaming",
-        "product_name": "x",
+        "category": "TV",
+        "product_name": "A22",
         "price_amount": 10.0,
         "additional_service": {
             "service": "N",
@@ -21,8 +21,8 @@
     },
     "transportation": {
         "transporter": "DHL",
-        "country": "Czech Republic",
-        "size": "small",
-        "transport_price": 50.0
+        "country": "Slovakia",
+        "size": "medium",
+        "transport_price": 4.0
     }
 }
