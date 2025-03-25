@@ -1,11 +1,11 @@
 import streamlit as st
 
 
- #--- SHARED ON ALL PAGES ---
+ # ============= LOGO - SHARED ON ALL PAGES ==========
 st.logo("Pictures/V2_pictures/Logo_7.png", size='large')
 
 
-# Pages as objects
+# ============== Pages as objects ====================
 testing = st.Page(
     "Subpages/testuju.py",
     title="TESTING"
@@ -131,7 +131,7 @@ pg = st.navigation(
 
 pg.run()
 
-
+# ============= side bar caption ===================
 st.sidebar.caption(
     "Do you like this app? :) LinkedIn [Here](https://www.linkedin.com/in/jan-netolicka-12209a221/)"
 )
