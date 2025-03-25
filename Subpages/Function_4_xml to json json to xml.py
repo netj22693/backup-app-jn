@@ -2,15 +2,19 @@ import streamlit as st
 import xml.etree.ElementTree as ET
 import json
 
+# Split of the screen into 2 columns
 col1, col2 = st.columns(2)
 
 
-# XML -> JSON
+# ====================== COLUMN 1: XML -> JSON ===================
+
 col1.write("# XML -> JSON :")
 
 col1.write("### Upload XML:")
 
+
 object_upl_xml = col1.file_uploader("")
+
 
 if object_upl_xml is None:
     col1.info("When a file uploaded, translation to JSON will happen")
@@ -23,7 +27,7 @@ if object_upl_xml is not None:
     tree_element_data = ET.parse(object_upl_xml)
 
     root = tree_element_data.getroot()
-    print(f"root identified as {root}")
+    #print(f"root identified as {root}")
 
     # Data parsing from header
     order_number = root[0][0].text
@@ -49,7 +53,7 @@ if object_upl_xml is not None:
     transport_price = root[2][3].text
 
 
-    # Change of teh data type to be seen as float and not string in JSON
+    # Change of the data type to be seen as float and not string in JSON
     total_sum_fl = float(total_sum)
     price_amount_fl = float(price_amount)
     service_price_fl = float(service_price)
@@ -57,7 +61,7 @@ if object_upl_xml is not None:
 
 
 
-
+    # JSON structure for build
     data_json = {
         "header" : {
             "order_number" : order_number,
@@ -89,13 +93,14 @@ if object_upl_xml is not None:
 
     json_object = json.dumps(data_json, indent=4)
 
-
+    # Writing of the JSON structure into a file 
     with open("Data/Function_4_XMLtoJSON_do NOT delete - JSON.json", "w") as outfile:
             outfile.write(json_object)
             outfile.close()
 
     file_name_json_fstring = f"{invoice_number}.json"
 
+    # Download 
     with open('Data/Function_3_do NOT delete - JSON.json') as j:
             if col1.download_button(
                 'Download - JSON',
@@ -109,8 +114,7 @@ if object_upl_xml is not None:
 
 
 
-
-# JSON -> XML
+# ====================== COLUMN 2: JSON -> XML ===================
 
 col2.write("# JSON -> XML :")
 
@@ -141,7 +145,7 @@ if object_upl_json is not None:
     date = resp['header']['date']
 
 
-    # #price>total_sum+currency
+    # price>total_sum+currency
     total_sum = resp['header']['price']['total_sum']
     currency = resp['header']['price']['currency']
 
@@ -158,13 +162,13 @@ if object_upl_json is not None:
     transport_price = resp['transportation']['transport_price']
 
 
-
+    # Change of data type as XML needs them as tring not float when writing into the structure
     total_sum_str = str(total_sum)
     price_amount_str = str(price_amount)
     service_price_str = str(service_price)
     transport_price_str = str(transport_price)
 
-
+    # def() for pretty print of the XML structure to see nesting
     def prettify(element, indent='  '):
         queue = [(0, element)]  # (level, element)
         while queue:
@@ -178,6 +182,8 @@ if object_upl_json is not None:
                 element.tail = '\n' + indent * (level-1)  # for parent close
             queue[0:0] = children  # prepend so children come before siblings
 
+
+    # Build of XML structure
     xml_doc = ET.Element("invoice")
     header = ET.SubElement(xml_doc, 'header')
     order_number = ET.SubElement(header, 'order_number').text = order_number
@@ -204,10 +210,11 @@ if object_upl_json is not None:
     size = ET.SubElement(transportation, 'size').text = size
     transport_price = ET.SubElement(transportation, 'transport_price').text = transport_price_str
 
-
+    # Calling the pretty print function
     prettify(xml_doc)
 
     tree = ET.ElementTree(xml_doc)
+
     # xml_declaration=Tru -> generuje XML prolog
     tree.write('Data/Function_4_JSONtoXML_do NOT delete - JSON.xml', encoding='UTF-8', xml_declaration=True)
 

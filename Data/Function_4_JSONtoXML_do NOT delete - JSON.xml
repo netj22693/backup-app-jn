@@ -1,29 +1,29 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <invoice>
   <header>
-    <order_number>14856832710440289535</order_number>
+    <order_number>20361685232023007804</order_number>
     <customer>Jan s.r.o.</customer>
-    <invoice_number>INV-048336</invoice_number>
-    <date>2025-03-24</date>
+    <invoice_number>INV-403290</invoice_number>
+    <date>2025-03-25</date>
     <price>
-      <total_sum>14.0</total_sum>
-      <currency>euro</currency>
+      <total_sum>61.5</total_sum>
+      <currency>Kč</currency>
   </price>
   </header>
   <detail>
-    <category>TV</category>
+    <category>Major Appliances</category>
     <product_name>A22</product_name>
     <price_amount>10.0</price_amount>
     <additional_service>
-      <service>N</service>
-      <service_type>None</service_type>
-      <service_price>0.0</service_price>
+      <service>Y</service>
+      <service_type>insurance</service_type>
+      <service_price>1.5</service_price>
   </additional_service>
   </detail>
   <transportation>
     <transporter>DHL</transporter>
-    <country>Slovakia</country>
-    <size>medium</size>
-    <transport_price>4.0</transport_price>
+    <country>Czech Republic</country>
+    <size>small</size>
+    <transport_price>50.0</transport_price>
   </transportation>
 </invoice>

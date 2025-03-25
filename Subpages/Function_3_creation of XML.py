@@ -7,6 +7,8 @@ import json
 
 
 
+# ================ Functions defined =========================
+
 # Function for pretty print of XML elements
 def prettify(element, indent='  '):
     queue = [(0, element)]  # (level, element)
@@ -43,7 +45,7 @@ now = time.localtime()
 print(now)
 date_input = time.strftime("%Y-%m-%d", now)
 
-# Application Frontend:
+# ================ Application Screen - INPUT Buttons ========================
 st.write("# Delivery details:")
 ''
 
@@ -148,6 +150,7 @@ with st.expander("Transportation", icon = ":material/directions_bus:"):
 ''
 ''
 
+# Conversion between formats -> due to later mapping into message structures
 price_str = str(price)
 price_fl = float(price)
 price_fl = float("{:.2f}".format(price_fl))
@@ -155,7 +158,7 @@ price_fl = float("{:.2f}".format(price_fl))
 
 
 
-# logika pro transport
+# ============ Logic for Transport values based on user inputs ==============
 
 def calculation_transport(city_selb,size_selb,transport_co_selb, currency_selb):   
     # Czech Republic, DHL, small
@@ -290,8 +293,10 @@ def calculation_transport(city_selb,size_selb,transport_co_selb, currency_selb):
 
 calc_transport_price = calculation_transport(city_selb,size_selb,transport_co_selb, currency_selb)
 
-# logika pro additional service
 
+# =============== Logic for additional service (selected by user on screen) =======
+
+# def() for making a string object
 def fun_add_service_1(option):
     
     if option == 'No additional service':
@@ -303,8 +308,10 @@ def fun_add_service_1(option):
     elif option == 'Extended varanty':
         return 'extended varanty'
 
+# translation of what was selected from user input into object using def()
 service_type_fn = fun_add_service_1(add_service_select)
 
+# def() for calculation of predefined costs based on price and add. service from user inputs
 def fun_add_service_2(option, price):
     
     if option == 'No additional service':
@@ -320,10 +327,13 @@ def fun_add_service_2(option, price):
         #extv = str(extv)
         return extv
 
+# creation of objects /change of data types
 service_price_fn = fun_add_service_2(add_service_select, price)
 service_price_fn_str = str(service_price_fn)
 service_price_fl = float(service_price_fn)
 
+
+# def() for transfering user input into field in XML/JSON
 def fun_add_service_3(option):
     
     if option == 'No additional service':
@@ -335,6 +345,8 @@ def fun_add_service_3(option):
 
 service_fn = fun_add_service_3(add_service_select)
 
+# ==================== User screen =================================
+
 # Logic / notification guidence when fullfiled properly
 if customer_input == '' or product_name_inp == '' or category_selb == None or currency_selb == None or price == 0.00 or add_service_select == '' or city_selb == None or transport_co_selb == None or size_selb == None :
     st.warning("One/Some of the inputs still not entered - if Submit button is pushed the application will not work properly. Please check and make sure that you have correctly fullfiled all. Also the application doesn't accept 0.00 as price -> 0.01 is minimum.")
@@ -343,8 +355,7 @@ else:
     st.success("Fulfiled properly")
 
 
-# Clear of inputs
-
+# Clear of inputs - Reset button
 def reset():
     st.session_state["k_customer"] = None
     st.session_state["k_product"] = None
@@ -394,7 +405,9 @@ if st.button(
     # Change of data type
     calc_transport_price_str = str(calc_transport_price)
        
-   
+    
+    # ================ XML and JSON creation =================================
+    # XML structure build
     xml_doc = ET.Element("invoice")
     header = ET.SubElement(xml_doc, 'header')
     order_number = ET.SubElement(header, 'order_number').text = order_num_generated
@@ -420,13 +433,17 @@ if st.button(
     country = ET.SubElement(transportation, 'country').text = city_selb
     size = ET.SubElement(transportation, 'size').text = size_selb
     transport_price = ET.SubElement(transportation, 'transport_price').text = calc_transport_price_str
+
+    # Calling of the pretty print function to put the XML into nice shape (based on nesting)
     prettify(xml_doc)
 
     tree = ET.ElementTree(xml_doc)
+
     # xml_declaration=Tru -> generuje XML prolog
     tree.write('Data/Function_3_do NOT delete.xml', encoding='UTF-8', xml_declaration=True)
 
 
+    # JSON structure build
     data_json = {
     "header" : {
         "order_number" : order_num_generated,
@@ -463,7 +480,7 @@ if st.button(
         outfile.close()
 
 
-
+    # File names creation
     file_name_xml_fstring = f"{invoice_number_generated}.xml"
     file_name_json_fstring = f"{invoice_number_generated}.json"
 
@@ -498,5 +515,5 @@ st.button(
     "Reset",
     use_container_width= True,
     on_click = reset,
-    help = "Clear all text/number inputs from the form and reset this page")
+    help = "Clear all text/number inputs from the form")
 

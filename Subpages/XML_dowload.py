@@ -1,7 +1,8 @@
 import streamlit as st
 import xml.etree.ElementTree as ET
 
-# Firstly - data options/XML structures -> objects
+# ========= Firstly - data options/XML structures -> objects ===============
+
 xml_data_euro = """<?xml version="1.0" encoding="UTF-8"?>
 <invoice>
 	<header>
@@ -572,7 +573,7 @@ xml_empty_template = """<?xml version="1.0" encoding="UTF-8"?>
 	</detail>
 </invoice>
 """
-# Frontend part
+# ======================== Screen part ==================================
 
 st.set_page_config(page_title="XML download")
 st.write("# XML download")

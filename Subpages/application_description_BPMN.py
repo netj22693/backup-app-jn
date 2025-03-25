@@ -24,7 +24,7 @@ st.write("""
 st.write("If match, application displays green success note.")
 st.write("If not match, application displays warrning message and providing correct summary - calculated.")
 ''
-st.write("In BOTH CASES application ALLOWS to continue to data vizualization step.")
+st.write("**In BOTH CASES application ALLOWS to continue to data vizualization step.**")
 
 st.write("-----")
 st.write("##### Data vizualization process:")

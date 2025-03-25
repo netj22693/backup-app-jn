@@ -5,6 +5,7 @@ import plotly.express as px
 import pandas as pd
 import math
 
+# ======== Upload button to trigger the application ========
 
 st.write("# Upload XML:")
 
@@ -84,7 +85,7 @@ if object_from_upload is not None:
     max_value_attribut = max(value_attribute_int)
     
 
-    # extra logic for recognizing whether any extra money for 'extended varanty' or 'insurance' 
+    # Logic for recognizing whether any extra money for 'extended varanty' or 'insurance' 
     varanty = []
     for service_type in root.findall('detail'):
         condition_service_type = service_type.find('additional_service/service_type').text
@@ -109,7 +110,7 @@ if object_from_upload is not None:
     sum_price_insurance = math.fsum(insurance_float)
     
 
-    #Sum of prices - type change string -> float for calculation
+    # Sum of prices - type change string -> float for calculation
     value_price_list_float = list(map(float, value_price_list)) 
     sum_price = math.fsum(value_price_list_float)
     
@@ -117,6 +118,11 @@ if object_from_upload is not None:
     value_total_sum_fl = float(value_total_sum)
 
 
+
+
+    # ======= Application Function for validation of detail line sum matches header values============
+
+    # <total_sum>
     result_validation = []
     def data_validation(value_total_sum, sum_price):
         result = value_total_sum - sum_price
@@ -140,7 +146,7 @@ if object_from_upload is not None:
     result_obj_outcome = result_validation[0]
     
 
-# Data validation - total_sum_services = value_total_sum_services Y/N 
+    # Data validation - <total_sum_services> = value_total_sum_services Y/N 
     
     result_validation_services = []
     def data_validation_services(value_total_sum_services_fl, sum_price_varanty , sum_price_insurance):
@@ -164,7 +170,7 @@ if object_from_upload is not None:
     result_obj_outcome_services = result_validation_services[0]
     
 
-    # Button to show values
+    # ========= Button to show values parsed and calculated ======================
 
     value_to_paid = value_total_sum + sum_price_varanty + sum_price_insurance
 
@@ -196,6 +202,9 @@ if object_from_upload is not None:
     ''
     st.write("###### Interactive table and charts:")
 
+
+    # ========= Data Visualization ====================
+
     # Transformation of Data to table -> not editable
     data_table = pd.DataFrame({
         "Order" : value_attribut,
@@ -206,6 +215,7 @@ if object_from_upload is not None:
 
     unique_value = data_table['Category'].unique()
 
+    # Multiselect filter
     filter_multiselect = st.multiselect(
         "Select category",
         unique_value,
@@ -256,7 +266,7 @@ if object_from_upload is not None:
 
     st.plotly_chart(fig_pie)
     
-
+    # Bar chart
     fig_bar = px.bar(
         filtered_data, 
         x="Product",
@@ -266,8 +276,8 @@ if object_from_upload is not None:
 
     st.plotly_chart(fig_bar)
 
-    # final outcome for print - using server time
 
+    # Final outcome for print - using SERVER time
     st.write("------")
     st.write("#### Download of .txt:")
     st.write('''A short summary of the original XML invoice, including result of validation, date and some of the parsed data.''')
@@ -275,7 +285,7 @@ if object_from_upload is not None:
     st.image("Pictures/V2_pictures/txt outcome_3.png")
 
 
-    # backend part
+    # Time 
     time_objects = time.localtime()
     year, month, day, hour, minute, second, weekday, yearday, daylight = time_objects  
 
@@ -293,12 +303,13 @@ if object_from_upload is not None:
     ''
     ''
     ''
-    if st.download_button("Download", data= final_outcome, file_name= file_name_fstring, icon = ":material/download:", use_container_width=True):
+    if st.download_button(
+        "Download",
+        data= final_outcome,
+        file_name= file_name_fstring,
+        icon = ":material/download:",
+        use_container_width=True):
             
-        # file = open("print.txt","w")
-
-        # file.write(final_outcome)
-        # file.close()
         st.info("download will start in few seconds")
 
     st.write("------")

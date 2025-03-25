@@ -182,7 +182,7 @@ st.write("###### In context of data parsing:")
 ''
 st.write('''
 The application does the following, when XML uploaded:
-- Parsing of data from all the elements
+- Parsing of data from all the elements (except <service>)
 - Calculation and validation of the data (if header matches detail -> visible in the application)
 -  Take the parsed data to get the relevant information visible and visualized in the application
 '''
@@ -191,19 +191,19 @@ The application does the following, when XML uploaded:
 st.image("Pictures/V2_pictures/Principle in context of parsing4.png")
 ''
 st.write('''
-- <customer> - parsed as is ; data visualization
-- <invoice_number> - parsed as is ; data visualization
-- <date> - parsed as is - YYYY-MM-DD ; data visualization
-- <total_sum> - parsed as is ; for validation & data visualization
-- <total_sum_services> - parsed as is ; for validation & data visualization 
-- <currency> - parsed as is ; reflects the currency in the application - euro|US dollar|Kč
-- attribute id= - parsed as is ; for purposes of no. of products and visualization 
-- <category> - parsed as is ; for purposes of filtering in application - PC|TV|Gaming|Mobile phones|Tablets|Major Appliances|Households
-- <product_name> - parsed as is ; for visualization
-- <price_amount> - parsed as is ; for validation & data visualization
-- <service> - not parsed 
-- <service_type> - parsed as is ; important for logic of calculation which application does - None|extended varanty|insurance
-- <service_price> - parsed as is ; important for logic of calculation which application does + for validation & data visualization
+- **<customer>** - parsed as is ; data visualization
+- **<invoice_number>** - parsed as is ; data visualization
+- **<date>** - parsed as is - YYYY-MM-DD ; data visualization
+- **<total_sum>** - parsed as is ; for validation & data visualization
+- **<total_sum_services>** - parsed as is ; for validation & data visualization 
+- **<currency>** - parsed as is ; reflects the currency in the application - euro|US dollar|Kč
+- **attribute id=** - parsed as is ; for purposes of no. of products and visualization 
+- **<category>** - parsed as is ; for purposes of filtering in application - PC|TV|Gaming|Mobile phones|Tablets|Major Appliances|Households
+- **<product_name>** - parsed as is ; for visualization
+- **<price_amount>** - parsed as is ; for validation & data visualization
+- **<service>** - not parsed 
+- **<service_type>** - parsed as is ; important for logic of calculation which application does - None|extended varanty|insurance
+- **<service_price>** - parsed as is ; important for logic of calculation which application does + for validation & data visualization
 '''
 )
 ''  
@@ -211,15 +211,15 @@ st.write("###### Rules in the application from XML point of view:")
 ''
 st.write('''
 Validation:
-- <total_sum> rule: sum all <price_amount> values from <detail> and compare with <total_sum>
-- <total_sum_services> rule: sum all <service_price> values from <detail> and compare with <total_sum_services>
+- **<total_sum> rule:** sum all <price_amount> values from <detail> and compare with <total_sum>
+- **<total_sum_services> rule:** sum all <service_price> values from <detail> and compare with <total_sum_services>
 '''
 )
 ''
 st.write('''
 Additional rules:
-- <service_typ> rule - insurance: sum all <service_price> values from <detail> when 'insurance' in <service_type>
-- <service_typ> rule - extended varanty: sum all <service_price> values from <detail> when 'extended varanty' in <service_type>
+- **<service_typ> rule - insurance:** sum all <service_price> values from <detail> when 'insurance' in <service_type>
+- **<service_typ> rule - extended varanty:** sum all <service_price> values from <detail> when 'extended varanty' in <service_type>
 '''
 )
 st.write("------")
