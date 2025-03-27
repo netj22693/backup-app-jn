@@ -628,10 +628,10 @@ if st.download_button("Download",data = xml_data_koruna  , file_name="XML_koruna
 st.write("------")
 
 # Option 3
-st.write("#### 3) redefind file - sum does NOT match - currency: US dollar - 15 detail lines")
+st.write("#### 3) Predefind file - sum does NOT match - currency: US dollar - 15 detail lines")
 st.write(
     '''
-Scenario where <total_sum> and <total_sum_services> values do NOT match the sum of <price_amount> and sum of <service_price> in detail elements. Validation in application will be passed with WARNING notification. Currency: US dollar
+Scenario where <total_sum> and <total_sum_services> values do **NOT** match the sum of <price_amount> and sum of <service_price> in detail elements. Validation in application will be passed with WARNING notification. Currency: US dollar
 '''
 )
 st.image("Pictures/V2_pictures/XML download - scenario 3.png")

@@ -7,7 +7,7 @@ st.write("-----")
 st.write("#### Function 3 process flow:")
 ''
 ''
-st.image("Pictures/Function_3/Function_3_BPMN process_3.png")
+st.image("Pictures/Function_3/Function_3_BPMN process_4.png")
 ''
 '''
 Inputs to be entered by user and submited:
@@ -22,7 +22,7 @@ st.write("-----")
 st.write("##### Application calculation process:")
 ''
 ''
-st.image("Pictures/Function_3/Function_3_BPMN_calculation process.png")
+st.image("Pictures/Function_3/Function_3_BPMN_calculation process_2.png")
 ''
 '''
 The calculation happens based on predefined inputs/costs which are part of application rules in the code. If the BPMN diagram would be transfared into the "application look" then it would be like this:
