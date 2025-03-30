@@ -4,7 +4,7 @@ import streamlit as st
 st.write("# Welcome!")
 ''
 st.write(
-    "Purpose of this application is to play with XML data. It offers **4 functions**:"
+    "Purpose of this application is to play with XML data. The application has **4 functions**:"
     )
 ''
 st.write("""
@@ -13,7 +13,7 @@ st.write("""
     """)
 ''
 st.write("""
-    - **Function 3:** Creation of XML (slightly different one than used in F1 and F2) or JSON through the application screen (manual inputs)
+    - **Function 3:** Creation of XML (slightly different one than used in F1 and F2) or JSON, through the application screen (manual inputs)
     - **Function 4:** Mapping/change of file format XML -> JSON or JSON -> XML 
     """)
 ''
