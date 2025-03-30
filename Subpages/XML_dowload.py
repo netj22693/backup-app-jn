@@ -696,6 +696,75 @@ st.write(
 - *XSD - can be downloaded from the page Functions 1 and 2 "Description - XSD, XML Schema"*
 '''
 ''
+with st.expander(
+	"How to pair XML with XSD",
+	icon= ":material/help_outline:"
+	):
+    
+	st.write("1) Download XSD Schema from this application:")
+	''
+	st.page_link(
+		label = "Go to XSD page",
+		page="Subpages/XML_XSD_schema.py",
+		help="The button will redirect to the relevant page within this app for download.",
+		use_container_width=True,
+		icon=":material/launch:"
+
+		) 
+	''
+	''
+	st.write("2) At the **BOTTOM** of the page - download button .xsd format -> XSD will be downloaded")
+	''
+	st.image("Pictures/V2_pictures/XSD download button.png", width=130)
+	''
+	''
+	st.write("3) Find location where the XSD is located on your device (probably in Downloads folder)")
+	''
+	''
+	st.write("4) Download XML Template from this section 4), just below :)")
+	''
+	''
+	st.write("5) Open the XML Template file in your data editor (Notepad++ is for free)")
+	''
+	st.image("Pictures/V2_pictures/Altova notepad.png")
+	''
+	''
+	st.write("6) Extend the XML root element <invoice> by the following:")
+	''
+	st.image("Pictures/V2_pictures/root extended.png")
+	''
+	st.write('''
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:noNamespaceSchemaLocation="*location of your XSD file*">
+		'''
+	)
+	''
+	''
+	st.write("7) **XML should be paired with XSD now**")
+	''
+	''
+	st.write("8) Depending on data editor tool you use - you can work with the validation and control that you follow predefined rules in the XSD")
+	''
+	st.image("Pictures/V2_pictures/validation xsd final_2.png")
+	''
+	''
+	st.write("9) Once no error detected in your XML -> you can upload it in the app in Function 2 section")
+	''
+	st.image("Pictures/V2_pictures/no error.png")
+	''
+	''
+	st.page_link(
+		label = "Go to Function 2 - 2. XML - Parsing, Validation, Vizualization",
+		page="Subpages/XML_parsing_to_txt_outcome.py",
+		help="The button will redirect to the relevant page within this app.",
+		use_container_width=True,
+		icon=":material/launch:"
+		) 
+	''
+	''
+
+      
+
 ''
 st.image("Pictures/V2_pictures/XML download - scenario 4.png")
 ''
@@ -706,4 +775,24 @@ with st.expander("Show XML structure - code"):
 if st.download_button("Download",data = xml_empty_template , file_name="XML_empty_template.xml", icon = ":material/download:"):
     st.info("Download will happen in few seconds")
 
-st.write("------")
+
+
+# ===== Page navigation at the bottom ======
+st.write("-------")
+''
+''
+st.page_link(
+	label = "Previous page",
+	page="Subpages/XML_XSD_schema.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+	icon=":material/west:"
+	) 
+
+st.page_link(
+    label = "Go to: Function 2",
+	page="Subpages/XML_parsing_to_txt_outcome.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+    icon=":material/play_circle:",
+	) 

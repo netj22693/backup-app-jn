@@ -1,17 +1,17 @@
 {
     "header": {
-        "order_number": "67730049582485349509",
-        "customer": "Jan s.r.o.",
-        "invoice_number": "INV-736731",
+        "order_number": "31250631549266454325",
+        "customer": "vcvc",
+        "invoice_number": "INV-569084",
         "date": "2025-03-30",
         "price": {
-            "total_sum": 17.0,
-            "currency": "euro"
+            "total_sum": 14.48,
+            "currency": "US dollar"
         }
     },
     "detail": {
         "category": "PC",
-        "product_name": "A22",
+        "product_name": "vccx",
         "price_amount": 10.0,
         "additional_service": {
             "service": "Y",
@@ -21,8 +21,8 @@
     },
     "transportation": {
         "transporter": "DHL",
-        "country": "Slovakia",
-        "size": "large",
-        "transport_price": 6.0
+        "country": "Czech Republic",
+        "size": "medium",
+        "transport_price": 3.48
     }
 }

@@ -13,7 +13,13 @@ xsd_structure = '''<?xml version="1.0" encoding="UTF-8"?>
 				<xs:element name="header">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="customer" type="xs:string"/>
+							<xs:element name="customer">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:minLength value="1"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
 							<xs:element name="invoice_number">
 								<xs:simpleType>
 									<xs:restriction base="xs:string">
@@ -123,7 +129,7 @@ xsd_structure = '''<?xml version="1.0" encoding="UTF-8"?>
 st.write("# XSD, XML Schema")
 st.write(
     '''
-Description of XML structure/XML Schema with which this application works. There is a download button at the end of this page to download XML Schema in both .txt and .xsd format.
+Description of XML structure/XML Schema with which this application works. There is a **download button at the end of this page** to download XML Schema in both .txt and .xsd format.
 
 '''
 )
@@ -146,10 +152,10 @@ st.write("*For better visibility - put cursor on the picture and click on the ic
 st.write("###### Header:")
 ''
 ''  
-st.image("Pictures/V2_pictures/header properties.png")
+st.image("Pictures/V2_pictures/header properties_2.png")
 ''
 ''  
-st.image("Pictures/V2_pictures/xsd_header.png")
+st.image("Pictures/V2_pictures/xsd_header_2.png")
 ''
 ''  
 st.write("###### Detail:")
@@ -237,4 +243,23 @@ st.write("#### XSD - download as .xsd:")
 if st.download_button("Download",data = xsd_structure  , file_name="XML Schema.xsd",icon = ":material/download:"):
     st.info("Download will happen in few seconds")
 
-st.write("------")
+''
+''
+# ===== Page navigation at the bottom ======
+st.write("-------")
+st.page_link(
+	label = "Previous page",
+	page="Subpages/application_description_archimate.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+	icon=":material/west:"
+	) 
+
+st.page_link(
+    label = "Go to: Function 1",
+	page="Subpages/XML_dowload.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+    icon=":material/play_circle:",
+	) 
+

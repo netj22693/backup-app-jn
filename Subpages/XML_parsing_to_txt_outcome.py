@@ -312,6 +312,7 @@ if object_from_upload is not None:
             
         st.info("download will start in few seconds")
 
-    st.write("------")
+st.write("-------")
+
 
 

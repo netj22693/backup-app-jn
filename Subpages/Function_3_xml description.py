@@ -261,4 +261,24 @@ st.write("#### XSD - download as .xsd:")
 if st.download_button("Download",data = xsd_as_string  , file_name="XML Schema for function 3.xsd", icon = ":material/download:"):
     st.info("Download will happen in few seconds")
 
-st.write("------")
+# ===== Page navigation at the bottom ======
+''
+''
+st.write("-------")
+st.page_link(
+	label = "Previous page",
+	page="Subpages/Function_3_Archimate.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+	icon=":material/west:"
+	) 
+
+st.page_link(
+    label = "Next page",
+	page="Subpages/Function_3 and 4_json description.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+    icon=":material/east:",
+	) 
+
+

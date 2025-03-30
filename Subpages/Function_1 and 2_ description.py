@@ -28,3 +28,18 @@ st.write("""
     """
     )
 
+# ===== Page navigation at the bottom ======
+''
+''
+''
+''
+st.write("-------")
+
+st.page_link(
+    label = "Next page",
+	page="Subpages/application_description_BPMN.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+    icon=":material/east:",
+	) 
+
