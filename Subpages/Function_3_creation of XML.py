@@ -352,7 +352,7 @@ if customer_input == '' or product_name_inp == '' or category_selb == None or cu
     st.warning("One/Some of the inputs still not entered - if Submit button is pushed the application will not work properly. Please check and make sure that you have correctly fullfiled all. Also the application doesn't accept 0.00 as price -> 0.01 is minimum.")
 
 else:
-    st.success("Fulfiled properly")
+    st.success("Fulfiled properly - Submit button can be used.")
 
 
 # Clear of inputs - Reset button

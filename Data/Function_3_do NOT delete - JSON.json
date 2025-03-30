@@ -1,28 +1,28 @@
 {
     "header": {
-        "order_number": "20361685232023007804",
+        "order_number": "07372788138176215662",
         "customer": "Jan s.r.o.",
-        "invoice_number": "INV-403290",
-        "date": "2025-03-25",
+        "invoice_number": "INV-115361",
+        "date": "2025-03-30",
         "price": {
-            "total_sum": 61.5,
-            "currency": "K\u010d"
+            "total_sum": 12.0,
+            "currency": "euro"
         }
     },
     "detail": {
-        "category": "Major Appliances",
+        "category": "TV",
         "product_name": "A22",
         "price_amount": 10.0,
         "additional_service": {
-            "service": "Y",
-            "service_type": "insurance",
-            "service_price": 1.5
+            "service": "N",
+            "service_type": "None",
+            "service_price": 0.0
         }
     },
     "transportation": {
         "transporter": "DHL",
         "country": "Czech Republic",
         "size": "small",
-        "transport_price": 50.0
+        "transport_price": 2.0
     }
 }
