@@ -373,6 +373,7 @@ def reset():
 if st.button(
     "Submit",
     use_container_width=True,
+    icon = ":material/apps:",
     help = "Submit runs the application -> provide calculation -> summary of the invoice and option of generationg either XML or JSON file"
     ):
 

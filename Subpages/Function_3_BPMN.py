@@ -7,7 +7,7 @@ st.write("-----")
 st.write("#### Function 3 process flow:")
 ''
 ''
-st.image("Pictures/Function_3/Function_3_BPMN process_4.png")
+st.image("Pictures/Function_3/Function_3_BPMN process_5.png")
 ''
 '''
 Inputs to be entered by user and submited:
@@ -16,7 +16,7 @@ Inputs to be entered by user and submited:
 st.image("Pictures/Function_3/delivery details.png", width = 200)
 ''
 '''
-Then application/function makes the calculation. In case of all inputs are okay, user can push download button for generating of invoice either in XML format or JSON. In case that user wants to change something in the original inputs, he can rewrite/change the inputs and then push Submit the button again...
+Then application/function makes the calculation. In case of all inputs are okay, user can push download button for generating of invoice either in XML format or JSON. In case that user wants to change something in the original inputs, he can rewrite/change the inputs and then push Submit button again...
 '''
 st.write("-----")
 st.write("##### Application calculation process:")
