@@ -623,7 +623,7 @@ st.write("------")
 
 
 # Option 2
-st.write("#### 2) Predefind file")
+st.write("#### 2) Predefined file:")
 ''
 st.write(
     '''
@@ -651,7 +651,7 @@ if st.download_button("Download",data = xml_data_koruna  , file_name="XML_koruna
 st.write("------")
 
 # Option 3
-st.write("#### 3) Predefind file")
+st.write("#### 3) Predefined file:")
 ''
 st.write(
     '''
@@ -680,7 +680,7 @@ st.write("------")
 
 
 # Option 4
-st.write("#### 4) XML Template")
+st.write("#### 4) XML Template:")
 ''
 st.write(
     '''
