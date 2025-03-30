@@ -165,32 +165,33 @@ Description of JSON structure with which these Functions 3 and 4 work. There is 
 st.write("----")
 st.write("#### Diagram:")
 '''
-Basic principle: exactly as the XML also the JSON is split into 3 main segments - header, detail and transport. So it can be said that the JSON structure has identical layout as the XML. Of course using JSON principles and rules. 
+Basic principle: exactly as the XML also the JSON is split into 3 main segments - header, detail and transportation. So it can be said that the JSON structure has identical layout as the XML. Of course using JSON principles and rules. 
 '''
 ''    
 
-st.image("Pictures/Function_3/Function_3_json basic.png")
+st.image("Pictures/Function_3/Function_3_json basic_2.png")
 
 st.write("###### Header:")
 '''
 Header element includes nested elements providing key information/summary about an order which is created through the Function 3 in this app. 
 '''
 
-st.image("Pictures/Function_3/Function_3_json header.png")
+st.image("Pictures/Function_3/Function_3_json header_3.png")
 ''
 ''
 st.write("###### Detail:")
 '''
 Detail element includes also nested elements. They are used for information about the product which was purchased and whether any additional service for the product was bought or not (Insurance, Extended varanty).
 '''
-st.image("Pictures/Function_3/Function_3_json detail.png")
+st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
+st.image("Pictures/Function_3/Function_3_json detail_10.png")
 ''
 ''
 st.write("###### Transportation:")
 '''
 Different element for this Function 3 (in comparison with Function 1 and 2 in this app) is element transportation. Also few nested elements which have information about transportation/delivery. 
 '''
-st.image("Pictures/Function_3/Function_3_json transportation.png")
+st.image("Pictures/Function_3/Function_3_json transportation_2.png")
 ''
 ''
 with st.expander("Show JSON structure - code", icon= ":material/code:"):

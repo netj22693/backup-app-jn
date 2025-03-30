@@ -5,7 +5,7 @@ st.set_page_config(page_title="XSD, XML Schema")
 st.write("# XSD, XML Schema")
 st.write(
     '''
-Description of XML structure/XML Schema with which this Functions 3 and 4 work. There is a download button at the end of this page to download XML Schema in both .txt and .xsd format.
+Description of XML structure/XML Schema with which these Functions 3 and 4 work. There is a download button at the end of this page to download XML Schema in both .txt and .xsd formats.
 
 '''
 )
@@ -13,7 +13,7 @@ Description of XML structure/XML Schema with which this Functions 3 and 4 work. 
 st.write("----")
 st.write("#### Diagram:")
 '''
-Basic principle: The XML is split into 3 main segments - header, detail and transport. 
+Basic principle: The XML is split into 3 main segments - header, detail and transportation. 
 '''
 ''    
 st.image("Pictures/Function_3/XSD main elements.png")
@@ -48,19 +48,19 @@ st.write("----")
 
 st.write("#### Principle of the XML in context of the Function 3:")
 '''
-In the application user provides key inputs about the product through input fields. Based on the inputs, function culculates and provides the remaining details (about your order) necessary/to fulfill this predefined xml.  
+In the application user provides key inputs about the product through input fields. Based on the inputs, the Function 3 calculates and provides the remaining details (about your order) to fulfill this predefined xml which the application produces.  
 '''
 '' 
 st.image("Pictures/Function_3/XML produced.png")
 '' 
 '''
-Some of the fields/options are predefined and then application makes the calculation based on what you select from drop down lists. More can be seen when you use the function itself :).
+Some of the fields/options are predefined and then the application makes the calculation based on what you select from drop down lists. More can be seen when you use the Function 3 itself :).
 '''
 '' 
 st.image("Pictures/Function_3/delivery details.png", width = 200)
 '' 
 '''
-Also the predefined options in drop-down lists are set as xs:restriction in the XSD -> just these values are allowed for the XML.
+Also, the predefined options in drop-down lists are set as xs:restriction in the XSD -> just these values are allowed for the XML.
 '''
 '' 
 st.image("Pictures/Function_3/XSD dropdowns.png")
