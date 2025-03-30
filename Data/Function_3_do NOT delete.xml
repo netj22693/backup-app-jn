@@ -1,29 +1,29 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <invoice>
   <header>
-    <order_number>07372788138176215662</order_number>
+    <order_number>67730049582485349509</order_number>
     <customer>Jan s.r.o.</customer>
-    <invoice_number>INV-115361</invoice_number>
+    <invoice_number>INV-736731</invoice_number>
     <date>2025-03-30</date>
     <price>
-      <total_sum>12.0</total_sum>
+      <total_sum>17.0</total_sum>
       <currency>euro</currency>
   </price>
   </header>
   <detail>
-    <category>TV</category>
+    <category>PC</category>
     <product_name>A22</product_name>
     <price_amount>10.0</price_amount>
     <additional_service>
-      <service>N</service>
-      <service_type>None</service_type>
-      <service_price>0.0</service_price>
+      <service>Y</service>
+      <service_type>extended warranty</service_type>
+      <service_price>1.0</service_price>
   </additional_service>
   </detail>
   <transportation>
     <transporter>DHL</transporter>
-    <country>Czech Republic</country>
-    <size>small</size>
-    <transport_price>2.0</transport_price>
+    <country>Slovakia</country>
+    <size>large</size>
+    <transport_price>6.0</transport_price>
   </transportation>
 </invoice>

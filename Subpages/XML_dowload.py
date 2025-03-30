@@ -21,7 +21,7 @@ xml_data_euro = """<?xml version="1.0" encoding="UTF-8"?>
 		<price_amount>240.00</price_amount>
 		<additional_service>
 			<service>Y</service>
-			<service_type>extended varanty</service_type>
+			<service_type>extended warranty</service_type>
 			<service_price>9.00</service_price>
 		</additional_service>
 	</detail>
@@ -121,7 +121,7 @@ xml_data_euro = """<?xml version="1.0" encoding="UTF-8"?>
 		<price_amount>99.00</price_amount>
 		<additional_service>
 			<service>Y</service>
-			<service_type>extended varanty</service_type>
+			<service_type>extended warranty</service_type>
 			<service_price>5.00</service_price>
 		</additional_service>
 	</detail>
@@ -187,7 +187,7 @@ xml_data_koruna = """<?xml version="1.0" encoding="UTF-8"?>
 		<price_amount>24000.00</price_amount>
 		<additional_service>
 			<service>Y</service>
-			<service_type>extended varanty</service_type>
+			<service_type>extended warranty</service_type>
 			<service_price>990.00</service_price>
 		</additional_service>
 	</detail>
@@ -287,7 +287,7 @@ xml_data_koruna = """<?xml version="1.0" encoding="UTF-8"?>
 		<price_amount>9990.00</price_amount>
 		<additional_service>
 			<service>Y</service>
-			<service_type>extended varanty</service_type>
+			<service_type>extended warranty</service_type>
 			<service_price>590.00</service_price>
 		</additional_service>
 	</detail>
@@ -322,7 +322,7 @@ xml_data_usdollar = """<?xml version="1.0" encoding="UTF-8"?>
 		<price_amount>240.00</price_amount>
 		<additional_service>
 			<service>Y</service>
-			<service_type>extended varanty</service_type>
+			<service_type>extended warranty</service_type>
 			<service_price>9.00</service_price>
 		</additional_service>
 	</detail>
@@ -422,7 +422,7 @@ xml_data_usdollar = """<?xml version="1.0" encoding="UTF-8"?>
 		<price_amount>99.00</price_amount>
 		<additional_service>
 			<service>Y</service>
-			<service_type>extended varanty</service_type>
+			<service_type>extended warranty</service_type>
 			<service_price>5.00</service_price>
 		</additional_service>
 	</detail>
@@ -577,13 +577,14 @@ xml_empty_template = """<?xml version="1.0" encoding="UTF-8"?>
 
 st.set_page_config(page_title="XML download")
 st.write("# XML download")
+''
 st.write(
     '''
 Here you can download XMLs which can be used for parsing:
 
-1) Predefind file - sum matches - currency: euro - 15 detail lines
-2) Predefind file - sum matches - currency: koruna - 12 detail lines
-3) Predefind file - sum does not match - currency: US dollar - 15 detail lines
+1) Predefind file - sum matches - currency: euro - € - 15 detail lines
+2) Predefind file - sum matches - currency: koruna - Kč - 12 detail lines
+3) Predefind file - sum does not match - currency: US dollar - $ - 15 detail lines
 4) XML Template
 
 *The number of detail lines is basically not limited as defined in the XSD / XML Schema -> no need to stick 12 or 15 lines :)
@@ -593,32 +594,54 @@ Here you can download XMLs which can be used for parsing:
 st.write("------")
 
 # Option 1
-st.write("#### 1) Predefined file - sum matches - currency: euro - 15 detail lines")
+st.write("#### 1) Predefined file:")
+''
 st.write(
     '''
-Scenario where <total_sum> and <total_sum_services> values match the sum of <price_amount> and sum of <service_price> in detail elements. Validation in application will be passed. Currency: euro
+- Currency: euro - €
+- Lines in detail segment: 15
+- <total_sum> value matches sum of <price_amount> values in detail segment
+- <total_sum_services> matches sum of <service_price> in detail segment
+''')
+''
+''
 '''
-)
-st.image("Pictures/V2_pictures/XML download - scenario 1.png")
-
+-> Validation step in the application will be passed
+'''
+''
+''
+st.image("Pictures/V2_pictures/XML download - scenario 1_3.png")
+''
+''
 with st.expander("Show XML structure - code"):
 	st.code(xml_data_euro, language= 'xml', line_numbers=True, height=700)
 
 if st.download_button("Download",data = xml_data_euro  , file_name="XML_euro_sum matches.xml", icon = ":material/download:"):
     st.info("Download will happen in few seconds")
-
+''
 st.write("------")
 
 
 # Option 2
-st.write("#### 2) Predefind file - sum matches - currency: Koruna - 12 detail lines")
+st.write("#### 2) Predefind file")
+''
 st.write(
     '''
-Scenario where <total_sum> and <total_sum_services> values match the sum of <price_amount> and sum of <service_price> in detail elements. Validation in application will be passed. Currency: Kč Koruna
+- Currency: Koruna - Kč
+- Lines in detail segment: 12
+- <total_sum> value matches sum of <price_amount> values in detail segment
+- <total_sum_services> matches sum of <service_price> in detail segment
+''')
+''
+''
 '''
-)
-st.image("Pictures/V2_pictures/XML download - scenario 2.png")
-
+-> Validation step in the application will be passed
+'''
+''
+''
+st.image("Pictures/V2_pictures/XML download - scenario 2_2.png")
+''
+''
 with st.expander("Show XML structure - code"):
 	st.code(xml_data_koruna, language= 'xml', line_numbers=True, height=700)
      
@@ -628,14 +651,25 @@ if st.download_button("Download",data = xml_data_koruna  , file_name="XML_koruna
 st.write("------")
 
 # Option 3
-st.write("#### 3) Predefind file - sum does NOT match - currency: US dollar - 15 detail lines")
+st.write("#### 3) Predefind file")
+''
 st.write(
     '''
-Scenario where <total_sum> and <total_sum_services> values do **NOT** match the sum of <price_amount> and sum of <service_price> in detail elements. Validation in application will be passed with WARNING notification. Currency: US dollar
+- Currency: US dollar - $
+- Lines in detail segment: 15
+- <total_sum> value does **NOT** match sum of <price_amount> values in detail segment
+- <total_sum_services> does **NOT** match sum of <service_price> in detail segment
+''')
+''
+''
 '''
-)
-st.image("Pictures/V2_pictures/XML download - scenario 3.png")
-
+-> Validation step in the application will show this inconsistency of numbers
+'''
+''
+''
+st.image("Pictures/V2_pictures/XML download - scenario 3_2.png")
+''
+''
 with st.expander("Show XML structure - code"):
 	st.code(xml_data_usdollar, language= 'xml', line_numbers=True, height=700)
       
@@ -647,14 +681,25 @@ st.write("------")
 
 # Option 4
 st.write("#### 4) XML Template")
+''
 st.write(
     '''
-Empty template. When data being fulfilled it is recommened to pair XML with XSD (can be downloaded in the "Description - XSD, XML Schema" page). To make sure when uploading to this application, the XML will be valid to get processed. 
+- Empty template
+- Lines in detail segment: 12 
+- Data to be fulfilled manually
 '''
 )
-
+'''
+- **(!) It is recommended: Once the XML is fullfiled, pair it and validate it against XSD. It will help to make sure that the XML will be processed throught the application and will not fail due to data quality issue**
+'''
+'''
+- *XSD - can be downloaded from the page Functions 1 and 2 "Description - XSD, XML Schema"*
+'''
+''
+''
 st.image("Pictures/V2_pictures/XML download - scenario 4.png")
-
+''
+''
 with st.expander("Show XML structure - code"):
 	st.code(xml_empty_template, language= 'xml', line_numbers=True, height=700)
       

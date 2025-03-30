@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <invoice>
   <header>
-    <order_number>20361685232023007804</order_number>
+    <order_number>92441715309591533323</order_number>
     <customer>Jan s.r.o.</customer>
-    <invoice_number>INV-403290</invoice_number>
-    <date>2025-03-25</date>
+    <invoice_number>INV-512216</invoice_number>
+    <date>2025-03-30</date>
     <price>
-      <total_sum>61.5</total_sum>
-      <currency>Kč</currency>
+      <total_sum>13.0</total_sum>
+      <currency>euro</currency>
   </price>
   </header>
   <detail>
@@ -16,14 +16,14 @@
     <price_amount>10.0</price_amount>
     <additional_service>
       <service>Y</service>
-      <service_type>insurance</service_type>
-      <service_price>1.5</service_price>
+      <service_type>extended warranty</service_type>
+      <service_price>1.0</service_price>
   </additional_service>
   </detail>
   <transportation>
     <transporter>DHL</transporter>
     <country>Czech Republic</country>
     <size>small</size>
-    <transport_price>50.0</transport_price>
+    <transport_price>2.0</transport_price>
   </transportation>
 </invoice>

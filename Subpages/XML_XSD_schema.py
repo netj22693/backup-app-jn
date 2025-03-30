@@ -95,7 +95,7 @@ xsd_structure = '''<?xml version="1.0" encoding="UTF-8"?>
 										<xs:element name="service_type" default="None">
 											<xs:simpleType>
 												<xs:restriction base="xs:string">
-													<xs:pattern value="None|extended varanty|insurance"/>
+													<xs:pattern value="None|extended warranty|insurance"/>
 												</xs:restriction>
 											</xs:simpleType>
 										</xs:element>
@@ -155,10 +155,10 @@ st.image("Pictures/V2_pictures/xsd_header.png")
 st.write("###### Detail:")
 ''
 ''  
-st.image("Pictures/V2_pictures/detail properties.png")
+st.image("Pictures/V2_pictures/detail properties_2.png")
 ''
 ''  
-st.image("Pictures/V2_pictures/xsd_detail.png")
+st.image("Pictures/V2_pictures/xsd_detail_2.png")
 ''
 ''
 with st.expander("Show XSD structure - code", icon= ":material/code:"):
@@ -169,7 +169,7 @@ st.write("----")
 st.write("#### Principle of the XML:")
 ''
 ''  
-st.image("Pictures/V2_pictures/Principle.png")
+st.image("Pictures/V2_pictures/Principle_3.png")
 ''
 ''  
 st.write('''
@@ -188,7 +188,7 @@ The application does the following, when XML uploaded:
 '''
 )
 ''
-st.image("Pictures/V2_pictures/Principle in context of parsing4.png")
+st.image("Pictures/V2_pictures/Principle in context of parsing8.png")
 ''
 st.write('''
 - **<customer>** - parsed as is ; data visualization
@@ -197,12 +197,12 @@ st.write('''
 - **<total_sum>** - parsed as is ; for validation & data visualization
 - **<total_sum_services>** - parsed as is ; for validation & data visualization 
 - **<currency>** - parsed as is ; reflects the currency in the application - euro|US dollar|Kč
-- **attribute id=** - parsed as is ; for purposes of no. of products and visualization 
+- attribute **id=** - parsed as is ; for purposes of no. of products and visualization 
 - **<category>** - parsed as is ; for purposes of filtering in application - PC|TV|Gaming|Mobile phones|Tablets|Major Appliances|Households
 - **<product_name>** - parsed as is ; for visualization
 - **<price_amount>** - parsed as is ; for validation & data visualization
 - **<service>** - not parsed 
-- **<service_type>** - parsed as is ; important for logic of calculation which application does - None|extended varanty|insurance
+- **<service_type>** - parsed as is ; important for logic of calculation which application does - None|extended warranty|insurance
 - **<service_price>** - parsed as is ; important for logic of calculation which application does + for validation & data visualization
 '''
 )
@@ -219,7 +219,7 @@ Validation:
 st.write('''
 Additional rules:
 - **<service_typ> rule - insurance:** sum all <service_price> values from <detail> when 'insurance' in <service_type>
-- **<service_typ> rule - extended varanty:** sum all <service_price> values from <detail> when 'extended varanty' in <service_type>
+- **<service_typ> rule - extended warranty:** sum all <service_price> values from <detail> when 'extended warranty' in <service_type>
 '''
 )
 st.write("------")

@@ -28,13 +28,13 @@ st.image("Pictures/Function_3/Function_3_BPMN_calculation process_2.png")
 The calculation happens based on predefined inputs/costs which are part of application rules in the code. If the BPMN diagram would be transfared into the "application look" then it would be like this:
 '''
 ''
-st.image("Pictures/Function_3/Function_3_BPMN_calculation process_tables.png")
+st.image("Pictures/Function_3/Function_3_BPMN_calculation process_tables_2.png")
 ''
 '''
 The predefined values for calculations are:
 
  - Additional service/extra costs - Insurance - 15% from product price
- - Additional service/extra costs - Extended varanty - 10% from product price
+ - Additional service/extra costs - Extended warranty - 10% from product price
 
  - And then specific costs for transport depending on Country, Transporting Company, Size of package
 '''

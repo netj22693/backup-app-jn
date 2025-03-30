@@ -1,28 +1,28 @@
 {
     "header": {
-        "order_number": "07372788138176215662",
+        "order_number": "67730049582485349509",
         "customer": "Jan s.r.o.",
-        "invoice_number": "INV-115361",
+        "invoice_number": "INV-736731",
         "date": "2025-03-30",
         "price": {
-            "total_sum": 12.0,
+            "total_sum": 17.0,
             "currency": "euro"
         }
     },
     "detail": {
-        "category": "TV",
+        "category": "PC",
         "product_name": "A22",
         "price_amount": 10.0,
         "additional_service": {
-            "service": "N",
-            "service_type": "None",
-            "service_price": 0.0
+            "service": "Y",
+            "service_type": "extended warranty",
+            "service_price": 1.0
         }
     },
     "transportation": {
         "transporter": "DHL",
-        "country": "Czech Republic",
-        "size": "small",
-        "transport_price": 2.0
+        "country": "Slovakia",
+        "size": "large",
+        "transport_price": 6.0
     }
 }

@@ -85,17 +85,17 @@ if object_from_upload is not None:
     max_value_attribut = max(value_attribute_int)
     
 
-    # Logic for recognizing whether any extra money for 'extended varanty' or 'insurance' 
-    varanty = []
+    # Logic for recognizing whether any extra money for 'extended warranty' or 'insurance' 
+    warranty = []
     for service_type in root.findall('detail'):
         condition_service_type = service_type.find('additional_service/service_type').text
 
-        if condition_service_type == 'extended varanty':
+        if condition_service_type == 'extended warranty':
             service_price = service_type.find('additional_service/service_price').text
-            varanty.append(service_price)
+            warranty.append(service_price)
         
-    varanty_float = list(map(float, varanty)) 
-    sum_price_varanty = math.fsum(varanty_float)
+    warranty_float = list(map(float, warranty)) 
+    sum_price_warranty = math.fsum(warranty_float)
     
 
     insurance = []
@@ -149,14 +149,14 @@ if object_from_upload is not None:
     # Data validation - <total_sum_services> = value_total_sum_services Y/N 
     
     result_validation_services = []
-    def data_validation_services(value_total_sum_services_fl, sum_price_varanty , sum_price_insurance):
-        result = value_total_sum_services_fl - sum_price_varanty - sum_price_insurance
-        sum_varanty_insurance = sum_price_varanty + sum_price_insurance
+    def data_validation_services(value_total_sum_services_fl, sum_price_warranty , sum_price_insurance):
+        result = value_total_sum_services_fl - sum_price_warranty - sum_price_insurance
+        sum_warranty_insurance = sum_price_warranty + sum_price_insurance
         st.write("2) ###### Validation process - Invoice sum services = sum of items in lines:")
         
         if result < 0 or result > 0:
             st.warning("Validation not passed - summary does not equeal to line values. You can either continue with existing file or adjust the input file and upload it again.")
-            st.write(f"** Total sum of SERVICES in the XML invoice is: '{value_total_sum_services_fl:.2f}' but summary of prices in detail lines is '{sum_varanty_insurance:.2f}'.")
+            st.write(f"** Total sum of SERVICES in the XML invoice is: '{value_total_sum_services_fl:.2f}' but summary of prices in detail lines is '{sum_warranty_insurance:.2f}'.")
             outcome = ("Services - Not passed")
             result_validation_services.append(outcome)
 
@@ -165,14 +165,14 @@ if object_from_upload is not None:
             outcome = ("Services - Passed")
             result_validation_services.append(outcome)
 
-    data_validation_services(value_total_sum_services_fl, sum_price_varanty , sum_price_insurance)
+    data_validation_services(value_total_sum_services_fl, sum_price_warranty , sum_price_insurance)
 
     result_obj_outcome_services = result_validation_services[0]
     
 
     # ========= Button to show values parsed and calculated ======================
 
-    value_to_paid = value_total_sum + sum_price_varanty + sum_price_insurance
+    value_to_paid = value_total_sum + sum_price_warranty + sum_price_insurance
 
     st.write("------")
     st.write("#### Data Visualization:")
@@ -184,17 +184,17 @@ if object_from_upload is not None:
         st.write(f" - Receiver of the invoice: {value_customer}")
         st.write(f" - Invoice from day (date): {value_date} - (format YYYY-MM-DD)")
 
-        st.write(f" - Value to be paid: {value_to_paid:.2f} {currency} (*products + services)")
+        st.write(f" - Price to be paid: {value_to_paid:.2f} {currency} (*products + services)")
         st.write(f" - Number of products: {max_value_attribut}")
         ''
         ''
         st.write(f"Detail:")
         st.write(f" - Total sum of products: {value_total_sum:.2f} {currency}")
 
-        sum_additional_serv = sum_price_varanty + sum_price_insurance
+        sum_additional_serv = sum_price_warranty + sum_price_insurance
 
         st.write(f" - Sum of additional services: {sum_additional_serv:.2f} {currency}")
-        st.write(f" - Extended varanty: {sum_price_varanty:.2f} {currency}")
+        st.write(f" - Extended warranty: {sum_price_warranty:.2f} {currency}")
         st.write(f" - Insurance: {sum_price_insurance:.2f} {currency}")
     ''
     ''
@@ -313,3 +313,5 @@ if object_from_upload is not None:
         st.info("download will start in few seconds")
 
     st.write("------")
+
+

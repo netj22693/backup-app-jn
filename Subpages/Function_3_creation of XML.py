@@ -101,7 +101,7 @@ with st.expander("Extra purchase", icon = ":material/exposure_plus_1:"):
 
     add_service_select = st.selectbox(
         "Additional service:" ,
-        options=["No additional service","Insurance","Extended varanty"],
+        options=["No additional service","Insurance","Extended warranty"],
         help = "Select one of the options",
         key= "k_add_service"
          )
@@ -109,7 +109,7 @@ with st.expander("Extra purchase", icon = ":material/exposure_plus_1:"):
     if add_service_select == 'Insurance':
         st.info("costs 15% from product price")
     
-    if add_service_select == 'Extended varanty':
+    if add_service_select == 'Extended warranty':
         st.info("costs 10% from product price")
 
 with st.expander("Transportation", icon = ":material/directions_bus:"):
@@ -305,8 +305,8 @@ def fun_add_service_1(option):
     elif option == 'Insurance':
         return 'insurance'
     
-    elif option == 'Extended varanty':
-        return 'extended varanty'
+    elif option == 'Extended warranty':
+        return 'extended warranty'
 
 # translation of what was selected from user input into object using def()
 service_type_fn = fun_add_service_1(add_service_select)
@@ -322,7 +322,7 @@ def fun_add_service_2(option, price):
         #ins = str(ins)
         return ins
     
-    elif option == 'Extended varanty':
+    elif option == 'Extended warranty':
         extv = price * 0.1
         #extv = str(extv)
         return extv
