@@ -28,7 +28,7 @@ st.image("Pictures/Function_3/Function_3_BPMN_calculation process_2.png")
 The calculation happens based on predefined inputs/costs which are part of application rules in the code.
 '''
 '''
-If the BPMN diagram would be transferred into the "application look" then it would be like this:
+If the BPMN diagram would be transferred into the "application look", then it would be like this:
 '''
 ''
 ''
