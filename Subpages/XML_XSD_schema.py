@@ -247,13 +247,6 @@ if st.download_button("Download",data = xsd_structure  , file_name="XML Schema.x
 ''
 # ===== Page navigation at the bottom ======
 st.write("-------")
-st.page_link(
-	label = "Previous page",
-	page="Subpages/application_description_archimate.py",
-	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
-	icon=":material/west:"
-	) 
 
 st.page_link(
     label = "Go to: Function 1",
@@ -261,5 +254,13 @@ st.page_link(
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
     icon=":material/play_circle:",
+	) 
+
+st.page_link(
+	label = "Previous page",
+	page="Subpages/application_description_archimate.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+	icon=":material/west:"
 	) 
 

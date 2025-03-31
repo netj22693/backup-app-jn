@@ -781,15 +781,6 @@ if st.download_button("Download",data = xml_empty_template , file_name="XML_empt
 
 # ===== Page navigation at the bottom ======
 st.write("-------")
-''
-''
-st.page_link(
-	label = "Previous page",
-	page="Subpages/XML_XSD_schema.py",
-	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
-	icon=":material/west:"
-	) 
 
 st.page_link(
     label = "Go to: Function 2",
@@ -798,3 +789,12 @@ st.page_link(
 	use_container_width=True,
     icon=":material/play_circle:",
 	) 
+
+st.page_link(
+	label = "Previous page",
+	page="Subpages/XML_XSD_schema.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+	icon=":material/west:"
+	) 
+

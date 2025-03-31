@@ -13,13 +13,6 @@ st.image("Pictures/Function_3/ArchM Function 3.drawio.png")
 ''
 ''
 st.write("-------")
-st.page_link(
-	label = "Previous page",
-	page="Subpages/Function_3_BPMN.py",
-	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
-	icon=":material/west:"
-	) 
 
 st.page_link(
     label = "Next page",
@@ -27,4 +20,12 @@ st.page_link(
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
     icon=":material/east:",
+	) 
+
+st.page_link(
+	label = "Previous page",
+	page="Subpages/Function_3_BPMN.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+	icon=":material/west:"
 	) 
