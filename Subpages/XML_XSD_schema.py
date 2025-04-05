@@ -222,12 +222,39 @@ Validation:
 '''
 )
 ''
+with st.expander(
+    "Validation",
+    icon= ":material/help_outline:"
+	):
+    
+	st.write("Example of validation in the Function 2:")
+	st.image("Pictures/V2_pictures/validation.png")
+	
+''
+''
 st.write('''
 Additional rules:
 - **<service_typ> rule - insurance:** sum all <service_price> values from <detail> when 'insurance' in <service_type>
 - **<service_typ> rule - extended warranty:** sum all <service_price> values from <detail> when 'extended warranty' in <service_type>
 '''
 )
+''
+with st.expander(
+    "Example of data parsing - insurance and extended warranty",
+    icon= ":material/help_outline:"
+	):
+    
+	st.write("Data parsing based on service type:")
+	''
+	st.image("Pictures/V2_pictures/Parsing help_2.png")
+	''
+	''
+	st.write("Anti-pattern:")
+	st.write(" - In case that there will be any price value but service type as 'None', the parsing mechanism will ignore the value")
+	''
+	st.image("Pictures/V2_pictures/None-not parsed.png")
+	
+''
 st.write("------")
 
 
