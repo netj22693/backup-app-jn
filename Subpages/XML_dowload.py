@@ -587,7 +587,7 @@ Here you can download XMLs which can be used for parsing:
 3) Predefind file - sum does not match - currency: US dollar - $ - 15 detail lines
 4) XML Template
 
-*The number of detail lines is basically not limited as defined in the XSD / XML Schema -> no need to stick 12 or 15 lines :)
+*The number of detail lines is basically not limited as defined in the XSD / XML Schema -> no need to stick to 12 or 15 lines :)
 '''
 )
 
@@ -618,7 +618,7 @@ with st.expander("Show XML structure - code"):
 
 if st.download_button("Download",data = xml_data_euro  , file_name="XML_euro_sum matches.xml", icon = ":material/download:"):
     st.info("Download will happen in few seconds")
-''
+
 st.write("------")
 
 

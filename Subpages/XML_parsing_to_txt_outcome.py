@@ -261,7 +261,7 @@ if object_from_upload is not None:
         filtered_data, 
         names = "Product",
         values = "Price",
-        title = "Pie chart - ratio"
+        title = "Pie chart - ratio of price values"
         )
 
     st.plotly_chart(fig_pie)
@@ -271,7 +271,7 @@ if object_from_upload is not None:
         filtered_data, 
         x="Product",
         y="Price",
-        title= "Bar chart of products"
+        title= "Bar chart - ratio of price values"
         )
 
     st.plotly_chart(fig_bar)
