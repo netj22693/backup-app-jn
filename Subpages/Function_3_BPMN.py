@@ -57,7 +57,11 @@ In case that user wants to change file format of invoice generated in Function 3
 '''
 ''
 ''
+''
 st.image("Pictures/Function_4/Function_4_BPMN.png")
+''
+''
+''
 ''
 ''
 with st.expander(
