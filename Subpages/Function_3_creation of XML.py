@@ -374,7 +374,7 @@ if st.button(
     "Submit",
     use_container_width=True,
     icon = ":material/apps:",
-    help = "Submit runs the application -> provide calculation -> summary of the invoice and option of generationg either XML or JSON file"
+    help = "Submit runs the application -> provide calculation -> summary of the invoice and option of generating either XML or JSON file"
     ):
 
     a = id_generator()
