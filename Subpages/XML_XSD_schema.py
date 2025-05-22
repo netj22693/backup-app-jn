@@ -276,11 +276,11 @@ if st.download_button("Download",data = xsd_structure  , file_name="XML Schema.x
 st.write("-------")
 
 st.page_link(
-    label = "Go to: Function 1",
-	page="Subpages/XML_dowload.py",
+    label = "Next page",
+	page="Subpages/Function_2_DB_ERT.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
-    icon=":material/play_circle:",
+    icon=":material/east:",
 	) 
 
 st.page_link(

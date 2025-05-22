@@ -613,7 +613,7 @@ st.write(
 st.image("Pictures/V2_pictures/XML download - scenario 1_3.png")
 ''
 ''
-with st.expander("Show XML structure - code"):
+with st.expander("Show XML structure - code", icon= ":material/code:"):
 	st.code(xml_data_euro, language= 'xml', line_numbers=True, height=700)
 
 if st.download_button("Download",data = xml_data_euro  , file_name="XML_euro_sum matches.xml", icon = ":material/download:"):
@@ -642,7 +642,7 @@ st.write(
 st.image("Pictures/V2_pictures/XML download - scenario 2_2.png")
 ''
 ''
-with st.expander("Show XML structure - code"):
+with st.expander("Show XML structure - code", icon= ":material/code:"):
 	st.code(xml_data_koruna, language= 'xml', line_numbers=True, height=700)
      
 if st.download_button("Download",data = xml_data_koruna  , file_name="XML_koruna_sum matches.xml", icon = ":material/download:"):
@@ -670,7 +670,7 @@ st.write(
 st.image("Pictures/V2_pictures/XML download - scenario 3_2.png")
 ''
 ''
-with st.expander("Show XML structure - code"):
+with st.expander("Show XML structure - code", icon= ":material/code:"):
 	st.code(xml_data_usdollar, language= 'xml', line_numbers=True, height=700)
       
 if st.download_button("Download",data = xml_data_usdollar , file_name="XML_usdollar_sum not match.xml", icon = ":material/download:"):
@@ -771,7 +771,7 @@ with st.expander(
 st.image("Pictures/V2_pictures/XML download - scenario 4.png")
 ''
 ''
-with st.expander("Show XML structure - code"):
+with st.expander("Show XML structure - code", icon= ":material/code:"):
 	st.code(xml_empty_template, language= 'xml', line_numbers=True, height=700)
       
 if st.download_button("Download",data = xml_empty_template , file_name="XML_empty_template.xml", icon = ":material/download:"):

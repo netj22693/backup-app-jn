@@ -100,6 +100,11 @@ fun_3and4_descrip = st.Page(
     icon= ":material/code:"
 )
 
+fun_2_DB_ERT = st.Page(
+    "Subpages/Function_2_DB_ERT.py",
+    title="Description - DB & ERD",
+    icon= ":material/code:"
+)
 
 # Navigation:
 pg = st.navigation(
@@ -114,6 +119,7 @@ pg = st.navigation(
             app_description_BPMN,
             app_description_ArM,
             xsd,
+            fun_2_DB_ERT,
             download, 
             parsing
             ],
