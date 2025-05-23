@@ -250,8 +250,7 @@ with st.expander(
     **state**
     - Name of state where customer is based
     - TEXT - limited to 30 characters
-    - Uses country code
-    - Example: CZ, DE, AT
+    - Example: Czech republic, Germany, Austria
     """
     )
     ''
@@ -486,7 +485,31 @@ st.code('''
     WHERE inv_num = 'INV-123456'
     ''', language="sql")
 st.image("Pictures/F2_SQL_INV-123456_detail.PNG")
+''
+''
+st.write("Info about invoice 'INV-123456' - to show all items where additional service was bought, what is the extra price for that and calculated value of total some")
+st.code('''
+SELECT 
+	category,
+	product, 
+	price,
+	s_type,
+	s_price,
+	(price + s_price) as 'Total for product',
+	cur
 
+FROM sum_inv 
+	INNER JOIN detail_inv di  ON (sinv_num = inv_num) 
+
+WHERE 
+	sinv_num = 'INV-123456'
+	AND 
+	s_type IS NOT 'none'
+
+ORDER BY
+	category, product, s_type
+    ''', language="sql")
+st.image("Pictures/F2_DB_SQL_2_result.PNG")
 
 # ===== Page navigation at the bottom ======
 ''
