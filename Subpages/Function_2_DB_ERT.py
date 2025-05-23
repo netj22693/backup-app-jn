@@ -178,7 +178,7 @@ st.write("#### Entity Relationship Diagram:")
 ''
 st.image("Pictures/F2_2_DB ERT.PNG")
 ''
-st.write("Joinning using keys:")
+st.write("Joining using keys:")
 st.code('''
 SELECT *
 FROM sum_inv

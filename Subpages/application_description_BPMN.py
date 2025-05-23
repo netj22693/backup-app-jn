@@ -27,10 +27,10 @@ st.write("""
 st.write("If match, application displays green success note.")
 st.write("If not match, application displays warrning message and providing correct summary - calculated.")
 ''
-st.write("**In BOTH CASES application ALLOWS to continue to data vizualization step.**")
+st.write("**In BOTH CASES application ALLOWS to continue to data visualization step.**")
 
 st.write("-----")
-st.write("##### Data vizualization process:")
+st.write("##### Data visualization process:")
 ''
 st.image("Pictures/V2_pictures/BPMN data visualization2.png")
 st.write("""
