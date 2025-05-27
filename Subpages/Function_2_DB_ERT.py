@@ -487,7 +487,7 @@ st.code('''
 st.image("Pictures/F2_SQL_INV-123456_detail.PNG")
 ''
 ''
-st.write("Info about invoice 'INV-123456' - to show all items where additional service was bought, what is the extra price for that and calculated value of total some")
+st.write("Info about invoice 'INV-123456' - to show all items where additional service was bought -> what is the extra price for that and calculated value of total sum (price for the product + price for the service)")
 st.code('''
 SELECT 
 	category,
