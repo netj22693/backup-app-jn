@@ -167,7 +167,7 @@ xml_data_euro = """<?xml version="1.0" encoding="UTF-8"?>
 </invoice>
 """
 
-# ========== DB and ERD description ==========
+# ========== DB and ERD description ===========================
 st.write("# DB & ERD")
 st.write("(!) Currently, this application is **NOT** connected to any DB. Maybe one day in the future :).")
 st.write("This is for visibility how DB tables could look like.")
@@ -176,7 +176,7 @@ st.write("-----")
 st.write("#### Entity Relationship Diagram:")
 ''
 ''
-st.image("Pictures/F2_2_DB ERT.PNG")
+st.image("Pictures/F2_2_DB ERD_3.PNG")
 ''
 st.write("Joining using keys:")
 st.code('''
@@ -185,7 +185,9 @@ FROM sum_inv
     INNER JOIN detail_inv ON (sinv_num = inv_num)
     INNER JOIN cust ON (c_id = cust_id)
 ''',
-language="sql")
+language="sql"
+)
+''
 ''
 ''
 st.write("##### Description of the tables:")
@@ -199,7 +201,7 @@ st.write("""
 - Principle of this table is to maintain details about companies/customers with whom the XML comunication is established
 - Data coming in XML is 'name' which is <customer> XML element
 - The rest is purelly DB information providing details about the customer
-- Could be companies itself or enterpreneurs
+- Can be companies or enterpreneurs (name and surname)
 """)
 ''
 st.image("Pictures/F2_DB_screen_cust.PNG")
@@ -420,10 +422,101 @@ with st.expander(
     **record_id**
     - Table specific id which makes a record unique -> to make it recognizable
     - Also is **Primary Key** for this table
+    - Having **Auto-increment** set
     - BIGINT - Unsigned range is from 0 to 18446744073709551615
     - Example: 1, 2, .... 39293990, ...
     """
     )
+''
+''
+''
+st.write("##### More details about the cardinality:")
+''
+st.image("Pictures/F2_DB_cardinality.PNG", width= 180)
+''
+with st.expander(
+	"Detailed description - ERD cardinality",
+	icon= ":material/help_outline:"
+	):
+    
+    ''
+    ''
+    st.write("###### 1 - One (and only one) to 0..* Zero or many:")
+    ''
+    ''
+    st.image("Pictures/F2_2_DB ERD zero to many_2.PNG")
+    ''
+    st.write("""
+    - Has been chosen based on a **business logic**. 
+    
+    - **1 - One (and only one)** - In the **'cust'** table there is expected to have all customers registered and each record is unique (one unique customer = one record in 'cust' table) -> that is why **1 and Only one** 
+             
+    - **0..*** **- Zero or many** - On the other side the table **'sum_inv'** works on principle giving a visibility of how many invoices each customer has. So there is expected to be **many** invoices per customer (the more business you do, the more invoices you should have in DB). And why **0 (Zero)**? Because there can be also registered customers but **NO** invoice received yet. 
+    """
+    )
+
+    ''
+    ''
+    st.write("**Example**: How many invoices in 'sum_inv' table registered per customer -> Can be also 0 (Zero)")
+    st.image("Pictures/F2_2_DB registered customer with 0 invoices.PNG")
+    ''
+    st.code('''
+    SELECT
+        name,
+        count(cust_id) as "How many invoices registered in 'sum_inv' table"
+    
+    FROM sum_inv
+        RIGHT JOIN cust ON (cust_id = c_id)
+    
+    GROUP BY
+        cust_id
+            
+    ORDER BY
+        count(cust_id) ASC
+    ''', language="sql")
+    ''
+    ''
+    ''
+    ''
+    ''
+    st.write("###### 1 - One (and only one) to 1..* One or many:")
+    ''
+    ''
+    st.image("Pictures/F2_2_DB ERD one to many.PNG")
+    ''
+    st.write("""
+    - Has been chosen based on logix of the **XML**/XSD definition. 
+             
+    - **Below**, there is explained the relationship between the tables and XML. 
+    
+    - If it is simplified then:
+        - **'sum_inv'** table coresponds to **XML <header>**
+        - **'detail_inv'** coresponds to **XML <detail>**
+        - The XML is defined as 1 (and only one) <header> and 1 or many <detail> lines 
+        - *Anti-pattern (cannot happen): 0 <detail> line in the XML would mean no product/no transaction 
+    """
+    )
+    ''
+    st.image("Pictures/V2_pictures/Simple level.png")
+    ''
+    ''
+    st.write("**Example**: How many <detail> lines/product were in one invoice. 1 to many.")
+    st.image("Pictures/F2_2_DB number of lines in invoices.PNG")
+    ''
+    st.code('''
+    SELECT 
+        sinv_num,
+        count(inv_num) as 'Number of detail lines/products in invoice'
+        
+    FROM sum_inv
+        INNER JOIN detail_inv ON (sinv_num = inv_num)
+        
+    GROUP BY
+        sinv_num
+
+    ORDER BY
+        count(inv_num) DESC
+    ''', language="sql")
 ''
 ''
 st.write("-----")
