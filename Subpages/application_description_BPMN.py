@@ -49,7 +49,7 @@ st.write("-------")
 
 st.page_link(
     label = "Next page",
-	page="Subpages/application_description_archimate.py",
+	page="Subpages/Function_2_UML.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
     icon=":material/east:",

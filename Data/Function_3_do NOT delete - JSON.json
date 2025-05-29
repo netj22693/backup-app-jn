@@ -1,28 +1,28 @@
 {
     "header": {
-        "order_number": "31250631549266454325",
-        "customer": "vcvc",
-        "invoice_number": "INV-569084",
-        "date": "2025-03-30",
+        "order_number": "22968672044908803539",
+        "customer": "cs",
+        "invoice_number": "INV-022659",
+        "date": "2025-05-29",
         "price": {
-            "total_sum": 14.48,
+            "total_sum": 32.17,
             "currency": "US dollar"
         }
     },
     "detail": {
-        "category": "PC",
-        "product_name": "vccx",
-        "price_amount": 10.0,
+        "category": "TV",
+        "product_name": "sc",
+        "price_amount": 30.0,
         "additional_service": {
-            "service": "Y",
-            "service_type": "extended warranty",
-            "service_price": 1.0
+            "service": "N",
+            "service_type": "None",
+            "service_price": 0.0
         }
     },
     "transportation": {
         "transporter": "DHL",
         "country": "Czech Republic",
-        "size": "medium",
-        "transport_price": 3.48
+        "size": "small",
+        "transport_price": 2.17
     }
 }

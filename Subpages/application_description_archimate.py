@@ -28,7 +28,7 @@ st.page_link(
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/application_description_BPMN.py",
+	page="Subpages/Function_2_UML.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/west:"

@@ -106,6 +106,18 @@ fun_2_DB_ERT = st.Page(
     icon= ":material/code:"
 )
 
+fun_2_UML = st.Page(
+    "Subpages/Function_2_UML.py",
+    title="Description - UML",
+    icon= ":material/code:"
+)
+
+fun_3_UML = st.Page(
+    "Subpages/Function_3_UML.py",
+    title="Description - UML",
+    icon= ":material/code:"
+)
+
 # Navigation:
 pg = st.navigation(
     {
@@ -117,6 +129,7 @@ pg = st.navigation(
         "Functions 1 and 2" : [
             fun_1and2_descrip,
             app_description_BPMN,
+            fun_2_UML,
             app_description_ArM,
             xsd,
             fun_2_DB_ERT,
@@ -126,6 +139,7 @@ pg = st.navigation(
         "Functions 3 and 4": [
             fun_3and4_descrip,
             function_3_BPMN,
+            fun_3_UML,
             fun_3_archm,
             function_3_xml,
             fun_3_json,
