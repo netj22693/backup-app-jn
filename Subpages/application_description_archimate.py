@@ -5,7 +5,7 @@ st.write("*For better visibility - put cursor on the picture and click on the ic
 
 st.write("-----")
 st.write("#### ArchiMate simple:")
-st.image("Pictures/Parsing-archimate-diagram-SIMPLE.png")
+st.image("Pictures/Function_2/F2_Archimate_simple.png")
 
 st.write("-----")
 st.write("#### ArchiMate complex:")

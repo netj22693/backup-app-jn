@@ -754,11 +754,11 @@ with st.expander(
 	''
 	''
 	st.page_link(
-		label = "Go to Function 2 - 2. XML - Parsing, Validation, Vizualization",
+		label = "Go to Function 2",
 		page="Subpages/XML_parsing_to_txt_outcome.py",
 		help="The button will redirect to the relevant page within this app.",
 		use_container_width=True,
-		icon=":material/launch:"
+		icon=":material/play_circle:"
 		) 
 	''
 	''
