@@ -6,7 +6,7 @@ st.write("*For better visibility - put cursor on the picture and click on the ic
 st.write("-----")
 st.write("#### Application process flow:")
 ''
-st.write("- 5 stages of process - high level")
+st.write("- 5 stages of the process - high level")
 ''
 st.image("Pictures/BPMN flow_2.png")
 
@@ -14,7 +14,7 @@ st.image("Pictures/BPMN flow_2.png")
 st.write("-----")
 st.write("##### Data parsing process:")
 ''
-st.write(" - Principle of data parsing process from XML")
+st.write(" - Principle of the data parsing process from XML")
 ''
 st.image("Pictures/V2_pictures/BPMN data parsing.png")
 
