@@ -216,7 +216,8 @@ with st.expander(
     - customer id  - internal company id    
     - is **Primary Key** for this table
     - And the type of the key is Surrogate key as it system-generated identifier for a database object, not derived from the data itself
-    - **INTEGER** - limited to 7 characters - each customer will get unique id. Example: 0000014
+    - **INTEGER** - limited to 7 characters - each customer will get unique id.
+    - Example: 14, 100, 333, 1892030
     - **Type**: system-generated identifier
     """
     )
