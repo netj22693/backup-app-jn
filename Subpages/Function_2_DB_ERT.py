@@ -176,7 +176,7 @@ st.write("-----")
 st.write("#### Entity Relationship Diagram:")
 ''
 ''
-st.image("Pictures/F2_2_DB ERD_3.PNG")
+st.image("Pictures/Function_2/F2_2_DB ERD_3.PNG")
 ''
 st.write("Joining using keys:")
 st.code('''
@@ -194,7 +194,7 @@ st.write("##### Description of the tables:")
 ''
 st.write("1) Customer details - cust")
 ''
-st.image("Pictures/F2_cust.PNG")
+st.image("Pictures/Function_2/F2_cust.PNG")
 ''
 st.write("""
 - cust -> means customer
@@ -204,7 +204,7 @@ st.write("""
 - Can be companies or enterpreneurs (name and surname)
 """)
 ''
-st.image("Pictures/F2_DB_screen_cust.PNG")
+st.image("Pictures/Function_2/F2_DB_screen_cust.PNG")
 ''
 with st.expander(
 	"Detailed description",
@@ -215,7 +215,9 @@ with st.expander(
     **c_id** 
     - customer id  - internal company id    
     - is **Primary Key** for this table
-    - INTEGER - limited to 7 characters - each customer will get unique id. Example: 0000014
+    - And the type of the key is Surrogate key as it system-generated identifier for a database object, not derived from the data itself
+    - **INTEGER** - limited to 7 characters - each customer will get unique id. Example: 0000014
+    - **Type**: system-generated identifier
     """
     )
     ''
@@ -223,9 +225,10 @@ with st.expander(
     st.write("""
     **name**
     - Customer/Company name
-    - VARCHAR - due to possibility of '.-_,&', numbers and letters
+    - **VARCHAR** - due to possibility of '.-_,&', numbers and letters
     - limited to 100 characters
     - example: ABC & Partners s.r.o, Jan Novak
+    - **Type**: DB information about a customer - not comming in the data/XML
     """
     )
     ''
@@ -233,8 +236,9 @@ with st.expander(
     st.write("""       
     **city**
     - Customer/Company name
-    - TEXT - limited to 50 characters
+    - **TEXT** - limited to 50 characters
     - example: Prague, Berlin, London
+    - **Type**: DB information about a customer - not comming in the data/XML
     """
     )
     ''
@@ -242,8 +246,9 @@ with st.expander(
     st.write("""     
     **street**
     - Street name, including number
-    - VARCHAR - limited to 70 characters
+    - **VARCHAR** - limited to 70 characters
     - Example: Narodni trida 25
+    - **Type**: DB information about a customer - not comming in the data/XML
     """
     )
     ''
@@ -251,8 +256,9 @@ with st.expander(
     st.write("""     
     **state**
     - Name of state where customer is based
-    - TEXT - limited to 30 characters
+    - **TEXT** - limited to 30 characters
     - Example: Czech republic, Germany, Austria
+    - **Type**: DB information about a customer - not comming in the data/XML
     """
     )
     ''
@@ -260,23 +266,26 @@ with st.expander(
     st.write("""        
     **phone**
     - Phone number including country preffix
-    - VARCHAR - limited to 20 characters - can include '+_-'
-    - Example: +420123456"""
+    - **VARCHAR** - limited to 20 characters - can include '+_-'
+    - Example: +420123456
+    - **Type**: DB information about a customer - not comming in the data/XML
+    """
     )
     ''
     ''
     st.write("""       
     **vip**
     - Means special customer
-    - BOOLEAN 
-    - Example: TRUE, FALSE           
+    - **BOOLEAN** 
+    - Example: TRUE, FALSE
+    - **Type**: DB information about a customer - not comming in the data/XML       
     """
     )
 ''
 ''
 st.write("2) Invoice summary - sum_inv")
 ''
-st.image("Pictures/F2_sum.PNG")
+st.image("Pictures/Function_2/F2_sum.PNG")
 ''
 st.write("""
 - This table reflects data coming in XML header
@@ -284,7 +293,7 @@ st.write("""
 """
 )
 ''
-st.image("Pictures/F2_DB_screen_sum_inv.PNG")
+st.image("Pictures/Function_2/F2_DB_screen_sum_inv.PNG")
 ''
 with st.expander(
 	"Detailed description",
@@ -295,7 +304,8 @@ with st.expander(
         **sinv_num**
         - Invoice number - 's' used for making the column name unique 
         - **Primary Key** for this table
-        - VARCHAR - due to invoice ID format 'INV-123456'       
+        - **VARCHAR** - due to invoice ID format 'INV-123456' 
+        - **Type**: parsed from XML     
         """
         )
     ''
@@ -303,8 +313,9 @@ with st.expander(
     st.write("""       
         **cust_id**
         - Customer id  - internal company id    
-        - INTEGER - limited to 7 characters - each customer will get unique id. Example: 0000014   
-        - is **Foreign Key** for this table  - relation ship with Primary key in cust table 
+        - **INTEGER** - limited to 7 characters - each customer will get unique id. Example: 0000014   
+        - is **Foreign Key** for this table  - relation ship with Primary key in 'cust' table
+        - **Type**: system-generated identifier 
         """
         )
     st.code('''
@@ -312,14 +323,15 @@ with st.expander(
     FROM sum_inv INNER JOIN cust ON (cust_id = c_id)
     ''', language="sql")
 
-    st.image("Pictures/F2_DB_sum_inv join cust.png")
+    st.image("Pictures/Function_2/F2_DB_sum_inv join cust.png")
     ''
     ''
     st.write("""       
-        **cust_id**
+        **date**
         - Date    
-        - DATE - format YYYY-MM-DD   
-        - Example: 2025-19-05
+        - **DATE** - format YYYY-MM-DD   
+        - Example: 2025-05-19
+        - **Type**: parsed from XML
         """
         )
     ''
@@ -327,8 +339,9 @@ with st.expander(
     st.write("""       
         **ttl_sum**
         - Total sumary of price from all products in XML message  
-        - FLOAT - defined in XML 2 decimals  
+        - **FLOAT** - defined in XML 2 decimals  
         - Example: 3291.00
+        - **Type**: parsed from XML
         """
         )
     ''
@@ -336,8 +349,9 @@ with st.expander(
     st.write("""       
         **ttl_sum_serv**
         - Total sumary of price from all products in XML message, IF any extra service purchased 
-        - FLOAT - defined in XML 2 decimals  
+        - **FLOAT** - defined in XML 2 decimals  
         - Example: 168.00
+        - **Type**: parsed from XML
         """
         )
     ''
@@ -345,14 +359,16 @@ with st.expander(
     st.write("""       
         **cur**
         - Currency - used in the XML
+        - **TEXT**
         - XML/XSD is defined to have euro|Kč|Us dollar -> in DB euro, koruna, us dollar
+        - **Type**: parsed from XML
         """
         )
 ''
 ''
 st.write("3) Invoice detail - detail_inv")
 ''
-st.image("Pictures/F2_detail.PNG")
+st.image("Pictures/Function_2/F2_detail.PNG")
 ''
 st.write("""
 - This table reflects data coming in XML detail
@@ -361,7 +377,7 @@ st.write("""
 """
 )
 ''
-st.image("Pictures/F2_DB_screen_detail_inv.PNG")
+st.image("Pictures/Function_2/F2_DB_screen_detail_inv.PNG")
 ''
 with st.expander(
 	"Detailed description",
@@ -371,22 +387,24 @@ with st.expander(
     st.write("""       
         **inv_num**
         - Invoice number
-        - VARCHAR - due to invoice ID format 'INV-123456'      
+        - **VARCHAR** - due to invoice ID format 'INV-123456'      
         - **Foreign Key** for this table to - relation ship with Primary key in sum_inv table
+        - **Type**: parsed from XML
         """
         )
     st.code('''
     SELECT *
     FROM sum_inv INNER JOIN detail_inv ON (sinv_id = inv_num)
     ''', language="sql")
-    st.image("Pictures/F2_DB_sum_inv join detail_inv.png")
+    st.image("Pictures/Function_2/F2_DB_sum_inv join detail_inv.png")
     ''
     ''
     st.write("""       
         **product**
         - Product name
-        - VARCHAR - can include also numbers and special characters      
+        - **VARCHAR** - can include also numbers and special characters      
         - Example: Playstation 5 Pro
+        - **Type**: parsed from XML
         """
     )
     ''
@@ -394,8 +412,9 @@ with st.expander(
     st.write("""       
     **category**
     - Product category
-    - TEXT - it is defined in XML/XSD as PC|TV|Gaming|Mobile phones|Tablets|Major Appliances|Households
-    - In DB: pc, tv, gaming, mobile phones, tablets, major appliances,households    
+    - **TEXT** - it is defined in XML/XSD as PC|TV|Gaming|Mobile phones|Tablets|Major Appliances|Households
+    - In DB: pc, tv, gaming, mobile phones, tablets, major appliances,households
+    - **Type**: parsed from XML    
     """
     )
     ''
@@ -403,7 +422,7 @@ with st.expander(
     st.write("""       
     **s_type**
     - Special service type
-    - TEXT - it is defined in XML/XSD as None|extended warranty|insurance
+    - **TEXT** - it is defined in XML/XSD as None|extended warranty|insurance
     - In DB: none, extended warranty, insurance    
     """
     )
@@ -412,8 +431,9 @@ with st.expander(
     st.write("""       
     **s_price**
     - Special service type
-    - FLOAT - price for extra service - 2 decimals 
+    - **FLOAT** - price for extra service - 2 decimals 
     - Example: 9.00, 9.45 ; in case of 'none' no service then 0 in DB 
+    - **Type**: parsed from XML
     """
     )
     ''
@@ -421,10 +441,12 @@ with st.expander(
     st.write("""       
     **record_id**
     - Table specific id which makes a record unique -> to make it recognizable
-    - Also is **Primary Key** for this table
+    - Is **Primary Key** for this table
+    - And the type of the key is **Surrogate key** as it system-generated identifier for a database object, not derived from the data itself
     - Having **Auto-increment** set
-    - BIGINT - Unsigned range is from 0 to 18446744073709551615
+    - **BIGINT** - Unsigned range is from 0 to 18446744073709551615
     - Example: 1, 2, .... 39293990, ...
+    - **Type**: system-generated identifier, in this case Auto-increment
     """
     )
 ''
@@ -432,7 +454,7 @@ with st.expander(
 ''
 st.write("##### More details about the cardinality:")
 ''
-st.image("Pictures/F2_DB_cardinality.PNG", width= 180)
+st.image("Pictures/Function_2/F2_DB_cardinality.PNG", width= 180)
 ''
 with st.expander(
 	"Detailed description - ERD cardinality",
@@ -444,7 +466,7 @@ with st.expander(
     st.write("###### 1 - One (and only one) to 0..* Zero or many:")
     ''
     ''
-    st.image("Pictures/F2_2_DB ERD zero to many_2.PNG")
+    st.image("Pictures/Function_2/F2_2_DB ERD zero to many_2.PNG")
     ''
     st.write("""
     - Has been chosen based on a **business logic**. 
@@ -458,7 +480,7 @@ with st.expander(
     ''
     ''
     st.write("**Example**: How many invoices in 'sum_inv' table registered per customer -> Can be also 0 (Zero)")
-    st.image("Pictures/F2_2_DB registered customer with 0 invoices.PNG")
+    st.image("Pictures/Function_2/F2_2_DB registered customer with 0 invoices.PNG")
     ''
     st.code('''
     SELECT
@@ -482,7 +504,7 @@ with st.expander(
     st.write("###### 1 - One (and only one) to 1..* One or many:")
     ''
     ''
-    st.image("Pictures/F2_2_DB ERD one to many.PNG")
+    st.image("Pictures/Function_2/F2_2_DB ERD one to many.PNG")
     ''
     st.write("""
     - Has been chosen based on logix of the **XML**/XSD definition. 
@@ -501,7 +523,7 @@ with st.expander(
     ''
     ''
     st.write("**Example**: How many <detail> lines/product were in one invoice. 1 to many.")
-    st.image("Pictures/F2_2_DB number of lines in invoices.PNG")
+    st.image("Pictures/Function_2/F2_2_DB number of lines in invoices.PNG")
     ''
     st.code('''
     SELECT 
@@ -529,7 +551,7 @@ st.write("""
 )
 ''
 ''
-st.image("Pictures/F2_DB_XML.png")
+st.image("Pictures/Function_2/F2_DB_XML.png")
 ''
 ''
 st.write("Example:")
@@ -559,7 +581,7 @@ st.code('''
     FROM cust
     WHERE name = 'ABC s.r.o.'
     ''', language="sql")
-st.image("Pictures/F2_SQL_name.PNG")
+st.image("Pictures/Function_2/F2_SQL_name.PNG")
 ''
 ''
 st.write("Info about invoice 'INV-123456' - header")
@@ -568,7 +590,7 @@ st.code('''
     FROM sum_inv
     WHERE sinv_num = 'INV-123456'
     ''', language="sql")
-st.image("Pictures/F2_SQL_INV-123456.PNG")
+st.image("Pictures/Function_2/F2_SQL_INV-123456.PNG")
 ''
 ''
 st.write("Info about invoice 'INV-123456' - detail")
@@ -577,7 +599,7 @@ st.code('''
     FROM detail_inv
     WHERE inv_num = 'INV-123456'
     ''', language="sql")
-st.image("Pictures/F2_SQL_INV-123456_detail.PNG")
+st.image("Pictures/Function_2/F2_SQL_INV-123456_detail.PNG")
 ''
 ''
 st.write("Info about invoice 'INV-123456' - to show all items where additional service was bought -> what is the extra price for that and calculated value of total sum (price for the product + price for the service)")
@@ -602,7 +624,7 @@ WHERE
 ORDER BY
 	category, product, s_type
     ''', language="sql")
-st.image("Pictures/F2_DB_SQL_2_result.PNG")
+st.image("Pictures/Function_2/F2_DB_SQL_2_result.PNG")
 
 # ===== Page navigation at the bottom ======
 ''
