@@ -21,6 +21,17 @@ st.image("Pictures/Function_2/F2_UML - Use case.PNG")
 st.write("-----")
 st.write("#### UML Activity diagram:")
 st.image("Pictures/Function_2/F2 - UML_Activity diagram_2.png")
+''
+with st.expander(
+    "Application context",
+    icon= ":material/help_outline:"
+	):
+    
+	''
+	''
+	st.write("Application process:")
+	''
+	st.image("Pictures/Function_2/F2_UML - app context .png", width= 500)
 
 # ===== Page navigation at the bottom ======
 ''
