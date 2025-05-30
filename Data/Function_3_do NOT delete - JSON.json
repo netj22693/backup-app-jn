@@ -1,28 +1,28 @@
 {
     "header": {
-        "order_number": "22968672044908803539",
-        "customer": "cs",
-        "invoice_number": "INV-022659",
-        "date": "2025-05-29",
+        "order_number": "73956189972530794748",
+        "customer": "afafa",
+        "invoice_number": "INV-830408",
+        "date": "2025-05-30",
         "price": {
-            "total_sum": 32.17,
+            "total_sum": 35.64,
             "currency": "US dollar"
         }
     },
     "detail": {
         "category": "TV",
-        "product_name": "sc",
-        "price_amount": 30.0,
+        "product_name": "afas",
+        "price_amount": 28.72,
         "additional_service": {
-            "service": "N",
-            "service_type": "None",
-            "service_price": 0.0
+            "service": "Y",
+            "service_type": "insurance",
+            "service_price": 4.31
         }
     },
     "transportation": {
-        "transporter": "DHL",
+        "transporter": "Fedex",
         "country": "Czech Republic",
         "size": "small",
-        "transport_price": 2.17
+        "transport_price": 2.61
     }
 }

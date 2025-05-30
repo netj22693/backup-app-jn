@@ -329,6 +329,7 @@ def fun_add_service_2(option, price):
 
 # creation of objects /change of data types
 service_price_fn = fun_add_service_2(add_service_select, price)
+service_price_fn = round(service_price_fn, 2)
 service_price_fn_str = str(service_price_fn)
 service_price_fl = float(service_price_fn)
 
@@ -383,6 +384,7 @@ if st.button(
     # Calculation of final price 
     # important to keep the calculation after SUBMIT button, if not TypeError: unsupported operand type(s) for +: 'float' and 'NoneType'
     final_price_fl = price + calc_transport_price + service_price_fn
+    final_price_fl = round(final_price_fl, 2)
     final_price_fl_str = str(final_price_fl)
     
     st.write("#### Sumary of your order:")

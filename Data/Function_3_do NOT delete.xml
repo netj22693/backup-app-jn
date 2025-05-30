@@ -1,29 +1,29 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <invoice>
   <header>
-    <order_number>22968672044908803539</order_number>
-    <customer>cs</customer>
-    <invoice_number>INV-022659</invoice_number>
-    <date>2025-05-29</date>
+    <order_number>73956189972530794748</order_number>
+    <customer>afafa</customer>
+    <invoice_number>INV-830408</invoice_number>
+    <date>2025-05-30</date>
     <price>
-      <total_sum>32.17</total_sum>
+      <total_sum>35.64</total_sum>
       <currency>US dollar</currency>
   </price>
   </header>
   <detail>
     <category>TV</category>
-    <product_name>sc</product_name>
-    <price_amount>30.0</price_amount>
+    <product_name>afas</product_name>
+    <price_amount>28.72</price_amount>
     <additional_service>
-      <service>N</service>
-      <service_type>None</service_type>
-      <service_price>0.0</service_price>
+      <service>Y</service>
+      <service_type>insurance</service_type>
+      <service_price>4.31</service_price>
   </additional_service>
   </detail>
   <transportation>
-    <transporter>DHL</transporter>
+    <transporter>Fedex</transporter>
     <country>Czech Republic</country>
     <size>small</size>
-    <transport_price>2.17</transport_price>
+    <transport_price>2.61</transport_price>
   </transportation>
 </invoice>
