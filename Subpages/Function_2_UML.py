@@ -32,6 +32,16 @@ with st.expander(
 	st.write("Application process:")
 	''
 	st.image("Pictures/Function_2/F2_UML - app context .png", width= 500)
+	
+
+	''
+	st.page_link(
+    label = "Go to: Function 2",
+	page="Subpages/XML_parsing_to_txt_outcome.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+    icon=":material/play_circle:",
+	) 
 
 # ===== Page navigation at the bottom ======
 ''
