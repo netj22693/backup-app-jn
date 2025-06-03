@@ -682,7 +682,7 @@ SELECT
             /
 	    (
 		SELECT sum((ttl_sum + ttl_sum_serv))
-			FROM sum_inv si
+			FROM sum_inv
 				WHERE 
 					date LIKE '2025-01-%'
 					AND 
@@ -700,6 +700,45 @@ FROM sum_inv si
     )
 
 st.image("Pictures/Function_2/F2_DB_data science_ revenue.PNG")
+
+''
+''
+st.write("""
+- And then we get more details about the particular invoices **from the previous query**: 'INV-038484', 'INV-000936', 'INV-128923'
+- What items/products were purchased
+- Who are the customers
+"""
+)
+
+st.code('''
+    SELECT
+        inv_num,
+        name,
+        vip,
+        city,
+        product,
+        category,
+        s_type,
+        price,
+        s_price,
+        (price + s_price) as 'Total'
+
+    FROM detail_inv 
+        INNER JOIN sum_inv ON (inv_num = sinv_num)
+        INNER JOIN cust ON (cust_id = c_id)
+
+    WHERE
+        inv_num IN ('INV-038484','INV-000936','INV-128923')
+
+    ORDER BY
+        inv_num ASC,
+        category ASC
+        ''',
+    language="sql"
+    )
+
+st.image("Pictures/Function_2/F2_DB_data science_detail.PNG")
+
 
 
 # ===== Page navigation at the bottom ======
