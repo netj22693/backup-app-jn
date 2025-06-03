@@ -151,6 +151,8 @@ with st.expander("Transportation", icon = ":material/directions_bus:"):
 ''
 
 # Conversion between formats -> due to later mapping into message structures
+# this rounding to 2 decimals avoids bugs in case that the input will be having more than 2 decimals. Case: User MANUALY enters number example 20.7777777 -> automatically gets rounded
+price = round(price, 2)
 price_str = str(price)
 price_fl = float(price)
 price_fl = float("{:.2f}".format(price_fl))

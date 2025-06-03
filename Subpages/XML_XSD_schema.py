@@ -129,7 +129,7 @@ xsd_structure = '''<?xml version="1.0" encoding="UTF-8"?>
 st.write("# XSD, XML Schema")
 st.write(
     '''
-Description of XML structure/XML Schema with which this application works. There is a **download button at the end of this page** to download XML Schema in both .txt and .xsd format.
+Description of XML structure/XML Schema with which this application **Function 1 produces (Download) and Function 2 (Parsing and Visualization) works**. There is a **download button at the end of this page** to download XML Schema in both .txt and .xsd format.
 
 '''
 )

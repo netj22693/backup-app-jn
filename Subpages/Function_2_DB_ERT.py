@@ -349,7 +349,7 @@ with st.expander(
     ''
     st.write("""       
         **ttl_sum_serv**
-        - Total sumary of price from all products in XML message, IF any extra service purchased 
+        - Total sumary of price from all products in XML message, If any extra service purchased 
         - **FLOAT** - defined in XML 2 decimals  
         - Example: 168.00
         - **Type**: parsed from XML
@@ -361,10 +361,19 @@ with st.expander(
         **cur**
         - Currency - used in the XML
         - **TEXT**
-        - XML/XSD is defined to have euro|Kč|Us dollar -> in DB euro, koruna, us dollar
-        - **Type**: parsed from XML
+        - XML/XSD is defined to have euro|US dollar|Kč -> in DB euro, koruna, us dollar
+        - **Type**: parsed from XML. But characters lowered and Kč insert to DB as 'koruna'
         """
         )
+    ''
+    st.code('''
+	<xs:pattern value="euro|US dollar|Kč"/>
+    ''',
+    language="xml"
+    )
+    
+    ''
+    st.image("Pictures/Function_2/F2_DB_curency small.PNG")
 ''
 ''
 st.write("3) Invoice detail - detail_inv")
@@ -415,18 +424,37 @@ with st.expander(
     - Product category
     - **TEXT** - it is defined in XML/XSD as PC|TV|Gaming|Mobile phones|Tablets|Major Appliances|Households
     - In DB: pc, tv, gaming, mobile phones, tablets, major appliances,households
-    - **Type**: parsed from XML    
+    - **Type**: parsed from XML. But characters lowered  
     """
     )
+    ''
+    st.code('''
+	<xs:pattern value="PC|TV|Gaming|Mobile phones|Tablets|Major Appliances|Households"/>
+    ''',
+    language="xml"
+    )
+    
+    ''
+    st.image("Pictures/Function_2/F2_DB_category distinct.PNG")
     ''
     ''
     st.write("""       
     **s_type**
     - Special service type
     - **TEXT** - it is defined in XML/XSD as None|extended warranty|insurance
-    - In DB: none, extended warranty, insurance    
+    - In DB: none, extended warranty, insurance   
+    - **Type**: parsed from XML. But characters lowered. 
     """
     )
+    ''
+    st.code('''
+	<xs:pattern value="None|extended warranty|insurance"/>
+    ''',
+    language="xml"
+    )
+    
+    ''
+    st.image("Pictures/Function_2/F2_DB_service type distinct.PNG")
     ''
     ''
     st.write("""       
@@ -626,6 +654,53 @@ ORDER BY
 	category, product, s_type
     ''', language="sql")
 st.image("Pictures/Function_2/F2_DB_SQL_2_result.PNG")
+''
+''
+st.write("-----")
+st.write("#### Example of possible Data Science")
+''
+''
+st.write("Example:")
+
+st.write("""
+- Search for Invoices received in **January 2025**
+- Where currency was '**koruna**' 
+- Total sum of the prices in every invoice (Total sum price + Total sum services)
+- Percentage **% ratio** - how much every invoice has from the **January revenue**
+- **Result:** 3 invoices in January 2025 -> ratio: ~ 46.3%, 0.7%, 53%
+"""
+)
+
+st.code('''
+SELECT 
+	sinv_num,
+	date,
+	ttl_sum + ttl_sum_serv as 'Total sum per invoice',
+	cur,
+	round(
+        ((ttl_sum + ttl_sum_serv)
+            /
+	    (
+		SELECT sum((ttl_sum + ttl_sum_serv))
+			FROM sum_inv si
+				WHERE 
+					date LIKE '2025-01-%'
+					AND 
+					cur = 'koruna'
+	    )
+        *100), 3) as 'Percentage ratio % from January revenue'
+
+FROM sum_inv si 
+	WHERE 
+		date LIKE '2025-01-%'
+		AND 
+		cur = 'koruna'
+    ''',
+    language="sql"
+    )
+
+st.image("Pictures/Function_2/F2_DB_data science_ revenue.PNG")
+
 
 # ===== Page navigation at the bottom ======
 ''

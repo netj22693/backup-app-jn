@@ -5,7 +5,7 @@ st.set_page_config(page_title="XSD, XML Schema")
 st.write("# XSD, XML Schema")
 st.write(
     '''
-Description of XML structure/XML Schema with which these Functions 3 and 4 work. There is a download button at the end of this page to download XML Schema in both .txt and .xsd formats.
+Description of XML structure/XML Schema with which these **Functions 3 and 4 work**. There is a **download button at the end of this page** to download XML Schema in both .txt and .xsd formats.
 
 '''
 )
@@ -28,33 +28,42 @@ Header element includes nested elements providing key information/summary about 
 st.image("Pictures/Function_3/XSD header.png")
 ''
 ''  
+st.image("Pictures/Function_3/F3_xsd_header.png")
+''
+''  
 ''
 st.write("###### Detail:")
 '''
-Detail element includes also nested elements. They are used for information about the product which was purchased and whether any additional service for the product was bought or not (Insurance, Extended varanty).
+Detail element includes also nested elements. They are used for information about the product which was purchased and whether any additional service for the product was bought or not (Insurance, Extended warranty).
 '''
 '' 
 st.image("Pictures/Function_3/XSD detail.png")
 ''
 ''  
+st.image("Pictures/Function_3/F3_xsd_detail.png")
+''
+''  
 ''
 st.write("###### Transportation:")
 '''
-Different element for this Function 3 (in comparison with Function 1 and 2 in this app) is element transportation. Also few nested elements which have information about transportation/delivery. 
+Different element for this Function 3 (in comparison with Function 1 and 2 in this app) is this element transportation. Including few nested elements which are about transportation/delivery. 
 '''
 '' 
 st.image("Pictures/Function_3/XSD transportation.png")
+''
+''  
+st.image("Pictures/Function_3/F3_xsd_transportation.png")
 st.write("----")
 
 st.write("#### Principle of the XML in context of the Function 3:")
 '''
-In the application user provides key inputs about the product through input fields. Based on the inputs, the Function 3 calculates and provides the remaining details (about your order) to fulfill this predefined xml which the application produces.  
+In the application user provides key inputs about the product through input fields. Based on the inputs the Function 3 calculates and provides the remaining details (about your order). Then XML with data is produced.  
 '''
 '' 
 st.image("Pictures/Function_3/XML produced.png")
 '' 
 '''
-Some of the fields/options are predefined and then the application makes the calculation based on what you select from drop down lists. More can be seen when you use the Function 3 itself :).
+Some of the fields/options are predefined and then the application makes the calculation based on what you select from drop down lists. More can be seen when you use the Function 3 itself.
 '''
 '' 
 st.image("Pictures/Function_3/delivery details.png", width = 200)
@@ -150,7 +159,7 @@ xsd_as_string ='''<?xml version="1.0" encoding="UTF-8"?>
 										<xs:element name="service_type" default="None">
 											<xs:simpleType>
 												<xs:restriction base="xs:string">
-													<xs:pattern value="None|extended varanty|insurance"/>
+													<xs:pattern value="None|extended warranty|insurance"/>
 												</xs:restriction>
 											</xs:simpleType>
 										</xs:element>
