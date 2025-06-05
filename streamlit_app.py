@@ -12,55 +12,55 @@ testing = st.Page(
     )
 
 app_purpose = st.Page(
-    "Subpages/Purpose_of_app.py",
+    "Subpages/F0_description_welcome.py",
     title="Purpose of this application",
     icon= ":material/code:"
     )
 
 app_description_ArM = st.Page(
-    "Subpages/application_description_archimate.py",
+    "Subpages/F1_F2_description_archimate.py",
     title="Description - Archimate",
     icon= ":material/code:"
     )
 
 app_description_BPMN = st.Page(
-    "Subpages/application_description_BPMN.py",
+    "Subpages/F1_F2_description_BPMN.py",
     title="Description - BPMN",
     icon= ":material/code:"
     )
 
 download = st.Page(
-    "Subpages/XML_dowload.py",
+    "Subpages/F1_FUNCTION_XML_dowload.py",
     title="1. XML - Download",
     icon = ":material/play_circle:"
     )
 
 xsd = st.Page(
-    "Subpages/XML_XSD_schema.py",
+    "Subpages/F1_F2_description_XML_XSD.py",
     title="Description - XSD, XML Schema",
     icon= ":material/code:"
     )
 
 parsing = st.Page(
-    "Subpages/XML_parsing_to_txt_outcome.py",
+    "Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
     title="2. XML - Parsing, Validation, Vizualization",
     icon = ":material/play_circle:"
     )
 
 function_3 = st.Page(
-    "Subpages/Function_3_creation of XML.py",
+    "Subpages/F3_FUNCTION_creation_of_XML.py",
     title="3. XML - Creation of XML or JSON",
     icon = ":material/play_circle:"
     )
 
 function_3_xml = st.Page(
-    "Subpages/Function_3_xml description.py",
+    "Subpages/F3_description_XML.py",
     title="Description - XSD, XML Schema",
     icon= ":material/code:"
     )
 
 function_3_BPMN = st.Page(
-    "Subpages/Function_3_BPMN.py",
+    "Subpages/F3_F4_description_BPMN.py",
     title="Description - BPMN",
     icon= ":material/code:"
     )
@@ -71,49 +71,49 @@ testuju_stsession = st.Page(
 )
 
 fun_1and2_descrip = st.Page(
-    "Subpages/Function_1 and 2_ description.py",
+    "Subpages/F1_F2_description_function.py",
     title="Description - Functions",
     icon= ":material/code:"
 )
 
 fun_3_archm = st.Page(
-    "Subpages/Function_3_Archimate.py",
+    "Subpages/F3_description_archimate.py",
     title="Description - Archimate",
     icon= ":material/code:"
 )
 
 fun_4 = st.Page(
-    "Subpages/Function_4_xml to json json to xml.py",
+    "Subpages/F4_FUNCTION_translation_mapping.py",
     title="4. Mapping XML to JSON, JSON to XML",
     icon = ":material/play_circle:"
 )
 
 fun_3_json = st.Page(
-    "Subpages/Function_3 and 4_json description.py",
+    "Subpages/F3_F4_description_json.py",
     title="Description - JSON Schema",
     icon= ":material/code:"
 )
 
 fun_3and4_descrip = st.Page(
-    "Subpages/Function_3 and 4_description.py",
+    "Subpages/F3_F4_description.py",
     title="Description - Functions",
     icon= ":material/code:"
 )
 
 fun_2_DB_ERT = st.Page(
-    "Subpages/Function_2_DB_ERT.py",
+    "Subpages/F2_description_DB_ERT.py",
     title="Description - DB & ERD",
     icon= ":material/code:"
 )
 
 fun_2_UML = st.Page(
-    "Subpages/Function_2_UML.py",
+    "Subpages/F2_description_UML.py",
     title="Description - UML",
     icon= ":material/code:"
 )
 
 fun_3_UML = st.Page(
-    "Subpages/Function_3_UML.py",
+    "Subpages/F3_description_UML.py",
     title="Description - UML",
     icon= ":material/code:"
 )

@@ -76,7 +76,7 @@ with st.expander(
 
 	st.page_link(
 	label = "Go to: Function 4",
-	page="Subpages/Function_4_xml to json json to xml.py",
+	page="Subpages/F4_FUNCTION_translation_mapping.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/play_circle:",
@@ -91,7 +91,7 @@ st.write("-------")
 
 st.page_link(
     label = "Next page",
-	page="Subpages/Function_3_UML.py",
+	page="Subpages/F3_description_UML.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
     icon=":material/east:",
@@ -99,7 +99,7 @@ st.page_link(
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/Function_3 and 4_description.py",
+	page="Subpages/F3_F4_description.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/west:"

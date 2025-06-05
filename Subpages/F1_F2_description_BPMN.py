@@ -55,7 +55,7 @@ st.write("-------")
 
 st.page_link(
     label = "Next page",
-	page="Subpages/Function_2_UML.py",
+	page="Subpages/F2_description_UML.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
     icon=":material/east:",
@@ -63,7 +63,7 @@ st.page_link(
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/Function_1 and 2_ description.py",
+	page="Subpages/F1_F2_description_function.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/west:"

@@ -705,7 +705,7 @@ with st.expander(
 	''
 	st.page_link(
 		label = "Go to XSD page",
-		page="Subpages/XML_XSD_schema.py",
+		page="Subpages/F1_F2_description_XML_XSD.py",
 		help="The button will redirect to the relevant page within this app for download.",
 		use_container_width=True,
 		icon=":material/launch:"
@@ -755,7 +755,7 @@ with st.expander(
 	''
 	st.page_link(
 		label = "Go to Function 2",
-		page="Subpages/XML_parsing_to_txt_outcome.py",
+		page="Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
 		help="The button will redirect to the relevant page within this app.",
 		use_container_width=True,
 		icon=":material/play_circle:"
@@ -784,7 +784,7 @@ st.write("-------")
 
 st.page_link(
     label = "Go to: Function 2",
-	page="Subpages/XML_parsing_to_txt_outcome.py",
+	page="Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
     icon=":material/play_circle:",
@@ -792,7 +792,7 @@ st.page_link(
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/XML_XSD_schema.py",
+	page="Subpages/F2_description_DB_ERT.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/west:"

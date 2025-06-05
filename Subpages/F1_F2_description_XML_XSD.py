@@ -284,7 +284,7 @@ st.write("-------")
 
 st.page_link(
     label = "Next page",
-	page="Subpages/Function_2_DB_ERT.py",
+	page="Subpages/F2_description_DB_ERT.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
     icon=":material/east:",
@@ -292,7 +292,7 @@ st.page_link(
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/application_description_archimate.py",
+	page="Subpages/F1_F2_description_archimate.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/west:"

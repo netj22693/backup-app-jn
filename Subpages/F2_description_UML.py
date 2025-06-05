@@ -37,7 +37,7 @@ with st.expander(
 	''
 	st.page_link(
     label = "Go to: Function 2",
-	page="Subpages/XML_parsing_to_txt_outcome.py",
+	page="Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
     icon=":material/play_circle:",
@@ -52,7 +52,7 @@ st.write("-------")
 
 st.page_link(
     label = "Next page",
-	page="Subpages/application_description_archimate.py",
+	page="Subpages/F1_F2_description_archimate.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
     icon=":material/east:",
@@ -60,7 +60,7 @@ st.page_link(
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/application_description_BPMN.py",
+	page="Subpages/F1_F2_description_BPMN.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/west:"

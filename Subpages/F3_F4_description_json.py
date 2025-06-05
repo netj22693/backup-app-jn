@@ -229,7 +229,7 @@ st.write("-------")
 
 st.page_link(
 	label = "Go to: Function 3",
-	page="Subpages/Function_3_creation of XML.py",
+	page="Subpages/F3_FUNCTION_creation_of_XML.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/play_circle:",
@@ -237,7 +237,7 @@ st.page_link(
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/Function_3_xml description.py",
+	page="Subpages/F3_description_XML.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/west:"
