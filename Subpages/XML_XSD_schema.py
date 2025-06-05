@@ -170,6 +170,13 @@ st.image("Pictures/V2_pictures/xsd_detail_2.png")
 with st.expander("Show XSD structure - code", icon= ":material/code:"):
 	st.code(xsd_structure, language= 'xml', line_numbers=True, height=700)
 
+''
+''
+st.write("#### Message definition overview:")
+''
+''
+st.image("Pictures/Function_2/F2_XML_layout_table.png")
+
 st.write("----")
 
 st.write("#### Principle of the XML:")

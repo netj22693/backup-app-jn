@@ -53,6 +53,13 @@ st.image("Pictures/Function_3/XSD transportation.png")
 ''
 ''  
 st.image("Pictures/Function_3/F3_xsd_transportation.png")
+''
+''
+st.write("#### Message definition overview:")
+''
+''
+st.image("Pictures/Function_3/F3_XML_layout_table.png")
+
 st.write("----")
 
 st.write("#### Principle of the XML in context of the Function 3:")
