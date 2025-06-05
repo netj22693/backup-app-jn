@@ -12,7 +12,7 @@ testing = st.Page(
     )
 
 app_purpose = st.Page(
-    "Subpages/F0_description_welcome.py",
+    "Subpages/Purpose_of_app.py",
     title="Purpose of this application",
     icon= ":material/code:"
     )
