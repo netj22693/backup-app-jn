@@ -785,8 +785,10 @@ ORDER BY converted_koruna DESC
 
 st.image("Pictures/Function_2/F2_DB_data science_ex2_fullfiltering.PNG")
 ''
+''
+''
 st.write("""
-- !!! This could be challenging operation/query in case that there will be a big set of data: 
+- !!! This could be challenging operation/query in case that there will be a big set of data to make this calculation as part of DB query. **Altenrative option**: 
 """
 )
 
@@ -797,11 +799,11 @@ with st.expander(
 
     ''
     ''
-    st.write("##### Combination of SQL and simple Python script")
+    st.write("##### Combination of SQL query and simple Python script")
     ''
     st.write("""
     - **Make a preselect of data in DB**
-    - There can be **whaever data** needed from whatever tables - the only condition is to **have the following columns in the dataset** (the Python script works with them):
+    - There can be **whatever data** from whatever tables - the only condition is to **have the following columns in the dataset** (the Python script works with them):
         - 'ttl_sum'
         - 'ttl_sum_serv'
         - 'cur'
