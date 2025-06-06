@@ -673,31 +673,33 @@ st.write("""
 
 st.code('''
 SELECT 
-	sinv_num,
-	date,
-	ttl_sum + ttl_sum_serv as 'Total sum per invoice',
-	cur,
-	round(
+    sinv_num,
+    date,
+    ttl_sum + ttl_sum_serv as 'Total sum per invoice',
+    cur,
+    round(
         ((ttl_sum + ttl_sum_serv)
             /
 	    (
-		SELECT sum((ttl_sum + ttl_sum_serv))
-			FROM sum_inv
-				WHERE 
-					date LIKE '2025-01-%'
-					AND 
-					cur = 'koruna'
+	    SELECT sum((ttl_sum + ttl_sum_serv))
+		    FROM sum_inv
+			    WHERE 
+				    date LIKE '2025-01-%'
+				    AND 
+				    cur = 'koruna'
 	    )
         *100), 3) as 'Percentage ratio % from January revenue'
 
-FROM sum_inv si 
-	WHERE 
-		date LIKE '2025-01-%'
-		AND 
-		cur = 'koruna'
-    ''',
-    language="sql"
-    )
+FROM
+    sum_inv si 
+        
+WHERE 
+    date LIKE '2025-01-%'
+    AND 
+    cur = 'koruna'
+''',
+language="sql"
+)
 
 st.image("Pictures/Function_2/F2_DB_data science_ revenue.PNG")
 
@@ -711,34 +713,175 @@ st.write("""
 )
 
 st.code('''
-    SELECT
-        inv_num,
-        name,
-        vip,
-        city,
-        product,
-        category,
-        s_type,
-        price,
-        s_price,
-        (price + s_price) as 'Total'
+SELECT
+    inv_num,
+    name,
+    vip,
+    city,
+    product,
+    category,
+    s_type,
+    price,
+    s_price,
+    (price + s_price) as 'Total'
 
-    FROM detail_inv 
-        INNER JOIN sum_inv ON (inv_num = sinv_num)
-        INNER JOIN cust ON (cust_id = c_id)
+FROM detail_inv 
+    INNER JOIN sum_inv ON (inv_num = sinv_num)
+    INNER JOIN cust ON (cust_id = c_id)
 
-    WHERE
-        inv_num IN ('INV-038484','INV-000936','INV-128923')
+WHERE
+    inv_num IN ('INV-038484','INV-000936','INV-128923')
 
-    ORDER BY
-        inv_num ASC,
-        category ASC
-        ''',
-    language="sql"
-    )
+ORDER BY
+    inv_num ASC,
+    category ASC
+''',
+language="sql"
+)
 
 st.image("Pictures/Function_2/F2_DB_data science_detail.PNG")
 
+''
+''
+''
+''
+''
+st.write("Example 2:")
+
+st.write("""
+- Search for Invoices between **01-Feb-2025 and 19-Mar-2025**
+- I need to see **ALL invoices** (all currencies - koruna, euro, us dollar)
+- I want to see full costs per invoice (total summary + total summary services)
+- I need to see **ALL of them in one currency 'koruna'**, to be able to compare them
+- Conversion rate is:
+    - 1 euro = **24** koruna
+    - 1 us dollar = **21** koruna
+"""
+)
+
+st.code('''
+SELECT *,
+    (CASE
+        WHEN cur = 'euro'
+      	THEN ((ttl_sum + ttl_sum_serv) * 24)
+       
+	WHEN cur = 'us dollar'
+    	THEN ((ttl_sum + ttl_sum_serv) * 21)
+
+	ELSE (ttl_sum + ttl_sum_serv)
+
+    END) AS converted_koruna
+
+FROM
+    sum_inv si 
+
+WHERE
+    date BETWEEN '2025-02-01' AND '2025-03-19'
+
+ORDER BY converted_koruna DESC
+    ''',
+    language="sql"
+    )
+
+st.image("Pictures/Function_2/F2_DB_data science_ex2_fullfiltering.PNG")
+''
+st.write("""
+- !!! This could be challenging operation/query in case that there will be a big set of data: 
+"""
+)
+
+with st.expander(
+	"Alternative option - SQL query and Python script",
+	icon= ":material/star_outline:"
+	):
+
+    ''
+    ''
+    st.write("##### Combination of SQL and simple Python script")
+    ''
+    st.write("""
+    - **Make a preselect of data in DB**
+    - There can be **whaever data** needed from whatever tables - the only condition is to **have the following columns in the dataset** (the Python script works with them):
+        - 'ttl_sum'
+        - 'ttl_sum_serv'
+        - 'cur'
+    """
+    )
+
+    st.code('''
+    -- here in the SELECT can be whatever columns + the 3 mandatory
+    SELECT *
+    
+    -- also the table can join other tables, if data needed
+    FROM
+        sum_inv si 
+    
+    -- also other filters/conditions possible
+    WHERE
+        date BETWEEN '2025-02-01' AND '2025-03-19'
+    ''', language="sql"
+    )
+
+
+    ''
+    ''
+    st.write("- Export from DB -> **CSV format**")
+
+    st.image("Pictures/Function_2/F2_DB_data science_ex2_prefiltered_csv.PNG")
+
+    ''
+    st.write("- In Terminal the data looks like this (Pandas) - to see the currency exported from DB ")
+
+    st.image("Pictures/Function_2/F2_DB_data science_ex2_prefiltered_terminal_2.PNG")
+
+    ''
+    st.write("- Execution of the Python script: ")
+
+    st.code('''
+    import pandas as pd
+    import numpy as np
+            
+    # Data import CSV 
+    df = pd.read_csv("sum_inv_202506061511_prefiltered.csv")
+
+    #New columns created in Data Frame -> sumary (ttl_sum + ttl_sum_serv) to get full cost per product
+    df['summary'] = df['ttl_sum'] + df['ttl_sum_serv']
+    df['converted to koruna'] = 'koruna'
+
+    # Conversion rate - INPUT
+    cr_k_euro = float(input("Convertion rate - Koruna to EUR?"))
+    cr_k_usd = float(input("Convertion rate - Koruna to USD?"))
+
+    # Conversion/Calculation in the Data Frame
+    df['summary'] = np.where(df['cur'] == 'euro', ((df['ttl_sum'] + df['ttl_sum_serv'])*cr_k_euro) , df['summary'])
+    df['summary'] = np.where(df['cur'] == 'us dollar', ((df['ttl_sum'] + df['ttl_sum_serv'])*cr_k_usd) , df['summary'])
+
+    #Sorting
+    df = df.sort_values(by=['summary'], ascending=False)
+
+    # Data Export
+    df.to_csv("Converted.csv")
+
+    ''',
+    language="python"       
+    )
+
+    ''
+    st.write("- User will be asked for inputs - the conversion rates")
+
+    st.image("Pictures/Function_2/F2_DB_data science_ex2_terminal_inputs.PNG")
+
+    ''
+    ''
+    st.write("- **Conversion is done**")
+    ''
+    ''
+    st.write("- CSV produced")
+    st.image("Pictures/Function_2/F2_DB_data science_ex2_converted_csv.PNG")
+
+    ''
+    st.write("- And this is how the data looks in Terminal")
+    st.image("Pictures/Function_2/F2_DB_data science_ex2_converted_terminal.PNG")
 
 
 # ===== Page navigation at the bottom ======
