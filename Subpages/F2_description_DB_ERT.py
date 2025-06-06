@@ -788,7 +788,7 @@ st.image("Pictures/Function_2/F2_DB_data science_ex2_fullfiltering.PNG")
 ''
 ''
 st.write("""
-- !!! This could be challenging operation/query in case that there will be a big set of data to make this calculation as part of DB query. **Altenrative option**: 
+- !!! This could be challenging operation/query in case that there will be a big set of data to make this calculation as part of DB query. **Alternative option**: 
 """
 )
 
