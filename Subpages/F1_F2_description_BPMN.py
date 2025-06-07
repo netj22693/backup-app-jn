@@ -17,7 +17,28 @@ st.write("##### Data parsing process:")
 st.write(" - Principle of the data parsing process from XML")
 ''
 st.image("Pictures/V2_pictures/BPMN data parsing.png")
+''
+''
+with st.expander(
+	"The XML message",
+	icon= ":material/help_outline:"
+	):
+    
+	''
+	st.write("Structure:")
+	st.image("Pictures/Function_1/F1_F2_XML_simple_screen.PNG")
+	''
+	st.write("More details about the XML and data parsing:")
 
+	st.page_link(
+		label = "Go to XSD, XML description page",
+		page="Subpages/F1_F2_description_XML_XSD.py",
+		help="The button will redirect to the relevant page within this app for download.",
+		use_container_width=True,
+		icon=":material/launch:"
+	)
+
+''
 st.write("-----")
 st.write("##### Data validation process:")
 ''
