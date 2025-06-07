@@ -667,10 +667,16 @@ st.write("""
 - Where currency was '**koruna**' 
 - Total sum of the prices in every invoice (Total sum price + Total sum services)
 - Percentage **% ratio** - how much every invoice has from the **January revenue**
+"""
+)
+
+''
+st.write("""
 - **Result:** 3 invoices in January 2025 -> ratio: ~ 46.3%, 0.7%, 53%
 """
 )
 
+''
 st.code('''
 SELECT 
     sinv_num,
@@ -702,11 +708,110 @@ language="sql"
 )
 
 st.image("Pictures/Function_2/F2_DB_data science_ revenue.PNG")
-
+''
 ''
 ''
 st.write("""
-- And then we get more details about the particular invoices **from the previous query**: 'INV-038484', 'INV-000936', 'INV-128923'
+- !!! This could be challenging operation/query in case that there will be a big set of data to make this calculation as part of DB. **Alternative option**: 
+"""
+)
+
+with st.expander(
+	"Alternative option - SQL query and Python script",
+	icon= ":material/star_outline:"
+	):
+
+    ''
+    ''
+    st.write("##### Combination of SQL query and simple Python script")
+    ''
+    st.write("""
+    - **Make a preselect of data in DB**
+    """
+    )
+
+    st.code('''
+    SELECT *
+    
+    FROM
+        sum_inv
+    
+    WHERE 
+        date LIKE '2025-01-%'
+        AND 
+        cur = 'koruna'
+    ''',
+    language="sql"
+    )
+
+    ''
+    ''
+    st.write("- Export from DB -> **CSV format**")
+
+    st.image("Pictures/Function_2/F2_DB_data science_ex1_prefiltered_csv.PNG")
+
+    ''
+    st.write("- In Terminal the data looks like this (Pandas)")
+
+    st.image("Pictures/Function_2/F2_DB_data science_ex1_terminal_inputs.PNG")
+
+    ''
+    st.write("- Execution of the Python script: ")
+
+    st.code('''
+    import pandas as pd
+
+    # Data import CSV 
+    df = pd.read_csv("sum_inv_202506071712_prefiltered.csv")
+
+    #New column created in DF -> to get full cost per product
+    summary_col = df['summary'] = df['ttl_sum'] + df['ttl_sum_serv']
+
+    # getting sum value from the column 
+    sum = sum(summary_col)
+
+    # ... and then use it for calculation of % ratio
+    df['Percentage ratio % from revenue'] = round((summary_col/sum) * 100, 3)
+
+    # ---- This part is to replicate the exact result from the SQL query ----
+    # Drop of some columns
+    df = df.drop(['cust_id','ttl_sum','ttl_sum_serv'], axis=1)
+
+    # Swap of 2 columns -> to get the same order
+    df = df.iloc[:, [0, 1, 3, 2, 4]]
+    # -----------------------------------------------------------------------
+
+    # Data Export
+    df.to_csv("Ratio.csv", index=False) 
+    ''',
+    language="python")
+
+    ''
+    ''
+    st.write("- **The process is done**")
+    ''
+    ''
+    st.write("- CSV produced")
+    st.image("Pictures/Function_2/F2_DB_data science_ex1_output_csv.PNG")
+
+    ''
+    st.write("- And this is how the data looks in Terminal")
+    st.image("Pictures/Function_2/F2_DB_data science_ex1_output_terminal.PNG")
+    ''
+    ''
+    ''
+    ''
+    st.write("- *If needed, the CSV step (DB -> CSV -> Python script) can be skipped and the data can be pulled from DB directly in the python script")
+
+    st.code("""df = pd.read_sql_query() """, language="python")
+
+    
+''
+''
+''
+''
+st.write("""
+- ... And then we get more details about the particular invoices **from the previous query**: 'INV-038484', 'INV-000936', 'INV-128923'
 - What items/products were purchased
 - Who are the customers
 """
@@ -788,7 +893,7 @@ st.image("Pictures/Function_2/F2_DB_data science_ex2_fullfiltering.PNG")
 ''
 ''
 st.write("""
-- !!! This could be challenging operation/query in case that there will be a big set of data to make this calculation as part of DB query. **Alternative option**: 
+- !!! This could be challenging operation/query in case that there will be a big set of data to make this calculation as part of DB. **Alternative option**: 
 """
 )
 
@@ -884,6 +989,13 @@ with st.expander(
     ''
     st.write("- And this is how the data looks in Terminal")
     st.image("Pictures/Function_2/F2_DB_data science_ex2_converted_terminal.PNG")
+    ''
+    ''
+    ''
+    ''
+    st.write("- *If needed, the CSV step (DB -> CSV -> Python script) can be skipped and the data can be pulled from DB directly in the python script")
+
+    st.code("""df = pd.read_sql_query() """, language="python")
 
 
 # ===== Page navigation at the bottom ======
