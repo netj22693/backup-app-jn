@@ -118,13 +118,25 @@ fun_3_UML = st.Page(
     icon= ":material/code:"
 )
 
+function_5 = st.Page(
+    "Subpages/F5_FUNCTION_exchange.py",
+    title="Exchange rate",
+    icon= ":material/play_circle:"
+)
+
+function_5_desc_api = st.Page(
+    "Subpages/F5_description_API.py",
+    title="Description - API",
+    icon= ":material/code:"
+)
+
 # Navigation:
 pg = st.navigation(
     {
         "About this application": [
             app_purpose,
             ],
-        #"TESTING": [testing, testuju_stsession],
+        # "TESTING": [testing, testuju_stsession],
 
         "Functions 1 and 2" : [
             fun_1and2_descrip,
@@ -145,7 +157,11 @@ pg = st.navigation(
             fun_3_json,
             function_3,
             fun_4
-            ]
+            ],
+        "Function 5": [
+            function_5_desc_api,
+            function_5
+        ]
     }
 )
 

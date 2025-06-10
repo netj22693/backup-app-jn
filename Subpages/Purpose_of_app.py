@@ -17,6 +17,10 @@ st.write("""
     - **Function 4:** Mapping/change of file format XML -> JSON or JSON -> XML 
     """)
 ''
+st.write("""
+    - **Function 5:** Exchange rate/calculation (CZK, EUR, USD) - API based with actual exchange rate
+    """)
+''
 ''
 "More details about the functions can be seen in the subpages - what the functions do, what data structures are used, etc."
 
@@ -26,7 +30,7 @@ st.write("enjoy... :)")
 ''
 st.write("###### ArchiMate - Overview of the functions:")
 st.image(
-    "Pictures/ArchM Functions overview_3.drawio.png.drawio.png"
+    "Pictures/Archimate_functions_overview.png"
     )
 ''
 ''
@@ -76,6 +80,22 @@ st.page_link(
 st.page_link(
 	label = "Function 4",
 	page="Subpages/F4_FUNCTION_translation_mapping.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+	icon=":material/play_circle:"
+	) 
+''
+st.page_link(
+    label = "Description about F5",
+	page="Subpages/F5_description_API.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+    icon=":material/code:",
+	)
+
+st.page_link(
+	label = "Function 5",
+	page="Subpages/F5_FUNCTION_exchange.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/play_circle:"

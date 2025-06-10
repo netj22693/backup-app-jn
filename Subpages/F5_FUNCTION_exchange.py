@@ -6,48 +6,79 @@ import streamlit as st
 
 
 # API kurzy.cz 
-# api_kurzy = "https://data.kurzy.cz/json/meny/b[1].json"
+api_kurzy = "https://data.kurzy.cz/json/meny/b[1].json"
 
 
-# aby to fungovalo musím být mimo VPN - POZOR - dostával jsem, že target system refuse to establish connection
-# výstup je STR STRING
-# api_1 = requests.get(api_kurzy, verify=False).text
+# get reguest
+api_1 = requests.get(api_kurzy, verify=False).text
 
 
-#  Předělání stringu do JSON
-# api_1_json = json.loads(api_1)
+#  JSON format creation
+api_1_json = json.loads(api_1)
 
-
-# eur_rate = api_1_json['kurzy']['EUR']['dev_stred']
-
-
-# usd_rate = api_1_json['kurzy']['USD']['dev_stred']
+# Search for data in the API defined format - JSON
+eur_rate = api_1_json['kurzy']['EUR']['dev_stred']
+usd_rate = api_1_json['kurzy']['USD']['dev_stred']
 
 # ======= Values for testing purposed to do not call/utilize API
-eur_rate = 24
-usd_rate = 21
+# eur_rate = 24
+# usd_rate = 21
 
 st.write("# Exchange rate:")
+''
+''
+st.write("""
+- The exchange rate is API based 
+- The information comes from https://www.kurzy.cz/
+""")
 
-
+''
+''
+''
 st.metric(label="CZK to EUR", value= eur_rate)
 
 st.metric(label="CZK to USD", value= usd_rate)
 
 
-
+''
+''
+''
+''
 
 # =============== Form ==============================
 
+st.write("#### Calculation: ")
 # User inputs
 with st.form(key="calculation form"):
-    czk_obj = st.number_input("CZK")
-    eur_obj = st.number_input("EUR")
-    usd_obj = st.number_input("USD")
+    czk_obj = st.number_input(
+        "CZK",
+        step=10.00,
+        min_value=0.00,
+        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
+        )
+    
+
+    eur_obj = st.number_input(
+        "EUR",
+        step=10.00,
+        min_value=0.00,
+        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
+        )
+    
+
+    usd_obj = st.number_input(
+        "USD",
+        step=10.00,
+        min_value=0.00,
+        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
+        )
 
 
 # ----- Buttons 1 calculations ------
 
+    ''
+    ''
+    ''
     # CZK -> EUR
     sub_butt_1 = st.form_submit_button(label="CZK -> EUR",      use_container_width=True
     )
