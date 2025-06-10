@@ -8,8 +8,12 @@ import streamlit as st
 api_kurzy = "https://data.kurzy.cz/json/meny/b[1].json"
 
 # get reguest
-api_1 = requests.get(api_kurzy, verify=False).text
+@st.cache_data(ttl=3600)
+def get_response_api_1(api_kurzy):
+    api_1 = requests.get(api_kurzy, verify=False).text
+    return api_1
 
+api_1 = get_response_api_1(api_kurzy)
 
 # JSON format creation
 api_1_json = json.loads(api_1)
@@ -22,7 +26,12 @@ usd_rate = api_1_json['kurzy']['USD']['dev_stred']
 api_freecurrency_api = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_6SzWJxPYa8Co3Xr9ziCTd7Mt7Yavrhpy2M5A0JZ4&currencies=USD&base_currency=EUR"
 
 #get reguest
-api_2 = requests.get(api_freecurrency_api, verify=False).text
+@st.cache_data(ttl=3600)
+def get_response_api_2(api_freecurrency_api):
+    api_2 = requests.get(api_freecurrency_api, verify=False).text
+    return api_2
+
+api_2 = get_response_api_2(api_freecurrency_api)
 
 
 # JSON format creation
