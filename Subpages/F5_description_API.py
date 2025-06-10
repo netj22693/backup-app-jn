@@ -2,7 +2,7 @@ import streamlit as st
 
 
 # For visibility the API structure from kurzy.cz
-json_api_structure = """
+json_api_structure_1 = """
 {
 	"den": "20250610",
 	"denc": "10.6.2025",
@@ -178,7 +178,18 @@ json_api_structure = """
 }
 """
 
+# For visibility the API structure from freecurrencyapi.com
+json_api_structure_2 = """
+{
+  "data": {
+    "EUR": 0.8748900989
+  }
+}
+"""
 
+
+
+# ==================== Application scree + backend functions ==============
 st.write("# Function 5")
 ''
 ''
@@ -205,7 +216,8 @@ st.write("##### Actual conversion rate:")
 
 st.write("""
 - API based (open API)
-- Comes from Kurzy.cz https://www.kurzy.cz/ 		 
+- Comes from Kurzy.cz https://www.kurzy.cz/ 	
+- CZK  to EUR and USD	 
 """
 )
 
@@ -220,15 +232,15 @@ https://cs.wikipedia.org/wiki/Kurzy.cz
 
 ''
 ''
-
-# Expander API JSON 
-with st.expander("API JSON structure - Kurzy.cz", icon= ":material/code:"):
+# Expander API 1 JSON 
+with st.expander("API JSON structure - Kurzy.cz", icon= ":material/help:"):
 
 	''
 	st.write("""
 	- This Function 5 receives the full predefined API data from Kurzy.cz 
+	- There is no possibility to customize the API data
 		  
-	- And parses specifically:
+	- So once received, there is a parsing, specifically:
 		- "EUR" : { "dev_stred" : float value }
 		- "USD" : { "dev_stred" : float value }
 		  
@@ -241,10 +253,67 @@ with st.expander("API JSON structure - Kurzy.cz", icon= ":material/code:"):
 	''
 	st.write("The full JSON data:")
 	st.code(
-		json_api_structure,
+		json_api_structure_1,
 		language= 'json',
 		line_numbers=True,
 		height=700)
+
+	
+
+''
+''
+''
+st.write("""
+- Comes from Freecurrencyapi.com https://app.freecurrencyapi.com/	
+- EUR to USD	 
+"""
+)
+
+''
+st.caption("""
+Free Currency Conversion API
+The 100% free solution for handling exchange rate conversions. Our currency API provides live & historical exchange rate data ranging from 1999 until today.
+https://freecurrencyapi.com/
+"""
+)
+
+''
+''
+# Expander API 2 JSON 
+with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/help:"):
+
+	''
+	st.write("""
+	- This Function 5 receives CUSTOMIZED data from Freecurrencyapi.com 
+	
+		- "data" : { "USD" : float value }
+	"""
+	)
+
+
+	''
+	''
+	''
+	st.write("Customized JSON API data:")
+	st.code(
+		json_api_structure_2,
+		language= 'json',
+		line_numbers=True
+		)
+
+	''
+	''
+	st.write("The customization allows:")
+	st.write("""
+	- Make a registration 
+	- Monitor the API requests 
+	- And see some statistics
+	"""
+	)
+	''
+	st.image("Pictures/Function_5/F5_description_api_statistics.png")
+	
+
 
 # ===== Page navigation at the bottom ======
 ''
