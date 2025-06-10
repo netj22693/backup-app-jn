@@ -190,7 +190,7 @@ json_api_structure_2 = """
 
 
 # ==================== Application scree + backend functions ==============
-st.write("# Function 5")
+st.write("# Description - Function 5")
 ''
 ''
 st.write("""
@@ -312,6 +312,8 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 	)
 	''
 	st.image("Pictures/Function_5/F5_description_api_statistics.png")
+	''
+	st.image("Pictures/Function_5/F5_description_api_statistics_another.png")
 	
 
 
