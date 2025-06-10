@@ -182,7 +182,7 @@ json_api_structure_1 = """
 json_api_structure_2 = """
 {
   "data": {
-    "EUR": 0.8748900989
+    "USD": 1.1430007052
   }
 }
 """
@@ -287,6 +287,9 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 	- This Function 5 receives CUSTOMIZED data from Freecurrencyapi.com 
 	
 		- "data" : { "USD" : float value }
+		
+		- Base Currency: EUR
+		- Currency/Rate to: USD
 	"""
 	)
 
