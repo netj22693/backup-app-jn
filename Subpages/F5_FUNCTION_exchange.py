@@ -1,4 +1,3 @@
-# Vytvořené 10-Jun-2025 - to jsem si hrál pro mojí appku
 import requests
 import json
 import streamlit as st

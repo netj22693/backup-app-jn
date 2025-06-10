@@ -120,7 +120,7 @@ fun_3_UML = st.Page(
 
 function_5 = st.Page(
     "Subpages/F5_FUNCTION_exchange.py",
-    title="Exchange rate",
+    title="5. Exchange rate",
     icon= ":material/play_circle:"
 )
 
