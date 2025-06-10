@@ -314,8 +314,16 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 	st.image("Pictures/Function_5/F5_description_api_statistics.png")
 	''
 	st.image("Pictures/Function_5/F5_description_api_statistics_another.png")
-	
 
+''
+''
+''
+''
+# Archimate
+st.write("##### Archimate Diagram:") 
+''
+st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
+st.image("Pictures/Function_5/F5_description_archimate_api.png")
 
 # ===== Page navigation at the bottom ======
 ''
