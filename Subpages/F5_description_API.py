@@ -202,7 +202,7 @@ st.write("""
 st.write("##### Business scenario:") 
 
 st.write("""
-- For visibility and calculation purposes. This function offers **simple calculator** to convert values between currencies.
+- For visibility and calculation purposes. This function offers **a simple calculator** to convert values between currencies.
 		 
 	- CZK 
 	- EUR

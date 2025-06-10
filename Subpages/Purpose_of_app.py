@@ -4,7 +4,7 @@ import streamlit as st
 st.write("# Welcome!")
 ''
 st.write(
-    "Purpose of this application is to play with XML data. The application has **4 functions**:"
+    "Purpose of this application is to play with XML and JSON data. The application has **5 functions**:"
     )
 ''
 st.write("""
