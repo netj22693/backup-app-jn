@@ -343,6 +343,8 @@ st.write("""
 st.write("""
 - Frequency of data updates from **Kurzy.cz**
 	- Exchange rates are updated continuously, with a few minutes delay compared to the source.
+	- Based on my observing should be 1x per 24 hours
+	- History can be seen (Page in Czech language): https://www.kurzy.cz/kurzy-men/kurzovni-listek/csob/
 """
 )
 
@@ -351,6 +353,7 @@ st.write("""
 st.write("""
 - Frequency of data updates from **Freecurrencyapi.com**
 	- The currency data on freecurrencyapi.com is updated on a daily basis. This means that while the API provides live and historical exchange rates, the data is refreshed once a day with end-of-day figures. 
+	- 1x per 24 hours
 """
 )
 
