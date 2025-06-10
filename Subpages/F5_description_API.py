@@ -325,6 +325,32 @@ st.write("##### Archimate Diagram:")
 st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
 st.image("Pictures/Function_5/F5_description_archimate_api.png")
 
+''
+''
+''
+st.write("""
+- **To do not overutilize the API calls, there is a DATA CACHING set on our application**
+	- The caching is applied for **1 hour** (3600 seconds)
+	- The caching is applicable for **1 session**
+"""
+)
+
+''
+''
+st.write("""
+- Frequency of data updates from **Kurzy.cz**
+	- Exchange rates are updated continuously, with a few minutes delay compared to the source.
+"""
+)
+
+''
+''
+st.write("""
+- Frequency of data updates from **Freecurrencyapi.com**
+	- The currency data on freecurrencyapi.com is updated on a daily basis. This means that while the API provides live and historical exchange rates, the data is refreshed once a day with end-of-day figures. 
+"""
+)
+
 # ===== Page navigation at the bottom ======
 ''
 ''
