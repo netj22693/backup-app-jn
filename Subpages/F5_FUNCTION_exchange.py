@@ -22,6 +22,10 @@ api_1_json = json.loads(api_1)
 eur_rate = api_1_json['kurzy']['EUR']['dev_stred']
 usd_rate = api_1_json['kurzy']['USD']['dev_stred']
 
+eur_rate = round(eur_rate, 3)
+usd_rate = round(usd_rate, 3)
+
+
 # ========================= API 2 ====================
 api_freecurrency_api = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_6SzWJxPYa8Co3Xr9ziCTd7Mt7Yavrhpy2M5A0JZ4&currencies=USD&base_currency=EUR"
 
@@ -39,7 +43,7 @@ api_2_json = json.loads(api_2)
 
 # Search for data in the API defined format - JSON
 eur_to_usd_rate = api_2_json['data']['USD']
-eur_to_usd_rate = round(eur_to_usd_rate, 4)
+eur_to_usd_rate = round(eur_to_usd_rate, 3)
 
 # ======= Values for testing purposed to do not call/utilize API
 # # API 1
