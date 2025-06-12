@@ -22,6 +22,10 @@ api_1_json = json.loads(api_1)
 eur_rate = api_1_json['kurzy']['EUR']['dev_stred']
 usd_rate = api_1_json['kurzy']['USD']['dev_stred']
 
+eur_rate = round(eur_rate, 3)
+usd_rate = round(usd_rate, 3)
+
+
 # ========================= API 2 ====================
 api_freecurrency_api = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_6SzWJxPYa8Co3Xr9ziCTd7Mt7Yavrhpy2M5A0JZ4&currencies=USD&base_currency=EUR"
 
@@ -39,7 +43,7 @@ api_2_json = json.loads(api_2)
 
 # Search for data in the API defined format - JSON
 eur_to_usd_rate = api_2_json['data']['USD']
-eur_to_usd_rate = round(eur_to_usd_rate, 4)
+eur_to_usd_rate = round(eur_to_usd_rate, 3)
 
 # ======= Values for testing purposed to do not call/utilize API
 # # API 1
@@ -48,6 +52,8 @@ eur_to_usd_rate = round(eur_to_usd_rate, 4)
 # # API 2
 # eur_to_usd_rate = 1.14
 
+
+# ============== App screen part ===================
 st.write("# Exchange rate:")
 ''
 ''
@@ -99,15 +105,7 @@ with st.form(key="calculation form"):
         help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
         )
 
-
-# ----- Buttons 1 calculations ------
-
-    ''
-    ''
-    ''
-    # CZK -> EUR
-    sub_butt_1 = st.form_submit_button(label="CZK -> EUR",      use_container_width=True
-    )
+    # Functions for calculation
 
     def f1_czk_to_eur(czk_obj, eur_rate):
         result = czk_obj / eur_rate
@@ -116,20 +114,81 @@ with st.form(key="calculation form"):
 
     f1_result = round(f1_czk_to_eur(czk_obj,eur_rate), 2)
 
-    if sub_butt_1:
-        st.write(f"{czk_obj} CZK = {f1_result} EUR")
-
-
-
-    # CZK -> USD
-    sub_butt_2 = st.form_submit_button(label="CZK -> USD",      use_container_width=True
-    )
 
     def f2_czk_to_usd(czk_obj, usd_rate):
         result = czk_obj / usd_rate
         return result
 
     f2_result = round(f2_czk_to_usd(czk_obj, usd_rate), 2)
+
+
+    def f3_eur_to_czk(eur_obj, eur_rate):
+        result = eur_obj * eur_rate
+        return result
+
+    f3_result = round(f3_eur_to_czk(eur_obj, eur_rate), 2)
+
+    def f4_usd_to_czk(usd_obj, usd_rate):
+        result = usd_obj * usd_rate
+        return result
+
+    f4_result = round(f4_usd_to_czk(usd_obj, usd_rate), 2)
+
+
+    def f5_eur_to_usd(eur_obj, eur_to_usd_rate):
+        result = eur_obj * eur_to_usd_rate
+        return result
+
+    f5_result = round(f5_eur_to_usd(eur_obj, eur_to_usd_rate), 2)
+
+
+    def f6_usd_to_eur(usd_obj, eur_to_usd_rate):
+        result = usd_obj / eur_to_usd_rate
+        return result
+
+    f6_result = round(f6_usd_to_eur(usd_obj, eur_to_usd_rate), 2)
+  
+
+
+# ----- Buttons ------
+
+    # ALL exchanges button 
+    ''
+    ''
+    sub_butt_all = st.form_submit_button(
+    label="To show all conversions",
+    use_container_width=True,
+    icon = ":material/apps:"
+    )
+
+    if sub_butt_all:
+        st.write(f"{czk_obj:.2f} CZK = {f1_result} EUR")
+        st.write(f"{czk_obj} CZK = {f2_result} USD")
+        st.write(f"{eur_obj} EUR = {f3_result} CZK")
+        st.write(f"{usd_obj} USD = {f4_result} CZK")
+        st.write(f"{eur_obj} EUR = {f5_result} USD")
+        st.write(f"{usd_obj} USD = {f6_result} EUR")
+
+
+    # CZK -> EUR
+    ''
+    ''
+    ''
+    sub_butt_1 = st.form_submit_button(
+    label="CZK -> EUR",
+    use_container_width=True
+    )
+
+    if sub_butt_1:
+        st.write(f"{czk_obj} CZK = {f1_result} EUR")
+
+
+
+    # CZK -> USD
+    sub_butt_2 = st.form_submit_button(
+    label="CZK -> USD",
+    use_container_width=True
+    )
 
     if sub_butt_2:
         st.write(f"{czk_obj} CZK = {f2_result} USD")
@@ -139,28 +198,20 @@ with st.form(key="calculation form"):
     # EUR -> CZK
     ''
     ''
-    sub_butt_3 = st.form_submit_button(label="EUR -> CZK",      use_container_width=True
+    sub_butt_3 = st.form_submit_button(
+    label="EUR -> CZK",
+    use_container_width=True
     )
-
-    def f3_eur_to_czk(eur_obj, eur_rate):
-        result = eur_obj * eur_rate
-        return result
-
-    f3_result = round(f3_eur_to_czk(eur_obj, eur_rate), 2)
 
     if sub_butt_3:
         st.write(f"{eur_obj} EUR = {f3_result} CZK")
 
 
     # USD -> CZK
-    sub_butt_4 = st.form_submit_button(label="USD -> CZK",      use_container_width=True
+    sub_butt_4 = st.form_submit_button(
+    label="USD -> CZK",
+    use_container_width=True
     )
-
-    def f4_usd_to_czk(usd_obj, usd_rate):
-        result = usd_obj * usd_rate
-        return result
-
-    f4_result = round(f4_usd_to_czk(usd_obj, usd_rate), 2)
 
     if sub_butt_4:
         st.write(f"{usd_obj} USD = {f4_result} CZK")
@@ -170,14 +221,10 @@ with st.form(key="calculation form"):
     # EUR -> USD
     ''
     ''
-    sub_butt_5 = st.form_submit_button(label="EUR -> USD",      use_container_width=True
+    sub_butt_5 = st.form_submit_button(
+    label="EUR -> USD",
+    use_container_width=True
     )
-
-    def f5_eur_to_usd(eur_obj, eur_to_usd_rate):
-        result = eur_obj * eur_to_usd_rate
-        return result
-
-    f5_result = round(f5_eur_to_usd(eur_obj, eur_to_usd_rate), 2)
 
     if sub_butt_5:
         st.write(f"{eur_obj} EUR = {f5_result} USD")
@@ -185,14 +232,14 @@ with st.form(key="calculation form"):
     
     # USD -> EUR
 
-    sub_butt_6 = st.form_submit_button(label="USD -> EUR",      use_container_width=True
+    sub_butt_6 = st.form_submit_button(
+    label="USD -> EUR",
+    use_container_width=True
     )
-
-    def f6_usd_to_eur(usd_obj, eur_to_usd_rate):
-        result = usd_obj / eur_to_usd_rate
-        return result
-
-    f6_result = round(f6_usd_to_eur(usd_obj, eur_to_usd_rate), 2)
 
     if sub_butt_6:
         st.write(f"{usd_obj} USD = {f6_result} EUR")
+
+
+
+
