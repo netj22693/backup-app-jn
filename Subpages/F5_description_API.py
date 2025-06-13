@@ -237,6 +237,7 @@ with st.expander("API JSON structure - Kurzy.cz", icon= ":material/help:"):
 
 	''
 	st.write("""
+	- API - **HTTP GET** request to retrieve data from a server
 	- This Function 5 receives the full predefined API data from Kurzy.cz 
 	- There is no possibility to customize the API data
 		  
@@ -284,6 +285,7 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 
 	''
 	st.write("""
+	- API - **HTTP GET** request to retrieve data from a server
 	- This Function 5 receives CUSTOMIZED data from Freecurrencyapi.com 
 	
 		- "data" : { "USD" : float value }
@@ -311,6 +313,8 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 	- Make a registration 
 	- Monitor the API requests 
 	- And see some statistics
+	- Also this UI is allowing to troubleshoot and reproduce the request + **retrospectivelly see every JSON data which were sent out** based on every GET the source application got. 
+	- Possible to search based on API status, time, date...
 	"""
 	)
 	''
@@ -342,7 +346,7 @@ st.write("""
 ''
 st.write("""
 - Frequency of data updates from **Kurzy.cz**
-	- Exchange rates are updated continuously, with a few minutes delay compared to the source.
+	- **They say**: Exchange rates are updated continuously, with a few minutes delay compared to the source.
 	- Based on my observing should be 1x per 24 hours
 	- History can be seen (Page in Czech language): https://www.kurzy.cz/kurzy-men/kurzovni-listek/csob/
 """
@@ -352,7 +356,7 @@ st.write("""
 ''
 st.write("""
 - Frequency of data updates from **Freecurrencyapi.com**
-	- The currency data on freecurrencyapi.com is updated on a daily basis. This means that while the API provides live and historical exchange rates, the data is refreshed once a day with end-of-day figures. 
+	- **They say**: The currency data on freecurrencyapi.com is updated on a daily basis. This means that while the API provides live and historical exchange rates, the data is refreshed once a day with end-of-day figures. 
 	- 1x per 24 hours
 """
 )
