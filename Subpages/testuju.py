@@ -1,245 +1,440 @@
-import requests
-import json
 import streamlit as st
+import xml.etree.ElementTree as ET
+import time
+import plotly.express as px
+import pandas as pd
+import math
+
+# ======== Upload button to trigger the application ========
+
+st.write("# Upload XML:")
+
+object_from_upload = st.file_uploader("")
+
+if object_from_upload is None:
+    st.info("When a file uploaded, application will start")
+        
+
+if object_from_upload is not None:
+    st.success("Upload complete")
+
+    # Data import 
+    tree_element_data = ET.parse(object_from_upload)
+
+    root = tree_element_data.getroot()
+    print(f"root identified as {root}")
+
+    # Data parsing from header
+    value_customer = root[0][0].text
+    value_invoice_num = root[0][1].text
+    value_date = root[0][2].text
+
+    currency = []
+    for header_currency in root.findall('header'):
+        get_currency = header_currency.find('price/currency').text
+        currency.append(get_currency)
+    
+    currency = currency[0]
 
 
-# ========================= API 1 ====================
-# API kurzy.cz 
-api_kurzy = "https://data.kurzy.cz/json/meny/b[1].json"
+    value_total_sum = []
+    for header_total_sum in root.findall('header'):
+        total_sum = header_total_sum.find('price/total_sum').text
+        value_total_sum.append(total_sum)
 
-# get reguest
-@st.cache_data(ttl=3600)
-def get_response_api_1(api_kurzy):
-    api_1 = requests.get(api_kurzy, verify=False).text
-    return api_1
+    # - necessary to change type to float
+    value_total_sum = value_total_sum[0]
+    value_total_sum = float(value_total_sum)
 
-api_1 = get_response_api_1(api_kurzy)
+    value_total_sum_services = []
+    for header_total_sum_services in root.findall('header'):
+        total_sum_services = header_total_sum_services.find('price/total_sum_services').text
+        value_total_sum_services.append(total_sum_services)
+        
 
-# JSON format creation
-api_1_json = json.loads(api_1)
-
-# Search for data in the API defined format - JSON
-eur_rate = api_1_json['kurzy']['EUR']['dev_stred']
-usd_rate = api_1_json['kurzy']['USD']['dev_stred']
-
-eur_rate = round(eur_rate, 3)
-usd_rate = round(usd_rate, 3)
-
-
-# ========================= API 2 ====================
-api_freecurrency_api = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_6SzWJxPYa8Co3Xr9ziCTd7Mt7Yavrhpy2M5A0JZ4&currencies=USD&base_currency=EUR"
-
-#get reguest
-@st.cache_data(ttl=3600)
-def get_response_api_2(api_freecurrency_api):
-    api_2 = requests.get(api_freecurrency_api, verify=False).text
-    return api_2
-
-api_2 = get_response_api_2(api_freecurrency_api)
+    # - necessary to change type to float
+    value_total_sum_services = value_total_sum_services[0]
+    value_total_sum_services_fl = float(value_total_sum_services)
+    
+ 
+    #  ----- DATA PARSING FROM DETAIL LEVEL XML ------
+    value_category_list = []
+    for detail_category in root.findall('detail'):
+        category = detail_category.find('category').text
+        value_category_list.append(category)
 
 
-# JSON format creation
-api_2_json = json.loads(api_2)
-
-# Search for data in the API defined format - JSON
-eur_to_usd_rate = api_2_json['data']['USD']
-eur_to_usd_rate = round(eur_to_usd_rate, 3)
-
-# ======= Values for testing purposed to do not call/utilize API
-# # API 1
-# eur_rate = 24
-# usd_rate = 21
-# # API 2
-# eur_to_usd_rate = 1.14
+    value_product_name_list = []
+    for detail_product_name in root.findall('detail'):
+        product_name = detail_product_name.find('product_name').text
+        value_product_name_list.append(product_name)
 
 
-# ============== App screen part ===================
-st.write("# Exchange rate:")
-''
-''
-st.write("""
-- The exchange rate is API based 
-- The information comes from https://www.kurzy.cz/ and https://app.freecurrencyapi.com/
-""")
+    value_price_list = []
+    for detail_price in root.findall('detail'):
+        product_price = detail_price.find('price_amount').text
+        value_price_list.append(product_price)
+        
+    
+    value_attribut = []
+    for detail_id in root.findall('detail'):
+        ids = detail_id.get('id')
+        value_attribut.append(ids)
 
-''
-''
-''
-st.metric(label="CZK to EUR", value= eur_rate)
+    value_attribute_int = list(map(int, value_attribut))
+    max_value_attribut = max(value_attribute_int)
+    
 
-st.metric(label="CZK to USD", value= usd_rate)
+    # Logic for recognizing whether any extra money for 'extended warranty' or 'insurance' 
+    warranty = []
+    for service_type in root.findall('detail'):
+        condition_service_type = service_type.find('additional_service/service_type').text
 
-st.metric(label="EUR to USD", value= eur_to_usd_rate)
+        if condition_service_type == 'extended warranty':
+            service_price = service_type.find('additional_service/service_price').text
+            warranty.append(service_price)
+        
+    warranty_float = list(map(float, warranty)) 
+    sum_price_warranty = math.fsum(warranty_float)
+    
+
+    insurance = []
+    for service_type in root.findall('detail'):
+        condition_service_type = service_type.find('additional_service/service_type').text
+
+        if condition_service_type == 'insurance':
+            service_price = service_type.find('additional_service/service_price').text
+            insurance.append(service_price)
+        
+    insurance_float = list(map(float, insurance)) 
+    sum_price_insurance = math.fsum(insurance_float)
+
+    #Extra parsing for charts
+    # Type of additional service <additional_service> - Including 'None'
+    add_service_full = []
+    for add_ser_item in root.findall('detail'):
+        add_service = add_ser_item.find('additional_service/service_type').text
+        add_service = add_service.capitalize()
+        add_service_full.append(add_service)
+
+    # Prices full - including '0.00' for None values
+    add_ser_price_full = []
+    for add_ser_price_item in root.findall('detail'):
+        add_ser_price = add_ser_price_item.find('additional_service/service_price').text
+        add_ser_price_full.append(add_ser_price)
+
+    
+
+    # Sum of prices - type change string -> float for calculation
+    value_price_list_float = list(map(float, value_price_list)) 
+    sum_price = math.fsum(value_price_list_float)
+    
+    # Data validation - total_sum = pri_values Y/N 
+    value_total_sum_fl = float(value_total_sum)
+
+    # Data type change for purpose of charts
+    add_ser_price_full_float = list(map(float, add_ser_price_full)) 
+    sum_adds_fl = math.fsum(add_ser_price_full_float)
 
 
-''
-''
-''
-''
 
-# =============== Form ==============================
+    # v 3.2.X and higher - additional parsing for charts 
+    pro_price_where_insurance = []
+    for price_amount in root.findall('detail'):
+        condition_service_type = price_amount.find('additional_service/service_type').text
 
-st.write("#### Calculation: ")
-# User inputs
-with st.form(key="calculation form"):
-    czk_obj = st.number_input(
-        "CZK",
-        step=10.00,
-        min_value=0.00,
-        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
+        if condition_service_type == 'insurance':
+            price_amount = price_amount.find('price_amount').text
+            pro_price_where_insurance.append(price_amount)
+        
+    pro_price_where_insurance = list(map(float, pro_price_where_insurance)) 
+    sum_pro_price_where_insurance = math.fsum(pro_price_where_insurance)
+
+    # ======= Application Function for validation of detail line sum matches header values============
+
+    # <total_sum>
+    result_validation = []
+    def data_validation(value_total_sum, sum_price):
+        result = value_total_sum - sum_price
+        st.write("---------")
+        st.write("#### Validation process")
+        st.write("1) ###### Validation process - Invoice sum = sum of items in lines:")
+        
+        if result < 0 or result > 0:
+            st.warning("Validation not passed - summary does not equeal to line values. You can either continue with existing file or adjust the input file and upload it again.")
+            st.write(f"** Total sum in the XML invoice is: '{value_total_sum:.2f}' but summary of prices in detail lines / per product is: '{sum_price:.2f}'.")
+            outcome = ("Sum total - Not passed")
+            result_validation.append(outcome)
+
+        else:
+            st.success("Validation passed")
+            outcome = ("Sum total - Passed")
+            result_validation.append(outcome)
+
+    data_validation(value_total_sum_fl, sum_price)
+
+    result_obj_outcome = result_validation[0]
+    
+
+    # Data validation - <total_sum_services> = value_total_sum_services Y/N 
+    
+    result_validation_services = []
+    def data_validation_services(value_total_sum_services_fl, sum_price_warranty , sum_price_insurance):
+        result = value_total_sum_services_fl - sum_price_warranty - sum_price_insurance
+        sum_warranty_insurance = sum_price_warranty + sum_price_insurance
+        st.write("2) ###### Validation process - Invoice sum services = sum of items in lines:")
+        
+        if result < 0 or result > 0:
+            st.warning("Validation not passed - summary does not equeal to line values. You can either continue with existing file or adjust the input file and upload it again.")
+            st.write(f"** Total sum of SERVICES in the XML invoice is: '{value_total_sum_services_fl:.2f}' but summary of prices in detail lines is '{sum_warranty_insurance:.2f}'.")
+            outcome = ("Services - Not passed")
+            result_validation_services.append(outcome)
+
+        else:
+            st.success("Validation passed")
+            outcome = ("Services - Passed")
+            result_validation_services.append(outcome)
+
+    data_validation_services(value_total_sum_services_fl, sum_price_warranty , sum_price_insurance)
+
+    result_obj_outcome_services = result_validation_services[0]
+    
+
+    # ========= Button to show values parsed and calculated ======================
+
+    value_to_paid = value_total_sum + sum_price_warranty + sum_price_insurance
+
+    st.write("------")
+    st.write("#### Data Visualization:")
+    ''
+    ''
+    if st.button("Summary overview", use_container_width= True, icon = ":material/apps:", help="To show highlights of parsed data from the invoice"):
+        st.write(f"Sumary:")
+        st.write(f" - Invoice number: {value_invoice_num}")
+        st.write(f" - Receiver of the invoice: {value_customer}")
+        st.write(f" - Invoice from day (date): {value_date} - (format YYYY-MM-DD)")
+
+        st.write(f" - Price to be paid: {value_to_paid:.2f} {currency} (*products + services)")
+        st.write(f" - Number of products: {max_value_attribut}")
+        ''
+        ''
+        st.write(f"Detail:")
+        st.write(f" - Total sum of products: {value_total_sum:.2f} {currency}")
+
+        sum_additional_serv = sum_price_warranty + sum_price_insurance
+
+        st.write(f" - Sum of additional services: {sum_additional_serv:.2f} {currency}")
+        st.write(f" - Extended warranty: {sum_price_warranty:.2f} {currency}")
+        st.write(f" - Insurance: {sum_price_insurance:.2f} {currency}")
+    ''
+    ''
+    ''
+    ''
+    st.write("###### Interactive table and charts:")
+
+
+    # ========= Data Visualization ====================
+
+    # Transformation of Data to table -> not editable
+    data_table = pd.DataFrame({
+        "Order" : value_attribut,
+        "Product" : value_product_name_list,
+        "Price" : value_price_list,
+        "Category" : value_category_list, 
+        "Additional service" : add_service_full, 
+        "Additional service price" : add_ser_price_full                          
+        })
+
+    unique_value = data_table['Category'].unique()
+
+    # Multiselect filter
+    filter_multiselect = st.multiselect(
+        "Select category",
+        unique_value,
+        default = unique_value,
+        help = "Select category which you want to see. Multiple categories allowed"
+    )  
+    
+    if not len(filter_multiselect):
+        st.warning("Select at lease 1 category to see overview table and charts")
+
+    # min_value_price = data_table['Price'].min()
+    # max_value_price = data_table['Price'].max()
+    
+    
+    # Slider na price, zatím nefunkcni
+    # from_price, to_price = st.slider(
+    #     "Filter Price",
+    #     min_value = min_value_price,
+    #     max_value = max_value_price,
+    #     help = "Select range of prices you want to see"
+    # )
+    
+    
+    filtered_data = data_table[
+    (data_table["Category"].isin(filter_multiselect))
+    # & (data_table["Price"] <= max_value_price)
+    # & (min_value_price <= data_table["Price"]) 
+    ]
+
+    # This is adjusting the table
+    data_table_2 = st.dataframe(data=filtered_data, hide_index=True, use_container_width=True)
+
+    
+
+    # Pie chart
+    data = pd.DataFrame({
+        "Product" : value_product_name_list,
+        "Price" : value_price_list
+        })
+
+
+    fig_pie = px.pie(
+        filtered_data, 
+        names = "Product",
+        values = "Price",
+        title = "Pie chart - ratio of price values"
+        )
+
+    st.plotly_chart(fig_pie)
+    
+    # Bar chart
+    fig_bar = px.bar(
+        filtered_data, 
+        x="Product",
+        y="Price",
+        title= "Bar chart - Ratio of price values",
+        )
+
+    st.plotly_chart(fig_bar)
+
+
+    # 15-June - testuju
+    # Bar chart 2 -  Price + Additional service price
+    # It is important to have values in float!!! to be able to 'sum' them as part of visualizing in the chart
+    data_bar_2 = ({
+        "Product" : value_product_name_list,
+        "Price" : value_price_list_float,  #float is must 
+        "Category" : value_category_list, 
+        "Additional service" : add_service_full, 
+        "Additional service price" : add_ser_price_full_float #float is must 
+    })
+
+
+    fig_bar_2 = px.bar(data_bar_2,
+            x="Product",
+            y=["Price","Additional service price"],
+            title="Bar chart - Ratio of price including extra costs for additional services",
+            )
+
+    st.plotly_chart(fig_bar_2)
+
+
+    # 15-June - testuju
+
+    data_pie_2 = pd.DataFrame({
+
+    "Costs" : [value_total_sum_fl,sum_adds_fl],
+    "Costs name" : ["Sum price","Sum additional services"],
+
+    })
+
+
+    fig_pie_2 = px.pie(
+        data_pie_2, 
+        names = "Costs name",
+        values = "Costs",
+        title = "Pie chart - ratio of price values"
+        )
+
+    st.plotly_chart(fig_pie_2)
+
+
+    # 15-June - testuju
+
+
+    col1, col2 = st.columns(2)
+
+    data_pie_3 = pd.DataFrame({
+
+    "Costs" : [sum_pro_price_where_insurance,sum_price_insurance],
+    "Costs named" : ["Costs products","Costs Insurance"],
+
+    })
+
+    fig_pie_3 = px.pie(
+        data_pie_3, 
+        names = "Costs named",
+        values = "Costs",
+        title = "Costs Insurance"
         )
     
 
-    eur_obj = st.number_input(
-        "EUR",
-        step=10.00,
-        min_value=0.00,
-        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
-        )
-    
-
-    usd_obj = st.number_input(
-        "USD",
-        step=10.00,
-        min_value=0.00,
-        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
-        )
-
-    # Functions for calculation
-
-    def f1_czk_to_eur(czk_obj, eur_rate):
-        result = czk_obj / eur_rate
-        return result
 
 
-    f1_result = round(f1_czk_to_eur(czk_obj,eur_rate), 2)
+    data_pie_4 = pd.DataFrame({
 
+    "Costs" : [value_total_sum_fl,sum_adds_fl],
+    "Costs names" : ["Sum price","Sum additional services"],
 
-    def f2_czk_to_usd(czk_obj, usd_rate):
-        result = czk_obj / usd_rate
-        return result
+    })
 
-    f2_result = round(f2_czk_to_usd(czk_obj, usd_rate), 2)
-
-
-    def f3_eur_to_czk(eur_obj, eur_rate):
-        result = eur_obj * eur_rate
-        return result
-
-    f3_result = round(f3_eur_to_czk(eur_obj, eur_rate), 2)
-
-    def f4_usd_to_czk(usd_obj, usd_rate):
-        result = usd_obj * usd_rate
-        return result
-
-    f4_result = round(f4_usd_to_czk(usd_obj, usd_rate), 2)
-
-
-    def f5_eur_to_usd(eur_obj, eur_to_usd_rate):
-        result = eur_obj * eur_to_usd_rate
-        return result
-
-    f5_result = round(f5_eur_to_usd(eur_obj, eur_to_usd_rate), 2)
-
-
-    def f6_usd_to_eur(usd_obj, eur_to_usd_rate):
-        result = usd_obj / eur_to_usd_rate
-        return result
-
-    f6_result = round(f6_usd_to_eur(usd_obj, eur_to_usd_rate), 2)
-  
-
-
-# ----- Buttons ------
-
-    # ALL exchanges button 
-    ''
-    ''
-    sub_butt_all = st.form_submit_button(
-    label="To show all conversions",
-    use_container_width=True,
-    icon = ":material/apps:"
-    )
-
-    if sub_butt_all:
-        st.write(f"{czk_obj:.2f} CZK = {f1_result} EUR")
-        st.write(f"{czk_obj} CZK = {f2_result} USD")
-        st.write(f"{eur_obj} EUR = {f3_result} CZK")
-        st.write(f"{usd_obj} USD = {f4_result} CZK")
-        st.write(f"{eur_obj} EUR = {f5_result} USD")
-        st.write(f"{usd_obj} USD = {f6_result} EUR")
-
-
-    # CZK -> EUR
-    ''
-    ''
-    ''
-    sub_butt_1 = st.form_submit_button(
-    label="CZK -> EUR",
-    use_container_width=True
-    )
-
-    if sub_butt_1:
-        st.write(f"{czk_obj} CZK = {f1_result} EUR")
+    fig_pie_4 = px.pie(
+        data_pie_4, 
+        names = "Costs names",
+        values = "Costs",
+        title = "Costs Extended warranty"
+        )  
 
 
 
-    # CZK -> USD
-    sub_butt_2 = st.form_submit_button(
-    label="CZK -> USD",
-    use_container_width=True
-    )
-
-    if sub_butt_2:
-        st.write(f"{czk_obj} CZK = {f2_result} USD")
+    with col1:
+        st.write(fig_pie_3)
+        st.write(f"Product costs where insurance: **{sum_pro_price_where_insurance:.2f}** {currency}")
+        st.write(f"The insurance: **{sum_price_insurance:.2f}** {currency}")
 
 
-
-    # EUR -> CZK
-    ''
-    ''
-    sub_butt_3 = st.form_submit_button(
-    label="EUR -> CZK",
-    use_container_width=True
-    )
-
-    if sub_butt_3:
-        st.write(f"{eur_obj} EUR = {f3_result} CZK")
-
-
-    # USD -> CZK
-    sub_butt_4 = st.form_submit_button(
-    label="USD -> CZK",
-    use_container_width=True
-    )
-
-    if sub_butt_4:
-        st.write(f"{usd_obj} USD = {f4_result} CZK")
+    with col2:
+        st.write(fig_pie_4)
+        st.write(sum_pro_price_where_insurance)
+        st.write(sum_price_insurance)
 
     
-    
-    # EUR -> USD
+
+
+    # Final outcome for print - using SERVER time
+    st.write("------")
+    st.write("#### Download of .txt:")
+    st.write('''A short summary of the original XML invoice, including result of validation, date and some of the parsed data.''')
+
+    st.image("Pictures/V2_pictures/txt outcome_3.png")
+
+
+    # Time 
+    time_objects = time.localtime()
+    year, month, day, hour, minute, second, weekday, yearday, daylight = time_objects  
+
+    date_custom = str("Date: %02d-%02d-%04d" % (day,month,year))
+    time_custom = str("Time: %02d:%02d:%02d" % (hour,minute,second))
+    day_custom = str(("Mon","Tue","Wed","Thu","Fri","Sat","Sun") [weekday])
+    day_custom_2 = str("Day: "+ day_custom)
+    full_date_outcome = str(date_custom +" | " + day_custom_2 +" | " + time_custom )
+
+    final_outcome = (f"{full_date_outcome} | Validation: 1. {result_obj_outcome}, 2. {result_obj_outcome_services} | Receiver: {value_customer} | Price to pay (including extra services): {value_to_paid:.2f} {currency}.")
+
+
+    file_name_fstring = f"Summary-{value_invoice_num}.txt"
+
     ''
     ''
-    sub_butt_5 = st.form_submit_button(
-    label="EUR -> USD",
-    use_container_width=True
-    )
+    ''
+    if st.download_button(
+        "Download",
+        data= final_outcome,
+        file_name= file_name_fstring,
+        icon = ":material/download:",
+        use_container_width=True):
+            
+        st.info("download will start in few seconds")
 
-    if sub_butt_5:
-        st.write(f"{eur_obj} EUR = {f5_result} USD")
-
-    
-    # USD -> EUR
-
-    sub_butt_6 = st.form_submit_button(
-    label="USD -> EUR",
-    use_container_width=True
-    )
-
-    if sub_butt_6:
-        st.write(f"{usd_obj} USD = {f6_result} EUR")
-
-
-
-
+st.write("-------")
