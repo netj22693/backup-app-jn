@@ -108,6 +108,21 @@ if object_from_upload is not None:
         
     insurance_float = list(map(float, insurance)) 
     sum_price_insurance = math.fsum(insurance_float)
+
+    #Extra parsing for charts
+    # Type of additional service <additional_service> - Including 'None'
+    add_service_full = []
+    for add_ser_item in root.findall('detail'):
+        add_service = add_ser_item.find('additional_service/service_type').text
+        add_service = add_service.capitalize()
+        add_service_full.append(add_service)
+
+    # Prices full - including '0.00' for None values
+    add_ser_price_full = []
+    for add_ser_price_item in root.findall('detail'):
+        add_ser_price = add_ser_price_item.find('additional_service/service_price').text
+        add_ser_price_full.append(add_ser_price)
+
     
 
     # Sum of prices - type change string -> float for calculation
@@ -117,6 +132,37 @@ if object_from_upload is not None:
     # Data validation - total_sum = pri_values Y/N 
     value_total_sum_fl = float(value_total_sum)
 
+    # Data type change for purpose of charts
+    add_ser_price_full_float = list(map(float, add_ser_price_full)) 
+    sum_adds_fl = math.fsum(add_ser_price_full_float)
+
+
+
+    # v 3.2.X and higher - additional parsing for charts ---------------
+    pro_price_where_insurance = []
+    for price_amount in root.findall('detail'):
+        condition_service_type = price_amount.find('additional_service/service_type').text
+
+        if condition_service_type == 'insurance':
+            price_amount = price_amount.find('price_amount').text
+            pro_price_where_insurance.append(price_amount)
+        
+    pro_price_where_insurance = list(map(float, pro_price_where_insurance)) 
+    sum_pro_price_where_insurance = math.fsum(pro_price_where_insurance)
+
+
+    pro_price_where_ewarranty = []
+    for price_amount in root.findall('detail'):
+        condition_service_type = price_amount.find('additional_service/service_type').text
+
+        if condition_service_type == 'extended warranty':
+            price_amount = price_amount.find('price_amount').text
+            pro_price_where_ewarranty.append(price_amount)
+        
+    pro_price_where_ewarranty = list(map(float, pro_price_where_ewarranty)) 
+    sum_pro_price_where_ewarranty = math.fsum(pro_price_where_ewarranty)
+
+    # --------------------------------------------------------------------
 
 
 
@@ -178,29 +224,36 @@ if object_from_upload is not None:
     st.write("#### Data Visualization:")
     ''
     ''
-    if st.button("Summary overview", use_container_width= True, icon = ":material/apps:", help="To show highlights of parsed data from the invoice"):
-        st.write(f"Sumary:")
-        st.write(f" - Invoice number: {value_invoice_num}")
-        st.write(f" - Receiver of the invoice: {value_customer}")
-        st.write(f" - Invoice from day (date): {value_date} - (format YYYY-MM-DD)")
+    with st.expander("Summary overview", icon = ":material/apps:"):
+        ''
+        '' 
+        st.write(f"**Sumary:**")
+        st.write(f" - Invoice number: **{value_invoice_num}**")
+        st.write(f" - Receiver of the invoice: **{value_customer}**")
+        st.write(f" - Invoice from date (YYYY-MM-DD): **{value_date}**")
 
-        st.write(f" - Price to be paid: {value_to_paid:.2f} {currency} (*products + services)")
-        st.write(f" - Number of products: {max_value_attribut}")
+        st.write(f" - Price to be paid: **{value_to_paid:.2f} {currency}** (*products + services)")
+        st.write(f" - Number of products: **{max_value_attribut}**")
         ''
         ''
-        st.write(f"Detail:")
-        st.write(f" - Total sum of products: {value_total_sum:.2f} {currency}")
+        ''
+        st.write(f"**Detail:**")
+        st.write(f" - Total sum of products: **{value_total_sum:.2f} {currency}**")
 
         sum_additional_serv = sum_price_warranty + sum_price_insurance
 
-        st.write(f" - Sum of additional services: {sum_additional_serv:.2f} {currency}")
-        st.write(f" - Extended warranty: {sum_price_warranty:.2f} {currency}")
-        st.write(f" - Insurance: {sum_price_insurance:.2f} {currency}")
+        st.write(f" - Sum of additional services: **{sum_additional_serv:.2f} {currency}**")
+        st.write(f" - Extended warranty: **{sum_price_warranty:.2f} {currency}**")
+        st.write(f" - Insurance: **{sum_price_insurance:.2f} {currency}**")
+        ''
+        ''
+
+
     ''
     ''
     ''
     ''
-    st.write("###### Interactive table and charts:")
+    st.write("##### Interactive table and charts:")
 
 
     # ========= Data Visualization ====================
@@ -210,12 +263,15 @@ if object_from_upload is not None:
         "Order" : value_attribut,
         "Product" : value_product_name_list,
         "Price" : value_price_list,
-        "Category" : value_category_list                            
+        "Category" : value_category_list, 
+        "Additional service" : add_service_full, 
+        "Additional service price" : add_ser_price_full                          
         })
 
     unique_value = data_table['Category'].unique()
 
     # Multiselect filter
+    ''
     filter_multiselect = st.multiselect(
         "Select category",
         unique_value,
@@ -246,6 +302,7 @@ if object_from_upload is not None:
     ]
 
     # This is adjusting the table
+    ''
     data_table_2 = st.dataframe(data=filtered_data, hide_index=True, use_container_width=True)
 
     
@@ -261,21 +318,125 @@ if object_from_upload is not None:
         filtered_data, 
         names = "Product",
         values = "Price",
-        title = "Pie chart - ratio of price values"
+        title = "Costs - ratio of product prices"
         )
 
-    st.plotly_chart(fig_pie)
+    with st.container(border=True):
+        st.plotly_chart(fig_pie, use_container_width=True)
     
     # Bar chart
     fig_bar = px.bar(
         filtered_data, 
         x="Product",
         y="Price",
-        title= "Bar chart - ratio of price values"
+        title= "Bar chart - Costs - ratio of product prices",
         )
 
-    st.plotly_chart(fig_bar)
+    with st.container(border=True):
+        st.plotly_chart(fig_bar, use_container_width=True)
 
+
+    # 15-June - testuju
+    # Bar chart 2 -  Price + Additional service price
+    # It is important to have values in float!!! to be able to 'sum' them as part of visualizing in the chart
+    data_bar_2 = ({
+        "Product" : value_product_name_list,
+        "Price" : value_price_list_float,  #float is must 
+        "Category" : value_category_list, 
+        "Additional service" : add_service_full, 
+        "Additional service price" : add_ser_price_full_float #float is must 
+    })
+
+    ''
+    ''
+    ''
+    st.write("##### Static Charts:")
+
+    fig_bar_2 = px.bar(data_bar_2,
+            x="Product",
+            y=["Price","Additional service price"],
+            title="Bar chart - Ratio of price including extra costs for additional services",
+            )
+
+    with st.container(border=True):
+        st.plotly_chart(fig_bar_2, use_container_width=True)
+
+
+    # v4.0 - new charts ---------------------------------------
+
+    data_pie_2 = pd.DataFrame({
+
+    "Costs" : [value_total_sum_fl,sum_adds_fl],
+    "Costs name" : ["Sum price","Sum additional services"],
+
+    })
+
+
+    fig_pie_2 = px.pie(
+        data_pie_2, 
+        names = "Costs name",
+        values = "Costs",
+        title = "How much additional services increase the costs"
+        )
+
+    with st.container(border=True):
+        st.plotly_chart(fig_pie_2, use_container_width=True)
+        st.write(f"- Costs for products **{value_total_sum_fl:.2f}** {currency}")
+        st.write(f"- Costs for additional services **{sum_adds_fl:.2f}** {currency}")
+        st.write(f"- Summary:  **{(sum_adds_fl + value_total_sum_fl):.2f}** {currency}")
+
+
+
+    col1, col2 = st.columns(2)
+
+    data_pie_3 = pd.DataFrame({
+
+    "Costs" : [sum_pro_price_where_insurance,sum_price_insurance],
+    "Costs named" : ["Costs products","Costs Insurance"],
+
+    })
+
+    fig_pie_3 = px.pie(
+        data_pie_3, 
+        names = "Costs named",
+        values = "Costs",
+        title = "Costs Insurance"
+        )
+    
+
+
+
+    data_pie_4 = pd.DataFrame({
+
+    "Costs" : [sum_pro_price_where_ewarranty,sum_price_warranty],
+    "Costs names" : ["Costs products","Costs warranty"],
+
+    })
+
+    fig_pie_4 = px.pie(
+        data_pie_4, 
+        names = "Costs names",
+        values = "Costs",
+        title = "Costs Extended warranty"
+        )  
+
+
+
+    with col1.container(border=True):
+            st.write(fig_pie_3)
+            st.write(f"- Product costs: **{sum_pro_price_where_insurance:.2f}** {currency}")
+            st.write(f"- The insurance: **{sum_price_insurance:.2f}** {currency}")
+            st.write(f"- Summary:  **{(sum_pro_price_where_insurance + sum_price_insurance):.2f}** {currency}")
+
+
+
+    with col2.container(border=True):
+        st.write(fig_pie_4)
+        st.write(f"- Product costs: **{sum_pro_price_where_ewarranty:.2f}** {currency}")
+        st.write(f"- The warranty: **{sum_price_warranty:.2f}** {currency}")
+        st.write(f"- Summary:  **{(sum_pro_price_where_ewarranty + sum_price_warranty):.2f}** {currency}")
+    
+    #----------------------------------------------------------------------------
 
     # Final outcome for print - using SERVER time
     st.write("------")
@@ -313,6 +474,3 @@ if object_from_upload is not None:
         st.info("download will start in few seconds")
 
 st.write("-------")
-
-
-

@@ -138,7 +138,7 @@ if object_from_upload is not None:
 
 
 
-    # v 3.2.X and higher - additional parsing for charts 
+    # v 3.2.X and higher - additional parsing for charts ---------------
     pro_price_where_insurance = []
     for price_amount in root.findall('detail'):
         condition_service_type = price_amount.find('additional_service/service_type').text
@@ -149,6 +149,22 @@ if object_from_upload is not None:
         
     pro_price_where_insurance = list(map(float, pro_price_where_insurance)) 
     sum_pro_price_where_insurance = math.fsum(pro_price_where_insurance)
+
+
+    pro_price_where_ewarranty = []
+    for price_amount in root.findall('detail'):
+        condition_service_type = price_amount.find('additional_service/service_type').text
+
+        if condition_service_type == 'extended warranty':
+            price_amount = price_amount.find('price_amount').text
+            pro_price_where_ewarranty.append(price_amount)
+        
+    pro_price_where_ewarranty = list(map(float, pro_price_where_ewarranty)) 
+    sum_pro_price_where_ewarranty = math.fsum(pro_price_where_ewarranty)
+
+    # --------------------------------------------------------------------
+
+
 
     # ======= Application Function for validation of detail line sum matches header values============
 
@@ -208,29 +224,36 @@ if object_from_upload is not None:
     st.write("#### Data Visualization:")
     ''
     ''
-    if st.button("Summary overview", use_container_width= True, icon = ":material/apps:", help="To show highlights of parsed data from the invoice"):
-        st.write(f"Sumary:")
-        st.write(f" - Invoice number: {value_invoice_num}")
-        st.write(f" - Receiver of the invoice: {value_customer}")
-        st.write(f" - Invoice from day (date): {value_date} - (format YYYY-MM-DD)")
+    with st.expander("Summary overview", icon = ":material/apps:"):
+        ''
+        '' 
+        st.write(f"**Sumary:**")
+        st.write(f" - Invoice number: **{value_invoice_num}**")
+        st.write(f" - Receiver of the invoice: **{value_customer}**")
+        st.write(f" - Invoice from date (YYYY-MM-DD): **{value_date}**")
 
-        st.write(f" - Price to be paid: {value_to_paid:.2f} {currency} (*products + services)")
-        st.write(f" - Number of products: {max_value_attribut}")
+        st.write(f" - Price to be paid: **{value_to_paid:.2f} {currency}** (*products + services)")
+        st.write(f" - Number of products: **{max_value_attribut}**")
         ''
         ''
-        st.write(f"Detail:")
-        st.write(f" - Total sum of products: {value_total_sum:.2f} {currency}")
+        ''
+        st.write(f"**Detail:**")
+        st.write(f" - Total sum of products: **{value_total_sum:.2f} {currency}**")
 
         sum_additional_serv = sum_price_warranty + sum_price_insurance
 
-        st.write(f" - Sum of additional services: {sum_additional_serv:.2f} {currency}")
-        st.write(f" - Extended warranty: {sum_price_warranty:.2f} {currency}")
-        st.write(f" - Insurance: {sum_price_insurance:.2f} {currency}")
+        st.write(f" - Sum of additional services: **{sum_additional_serv:.2f} {currency}**")
+        st.write(f" - Extended warranty: **{sum_price_warranty:.2f} {currency}**")
+        st.write(f" - Insurance: **{sum_price_insurance:.2f} {currency}**")
+        ''
+        ''
+
+
     ''
     ''
     ''
     ''
-    st.write("###### Interactive table and charts:")
+    st.write("##### Interactive table and charts:")
 
 
     # ========= Data Visualization ====================
@@ -248,6 +271,7 @@ if object_from_upload is not None:
     unique_value = data_table['Category'].unique()
 
     # Multiselect filter
+    ''
     filter_multiselect = st.multiselect(
         "Select category",
         unique_value,
@@ -278,6 +302,7 @@ if object_from_upload is not None:
     ]
 
     # This is adjusting the table
+    ''
     data_table_2 = st.dataframe(data=filtered_data, hide_index=True, use_container_width=True)
 
     
@@ -293,20 +318,22 @@ if object_from_upload is not None:
         filtered_data, 
         names = "Product",
         values = "Price",
-        title = "Pie chart - ratio of price values"
+        title = "Costs - ratio of product prices"
         )
 
-    st.plotly_chart(fig_pie)
+    with st.container(border=True):
+        st.plotly_chart(fig_pie, use_container_width=True)
     
     # Bar chart
     fig_bar = px.bar(
         filtered_data, 
         x="Product",
         y="Price",
-        title= "Bar chart - Ratio of price values",
+        title= "Bar chart - Costs - ratio of product prices",
         )
 
-    st.plotly_chart(fig_bar)
+    with st.container(border=True):
+        st.plotly_chart(fig_bar, use_container_width=True)
 
 
     # 15-June - testuju
@@ -320,6 +347,10 @@ if object_from_upload is not None:
         "Additional service price" : add_ser_price_full_float #float is must 
     })
 
+    ''
+    ''
+    ''
+    st.write("##### Static Charts:")
 
     fig_bar_2 = px.bar(data_bar_2,
             x="Product",
@@ -327,10 +358,11 @@ if object_from_upload is not None:
             title="Bar chart - Ratio of price including extra costs for additional services",
             )
 
-    st.plotly_chart(fig_bar_2)
+    with st.container(border=True):
+        st.plotly_chart(fig_bar_2, use_container_width=True)
 
 
-    # 15-June - testuju
+    # v4.0 - new charts ---------------------------------------
 
     data_pie_2 = pd.DataFrame({
 
@@ -344,13 +376,15 @@ if object_from_upload is not None:
         data_pie_2, 
         names = "Costs name",
         values = "Costs",
-        title = "Pie chart - ratio of price values"
+        title = "How much additional services increase the costs"
         )
 
-    st.plotly_chart(fig_pie_2)
+    with st.container(border=True):
+        st.plotly_chart(fig_pie_2, use_container_width=True)
+        st.write(f"- Costs for products **{value_total_sum_fl:.2f}** {currency}")
+        st.write(f"- Costs for additional services **{sum_adds_fl:.2f}** {currency}")
+        st.write(f"- Summary:  **{(sum_adds_fl + value_total_sum_fl):.2f}** {currency}")
 
-
-    # 15-June - testuju
 
 
     col1, col2 = st.columns(2)
@@ -374,8 +408,8 @@ if object_from_upload is not None:
 
     data_pie_4 = pd.DataFrame({
 
-    "Costs" : [value_total_sum_fl,sum_adds_fl],
-    "Costs names" : ["Sum price","Sum additional services"],
+    "Costs" : [sum_pro_price_where_ewarranty,sum_price_warranty],
+    "Costs names" : ["Costs products","Costs warranty"],
 
     })
 
@@ -388,19 +422,21 @@ if object_from_upload is not None:
 
 
 
-    with col1:
-        st.write(fig_pie_3)
-        st.write(f"Product costs where insurance: **{sum_pro_price_where_insurance:.2f}** {currency}")
-        st.write(f"The insurance: **{sum_price_insurance:.2f}** {currency}")
+    with col1.container(border=True):
+            st.write(fig_pie_3)
+            st.write(f"- Product costs: **{sum_pro_price_where_insurance:.2f}** {currency}")
+            st.write(f"- The insurance: **{sum_price_insurance:.2f}** {currency}")
+            st.write(f"- Summary:  **{(sum_pro_price_where_insurance + sum_price_insurance):.2f}** {currency}")
 
 
-    with col2:
+
+    with col2.container(border=True):
         st.write(fig_pie_4)
-        st.write(sum_pro_price_where_insurance)
-        st.write(sum_price_insurance)
-
+        st.write(f"- Product costs: **{sum_pro_price_where_ewarranty:.2f}** {currency}")
+        st.write(f"- The warranty: **{sum_price_warranty:.2f}** {currency}")
+        st.write(f"- Summary:  **{(sum_pro_price_where_ewarranty + sum_price_warranty):.2f}** {currency}")
     
-
+    #----------------------------------------------------------------------------
 
     # Final outcome for print - using SERVER time
     st.write("------")
