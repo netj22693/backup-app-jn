@@ -1,5 +1,8 @@
 import streamlit as st
-
+import requests
+import json
+import pandas as pd
+import plotly.express as px
 
 # For visibility the API structure from kurzy.cz
 json_api_structure_1 = """
@@ -286,7 +289,7 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 	''
 	st.write("""
 	- API - **HTTP GET** request to retrieve data from a server
-	- This Function 5 receives CUSTOMIZED data from Freecurrencyapi.com 
+	- This Function 5 receives **CUSTOMIZED** data from Freecurrencyapi.com 
 	
 		- "data" : { "USD" : float value }
 		
@@ -321,6 +324,56 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 	st.image("Pictures/Function_5/F5_description_api_statistics.png")
 	''
 	st.image("Pictures/Function_5/F5_description_api_statistics_another.png")
+	''
+	''
+	''
+	st.write("- This API is **limited to 5k requests per month**")
+	st.write("- So here is also simple GET API to see statistics:")
+	if st.button(
+		"API Status",
+		use_container_width=True,
+		icon=":material/monitoring:"
+	):
+			
+
+		# API count/remaining
+		api_count = "https://api.freecurrencyapi.com/v1/status?apikey=fca_live_6SzWJxPYa8Co3Xr9ziCTd7Mt7Yavrhpy2M5A0JZ4"
+
+		# get reguest - cached for 10 minutes
+		@st.cache_data(ttl=600)
+		def get_response_api_3(api_count):
+			api_3 = requests.get(api_count, verify=False).text
+			return api_3
+
+		api_3 = get_response_api_3(api_count)
+
+		# JSON format creation
+		api_3_json = json.loads(api_3)
+
+		# Search for data in the API defined format - JSON
+		used = api_3_json['quotas']['month']['used']
+		remaining = api_3_json['quotas']['month']['remaining']
+
+		# Description on the screen
+		st.write(f"- In this month subscription period - **used: {used}** and **remaining: {remaining}** requests")
+		st.write("- This data will be **cached** here for **next 10 minutes**")
+
+		# Simple pie chart
+		data_pie_api = pd.DataFrame({
+		"Figures" : [used,remaining],
+		"Topics" : [f"Used:  {used}",f"Remaining:  {remaining}"],
+
+		})
+
+		fig_api = px.pie(
+			data_pie_api, 
+			names = "Topics",
+			values = "Figures",
+			title = "API status of GET requests from this application - month period"
+		)  
+
+
+		st.write(fig_api)
 
 ''
 ''
