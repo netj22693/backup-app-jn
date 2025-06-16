@@ -239,8 +239,8 @@ if object_from_upload is not None:
 
         ''
         st.page_link(
-            label = "XML princpiles for this application ",
-            page="https://dataparsing.streamlit.app/~/+/F1_F2_description_XML_XSD#principle-of-the-xml",
+            label = "XML princpiles for this application",
+            page="Subpages/F1_F2_description_XML_XSD.py",
             help="The button will redirect to the relevant page within this app.",
             use_container_width=True,
             icon=":material/launch:",
