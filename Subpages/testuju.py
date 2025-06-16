@@ -4,6 +4,8 @@ import time
 import plotly.express as px
 import pandas as pd
 import math
+import pandasql as ps
+
 
 # ======== Upload button to trigger the application ========
 
@@ -74,7 +76,11 @@ if object_from_upload is not None:
     for detail_price in root.findall('detail'):
         product_price = detail_price.find('price_amount').text
         value_price_list.append(product_price)
-        
+    
+    # change of type from string to float
+    value_price_list_fl = list(map(float, value_price_list))
+
+
     
     value_attribut = []
     for detail_id in root.findall('detail'):
@@ -224,7 +230,7 @@ if object_from_upload is not None:
     st.write("#### Data Visualization:")
     ''
     ''
-    with st.expander("Summary overview", icon = ":material/apps:"):
+    with st.expander("Summary overview - Invoice", icon = ":material/apps:"):
         ''
         '' 
         st.write(f"**Sumary:**")
@@ -248,25 +254,173 @@ if object_from_upload is not None:
         ''
         ''
 
+    # Transformation of Data to table -> not editable
+    data_table = pd.DataFrame({
+        "Order" : value_attribut,
+        "Product" : value_product_name_list,
+        "Price" : value_price_list_fl, # must be float due to filtring in table    
+        "Category" : value_category_list, 
+        "Additional service" : add_service_full, 
+        "Additional service price" : add_ser_price_full_float  # must be float due to filtring in table                
+        })
 
+    
+    data_table_sql = pd.DataFrame({
+        "Order" : value_attribut,
+        "Product" : value_product_name_list,
+        "Price" : value_price_list_fl, # must be float due to filtring in table    
+        "Category" : value_category_list, 
+        "Additional_service" : add_service_full, 
+        "Additional_service_price" : add_ser_price_full_float  # must be float due to filtring in table                
+        })
+
+
+
+    with st.expander("SQL Queries 1 - Overview", icon = ":material/view_list:"):
+        ''
+        '' 
+
+        # Number of items in each product category 
+        q0a = """SELECT category, count(*) as 'count'
+        FROM
+            data_table_sql
+        GROUP BY
+            Category
+        ORDER BY 
+            count DESC
+        """
+
+
+        st.write("- Number of items in **each product Category**:")
+        st.dataframe(ps.sqldf(q0a, locals()), hide_index=True, use_container_width=True)
+
+        # Number of items with additional service
+        q0b = """SELECT Additional_service, count(*) as 'count'
+        FROM
+            data_table_sql
+        
+        WHERE 
+            Additional_service IS NOT 'None'
+            
+        GROUP BY
+            Additional_service
+        ORDER BY 
+            count DESC
+        """
+
+        ''
+        ''
+        st.write("- Number of items having **additional services**:")
+        st.dataframe(ps.sqldf(q0b, locals()), hide_index=True, use_container_width=True)
+
+        # Number of items with  NO additional service = 'None'
+        q0c = """SELECT Additional_service, count(*) as 'count'
+        FROM
+            data_table_sql
+        
+        WHERE 
+            Additional_service = 'None'
+            
+        GROUP BY
+            Additional_service
+        ORDER BY 
+            count DESC
+        """
+
+        ''
+        ''
+        st.write("- Number of items **without** any additional service")
+        st.dataframe(ps.sqldf(q0c, locals()), hide_index=True, use_container_width=True)
+
+
+    with st.expander("SQL Queries 2 - Prices/Costs", icon = ":material/view_list:"):
+        ''
+        '' 
+        # The most expensive item
+        q1 = """SELECT *
+        FROM
+            data_table_sql
+        ORDER BY
+            Price DESC
+        LIMIT 1"""
+
+        st.write("- The **most expensive** item (Price):")
+        st.dataframe(ps.sqldf(q1, locals()), hide_index=True, use_container_width=True)
+
+
+        # The most expensive item including Additional service
+        q2 = """SELECT *
+        FROM
+            data_table_sql
+        WHERE
+            Additional_service = 'Extended warranty'
+        ORDER BY
+            Additional_service_price DESC
+        LIMIT 1"""
+
+        q2b = """SELECT *
+        FROM
+            data_table_sql
+        WHERE
+            Additional_service = 'Insurance'
+        ORDER BY
+            Additional_service_price DESC
+        LIMIT 1"""
+
+
+        ''
+        ''
+        st.write("- The **most expensive additional service** (Extended warranty and Insurance):")
+        st.dataframe(ps.sqldf(q2, locals()), hide_index=True, use_container_width=True)
+        st.dataframe(ps.sqldf(q2b, locals()), hide_index=True, use_container_width=True)
+
+        # The cheapest item
+        q3 = """SELECT *
+        FROM
+            data_table_sql
+        ORDER BY
+            (Price + 'Additional service price') ASC
+        LIMIT 1"""
+
+
+        ''
+        ''
+        st.write("- The **cheapest** item (lowest Price):")
+        st.dataframe(ps.sqldf(q3, locals()), hide_index=True, use_container_width=True)
+
+
+        # The cheapest additional services
+        q4 = """SELECT *
+        FROM
+            data_table_sql
+        WHERE
+            Additional_service = 'Extended warranty'
+        ORDER BY
+            Additional_service_price ASC
+        LIMIT 1"""
+
+        q4b = """SELECT *
+        FROM
+            data_table_sql
+        WHERE
+            Additional_service = 'Insurance'
+        ORDER BY
+            Additional_service_price ASC
+        LIMIT 1"""
+
+
+        ''
+        ''
+        st.write("- The **cheapest additional service** (Extended warranty and Insurance):")
+        st.dataframe(ps.sqldf(q4, locals()), hide_index=True, use_container_width=True)
+        st.dataframe(ps.sqldf(q4b, locals()), hide_index=True, use_container_width=True)
+    
+    # ========= Data Visualization ====================
     ''
     ''
     ''
     ''
     st.write("##### Interactive table and charts:")
-
-
-    # ========= Data Visualization ====================
-
-    # Transformation of Data to table -> not editable
-    data_table = pd.DataFrame({
-        "Order" : value_attribut,
-        "Product" : value_product_name_list,
-        "Price" : value_price_list,
-        "Category" : value_category_list, 
-        "Additional service" : add_service_full, 
-        "Additional service price" : add_ser_price_full                          
-        })
 
     unique_value = data_table['Category'].unique()
 

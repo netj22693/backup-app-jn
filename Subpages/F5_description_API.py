@@ -241,6 +241,7 @@ with st.expander("API JSON structure - Kurzy.cz", icon= ":material/help:"):
 	''
 	st.write("""
 	- API - **HTTP GET** request to retrieve data from a server
+	- There is no limit defined (I didn't find) for get requests (but anyway  data caching set for 1 hour)
 	- This Function 5 receives the full predefined API data from Kurzy.cz 
 	- There is no possibility to customize the API data
 		  
