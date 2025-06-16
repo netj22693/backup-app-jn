@@ -180,6 +180,7 @@ if object_from_upload is not None:
         result = value_total_sum - sum_price
         st.write("---------")
         st.write("#### Validation process")
+        ''
         st.write("1) ###### Validation process - Invoice sum = sum of items in lines:")
         
         if result < 0 or result > 0:
@@ -196,7 +197,7 @@ if object_from_upload is not None:
     data_validation(value_total_sum_fl, sum_price)
 
     result_obj_outcome = result_validation[0]
-    
+   
 
     # Data validation - <total_sum_services> = value_total_sum_services Y/N 
     
@@ -220,7 +221,34 @@ if object_from_upload is not None:
     data_validation_services(value_total_sum_services_fl, sum_price_warranty , sum_price_insurance)
 
     result_obj_outcome_services = result_validation_services[0]
-    
+
+
+    ''
+    ''
+    with st.expander(
+        "Help",
+        icon= ":material/help_outline:"
+	    ):
+
+        ''
+        st.write("""
+        - If validation **not passed**, it is because summary of either 1. or 2. (or both) are not matching with values in detail
+        - This is an alert that some of the values visualized in the dashbords bellow will **not be correct**
+        - More details on the data parsing and validation here:
+        """)
+
+        ''
+        st.page_link(
+            label = "XML princpiles for this application ",
+            page="https://dataparsing.streamlit.app/~/+/F1_F2_description_XML_XSD#principle-of-the-xml",
+            help="The button will redirect to the relevant page within this app.",
+            use_container_width=True,
+            icon=":material/launch:",
+            ) 
+        ''
+        ''
+        st.image("Pictures/Function_2/F2_validation_xml.png")
+
 
     # ========= Button to show values parsed and calculated ======================
 
@@ -334,6 +362,9 @@ if object_from_upload is not None:
 
 
     with st.expander("SQL Queries 2 - Prices/Costs", icon = ":material/view_list:"):
+        ''
+        ''
+        st.write(f"- Currency: **{currency}**")
         ''
         '' 
         # The most expensive item
