@@ -2,3 +2,4 @@ streamlit
 st_pages
 lxml
 plotly.express
+pandasql
