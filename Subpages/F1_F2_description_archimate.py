@@ -16,7 +16,7 @@ with tab1:
     st.write("##### ArchiMate simple:")
     ''
     st.write("""
-    - This is basic overview of core Layers (Business <- Application <- Technology)
+    - Basic overview of core Layers (Business <- Application <- Technology)
     
     """)
     ''
