@@ -1,10 +1,45 @@
 import streamlit as st
 
 st.write("# ArchiMate diagram:")
-st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
 
-st.write("-----")
+''
+''
+st.write("""
+- Overview of the Function 3 process (file XML or JSON creation) across 3 core Layers
+""")
+
+''
+''
+st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
+''
 st.image("Pictures/Function_3/ArchM Function 3.drawio.png")
+
+
+''
+''
+st.write("""
+- **Business Layer (Yellow)**:
+    - Element Event (need for billing) is the business trigger for Invoice creation 
+    - **Invoice** is the business object/outcome of the Function 3 process
+""")
+
+''
+st.write("""
+- **Application Layer (Blue)**:
+    - The Business process is served by this application giving the possibility to create such invoice in required formats (XML or JSON)
+""")
+
+''
+st.write("""
+- **Technology Layer (Green)**:
+    - This is about dedicated Streamlit application server on which this application runs
+    - The principle of this Streamlit Framework & environment is **IaaS on Cloud**
+    - It is **Google Cloud**
+    """)
+
+''
+''
+st.image("Pictures/Function_2/F2_archimate_google cloud.png", width=200)
 
 
 # ===== Page navigation at the bottom ======
