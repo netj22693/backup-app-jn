@@ -33,13 +33,22 @@ st.write("""
 st.write("""
 - **Technology Layer (Green)**:
     - This is about dedicated Streamlit application server on which this application runs
-    - The principle of this Streamlit Framework & environment is **IaaS on Cloud**
+    - The principle of this **Streamlit Framework & environment** is **IaaS on Cloud**
     - It is **Google Cloud**
+    - Codespace: **MS Visual Studio Code**
+    - Repository: **GitHub**
     """)
 
 ''
 ''
-st.image("Pictures/Function_2/F2_archimate_google cloud.png", width=200)
+st.image("Pictures/Function_2/F2_archimate_google cloud.png", width=190)
+''
+''
+st.image("Pictures/Function_2/F2_Archimate_vscode logo.png", width=190)
+''
+st.image("Pictures/Function_2/F2_Archimate_github logo.png", width=170)
+''
+st.image("Pictures/Function_2/F2_Archimate_streamlit logo.png", width=210)
 
 
 # ===== Page navigation at the bottom ======
