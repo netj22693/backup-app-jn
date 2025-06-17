@@ -1,51 +1,77 @@
 import streamlit as st
 
 st.write("# UML diagrams:")
-st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
 
 
-st.write("-----")
-st.write("#### UML Use Case diagram:")
-''
-''
-st.write("###### Function 3: ")
-''
-st.image("Pictures/Function_3/F3_UML - Use case.PNG")
-''
-''
-''
-st.write("###### Function 4: ")
-''
-st.image("Pictures/Function_4/F4_UML - Use case.PNG")
+# Split into tabs
+tab1, tab2 = st.tabs([
+	"1 - Use Case diagram",
+	"2 - Activity diagram"
+])
 
-st.write("-----")
-st.write("#### UML Activity diagram:")
-st.image("Pictures/Function_3/F3 - UML - Activity diagram.drawio.png")
-''
-with st.expander(
-    "Application context",
-    icon= ":material/help_outline:"
-	):
-    
-	''
-	''
-	st.write("Filling data:")
-	''
-	st.image("Pictures/Function_3/F3_UML - context act diagram.PNG", width=500)
-	''
-	''
-	st.write("Invoice creation:")
-	''
-	st.image("Pictures/Function_3/F3_UML - context act diagram_2.PNG", width=500)
-	''
-	''
-	st.page_link(
-	label = "Go to: Function 3",
-	page="Subpages/F3_FUNCTION_creation_of_XML.py",
-	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
-	icon=":material/play_circle:",
-	) 
+#Tab 1 
+with tab1:
+    st.write("#### UML Use Case diagram:")
+    ''
+    ''
+    st.write("###### Function 3: ")
+    ''
+    st.image("Pictures/Function_3/F3_UML - Use case.PNG")
+    ''
+    ''
+    ''
+    st.write("###### Function 4: ")
+    ''
+    st.image("Pictures/Function_4/F4_UML - Use case.PNG")
+
+with tab2:
+    st.write("#### UML Activity diagram:")
+    ''
+    ''
+    st.write("""
+    - Related to the **Function 3** - Creation of XML or JSON
+    - This Activity diagram describes the process of what **specifically user needs to do**
+    - The **application does just 2 steps** here 
+        - Validation - if user provided all inputs 
+        - Producing XML or JSON - based on user's choice
+    """)
+    st.write("""    - To avoid failures **the validation process** is put into "try and except" python conditions:
+        - If an issue with the inputs (some data were not provided by uset -> except -> displaying info note)
+        - If all good -> try -> the program continues with the next steps""")
+    ''
+    ''
+    st.image("Pictures/Function_3/Pictures_Function_3_F3 - UML - Activity diagram_extended_2.png")
+    ''
+    with st.expander(
+        "Application context",
+        icon= ":material/help_outline:"
+        ):
+        
+        ''
+        ''
+        st.write("- Filling data:")
+        ''
+        st.image("Pictures/Function_3/F3_UML - context act diagram.PNG")
+        ''
+        ''
+        st.write(" - Submit button - inputs validation:")
+        ''
+        st.image("Pictures/Function_3/F3 - UML - Activity diagram_note.png")
+        ''
+        ''
+        st.write("- Invoice creation:")
+        ''
+        st.image("Pictures/Function_3/F3_UML - context act diagram_2.PNG")
+        ''
+        ''
+
+        st.page_link(
+        label = "Go to: Function 3",
+        page="Subpages/F3_FUNCTION_creation_of_XML.py",
+        help="The button will redirect to the relevant page within this app.",
+        use_container_width=True,
+        icon=":material/play_circle:",
+        ) 
 
 
 # ===== Page navigation at the bottom ======

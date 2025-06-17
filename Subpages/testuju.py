@@ -4,48 +4,43 @@ st.write("# UML diagrams:")
 
 
 # Split into tabs
-tab1, tab2, tab3 = st.tabs([
+tab1, tab2 = st.tabs([
 	"1 - Use Case diagram",
-	"2 - Activity diagram",
-	"3 - Activity diagram - Error handling"
+	"2 - Activity diagram"
 ])
 
-
-# Tab 1
+#Tab 1 
 with tab1:
-
-    ''
-    ''
     st.write("#### UML Use Case diagram:")
     ''
     ''
-    st.write("###### Function 1: ")
+    st.write("###### Function 3: ")
     ''
-    st.image("Pictures/Function_1/F1_UML - Use case.PNG")
+    st.image("Pictures/Function_3/F3_UML - Use case.PNG")
     ''
     ''
     ''
-    st.write("###### Function 2: ")
+    st.write("###### Function 4: ")
     ''
-    st.image("Pictures/Function_2/F2_UML - Use case.PNG")
+    st.image("Pictures/Function_4/F4_UML - Use case.PNG")
 
-
-# Tab 2
 with tab2:
-
-    ''
-    ''
     st.write("#### UML Activity diagram:")
     ''
+    ''
     st.write("""
-    - Provides a visibility of:
-        - Steps and decisions which user makes to support end-to-end process throught the application
-        - Showing the sequence of processing inside the application
+    - Related to the **Function 3** - Creation of XML or JSON
+    - This Activity diagram describes the process of what **specifically user needs to do**
+    - The **application does just 2 steps** here 
+        - Validation - if user provided all inputs 
+        - Producing XML or JSON - based on user's choice
     """)
-
+    st.write("""    - To avoid failures **the validation process** is put into "try and except" python conditions:
+        - If an issue with the inputs (some data were not provided by uset -> except -> displaying info note)
+        - If all good -> try -> the program continues with the next steps""")
     ''
     ''
-    st.image("Pictures/Function_2/F2 - UML_Activity diagram_2.png")
+    st.image("Pictures/Function_3/Pictures_Function_3_F3 - UML - Activity diagram_extended_2.png")
     ''
     with st.expander(
         "Application context",
@@ -54,64 +49,23 @@ with tab2:
         
         ''
         ''
-        st.write("Application process:")
+        st.write("Filling data:")
         ''
-        st.image("Pictures/Function_2/F2_UML - app context .png", width= 500)
-        
-
+        st.image("Pictures/Function_3/F3_UML - context act diagram.PNG", width=500)
+        ''
+        ''
+        st.write("Invoice creation:")
+        ''
+        st.image("Pictures/Function_3/F3_UML - context act diagram_2.PNG", width=500)
+        ''
         ''
         st.page_link(
-        label = "Go to: Function 2",
-        page="Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
+        label = "Go to: Function 3",
+        page="Subpages/F3_FUNCTION_creation_of_XML.py",
         help="The button will redirect to the relevant page within this app.",
         use_container_width=True,
         icon=":material/play_circle:",
         ) 
-
-
-# Tab 3
-with tab3:
-
-    ''
-    ''
-    st.write("#### UML Activity diagram - Error handling:")
-    ''
-    st.write("""
-    - The application/Function 2 works with **specific XML file**
-    - Based on the definition of the XML (structure/data types) the Function 2 is programmed to be able to parse the data and continue with next steps
-    - This Activity diagram **describes the programed mechanism when a file uploaded**
-    - The process is put into "**try and except**" python conditions which **prevents from failuer of the program**
-        - If any of these answers is 'No' -> the except condition is met 
-        - If all answers are 'Yes' -> try -> file is okay and end-to-end steps can happen
-             
-    """)
-    ''
-    ''
-    st.image("Pictures/Function_2/F2_UML_error handling parsing.png")
-    ''
-    with st.expander(
-        "Application context",
-        icon= ":material/help_outline:"
-        ):
-        
-        ''
-        ''
-        st.write("Application process:")
-        ''
-        st.image("Pictures/Function_2/F2_UML_error handling parsing_detail.png")
-        
-
-        ''
-        st.page_link(
-        label = "Go to: Function 2",
-        page="Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
-        help="The button will redirect to the relevant page within this app.",
-        use_container_width=True,
-        icon=":material/play_circle:",
-        ) 
-
-
-
 
 
 # ===== Page navigation at the bottom ======
@@ -123,7 +77,7 @@ st.write("-------")
 
 st.page_link(
     label = "Next page",
-	page="Subpages/F1_F2_description_archimate.py",
+	page="Subpages/F3_description_archimate.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
     icon=":material/east:",
@@ -131,7 +85,7 @@ st.page_link(
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/F1_F2_description_BPMN.py",
+	page="Subpages/F3_F4_description_BPMN.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/west:"

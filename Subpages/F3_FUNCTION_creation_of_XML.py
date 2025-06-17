@@ -409,7 +409,7 @@ if st.button(
         final_price_fl = round(final_price_fl, 2)
         final_price_fl_str = str(final_price_fl)
         
-        st.write("#### Sumary of your order:")
+        st.write("#### Summary of your order:")
 
         st.write(f" - Customer name: **{customer_input}**")
         st.write(f" - Order number: **{order_num_generated}**")
