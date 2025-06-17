@@ -266,19 +266,19 @@ if object_from_upload is not None:
         st.write(f" - Receiver of the invoice: **{value_customer}**")
         st.write(f" - Invoice from date (YYYY-MM-DD): **{value_date}**")
 
-        st.write(f" - Price to be paid: **{value_to_paid:.2f} {currency}** (*products + services)")
+        st.write(f" - Price to be paid: **{value_to_paid:,.2f} {currency}** (*products + services)")
         st.write(f" - Number of products: **{max_value_attribut}**")
         ''
         ''
         ''
         st.write(f"**Detail:**")
-        st.write(f" - Total sum of products: **{value_total_sum:.2f} {currency}**")
+        st.write(f" - Total sum of products: **{value_total_sum:,.2f} {currency}**")
 
         sum_additional_serv = sum_price_warranty + sum_price_insurance
 
-        st.write(f" - Sum of additional services: **{sum_additional_serv:.2f} {currency}**")
-        st.write(f" - Extended warranty: **{sum_price_warranty:.2f} {currency}**")
-        st.write(f" - Insurance: **{sum_price_insurance:.2f} {currency}**")
+        st.write(f" - Sum of additional services: **{sum_additional_serv:,.2f} {currency}**")
+        st.write(f" - Extended warranty: **{sum_price_warranty:,.2f} {currency}**")
+        st.write(f" - Insurance: **{sum_price_insurance:,.2f} {currency}**")
         ''
         ''
 
@@ -566,9 +566,9 @@ if object_from_upload is not None:
 
     with st.container(border=True):
         st.plotly_chart(fig_pie_2, use_container_width=True)
-        st.write(f"- Costs for products **{value_total_sum_fl:.2f}** {currency}")
-        st.write(f"- Costs for additional services **{sum_adds_fl:.2f}** {currency}")
-        st.write(f"- Summary:  **{(sum_adds_fl + value_total_sum_fl):.2f}** {currency}")
+        st.write(f"- Costs for products **{value_total_sum_fl:,.2f}** {currency}")
+        st.write(f"- Costs for additional services **{sum_adds_fl:,.2f}** {currency}")
+        st.write(f"- Summary:  **{(sum_adds_fl + value_total_sum_fl):,.2f}** {currency}")
 
 
 
@@ -609,17 +609,17 @@ if object_from_upload is not None:
 
     with col1.container(border=True):
             st.write(fig_pie_3)
-            st.write(f"- Product costs: **{sum_pro_price_where_insurance:.2f}** {currency}")
-            st.write(f"- The insurance: **{sum_price_insurance:.2f}** {currency}")
-            st.write(f"- Summary:  **{(sum_pro_price_where_insurance + sum_price_insurance):.2f}** {currency}")
+            st.write(f"- Product costs: **{sum_pro_price_where_insurance:,.2f}** {currency}")
+            st.write(f"- The insurance: **{sum_price_insurance:,.2f}** {currency}")
+            st.write(f"- Summary:  **{(sum_pro_price_where_insurance + sum_price_insurance):,.2f}** {currency}")
 
 
 
     with col2.container(border=True):
         st.write(fig_pie_4)
-        st.write(f"- Product costs: **{sum_pro_price_where_ewarranty:.2f}** {currency}")
-        st.write(f"- The warranty: **{sum_price_warranty:.2f}** {currency}")
-        st.write(f"- Summary:  **{(sum_pro_price_where_ewarranty + sum_price_warranty):.2f}** {currency}")
+        st.write(f"- Product costs: **{sum_pro_price_where_ewarranty:,.2f}** {currency}")
+        st.write(f"- The warranty: **{sum_price_warranty:,.2f}** {currency}")
+        st.write(f"- Summary:  **{(sum_pro_price_where_ewarranty + sum_price_warranty):,.2f}** {currency}")
     
     #----------------------------------------------------------------------------
 
@@ -641,7 +641,7 @@ if object_from_upload is not None:
     day_custom_2 = str("Day: "+ day_custom)
     full_date_outcome = str(date_custom +" | " + day_custom_2 +" | " + time_custom )
 
-    final_outcome = (f"{full_date_outcome} | Validation: 1. {result_obj_outcome}, 2. {result_obj_outcome_services} | Receiver: {value_customer} | Price to pay (including extra services): {value_to_paid:.2f} {currency}.")
+    final_outcome = (f"{full_date_outcome} | Validation: 1. {result_obj_outcome}, 2. {result_obj_outcome_services} | Receiver: {value_customer} | Price to pay (including extra services): {value_to_paid:,.2f} {currency}.")
 
 
     file_name_fstring = f"Summary-{value_invoice_num}.txt"
