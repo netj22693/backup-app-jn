@@ -416,14 +416,14 @@ if st.button(
         ''
         st.write(f" - Product name: **{product_name_inp}**")
         st.write(f" - Category: **{category_selb}**")
-        st.write(f" - Price: **{price:.2f} {currency_selb}**")
+        st.write(f" - Price: **{price:,.2f} {currency_selb}**")
         ''
         #st.write(f" - Extra service: {add_service_select}")
-        st.write(f" - Price for the extra service: **{service_price_fn:.2f} {currency_selb}** - Extra service: **{add_service_select}** ")
+        st.write(f" - Price for the extra service: **{service_price_fn:,.2f} {currency_selb}** - Extra service: **{add_service_select}** ")
         ''
-        st.write(f" - Price for transport: **{calc_transport_price:.2f} {currency_selb}** - Transport company: **{transport_co_selb}** - Country: **{city_selb}**")
+        st.write(f" - Price for transport: **{calc_transport_price:,.2f} {currency_selb}** - Transport company: **{transport_co_selb}** - Country: **{city_selb}**")
         ''
-        st.write(f" - Total price to pay: **{final_price_fl:.2f} {currency_selb}**")
+        st.write(f" - Total price to pay: **{final_price_fl:,.2f} {currency_selb}**")
 
         st.info("If this is what you expect, you can proceed with Download button which will create a file (XML or JSON). If not, you can go up and change your inputs and then use the Submit button again.")
         

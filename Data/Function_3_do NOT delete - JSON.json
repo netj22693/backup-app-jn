@@ -1,28 +1,28 @@
 {
     "header": {
-        "order_number": "30344687487774097946",
-        "customer": "c",
-        "invoice_number": "INV-625389",
+        "order_number": "09246215147241120985",
+        "customer": "A22",
+        "invoice_number": "INV-837582",
         "date": "2025-06-17",
         "price": {
-            "total_sum": 13.04,
-            "currency": "US dollar"
+            "total_sum": 141559190826.6,
+            "currency": "K\u010d"
         }
     },
     "detail": {
-        "category": "PC",
-        "product_name": "f",
-        "price_amount": 10.0,
+        "category": "Tablets",
+        "product_name": "CLERK",
+        "price_amount": 123094948484.0,
         "additional_service": {
-            "service": "N",
-            "service_type": "None",
-            "service_price": 0.0
+            "service": "Y",
+            "service_type": "insurance",
+            "service_price": 18464242272.6
         }
     },
     "transportation": {
         "transporter": "DHL",
         "country": "Slovakia",
         "size": "small",
-        "transport_price": 3.04
+        "transport_price": 70.0
     }
 }

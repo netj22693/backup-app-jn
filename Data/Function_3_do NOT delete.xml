@@ -1,29 +1,29 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <invoice>
   <header>
-    <order_number>30344687487774097946</order_number>
-    <customer>c</customer>
-    <invoice_number>INV-625389</invoice_number>
+    <order_number>09246215147241120985</order_number>
+    <customer>A22</customer>
+    <invoice_number>INV-837582</invoice_number>
     <date>2025-06-17</date>
     <price>
-      <total_sum>13.04</total_sum>
-      <currency>US dollar</currency>
+      <total_sum>141559190826.6</total_sum>
+      <currency>Kč</currency>
   </price>
   </header>
   <detail>
-    <category>PC</category>
-    <product_name>f</product_name>
-    <price_amount>10.0</price_amount>
+    <category>Tablets</category>
+    <product_name>CLERK</product_name>
+    <price_amount>123094948484.0</price_amount>
     <additional_service>
-      <service>N</service>
-      <service_type>None</service_type>
-      <service_price>0.0</service_price>
+      <service>Y</service>
+      <service_type>insurance</service_type>
+      <service_price>18464242272.6</service_price>
   </additional_service>
   </detail>
   <transportation>
     <transporter>DHL</transporter>
     <country>Slovakia</country>
     <size>small</size>
-    <transport_price>3.04</transport_price>
+    <transport_price>70.0</transport_price>
   </transportation>
 </invoice>
