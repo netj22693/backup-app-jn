@@ -352,7 +352,7 @@ service_fn = fun_add_service_3(add_service_select)
 
 # Logic / notification guidence when fullfiled properly
 if customer_input == '' or product_name_inp == '' or category_selb == None or currency_selb == None or price == 0.00 or add_service_select == '' or city_selb == None or transport_co_selb == None or size_selb == None :
-    st.warning("One/Some of the inputs still not entered - if Submit button is pushed the application will not work properly. Please check and make sure that you have correctly fullfiled all. Also the application doesn't accept 0.00 as price -> 0.01 is minimum.")
+    st.warning("**One/Some of the inputs still not entered.** Please check and make sure that you have correctly fullfiled all.")
 
 else:
     st.success("Fulfiled properly - Submit button can be used.")
@@ -380,141 +380,164 @@ if st.button(
     help = "Submit runs the application -> provide calculation -> summary of the invoice and option of generating either XML or JSON file"
     ):
 
-    a = id_generator()
-    invoice_number_generated = 'INV-' + a
-    
-    # Calculation of final price 
-    # important to keep the calculation after SUBMIT button, if not TypeError: unsupported operand type(s) for +: 'float' and 'NoneType'
-    final_price_fl = price + calc_transport_price + service_price_fn
-    final_price_fl = round(final_price_fl, 2)
-    final_price_fl_str = str(final_price_fl)
-    
-    st.write("#### Sumary of your order:")
+    if customer_input == '' or product_name_inp == '' or category_selb == None or currency_selb == None or price == 0.00 or add_service_select == '' or city_selb == None or transport_co_selb == None or size_selb == None :
 
-    st.write(f" - Customer name: {customer_input}")
-    st.write(f" - Order number: {order_num_generated}")
-    ''
-    st.write(f" - Product name: {product_name_inp}")
-    st.write(f" - Category: {category_selb}")
-    st.write(f" - Price: {price:.2f} {currency_selb}")
-    ''
-    #st.write(f" - Extra service: {add_service_select}")
-    st.write(f" - Price for the extra service: {service_price_fn:.2f} {currency_selb} - Extra service: {add_service_select} ")
-    ''
-    st.write(f" - Price for transport: {calc_transport_price:.2f} {currency_selb} - Transport company: {transport_co_selb} - Country: {city_selb}")
-    ''
-    st.write(f" - Total price to pay: {final_price_fl:.2f} {currency_selb}")
+        # This step is stopping the script it this 'if' condition is met. 
+        # Simply, if missing input and Submit button pushed -> the application will nto continue
+        st.error("**Not all inputs provided** - please check, fill in and then push the **Submit** button again.")
 
-    st.info("If this is what you expect, you can proceed with Download button which will create a file (XML or JSON). If not, you can go up and change your inputs and then use the Submit button again.")
-    
-    # Change of data type
-    calc_transport_price_str = str(calc_transport_price)
-       
-    
-    # ================ XML and JSON creation =================================
-    # XML structure build
-    xml_doc = ET.Element("invoice")
-    header = ET.SubElement(xml_doc, 'header')
-    order_number = ET.SubElement(header, 'order_number').text = order_num_generated
-    customer = ET.SubElement(header, 'customer').text = customer_input
-    invoice_number = ET.SubElement(header, 'invoice_number').text = invoice_number_generated
-    date = ET.SubElement(header, 'date').text = date_input
-    price = ET.SubElement(header, 'price')
-    total_sum = ET.SubElement(price, 'total_sum').text = final_price_fl_str
-    #total_sum_services = ET.SubElement(price, 'total_sum_services').text = service_price_fn
-    currency = ET.SubElement(price, 'currency').text = currency_selb
+        # This Reset button is specific for this nested condition 
+        ("---------")
+        st.button(
+        "Reset",
+        use_container_width= True,
+        on_click = reset,
+        help = "Clear all text/number inputs from the form")
 
-    detail = ET.SubElement(xml_doc, 'detail')
-    category= ET.SubElement(detail, 'category').text = category_selb
-    product_name = ET.SubElement(detail, 'product_name').text = product_name_inp
-    price_amount = ET.SubElement(detail, 'price_amount').text = price_str
-    addtional_service = ET.SubElement(detail, 'additional_service')
-    service = ET.SubElement(addtional_service, 'service'). text = service_fn
-    service_type = ET.SubElement(addtional_service, 'service_type').text = service_type_fn
-    service_price = ET.SubElement(addtional_service, 'service_price').text = service_price_fn_str
-
-    transportation = ET.SubElement(xml_doc, 'transportation')
-    transporter = ET.SubElement(transportation, 'transporter').text = transport_co_selb
-    country = ET.SubElement(transportation, 'country').text = city_selb
-    size = ET.SubElement(transportation, 'size').text = size_selb
-    transport_price = ET.SubElement(transportation, 'transport_price').text = calc_transport_price_str
-
-    # Calling of the pretty print function to put the XML into nice shape (based on nesting)
-    prettify(xml_doc)
-
-    tree = ET.ElementTree(xml_doc)
-
-    # xml_declaration=Tru -> generuje XML prolog
-    tree.write('Data/Function_3_do NOT delete.xml', encoding='UTF-8', xml_declaration=True)
+        # This is what completelly stopping the script
+        st.stop()
 
 
-    # JSON structure build
-    data_json = {
-    "header" : {
-        "order_number" : order_num_generated,
-        "customer": customer_input,
-        "invoice_number": invoice_number_generated,
-        "date": date_input,
-        "price": {
-            "total_sum": final_price_fl,
-            "currency": currency_selb
-        }
-    },
-    "detail": {
-        "category": category_selb,
-        "product_name": product_name_inp,
-        "price_amount": price_fl,
-        "additional_service": {
-            "service": service_fn,
-            "service_type": service_type_fn,
-            "service_price": service_price_fl
-        }
-    },
-    "transportation": {
-        "transporter": transport_co_selb,
-        "country": city_selb,
-        "size": size_selb,
-        "transport_price": calc_transport_price
-    }
-    }
+    else:
 
-    json_object = json.dumps(data_json, indent=4)
+        a = id_generator()
+        invoice_number_generated = 'INV-' + a
+        
+        # Calculation of final price 
+        # important to keep the calculation after SUBMIT button, if not TypeError: unsupported operand type(s) for +: 'float' and 'NoneType'
+        final_price_fl = price + calc_transport_price + service_price_fn
+        final_price_fl = round(final_price_fl, 2)
+        final_price_fl_str = str(final_price_fl)
+        
+        st.write("#### Sumary of your order:")
 
-    with open("Data/Function_3_do NOT delete - JSON.json", "w") as outfile:
-        outfile.write(json_object)
-        outfile.close()
+        st.write(f" - Customer name: **{customer_input}**")
+        st.write(f" - Order number: **{order_num_generated}**")
+        ''
+        st.write(f" - Product name: **{product_name_inp}**")
+        st.write(f" - Category: **{category_selb}**")
+        st.write(f" - Price: **{price:.2f} {currency_selb}**")
+        ''
+        #st.write(f" - Extra service: {add_service_select}")
+        st.write(f" - Price for the extra service: **{service_price_fn:.2f} {currency_selb}** - Extra service: **{add_service_select}** ")
+        ''
+        st.write(f" - Price for transport: **{calc_transport_price:.2f} {currency_selb}** - Transport company: **{transport_co_selb}** - Country: **{city_selb}**")
+        ''
+        st.write(f" - Total price to pay: **{final_price_fl:.2f} {currency_selb}**")
 
-
-    # File names creation
-    file_name_xml_fstring = f"{invoice_number_generated}.xml"
-    file_name_json_fstring = f"{invoice_number_generated}.json"
-
-    ''
-    st.write("###### Download:")
+        st.info("If this is what you expect, you can proceed with Download button which will create a file (XML or JSON). If not, you can go up and change your inputs and then use the Submit button again.")
+        
+        # Change of data type
+        calc_transport_price_str = str(calc_transport_price)
         
         
-    with open('Data/Function_3_do NOT delete.xml') as f:
-        if st.download_button(
-            'Download - XML',
-            f, file_name = file_name_xml_fstring,
-            use_container_width=True,
-            icon = ":material/download:"
-            ):
+        # ================ XML and JSON creation =================================
+        # XML structure build
+        xml_doc = ET.Element("invoice")
+        header = ET.SubElement(xml_doc, 'header')
+        order_number = ET.SubElement(header, 'order_number').text = order_num_generated
+        customer = ET.SubElement(header, 'customer').text = customer_input
+        invoice_number = ET.SubElement(header, 'invoice_number').text = invoice_number_generated
+        date = ET.SubElement(header, 'date').text = date_input
+        price = ET.SubElement(header, 'price')
+        total_sum = ET.SubElement(price, 'total_sum').text = final_price_fl_str
+        #total_sum_services = ET.SubElement(price, 'total_sum_services').text = service_price_fn
+        currency = ET.SubElement(price, 'currency').text = currency_selb
 
-            st.session_state["Submit"]
+        detail = ET.SubElement(xml_doc, 'detail')
+        category= ET.SubElement(detail, 'category').text = category_selb
+        product_name = ET.SubElement(detail, 'product_name').text = product_name_inp
+        price_amount = ET.SubElement(detail, 'price_amount').text = price_str
+        addtional_service = ET.SubElement(detail, 'additional_service')
+        service = ET.SubElement(addtional_service, 'service'). text = service_fn
+        service_type = ET.SubElement(addtional_service, 'service_type').text = service_type_fn
+        service_price = ET.SubElement(addtional_service, 'service_price').text = service_price_fn_str
 
-    
-     
-    with open('Data/Function_3_do NOT delete - JSON.json') as j:
-        if st.download_button(
-            'Download - JSON',
-            j, file_name = file_name_json_fstring,
-            use_container_width=True,
-            icon = ":material/download:"
-            ):
+        transportation = ET.SubElement(xml_doc, 'transportation')
+        transporter = ET.SubElement(transportation, 'transporter').text = transport_co_selb
+        country = ET.SubElement(transportation, 'country').text = city_selb
+        size = ET.SubElement(transportation, 'size').text = size_selb
+        transport_price = ET.SubElement(transportation, 'transport_price').text = calc_transport_price_str
 
-            st.info("download will start in few seconds")
+        # Calling of the pretty print function to put the XML into nice shape (based on nesting)
+        prettify(xml_doc)
 
+        tree = ET.ElementTree(xml_doc)
+
+        # xml_declaration=Tru -> generuje XML prolog
+        tree.write('Data/Function_3_do NOT delete.xml', encoding='UTF-8', xml_declaration=True)
+
+
+        # JSON structure build
+        data_json = {
+        "header" : {
+            "order_number" : order_num_generated,
+            "customer": customer_input,
+            "invoice_number": invoice_number_generated,
+            "date": date_input,
+            "price": {
+                "total_sum": final_price_fl,
+                "currency": currency_selb
+            }
+        },
+        "detail": {
+            "category": category_selb,
+            "product_name": product_name_inp,
+            "price_amount": price_fl,
+            "additional_service": {
+                "service": service_fn,
+                "service_type": service_type_fn,
+                "service_price": service_price_fl
+            }
+        },
+        "transportation": {
+            "transporter": transport_co_selb,
+            "country": city_selb,
+            "size": size_selb,
+            "transport_price": calc_transport_price
+        }
+        }
+
+        json_object = json.dumps(data_json, indent=4)
+
+        with open("Data/Function_3_do NOT delete - JSON.json", "w") as outfile:
+            outfile.write(json_object)
+            outfile.close()
+
+
+        # File names creation
+        file_name_xml_fstring = f"{invoice_number_generated}.xml"
+        file_name_json_fstring = f"{invoice_number_generated}.json"
+
+        ''
+        st.write("###### Download:")
+            
+            
+        with open('Data/Function_3_do NOT delete.xml') as f:
+            if st.download_button(
+                'Download - XML',
+                f, file_name = file_name_xml_fstring,
+                use_container_width=True,
+                icon = ":material/download:"
+                ):
+
+                st.session_state["Submit"]
+
+
+
+        
+        
+        with open('Data/Function_3_do NOT delete - JSON.json') as j:
+            if st.download_button(
+                'Download - JSON',
+                j, file_name = file_name_json_fstring,
+                use_container_width=True,
+                icon = ":material/download:"
+                ):
+
+                st.info("download will start in few seconds")
+        
+            
 ("---------")
 st.button(
     "Reset",

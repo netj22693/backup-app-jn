@@ -1,29 +1,29 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <invoice>
   <header>
-    <order_number>31250631549266454325</order_number>
-    <customer>vcvc</customer>
-    <invoice_number>INV-569084</invoice_number>
-    <date>2025-03-30</date>
+    <order_number>69259670897848924369</order_number>
+    <customer>Jan s.r.o.</customer>
+    <invoice_number>INV-159822</invoice_number>
+    <date>2025-06-17</date>
     <price>
-      <total_sum>14.48</total_sum>
-      <currency>US dollar</currency>
+      <total_sum>23.2</total_sum>
+      <currency>euro</currency>
   </price>
   </header>
   <detail>
     <category>PC</category>
-    <product_name>vccx</product_name>
-    <price_amount>10.0</price_amount>
+    <product_name>A22</product_name>
+    <price_amount>20.0</price_amount>
     <additional_service>
-      <service>Y</service>
-      <service_type>extended warranty</service_type>
-      <service_price>1.0</service_price>
+      <service>N</service>
+      <service_type>None</service_type>
+      <service_price>0.0</service_price>
   </additional_service>
   </detail>
   <transportation>
     <transporter>DHL</transporter>
     <country>Czech Republic</country>
     <size>medium</size>
-    <transport_price>3.48</transport_price>
+    <transport_price>3.2</transport_price>
   </transportation>
 </invoice>
