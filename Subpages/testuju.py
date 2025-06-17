@@ -3,134 +3,99 @@ import streamlit as st
 st.write("# BPMN diagrams:")
 st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
 
-st.write("-----")
-st.write("#### Application process flow:")
-''
-st.write("- 5 stages of the process - high level")
-''
-st.image("Pictures/BPMN flow_2.png")
-''
-''
-''
 
-# Split of the screen to tabs
-tab1, tab2, tab3 = st.tabs([
-    "Data Parsing",
-	"Data Validation",
-	"Data Visualization"
-
+# Split into tabs
+tab1, tab2 = st.tabs([
+	"BPMN - Function 3",
+	"BPMN - Function 4"
 ])
 
 
-# Tab 1
+#Tab 1
 with tab1:
+    st.write("#### Function 3 process flow:")
+    ''
+    ''
+    st.image("Pictures/Function_3/Function_3_BPMN process_5.png")
+    ''
+    '''
+    - Inputs to be entered by user and submited:
+    '''
+    ''
+    st.image("Pictures/Function_3/delivery details.png", width = 200)
+    ''
+    '''
+    - Then application/function makes the calculation. 
+    - In case of all inputs are okay, user can push download button for generating of an invoice either in XML format or JSON. 
+    - In case that user wants to change something in the original inputs, he can rewrite/change the inputs and then push Submit button again...
+    '''
+    st.write("-----")
+    st.write("##### Application calculation process:")
+    ''
+    ''
+    st.image("Pictures/Function_3/Function_3_BPMN_calculation process_2.png")
+    ''
+    '''
+    - The calculation happens based on predefined inputs/costs which are part of application rules in the code.
+    '''
+    '''
+    - If the BPMN diagram would be transferred into the "application look", then it would be like this:
+    '''
+    ''
+    ''
+    st.image("Pictures/Function_3/Function_3_BPMN_calculation process_tables_2.png")
+    ''
+    ''
+    ''
+    '''
+    The predefined values for calculations are:
 
+    - Additional service/extra costs - Insurance - 15% from product price
+    - Additional service/extra costs - Extended warranty - 10% from product price
+
+    - And then specific costs for transport depending on Country, Transporting Company, Size of package
+    '''
     ''
-    st.write("##### Data parsing process:")
-    ''
-    st.write(" - Principle of the data parsing process from XML")
+    st.image("Pictures/Function_3/Price_list.png")
     ''
     ''
-    st.image("Pictures/V2_pictures/BPMN data parsing.png")
+
+#Tab 2
+with tab2:
+    st.write("#### Function 4 process flow:")
+    ''
+    ''
+    '''
+    - In case that user wants to change file format of invoice generated in Function 3 step, there is a possibility to use Function 4
+    - Mapping into the other format than has been selected
+    - Reason why to do this and not generate new one? The existing invoice file from the Function 3 has **uniquie ID and order number specific for the invoice** and thus this conversion into the other file format will keep these unique IDs.
+    '''
+    ''
+    ''
+    ''
+    st.image("Pictures/Function_4/Function_4_BPMN.png")
+    ''
+    ''
+    ''
     ''
     ''
     with st.expander(
-        "The XML message",
+        "Unique Order number and Invoice ID",
         icon= ":material/help_outline:"
         ):
         
+        st.image("Pictures/Function_3/unique IDs_2.png")
         ''
-        st.write("Structure:")
-        st.image("Pictures/Function_1/F1_F2_XML_simple_screen.PNG")
         ''
-        st.write("More details about the XML and data parsing:")
+        st.write("If needed to keep the IDs and change the file format, mapping XML <-> JSON:")
 
         st.page_link(
-            label = "Go to XSD, XML description page",
-            page="Subpages/F1_F2_description_XML_XSD.py",
-            help="The button will redirect to the relevant page within this app for download.",
-            use_container_width=True,
-            icon=":material/launch:"
-        )
-
-# Tab 2
-with tab2:
-
-    ''
-    st.write("##### Data validation process:")
-    ''
-    st.image("Pictures/Function_2/F2_BPMN - Validation.png")
-    ''
-    ''
-    st.write("""
-    - The application includes validation of the data <total_sum> (Invoice summary of price) against price per item/product <price>. 
-    - The same happens for <total_sum_services> against sum of <serice_price> in detail.""")
-    ''
-    st.write(" -> **If match**, application displays green success note.")
-    st.write(" -> **If not match**, application displays warrning message and provides  suggestion of correct numbers (was calculated by the application)")
-    ''
-    st.write("**In BOTH CASES, the application ALLOWS to continue to data visualization step.**")
-
-
-    ''
-    ''
-    with st.expander(
-        "Validation",
-        icon= ":material/help_outline:"
-        ):
-        
-        st.write("Example of validation in the Function 2:")
-        st.image("Pictures/V2_pictures/validation.png")
-        ''
-        ''
-
-
-# Tab 3
-with tab3:
-
-    ''
-    st.write("##### Data visualization process:")
-    ''
-    st.image("Pictures/Function_2/F2_BPMN - Visualization.png")
-    ''
-    ''
-    st.write("""
-        Data visualization:
-        - Overview of header and detail information including values which the app. calculated
-        - Interactive table  connected including pie chart and bar chart
-        - Static charts 
-        - And some highlights of the invoice - based on SQL query
-        """  
-        )
-
-    ''
-    ''
-    with st.expander(
-         "Visualization",
-        icon= ":material/help_outline:"
-        ):
-        
-        ''
-        st.write("**Few Examples:**")
-        ''
-        ''
-        st.write("- Invoice Overview & SQL highlights expanders:")
-        ''
-        st.image("Pictures/Function_2/F2_BPMN_visualization_highlight.png",width=420)
-        ''
-        ''
-        ''
-        st.write("- Interactive table")
-        ''
-        st.image("Pictures/Function_2/F2_BPMN_visualization_inttable.png",width=420)
-        ''
-        ''
-        ''
-        st.write("- Static charts")
-        ''
-        st.image("Pictures/Function_2/F2_BPMN_visualization_static charts.png",width=420)
-        ''
-        ''
+        label = "Go to: Function 4",
+        page="Subpages/F4_FUNCTION_translation_mapping.py",
+        help="The button will redirect to the relevant page within this app.",
+        use_container_width=True,
+        icon=":material/play_circle:",
+        ) 
 
 # ===== Page navigation at the bottom ======
 ''
@@ -141,7 +106,7 @@ st.write("-------")
 
 st.page_link(
     label = "Next page",
-	page="Subpages/F2_description_UML.py",
+	page="Subpages/F3_description_UML.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
     icon=":material/east:",
@@ -149,7 +114,7 @@ st.page_link(
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/F1_F2_description_function.py",
+	page="Subpages/F3_F4_description.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/west:"
