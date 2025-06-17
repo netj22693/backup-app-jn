@@ -357,7 +357,7 @@ if object_from_upload is not None:
 
         ''
         ''
-        st.write("- Number of items **without** any additional service")
+        st.write("- Number of items **without** any additional service:")
         st.dataframe(ps.sqldf(q0c, locals()), hide_index=True, use_container_width=True)
 
 
@@ -566,8 +566,8 @@ if object_from_upload is not None:
 
     with st.container(border=True):
         st.plotly_chart(fig_pie_2, use_container_width=True)
-        st.write(f"- Costs for products **{value_total_sum_fl:,.2f}** {currency}")
-        st.write(f"- Costs for additional services **{sum_adds_fl:,.2f}** {currency}")
+        st.write(f"- Products costs: **{value_total_sum_fl:,.2f}** {currency}")
+        st.write(f"- Additional services costs: **{sum_adds_fl:,.2f}** {currency}")
         st.write(f"- Summary:  **{(sum_adds_fl + value_total_sum_fl):,.2f}** {currency}")
 
 
@@ -609,7 +609,7 @@ if object_from_upload is not None:
 
     with col1.container(border=True):
             st.write(fig_pie_3)
-            st.write(f"- Product costs: **{sum_pro_price_where_insurance:,.2f}** {currency}")
+            st.write(f"- Products costs: **{sum_pro_price_where_insurance:,.2f}** {currency}")
             st.write(f"- The insurance: **{sum_price_insurance:,.2f}** {currency}")
             st.write(f"- Summary:  **{(sum_pro_price_where_insurance + sum_price_insurance):,.2f}** {currency}")
 
@@ -617,7 +617,7 @@ if object_from_upload is not None:
 
     with col2.container(border=True):
         st.write(fig_pie_4)
-        st.write(f"- Product costs: **{sum_pro_price_where_ewarranty:,.2f}** {currency}")
+        st.write(f"- Products costs: **{sum_pro_price_where_ewarranty:,.2f}** {currency}")
         st.write(f"- The warranty: **{sum_price_warranty:,.2f}** {currency}")
         st.write(f"- Summary:  **{(sum_pro_price_where_ewarranty + sum_price_warranty):,.2f}** {currency}")
     
