@@ -1,72 +1,136 @@
 import streamlit as st
 
-st.write("# UML diagrams:")
+st.write("# BPMN diagrams:")
+st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
 
+st.write("-----")
+st.write("#### Application process flow:")
+''
+st.write("- 5 stages of the process - high level")
+''
+st.image("Pictures/BPMN flow_2.png")
+''
+''
+''
 
-# Split into tabs
-tab1, tab2 = st.tabs([
-	"1 - Use Case diagram",
-	"2 - Activity diagram"
+# Split of the screen to tabs
+tab1, tab2, tab3 = st.tabs([
+    "Data Parsing",
+	"Data Validation",
+	"Data Visualization"
+
 ])
 
-#Tab 1 
-with tab1:
-    st.write("#### UML Use Case diagram:")
-    ''
-    ''
-    st.write("###### Function 3: ")
-    ''
-    st.image("Pictures/Function_3/F3_UML - Use case.PNG")
-    ''
-    ''
-    ''
-    st.write("###### Function 4: ")
-    ''
-    st.image("Pictures/Function_4/F4_UML - Use case.PNG")
 
-with tab2:
-    st.write("#### UML Activity diagram:")
+# Tab 1
+with tab1:
+
+    ''
+    st.write("##### Data parsing process:")
+    ''
+    st.write(" - Principle of the data parsing process from XML")
     ''
     ''
-    st.write("""
-    - Related to the **Function 3** - Creation of XML or JSON
-    - This Activity diagram describes the process of what **specifically user needs to do**
-    - The **application does just 2 steps** here 
-        - Validation - if user provided all inputs 
-        - Producing XML or JSON - based on user's choice
-    """)
-    st.write("""    - To avoid failures **the validation process** is put into "try and except" python conditions:
-        - If an issue with the inputs (some data were not provided by uset -> except -> displaying info note)
-        - If all good -> try -> the program continues with the next steps""")
+    st.image("Pictures/V2_pictures/BPMN data parsing.png")
     ''
-    ''
-    st.image("Pictures/Function_3/Pictures_Function_3_F3 - UML - Activity diagram_extended_2.png")
     ''
     with st.expander(
-        "Application context",
+        "The XML message",
         icon= ":material/help_outline:"
         ):
         
         ''
+        st.write("Structure:")
+        st.image("Pictures/Function_1/F1_F2_XML_simple_screen.PNG")
         ''
-        st.write("Filling data:")
-        ''
-        st.image("Pictures/Function_3/F3_UML - context act diagram.PNG", width=500)
-        ''
-        ''
-        st.write("Invoice creation:")
-        ''
-        st.image("Pictures/Function_3/F3_UML - context act diagram_2.PNG", width=500)
-        ''
-        ''
-        st.page_link(
-        label = "Go to: Function 3",
-        page="Subpages/F3_FUNCTION_creation_of_XML.py",
-        help="The button will redirect to the relevant page within this app.",
-        use_container_width=True,
-        icon=":material/play_circle:",
-        ) 
+        st.write("More details about the XML and data parsing:")
 
+        st.page_link(
+            label = "Go to XSD, XML description page",
+            page="Subpages/F1_F2_description_XML_XSD.py",
+            help="The button will redirect to the relevant page within this app for download.",
+            use_container_width=True,
+            icon=":material/launch:"
+        )
+
+# Tab 2
+with tab2:
+
+    ''
+    st.write("##### Data validation process:")
+    ''
+    st.image("Pictures/Function_2/F2_BPMN - Validation.png")
+    ''
+    ''
+    st.write("""
+    - The application includes validation of the data <total_sum> (Invoice summary of price) against price per item/product <price>. 
+    - The same happens for <total_sum_services> against sum of <serice_price> in detail.""")
+    ''
+    st.write(" -> **If match**, application displays green success note.")
+    st.write(" -> **If not match**, application displays warrning message and provides  suggestion of correct numbers (was calculated by the application)")
+    ''
+    st.write("**In BOTH CASES, the application ALLOWS to continue to data visualization step.**")
+
+
+    ''
+    ''
+    with st.expander(
+        "Validation",
+        icon= ":material/help_outline:"
+        ):
+        
+        st.write("Example of validation in the Function 2:")
+        st.image("Pictures/V2_pictures/validation.png")
+        ''
+        ''
+
+
+# Tab 3
+with tab3:
+
+    ''
+    st.write("##### Data visualization process:")
+    ''
+    st.image("Pictures/Function_2/F2_BPMN - Visualization.png")
+    ''
+    ''
+    st.write("""
+        Data visualization:
+        - Overview of header and detail information including values which the app. calculated
+        - Interactive table  connected including pie chart and bar chart
+        - Static charts 
+        - And some highlights of the invoice - based on SQL query
+        """  
+        )
+
+    ''
+    ''
+    with st.expander(
+         "Visualization",
+        icon= ":material/help_outline:"
+        ):
+        
+        ''
+        st.write("**Few Examples:**")
+        ''
+        ''
+        st.write("- Invoice Overview & SQL highlights expanders:")
+        ''
+        st.image("Pictures/Function_2/F2_BPMN_visualization_highlight.png",width=420)
+        ''
+        ''
+        ''
+        st.write("- Interactive table")
+        ''
+        st.image("Pictures/Function_2/F2_BPMN_visualization_inttable.png",width=420)
+        ''
+        ''
+        ''
+        st.write("- Static charts")
+        ''
+        st.image("Pictures/Function_2/F2_BPMN_visualization_static charts.png",width=420)
+        ''
+        ''
 
 # ===== Page navigation at the bottom ======
 ''
@@ -77,7 +141,7 @@ st.write("-------")
 
 st.page_link(
     label = "Next page",
-	page="Subpages/F3_description_archimate.py",
+	page="Subpages/F2_description_UML.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
     icon=":material/east:",
@@ -85,8 +149,9 @@ st.page_link(
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/F3_F4_description_BPMN.py",
+	page="Subpages/F1_F2_description_function.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/west:"
 	) 
+
