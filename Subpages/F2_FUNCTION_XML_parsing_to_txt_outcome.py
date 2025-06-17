@@ -125,9 +125,23 @@ if object_from_upload is not None:
 
     # Prices full - including '0.00' for None values
     add_ser_price_full = []
-    for add_ser_price_item in root.findall('detail'):
-        add_ser_price = add_ser_price_item.find('additional_service/service_price').text
-        add_ser_price_full.append(add_ser_price)
+    for service_type in root.findall('detail'):
+        condition_service_type = service_type.find('additional_service/service_type').text
+
+        # v5.3 - extended logic
+        if condition_service_type == 'extended warranty':
+            service_price = service_type.find('additional_service/service_price').text
+            add_ser_price_full.append(service_price)
+
+        if condition_service_type == 'insurance':
+            service_price = service_type.find('additional_service/service_price').text
+            add_ser_price_full.append(service_price)
+        
+        # v5.3 - specifically this part is important to not parse value in case that <service_type> 'none' but <service_price> 999.99 (with value) -> this is the anti-pattern which this mechanism prevents -> 
+        # if 'None' it ignors a value but always appends 0.00 to this list
+        if condition_service_type == 'None':
+            add_ser_price_full.append(0.00)
+
 
     
 
@@ -141,6 +155,7 @@ if object_from_upload is not None:
     # Data type change for purpose of charts
     add_ser_price_full_float = list(map(float, add_ser_price_full)) 
     sum_adds_fl = math.fsum(add_ser_price_full_float)
+
 
 
 
@@ -282,7 +297,7 @@ if object_from_upload is not None:
         ''
         ''
 
-    # Transformation of Data to table -> not editable
+    # Transformation of Data to table -> not editable table
     data_table = pd.DataFrame({
         "Order" : value_attribut,
         "Product" : value_product_name_list,
