@@ -19,7 +19,7 @@ app_purpose = st.Page(
 
 app_description_ArM = st.Page(
     "Subpages/F1_F2_description_archimate.py",
-    title="Description - Archimate",
+    title="Description - ArchiMate",
     icon= ":material/code:"
     )
 
@@ -78,7 +78,7 @@ fun_1and2_descrip = st.Page(
 
 fun_3_archm = st.Page(
     "Subpages/F3_description_archimate.py",
-    title="Description - Archimate",
+    title="Description - ArchiMate",
     icon= ":material/code:"
 )
 

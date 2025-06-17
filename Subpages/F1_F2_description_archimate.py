@@ -1,15 +1,75 @@
 import streamlit as st
 
 st.write("# ArchiMate diagrams:")
-st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
 
-st.write("-----")
-st.write("#### ArchiMate simple:")
-st.image("Pictures/Function_2/F2_Archimate_simple.png")
 
-st.write("-----")
-st.write("#### ArchiMate complex:")
-st.image("Pictures/Parsing-archimate-diagram_2.png")
+# Split into tabs
+tab1, tab2 = st.tabs([
+    "Simple diagram",
+    "Complex diagram"
+])
+
+
+#Tab 1
+with tab1:
+    ''
+    st.write("##### ArchiMate simple:")
+    ''
+    st.write("""
+    - This is basic overview of core Layers (Business <- Application <- Technology)
+    
+    """)
+    ''
+    st.image("Pictures/Function_2/F2_Archimate_simple.png")
+    ''
+    ''
+    st.write("""
+    - **Business Layer (Yellow)**:
+        - The Business Process element captures 3 steps which Function 2 does 
+    """)
+
+    ''
+    st.write("""
+    - **Application Layer (Blue)**:
+        - Simply visualizes this application as one piece 
+    """)
+
+    ''
+    st.write("""
+    - **Technology Layer (Green)**:
+        - This is about dedicated Streamlit application server on which this application runs
+        - The principle of this Streamlit Framework & environment is **IaaS on Cloud**
+        - It is **Google Cloud**
+    """)
+
+    ''
+    ''
+    st.image("Pictures/Function_2/F2_archimate_google cloud.png", width=200)
+
+
+
+#Tab 2
+with tab2:
+    ''
+    st.write("##### ArchiMate complex:")
+    ''
+    ''
+    st.write("""
+    - More detailed overview of the 3 core Layers
+    """)
+
+    st.write("""
+    - Including: 
+        - Function 1 - Download
+        - Function 2 - Data Parsing, Validation, Visualization and Generating of .txt summary file
+    """)
+
+
+    ''
+    ''
+    st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
+    ''
+    st.image("Pictures/Parsing-archimate-diagram_2.png")
 
 # ===== Page navigation at the bottom ======
 ''
