@@ -44,16 +44,16 @@ with tab1:
         - Repository: **GitHub**
     """)
 
-''
-''
-st.image("Pictures/Function_2/F2_archimate_google cloud.png", width=190)
-''
-''
-st.image("Pictures/Function_2/F2_Archimate_vscode logo.png", width=190)
-''
-st.image("Pictures/Function_2/F2_Archimate_github logo.png", width=170)
-''
-st.image("Pictures/Function_2/F2_Archimate_streamlit logo.png", width=210)
+    ''
+    ''
+    st.image("Pictures/Function_2/F2_archimate_google cloud.png", width=190)
+    ''
+    ''
+    st.image("Pictures/Function_2/F2_Archimate_vscode logo.png", width=190)
+    ''
+    st.image("Pictures/Function_2/F2_Archimate_github logo.png", width=170)
+    ''
+    st.image("Pictures/Function_2/F2_Archimate_streamlit logo.png", width=210)
 
 #Tab 2
 with tab2:
