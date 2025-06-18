@@ -164,36 +164,69 @@ Description of JSON structure with which these Functions 3 and 4 work. There is 
 
 st.write("----")
 st.write("#### Diagram:")
+''
 '''
 Basic principle: exactly as the XML also the JSON is split into 3 main segments - header, detail and transportation. So it can be said that the JSON structure has identical layout as the XML. Of course using JSON principles and rules. 
 '''
 ''    
-
+''
 st.image("Pictures/Function_3/Function_3_json basic_2.png")
+''
+''
+''
 
-st.write("###### Header:")
-'''
-Header element includes nested elements providing key information/summary about an order which is created through the Function 3 in this app. 
-'''
 
-st.image("Pictures/Function_3/Function_3_json header_3.png")
-''
-''
-st.write("###### Detail:")
-'''
-Detail element includes also nested elements. They are used for information about the product which was purchased and whether any additional service for the product was bought or not (Insurance, Extended varanty).
-'''
-st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
-st.image("Pictures/Function_3/Function_3_json detail_10.png")
-''
-''
-st.write("###### Transportation:")
-'''
-Different element for this Function 3 (in comparison with Function 1 and 2 in this app) is element transportation. Also few nested elements which have information about transportation/delivery. 
-'''
-st.image("Pictures/Function_3/Function_3_json transportation_2.png")
-''
-''
+# Split into tabs 
+
+tab1,tab2, tab3 = st.tabs([
+      "Header",
+      "Detail",
+      "Transportation"
+])
+
+#Tab1
+with tab1:
+	st.write("###### Header:")
+	''
+	'''
+	Header element includes nested elements providing key information/summary about an order which is created through the Function 3 in this app. 
+	'''
+	''
+	''
+	st.image("Pictures/Function_3/Function_3_json header_3.png")
+	''
+	''
+
+#Tab2
+with tab2:
+	st.write("###### Detail:")
+	''
+	'''
+	Detail element includes also nested elements. They are used for information about the product which was purchased and whether any additional service for the product was bought or not (Insurance, Extended varanty).
+	'''
+	''
+	''
+	st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
+	''
+	st.image("Pictures/Function_3/Function_3_json detail_10.png")
+	''
+	''
+
+#Tab3
+with tab3:
+	st.write("###### Transportation:")
+	''
+	'''
+	Different element for this Function 3 (in comparison with Function 1 and 2 in this app) is element transportation. Also few nested elements which have information about transportation/delivery. 
+	'''
+	''
+	''
+	st.image("Pictures/Function_3/Function_3_json transportation_2.png")
+	''
+	''
+
+
+''	
 with st.expander("Show JSON structure - code", icon= ":material/code:"):
 	st.code(json_structure, language= 'json', line_numbers=True, height=700)
 
@@ -203,6 +236,7 @@ with st.expander("Show JSON Schema structure - code", icon= ":material/code:"):
 
 st.write("-----")
 st.write("#### Principle of the JSON in context of the Function 3:")
+''
 '''
 In the application user provides key inputs about the product through input fields. Based on the inputs, function culculates and provides the remaining details (about your order) necessary/to fulfill this predefined json. 
 '''
@@ -212,14 +246,33 @@ st.image("Pictures/Function_3/Function_3_JSON produced.png")
 
 
 st.write("-----")
-st.write("#### JSON Schema - download as .txt:")
-if st.download_button("Download",data = json_schema  , file_name="JSON schema functions 3 and 4.txt", icon = ":material/download:"):
-    st.info("Download will happen in few seconds")
-	
-st.write("-----")
-st.write("#### JSON Schema - download as .json:")
-if st.download_button("Download",data = json_schema  , file_name="JSON schema functions 3 and 4.json", icon = ":material/download:"):
-    st.info("Download will happen in few seconds")
+
+# Download of JSON Schema
+
+st.write("#### Download of the JSON Schema for Functions 3 and 4:")
+''
+''
+
+st.write("- Format .json")
+if st.download_button(
+            "Download",
+            data = json_schema,
+            file_name="JSON Schema for functions 3 and 4.json",
+            icon = ":material/download:"
+            ):
+
+            st.info("Download will happen in few seconds")
+
+''
+''
+st.write("- Format .txt")  
+if st.download_button("Download",
+            data = json_schema,
+            file_name="JSON Schema for functions 3 and 4.txt",
+            icon = ":material/download:"
+            ):
+        
+            st.info("Download will happen in few seconds")
 
 
 # ===== Page navigation at the bottom ======

@@ -183,15 +183,14 @@ xml_as_string ='''<?xml version="1.0" encoding="UTF-8"?>
 st.set_page_config(page_title="XSD, XML Schema")
 
 st.write("# XSD, XML Schema")
-st.write(
-    '''
+st.write('''
 Description of XML structure/XML Schema with which these **Functions 3 and 4 work**. There is a **download button at the end of this page** to download XML Schema in both .txt and .xsd formats.
-
 '''
 )
 
 st.write("----")
 st.write("#### Diagram:")
+''
 '''
 Basic principle: The XML is split into 3 main segments - header, detail and transportation. 
 '''
@@ -211,6 +210,7 @@ tab1, tab2, tab3 = st.tabs([
 # Note(!): I am keeping 2 tabs nesting. If 1 tab only it doesn't function properly
 with tab1:
         st.write("###### Header:")
+        ''
         '''
         Header element includes nested elements providing key information/summary about an order which is created through the Function 3 in this app. 
         '''
@@ -225,6 +225,7 @@ with tab1:
 
 with tab2: 
         st.write("###### Detail:")
+        ''
         '''
         Detail element includes also nested elements. They are used for information about the product which was purchased and whether any additional service for the product was bought or not (Insurance, Extended warranty).
         '''
@@ -239,6 +240,7 @@ with tab2:
 
 with tab3:
         st.write("###### Transportation:")
+        ''
         '''
         Transportation is a different element for this Function 3 (in comparison with Function 1 and 2 in this app). Including few nested elements which keep data about transportation and delivery. 
         '''
@@ -265,22 +267,29 @@ st.image("Pictures/Function_3/F3_XML_layout_table.png")
 st.write("----")
 
 st.write("#### Principle of the XML in context of the Function 3:")
+''
 '''
 In the application user provides key inputs about the product through input fields. Based on the inputs the Function 3 calculates and provides the remaining details (about your order). Then XML with data is produced.  
 '''
 '' 
+''
+''
 st.image("Pictures/Function_3/XML produced.png")
 '' 
+''
 '''
 Some of the fields/options are predefined and then the application makes the calculation based on what you select from drop down lists. More can be seen when you use the Function 3 itself.
 '''
 '' 
+''
 st.image("Pictures/Function_3/delivery details.png", width = 200)
 '' 
+''
 '''
 Also, the predefined options in drop-down lists are set as xs:restriction in the XSD -> just these values are allowed for the XML.
 '''
 '' 
+''
 st.image("Pictures/Function_3/XSD dropdowns.png")
 
 
@@ -297,17 +306,6 @@ with st.expander("Show XML structure - code", icon= ":material/code:"):
 	st.code(xml_as_string, language= 'xml', line_numbers=True, height=700)
 
 st.write("----") 
-
-# st.write("#### XSD - download as .txt:")
-# if st.download_button("Download",data = xsd_as_string  , file_name="XML Schema for function 3.txt", icon = ":material/download:"):
-#     st.info("Download will happen in few seconds")
-
-# st.write("------")
-
-# st.write("#### XSD - download as .xsd:")
-# if st.download_button("Download",data = xsd_as_string  , file_name="XML Schema for function 3.xsd", icon = ":material/download:"):
-#     st.info("Download will happen in few seconds")
-
 
 # Download of XSD
 
