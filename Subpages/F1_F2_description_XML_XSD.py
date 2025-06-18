@@ -295,6 +295,7 @@ st.write("------")
 
 st.write("#### Download of the XSD for Functions 1 and 2:")
 ''
+''
 
 st.write("- Format .xsd")
 if st.download_button(
