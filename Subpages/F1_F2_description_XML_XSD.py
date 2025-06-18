@@ -147,6 +147,7 @@ Basic principle: The XML is split into 2 main segments - header and detail.
 ''        
 st.image("Pictures/V2_pictures/Simple level.png")
 ''
+''
 ''  
 # Split into tabs 1
 
@@ -159,8 +160,6 @@ tab1, tab2 = st.tabs([
 #tab1 
 with tab1:
 
-        ''
-        ''
         st.write("###### Header:")
         ''
         st.write("- Diagram with element properties")
@@ -178,8 +177,6 @@ with tab1:
 #tab2 
 with tab2:
          
-        ''
-        ''
         st.write("###### Detail:")
         ''
         st.write("- Diagram with element properties")
@@ -296,40 +293,25 @@ st.write("------")
 
 # Download of XSD
 
-st.write("#### Download:")
+st.write("#### Download of the XSD for Functions 1 and 2:")
 ''
-st.write("""
-- Possibility of:
-    - .xsd format 
-    - .txt format
 
-""")
-
-# Split into tabs 2
-tab2_1, tab2_2 = st.tabs([
-       "  .xsd",
-       "  .txt"
-])
-
-
-
-with tab2_1:
-
-        if st.download_button(
+st.write("- Format .xsd")
+if st.download_button(
             "Download",
             data = xsd_structure,
-            file_name="XML Schema.xsd",
+            file_name="XML Schema for functions 1 and 2.xsd",
             icon = ":material/download:"
             ):
 
             st.info("Download will happen in few seconds")
 
-
-with tab2_2:
-        
-        if st.download_button("Download",
+''
+''
+st.write("- Format .txt")  
+if st.download_button("Download",
             data = xsd_structure,
-            file_name="XML Schema.txt",
+            file_name="XML Schema for functions 1 and 2.txt",
             icon = ":material/download:"
             ):
         

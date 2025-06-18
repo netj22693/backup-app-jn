@@ -1,11 +1,9 @@
 import streamlit as st
 
-st.set_page_config(page_title="XSD, XML Schema")
 
+# ============ Structures ===================================
 
-
-
-xsd_structure = '''<?xml version="1.0" encoding="UTF-8"?>
+xsd_as_string ='''<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="invoice">
 		<xs:complexType>
@@ -13,13 +11,8 @@ xsd_structure = '''<?xml version="1.0" encoding="UTF-8"?>
 				<xs:element name="header">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="customer">
-								<xs:simpleType>
-									<xs:restriction base="xs:string">
-										<xs:minLength value="1"/>
-									</xs:restriction>
-								</xs:simpleType>
-							</xs:element>
+							<xs:element name="order_number" type="xs:string"/>
+							<xs:element name="customer" type="xs:string"/>
 							<xs:element name="invoice_number">
 								<xs:simpleType>
 									<xs:restriction base="xs:string">
@@ -47,14 +40,6 @@ xsd_structure = '''<?xml version="1.0" encoding="UTF-8"?>
 												</xs:restriction>
 											</xs:simpleType>
 										</xs:element>
-										<xs:element name="total_sum_services">
-											<xs:simpleType>
-												<xs:restriction base="xs:decimal">
-													<xs:minInclusive value="0.00"/>
-													<xs:fractionDigits value="2"/>
-												</xs:restriction>
-											</xs:simpleType>
-										</xs:element>
 										<xs:element name="currency">
 											<xs:simpleType>
 												<xs:restriction base="xs:string">
@@ -68,7 +53,7 @@ xsd_structure = '''<?xml version="1.0" encoding="UTF-8"?>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="detail" maxOccurs="unbounded">
+				<xs:element name="detail">
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="category">
@@ -117,7 +102,41 @@ xsd_structure = '''<?xml version="1.0" encoding="UTF-8"?>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
-						<xs:attribute name="id" type="xs:integer" use="required" id="yes"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="transportation">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="transporter">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:pattern value="DHL|Fedex"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="country">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:pattern value="Czech Republic|Slovakia"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="size">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:pattern value="small|medium|large"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="transport_price">
+								<xs:simpleType>
+									<xs:restriction base="xs:decimal">
+										<xs:minInclusive value="0.00"/>
+										<xs:fractionDigits value="2"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
 			</xs:sequence>
@@ -126,11 +145,53 @@ xsd_structure = '''<?xml version="1.0" encoding="UTF-8"?>
 </xs:schema>
 '''
 
-# ========================== Screen ============================
+xml_as_string ='''<?xml version="1.0" encoding="UTF-8"?>
+<invoice>
+	<header>
+		<order_number>String</order_number>
+		<customer>String</customer>
+		<invoice_number>INV-000000</invoice_number>
+		<date>2025-03-10</date>
+		<price>
+			<total_sum>0.01</total_sum>
+			<currency>Kč</currency>
+		</price>
+	</header>
+	<detail>
+		<category>PC</category>
+		<product_name>String</product_name>
+		<price_amount>0</price_amount>
+		<additional_service>
+			<service>N</service>
+			<service_type>None</service_type>
+			<service_price>0</service_price>
+		</additional_service>
+	</detail>
+	<transportation>
+		<transporter>DHL</transporter>
+		<country>Slovakia</country>
+		<size>large</size>
+		<transport_price>0</transport_price>
+	</transportation>
+</invoice>
+'''
+
+
+
+
+
+
+
+
+
+
+
+st.set_page_config(page_title="XSD, XML Schema")
+
 st.write("# XSD, XML Schema")
 st.write(
     '''
-Description of XML structure/XML Schema with which this application, **Function 1 produces (Download) and Function 2 (Parsing and Visualization), works**. There is a **download button at the end of this page** to download the **XML Schema**.
+Description of XML structure/XML Schema with which these **Functions 3 and 4 work**. There is a **download button at the end of this page** to download XML Schema in both .txt and .xsd formats.
 
 '''
 )
@@ -138,212 +199,156 @@ Description of XML structure/XML Schema with which this application, **Function 
 st.write("----")
 st.write("#### Diagram:")
 '''
-Basic principle: The XML is split into 2 main segments - header and detail. 
+Basic principle: The XML is split into 3 main segments - header, detail and transportation. 
 '''
-''
-''' - header - can be only one time in the message -> it is a summary of the invoice'''
-''' - detail - is unbounded -> reflecting line/purchased product information (the more products you buy, the more lines/details will be in)'''
-''
-''        
-st.image("Pictures/V2_pictures/Simple level.png")
+''    
+st.image("Pictures/Function_3/XSD main elements.png")
 ''
 ''  
-# Split into tabs 1
+''
 
-tab1, tab2 = st.tabs([
-	"Header",
-	"Detail"
+# Split into tabs 1
+tab1, tab2, tab3 = st.tabs([
+      "Header",
+      "Detail",
+      "Transportation"
 ])
 
-
-#tab1 
+# Note(!): I am keeping 2 tabs nesting. If 1 tab only it doesn't function properly
 with tab1:
-
-        ''
-        ''
         st.write("###### Header:")
-        ''
-        st.write("- Diagram with element properties")
-        ''
-        ''  
-        st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
-        ''
-        st.image("Pictures/V2_pictures/header properties_2.png")
-        ''
-        ''  
-        st.image("Pictures/V2_pictures/xsd_header_2.png")
-        ''
-        ''  
-
-#tab2 
-with tab2:
-         
-        ''
-        ''
-        st.write("###### Detail:")
-        ''
-        st.write("- Diagram with element properties")
-        ''
-        ''  
-        st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
+        '''
+        Header element includes nested elements providing key information/summary about an order which is created through the Function 3 in this app. 
+        '''
         '' 
-        st.image("Pictures/V2_pictures/detail properties_2.png")
+        st.image("Pictures/Function_3/XSD header.png")
         ''
         ''  
-        st.image("Pictures/V2_pictures/xsd_detail_2.png")
+        st.image("Pictures/Function_3/F3_xsd_header.png")
         ''
+        ''  
         ''
 
+with tab2: 
+        st.write("###### Detail:")
+        '''
+        Detail element includes also nested elements. They are used for information about the product which was purchased and whether any additional service for the product was bought or not (Insurance, Extended warranty).
+        '''
+        '' 
+        st.image("Pictures/Function_3/XSD detail.png")
+        ''
+        ''  
+        st.image("Pictures/Function_3/F3_xsd_detail.png")
+        ''
+        ''  
+        ''
+
+with tab3:
+        st.write("###### Transportation:")
+        '''
+        Transportation is a different element for this Function 3 (in comparison with Function 1 and 2 in this app). Including few nested elements which keep data about transportation and delivery. 
+        '''
+        '' 
+        st.image("Pictures/Function_3/XSD transportation.png")
+        ''
+        ''  
+        st.image("Pictures/Function_3/F3_xsd_transportation.png")
+        ''
+        ''
 
 with st.expander("Show XSD structure - code", icon= ":material/code:"):
-	st.code(xsd_structure, language= 'xml', line_numbers=True, height=700)
+	st.code(xsd_as_string, language= 'xml', line_numbers=True, height=700)
 
 
-st.write("------")
-''
+
+st.write("-----")
 st.write("#### Message definition overview:")
 ''
 ''
-st.image("Pictures/Function_2/F2_XML_layout_table.png")
+st.image("Pictures/Function_3/F3_XML_layout_table.png")
+
 
 st.write("----")
 
-st.write("#### Principle of the XML:")
-''
-''  
-st.image("Pictures/V2_pictures/Principle_3.png")
-''
-''  
-st.write('''
-As explained upper, there are 2 main segments (header and detail). Each of them has its own specific nested elements -> sub-elements. They provide more detail view on the invoice. 
+st.write("#### Principle of the XML in context of the Function 3:")
 '''
-)
-''
-''  
-st.write("###### In context of data parsing:")
-''
-st.write('''
-The application does the following, when XML uploaded:
-- Parsing of data from all the elements (except <service>)
-- Calculation and validation of the data (if header matches detail -> visible in the application)
--  Take the parsed data to get the relevant information visible and visualized in the application
+In the application user provides key inputs about the product through input fields. Based on the inputs the Function 3 calculates and provides the remaining details (about your order). Then XML with data is produced.  
 '''
-)
-''
-st.image("Pictures/V2_pictures/Principle in context of parsing8.png")
-''
-st.write('''
-- **<customer>** - parsed as is ; data visualization
-- **<invoice_number>** - parsed as is ; data visualization
-- **<date>** - parsed as is - YYYY-MM-DD ; data visualization
-- **<total_sum>** - parsed as is ; for validation & data visualization
-- **<total_sum_services>** - parsed as is ; for validation & data visualization 
-- **<currency>** - parsed as is ; reflects the currency in the application - euro|US dollar|Kč
-- attribute **id=** - parsed as is ; for purposes of no. of products and visualization 
-- **<category>** - parsed as is ; for purposes of filtering in application - PC|TV|Gaming|Mobile phones|Tablets|Major Appliances|Households
-- **<product_name>** - parsed as is ; for visualization
-- **<price_amount>** - parsed as is ; for validation & data visualization
-- **<service>** - not parsed 
-- **<service_type>** - parsed as is ; important for logic of calculation which application does - None|extended warranty|insurance
-- **<service_price>** - parsed as is ; important for logic of calculation which application does + for validation & data visualization
+'' 
+st.image("Pictures/Function_3/XML produced.png")
+'' 
 '''
-)
-''  
-st.write("###### Rules in the application from XML point of view:")
-''
-st.write('''
-Validation:
-- **<total_sum> rule:** sum all <price_amount> values from <detail> and compare with <total_sum>
-- **<total_sum_services> rule:** sum all <service_price> values from <detail> and compare with <total_sum_services>
+Some of the fields/options are predefined and then the application makes the calculation based on what you select from drop down lists. More can be seen when you use the Function 3 itself.
 '''
-)
-''
-with st.expander(
-    "Validation",
-    icon= ":material/help_outline:"
-	):
-    
-	st.write("Example of validation in the Function 2:")
-	st.image("Pictures/V2_pictures/validation.png")
-	
-''
-''
-st.write('''
-Additional rules:
-- **<service_typ> rule - insurance:** sum all <service_price> values from <detail> when 'insurance' in <service_type>
-- **<service_typ> rule - extended warranty:** sum all <service_price> values from <detail> when 'extended warranty' in <service_type>
+'' 
+st.image("Pictures/Function_3/delivery details.png", width = 200)
+'' 
 '''
-)
+Also, the predefined options in drop-down lists are set as xs:restriction in the XSD -> just these values are allowed for the XML.
+'''
+'' 
+st.image("Pictures/Function_3/XSD dropdowns.png")
+
+
+
+
 ''
-with st.expander(
-    "Example of data parsing - insurance and extended warranty",
-    icon= ":material/help_outline:"
-	):
-    
-	st.write("Data parsing based on service type:")
-	''
-	st.image("Pictures/V2_pictures/Parsing help_2.png")
-	''
-	''
-	st.write("Anti-pattern:")
-	st.write(" - In case that there will be any price value but service type as 'None', the parsing mechanism will ignore the value")
-	''
-	st.image("Pictures/V2_pictures/None-not parsed.png")
-	
 ''
-st.write("------")
+''
+''
+with st.expander("Show XSD structure - code", icon= ":material/code:"):
+	st.code(xsd_as_string, language= 'xml', line_numbers=True, height=700)
+      
+with st.expander("Show XML structure - code", icon= ":material/code:"):
+	st.code(xml_as_string, language= 'xml', line_numbers=True, height=700)
+
+st.write("----") 
+
+# st.write("#### XSD - download as .txt:")
+# if st.download_button("Download",data = xsd_as_string  , file_name="XML Schema for function 3.txt", icon = ":material/download:"):
+#     st.info("Download will happen in few seconds")
+
+# st.write("------")
+
+# st.write("#### XSD - download as .xsd:")
+# if st.download_button("Download",data = xsd_as_string  , file_name="XML Schema for function 3.xsd", icon = ":material/download:"):
+#     st.info("Download will happen in few seconds")
 
 
 # Download of XSD
 
-st.write("#### Download:")
+st.write("#### Download of the XSD for Functions 3 and 4:")
 ''
-st.write("""
-- Possibility of:
-    - .xsd format 
-    - .txt format
 
-""")
-
-# Split into tabs 2
-tab2_1, tab2_2 = st.tabs([
-       "  .xsd",
-       "  .txt"
-])
-
-
-
-with tab2_1:
-
-        if st.download_button(
+st.write("- Format .xsd")
+if st.download_button(
             "Download",
-            data = xsd_structure,
-            file_name="XML Schema.xsd",
+            data = xsd_as_string,
+            file_name="XML Schema for functions 3 and 4.xsd",
             icon = ":material/download:"
             ):
 
             st.info("Download will happen in few seconds")
 
-
-with tab2_2:
-        
-        if st.download_button("Download",
-            data = xsd_structure,
-            file_name="XML Schema.txt",
+''
+''
+st.write("- Format .txt")  
+if st.download_button("Download",
+            data = xsd_as_string,
+            file_name="XML Schema for functions 3 and 4.txt",
             icon = ":material/download:"
             ):
         
             st.info("Download will happen in few seconds")
 
-
-''
-''
 # ===== Page navigation at the bottom ======
+''
+''
 st.write("-------")
 
 st.page_link(
     label = "Next page",
-	page="Subpages/F2_description_DB_ERT.py",
+	page="Subpages/F3_F4_description_json.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
     icon=":material/east:",
@@ -351,9 +356,10 @@ st.page_link(
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/F1_F2_description_archimate.py",
+	page="Subpages/F3_description_archimate.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/west:"
 	) 
+
 
