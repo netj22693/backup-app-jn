@@ -35,8 +35,8 @@ with tab2:
         - Validation - if user provided all inputs 
         - Producing XML or JSON - based on user's choice
     """)
-    st.write("""    - To avoid failures **the validation process** is put into "try and except" python conditions:
-        - If an issue with the inputs (some data were not provided by uset -> except -> displaying info note)
+    st.write("""    - To avoid failures **the validation process** is put into **"try and except"** python conditions:
+        - If an issue with the inputs (some data were not provided by user -> except -> displaying info note)
         - If all good -> try -> the program continues with the next steps""")
     ''
     ''

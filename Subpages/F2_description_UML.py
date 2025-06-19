@@ -79,7 +79,7 @@ with tab3:
     st.write("""
     - The application/Function 2 works with **specific XML file**
     - Based on the definition of the XML (structure/data types) the Function 2 is programmed to be able to parse the data and continue with next steps
-    - This Activity diagram **describes the programed mechanism when a file uploaded**
+    - This Activity diagram **describes the programmed mechanism when a file uploaded**
     - The process is put into "**try and except**" python conditions which **prevents from failuer of the program**
         - If any of these answers is 'No' -> the except condition is met 
         - If all answers are 'Yes' -> try -> file is okay and end-to-end steps can happen
