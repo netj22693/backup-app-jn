@@ -20,7 +20,7 @@ with tab1:
     st.image("Pictures/Function_3/Function_3_BPMN process_5.svg")
     ''
     '''
-    - Inputs to be entered by user and submited:
+    - Inputs to be entered by **user** and submited:
     '''
     ''
     st.image("Pictures/Function_3/delivery details.png", width = 200)
@@ -41,7 +41,7 @@ with tab1:
     - The calculation happens based on predefined inputs/costs which are part of application rules in the code.
     '''
     '''
-    - If the BPMN diagram would be transferred into the "application look", then it would be like this:
+    - If the BPMN diagram would be transferred into the "**application look**", then it would be like this:
     '''
     ''
     ''
@@ -53,10 +53,10 @@ with tab1:
     '''
     The predefined values for calculations are:
 
-    - Additional service/extra costs - Insurance - 15% from product price
-    - Additional service/extra costs - Extended warranty - 10% from product price
+    - Additional service/extra costs - **Insurance** - **15% from product price**
+    - Additional service/extra costs - **Extended warranty** - **10% from product price**
 
-    - And then specific costs for transport depending on Country, Transporting Company, Size of package
+    - And then **specific costs** for transport depending on **Country, Transporting Company, Size of package**
     '''
     ''
     st.image("Pictures/Function_3/Price_list.png")

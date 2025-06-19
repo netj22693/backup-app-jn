@@ -27,7 +27,7 @@ tab1, tab2, tab3 = st.tabs([
 with tab1:
 
     ''
-    st.write("##### Data parsing process:")
+    st.write("##### Data Parsing process:")
     ''
     st.write(" - Principle of the data parsing process from XML")
     ''
@@ -58,7 +58,7 @@ with tab1:
 with tab2:
 
     ''
-    st.write("##### Data validation process:")
+    st.write("##### Data Validation process:")
     ''
     # st.image("Pictures/Function_2/F2_BPMN - Validation.png")
     st.image("Pictures/Function_2/F2_BPMN - Validation.svg")
@@ -91,14 +91,14 @@ with tab2:
 with tab3:
 
     ''
-    st.write("##### Data visualization process:")
+    st.write("##### Data Visualization process:")
     ''
     # st.image("Pictures/Function_2/F2_BPMN - Visualization.png")
     st.image("Pictures/Function_2/F2_BPMN - Visualization_2.svg")
     ''
     ''
     st.write("""
-        Data visualization:
+        Data Visualization:
         - Overview of header and detail information including values which the app. calculated
         - Interactive table  connected including pie chart and bar chart
         - Static charts 
