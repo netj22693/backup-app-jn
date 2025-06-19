@@ -117,3 +117,59 @@ st.page_link(
 	icon=":material/play_circle:"
 	) 
 
+
+
+# Release notes - expander
+''
+''
+''
+with st.expander(
+	"Release notes",
+	icon=":material/code:"
+):	
+
+	''
+	st.write("Key highlights:")
+
+	''
+	''
+	st.write("""
+	- Function 5:
+		- **v4.1** - API 3 added (status/monitoring of API 2 get requests)  - 16-Jun-2025
+		- **v2.7** - API 2 added  - 10-Jun-2025
+		- **v2.6** - F5 develope (API 1)  - 10-Jun-2025
+	""")
+
+
+	''
+	st.write("""
+	- Function 4:
+		- **v7.2** - Try/Except - Error handling, if wrong file uploaded  - 18-Jun-2025	
+		- **v0.7** - F4 release  - 23-March-2025
+	""")
+	
+
+	''
+	st.write("""
+	- Function 3:
+		- **v5.2** - Try/Except - Error handling, if wrong file uploaded  - 17-Jun-2025		  
+		- **v0.7** - Bug fix/fine tuning  - 23-March-2025
+		- **v0.6** - F3 released - 13-March-2025
+	""")
+
+
+	''
+	st.write("""
+	- Function 2:
+		- **v5.2** - Try/Except - Error handling, if wrong file uploaded  - 17-Jun-2025		  
+		- **v5.0** - New expanders with SQL queries (Data highlights) - 16-Jun-2025
+		- **v0.1** - F2 released (together with F1) - 20-Feb-2025
+	""")
+
+
+
+	''
+	st.write("""
+	- Function 1:
+		- **v0.1** - F1 released (together with F2) - 20-Feb-2025
+	""")
