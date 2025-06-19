@@ -45,7 +45,7 @@ with tab2:
 
     ''
     ''
-    st.image("Pictures/Function_2/F2 - UML_Activity diagram_2.png")
+    st.image("Pictures/Function_2/F2 - UML_Activity diagram_2.svg")
     ''
     with st.expander(
         "Application context",
@@ -87,7 +87,7 @@ with tab3:
     """)
     ''
     ''
-    st.image("Pictures/Function_2/F2_UML_error handling parsing.png")
+    st.image("Pictures/Function_2/F2_UML_error handling parsing.svg")
     ''
     with st.expander(
         "Application context",

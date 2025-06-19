@@ -20,7 +20,7 @@ with tab1:
     
     """)
     ''
-    st.image("Pictures/Function_2/F2_Archimate_simple.png")
+    st.image("Pictures/Function_2/F2_Archimate_simple.svg")
     ''
     ''
     st.write("""
@@ -76,7 +76,7 @@ with tab2:
     ''
     st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
     ''
-    st.image("Pictures/Parsing-archimate-diagram_2.png")
+    st.image("Pictures/Function_2/F2_Archimate_diagram_complex.svg")
 
 # ===== Page navigation at the bottom ======
 ''

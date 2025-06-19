@@ -10,9 +10,7 @@ st.write("""
 
 ''
 ''
-st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
-''
-st.image("Pictures/Function_3/ArchM Function 3.drawio.png")
+st.image("Pictures/Function_3/F3_Archimate_diagram.svg")
 
 
 ''

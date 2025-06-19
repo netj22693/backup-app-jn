@@ -38,7 +38,7 @@ tab1,tab2 = st.tabs([
 with tab1:
 	st.write("###### ArchiMate - Overview of the functions:")
 	''
-	st.image("Pictures/Archimate_functions_overview.png")
+	st.image("Pictures/Archimate_functions_overview.svg")
 	
 with tab2:
 	st.write("###### UML - Overview of the functions:")
