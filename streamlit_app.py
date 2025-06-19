@@ -49,7 +49,7 @@ parsing = st.Page(
 
 function_3 = st.Page(
     "Subpages/F3_FUNCTION_creation_of_XML.py",
-    title="3. XML - Creation of XML or JSON",
+    title="3. Invoice - Creation of XML or JSON",
     icon = ":material/play_circle:"
     )
 
