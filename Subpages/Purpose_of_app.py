@@ -125,7 +125,7 @@ st.page_link(
 ''
 with st.expander(
 	"Release notes",
-	icon=":material/code:"
+	icon=":material/event_note:"
 ):	
 
 	''
