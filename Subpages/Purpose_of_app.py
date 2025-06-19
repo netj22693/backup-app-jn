@@ -131,7 +131,7 @@ with st.expander(
 	''
 	st.write("Key highlights:")
 
-	''
+
 	''
 	st.write("""
 	- Function 5:
@@ -173,4 +173,6 @@ with st.expander(
 	- Function 1:
 		- **v0.1** - F1 released (together with F2) - 20-Feb-2025
 	""")
-	
+
+	''
+	''
