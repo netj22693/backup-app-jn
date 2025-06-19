@@ -56,7 +56,8 @@ with tab2:
         ''
         st.write("Application process:")
         ''
-        st.image("Pictures/Function_2/F2_UML - app context .png", width= 500)
+        # st.image("Pictures/Function_2/F2_UML - app context .png", width= 500)
+        st.image("Pictures/Function_2/F2_UML _app_context.svg", width=390)
         
 
         ''
@@ -98,7 +99,8 @@ with tab3:
         ''
         st.write("Application process:")
         ''
-        st.image("Pictures/Function_2/F2_UML_error handling parsing_detail.png")
+        # st.image("Pictures/Function_2/F2_UML_error handling parsing_detail.png")
+        st.image("Pictures/Function_2/F2_UML_error handling parsing_detail.svg", width= 600)
         
 
         ''

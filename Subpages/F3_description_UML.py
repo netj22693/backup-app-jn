@@ -51,17 +51,20 @@ with tab2:
         ''
         st.write("- Filling data:")
         ''
-        st.image("Pictures/Function_3/F3_UML - context act diagram.PNG")
+        # st.image("Pictures/Function_3/F3_UML - context act diagram.PNG")
+        st.image("Pictures/Function_3/F3_UML - context act diagram.svg", width=500)
         ''
         ''
         st.write(" - Submit button - inputs validation:")
         ''
-        st.image("Pictures/Function_3/F3 - UML - Activity diagram_note.png")
+        # st.image("Pictures/Function_3/F3 - UML - Activity diagram_note.png")
+        st.image("Pictures/Function_3/F3 - UML - Activity diagram_note.svg", width=500)
         ''
         ''
         st.write("- Invoice creation:")
         ''
-        st.image("Pictures/Function_3/F3_UML - context act diagram_2.PNG")
+        # st.image("Pictures/Function_3/F3_UML - context act diagram_2.PNG")
+        st.image("Pictures/Function_3/F3_UML - context act diagram_2.svg", width=500)
         ''
         ''
 

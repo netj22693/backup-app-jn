@@ -119,19 +119,19 @@ with tab3:
         ''
         st.write("- Invoice Overview & SQL highlights expanders:")
         ''
-        st.image("Pictures/Function_2/F2_BPMN_visualization_highlight.png",width=420)
+        st.image("Pictures/Function_2/F2_BPMN_visualization_highlight.svg",width=420)
         ''
         ''
         ''
         st.write("- Interactive table")
         ''
-        st.image("Pictures/Function_2/F2_BPMN_visualization_inttable.png",width=420)
+        st.image("Pictures/Function_2/F2_BPMN_visualization_inttable.svg",width=420)
         ''
         ''
         ''
         st.write("- Static charts")
         ''
-        st.image("Pictures/Function_2/F2_BPMN_visualization_static charts.png",width=420)
+        st.image("Pictures/Function_2/F2_BPMN_visualization_static charts.svg",width=420)
         ''
         ''
 
