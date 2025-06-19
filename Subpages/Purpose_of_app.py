@@ -28,10 +28,26 @@ st.write("enjoy... :)")
 
 ''
 ''
-st.write("###### ArchiMate - Overview of the functions:")
-st.image(
-    "Pictures/Archimate_functions_overview.png"
-    )
+# split into Tabs 
+tab1,tab2 = st.tabs([
+    "ArchiMate - Overview",
+    "UML - Activity diagram - Overview "
+])
+
+#Tab 1
+with tab1:
+	st.write("###### ArchiMate - Overview of the functions:")
+	''
+	st.image("Pictures/Archimate_functions_overview.png")
+	
+with tab2:
+	st.write("###### UML - Overview of the functions:")
+	''
+	st.image("Pictures/Overall_UML_F1 and F2.svg")
+	''
+	st.image("Pictures/Overall_UML_F3 and F4.svg")
+	''
+	st.image("Pictures/Overall_UML_F5.svg")
 ''
 ''
 # Buttons for redirectiong to the relevant Functions
@@ -101,17 +117,3 @@ st.page_link(
 	icon=":material/play_circle:"
 	) 
 
-# # ===== Page navigation at the bottom ======
-# ''
-# ''
-# ''
-# ''
-# st.write("-------")
-
-# st.page_link(
-#     label = "Next page",
-# 	page="Subpages/Function_1 and 2_ description.py",
-# 	help="The button will redirect to the relevant page within this app.",
-# 	use_container_width=True,
-#     icon=":material/east:",
-# 	) 
