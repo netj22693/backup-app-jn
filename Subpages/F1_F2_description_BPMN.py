@@ -8,7 +8,8 @@ st.write("#### Application process flow:")
 ''
 st.write("- 5 stages of the process - high level")
 ''
-st.image("Pictures/BPMN flow_2.png")
+# st.image("Pictures/BPMN flow_2.png")
+st.image("Pictures/Function_2/F2_BPMN_5stages HLE_2.svg")
 ''
 ''
 ''
@@ -30,8 +31,8 @@ with tab1:
     ''
     st.write(" - Principle of the data parsing process from XML")
     ''
-    ''
-    st.image("Pictures/V2_pictures/BPMN data parsing.png")
+    # st.image("Pictures/V2_pictures/BPMN data parsing.png")
+    st.image("Pictures/Function_2/F2_BPMN_data parsing.svg")
     ''
     ''
     with st.expander(
@@ -59,7 +60,8 @@ with tab2:
     ''
     st.write("##### Data validation process:")
     ''
-    st.image("Pictures/Function_2/F2_BPMN - Validation.png")
+    # st.image("Pictures/Function_2/F2_BPMN - Validation.png")
+    st.image("Pictures/Function_2/F2_BPMN - Validation.svg")
     ''
     ''
     st.write("""
@@ -91,7 +93,8 @@ with tab3:
     ''
     st.write("##### Data visualization process:")
     ''
-    st.image("Pictures/Function_2/F2_BPMN - Visualization.png")
+    # st.image("Pictures/Function_2/F2_BPMN - Visualization.png")
+    st.image("Pictures/Function_2/F2_BPMN - Visualization_2.svg")
     ''
     ''
     st.write("""

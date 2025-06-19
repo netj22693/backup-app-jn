@@ -16,7 +16,8 @@ with tab1:
     st.write("#### Function 3 process flow:")
     ''
     ''
-    st.image("Pictures/Function_3/Function_3_BPMN process_5.png")
+    # st.image("Pictures/Function_3/Function_3_BPMN process_5.png")
+    st.image("Pictures/Function_3/Function_3_BPMN process_5.svg")
     ''
     '''
     - Inputs to be entered by user and submited:
@@ -33,7 +34,8 @@ with tab1:
     st.write("##### Application calculation process:")
     ''
     ''
-    st.image("Pictures/Function_3/Function_3_BPMN_calculation process_2.png")
+    # st.image("Pictures/Function_3/Function_3_BPMN_calculation process_2.png")
+    st.image("Pictures/Function_3/Function_3_BPMN_calculation process_2.svg")
     ''
     '''
     - The calculation happens based on predefined inputs/costs which are part of application rules in the code.
@@ -43,7 +45,8 @@ with tab1:
     '''
     ''
     ''
-    st.image("Pictures/Function_3/Function_3_BPMN_calculation process_tables_2.png")
+    # st.image("Pictures/Function_3/Function_3_BPMN_calculation process_tables_2.png")
+    st.image("Pictures/Function_3/Function_3_BPMN_calculation process_tables_2.svg")
     ''
     ''
     ''
@@ -73,7 +76,8 @@ with tab2:
     ''
     ''
     ''
-    st.image("Pictures/Function_4/Function_4_BPMN.png")
+    # st.image("Pictures/Function_4/Function_4_BPMN.png")
+    st.image("Pictures/Function_4/Function_4_BPMN.svg")
     ''
     ''
     ''
