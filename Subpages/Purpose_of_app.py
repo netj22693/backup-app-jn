@@ -137,7 +137,7 @@ with st.expander(
 	- Function 5:
 		- **v4.1** - API 3 added (status/monitoring of API 2 get requests)  - 16-Jun-2025
 		- **v2.7** - API 2 added  - 10-Jun-2025
-		- **v2.6** - F5 develope (API 1)  - 10-Jun-2025
+		- **v2.6** - F5 developed (API 1)  - 10-Jun-2025
 	""")
 
 
