@@ -56,7 +56,7 @@ with tab1:
 
         st.link_button(
             label = "Go to XSD, XML description page",
-            url="Subpages/F1_F2_description_XML_XSD.py",
+            url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
             help="The button will redirect to the relevant page within this app for download.",
             use_container_width=True,
             icon=":material/launch:"
