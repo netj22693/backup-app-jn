@@ -163,7 +163,7 @@ pg = st.navigation(
             function_5
         ]
     },
-    expanded=True  #23-Jun-2025: since streamlit version 1.46.0, this is need to have the right menu bar always open as default (possibility to collaps still available)
+    expanded=True  #23-Jun-2025: since streamlit version 1.46.0, this is needed to have the right menu bar always open as default (possibility to collaps still available)
 )
 
 pg.run()
