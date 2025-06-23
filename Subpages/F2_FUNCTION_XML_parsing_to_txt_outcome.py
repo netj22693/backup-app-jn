@@ -473,44 +473,97 @@ if object_from_upload is not None:
         ''
         st.write("##### Interactive table and charts:")
 
+
+        # Creation of unique values from lists -> purpose: filters
         unique_value = data_table['Category'].unique()
 
-        # Multiselect filter
+        unique_add_ser = data_table['Additional service'].unique()
+
+        # Creation of min and max values from lists to have start/end points of filters
+        min_value_price = data_table['Price'].min()
+        max_value_price = data_table['Price'].max()
+        
+        min_value_ads = data_table['Additional service price'].min()
+        max_value_ads = data_table['Additional service price'].max()
+
+
+    
+        # Multiselect filter - Category
         ''
+
         filter_multiselect = st.multiselect(
-            "Select category",
+            "Select Category",
             unique_value,
             default = unique_value,
             help = "Select category which you want to see. Multiple categories allowed"
         )  
-        
+
+       
         if not len(filter_multiselect):
             st.warning("Select at lease 1 category to see overview table and charts")
 
-        # min_value_price = data_table['Price'].min()
-        # max_value_price = data_table['Price'].max()
+
         
+		# Slider - price 
+        ''
+        from_price, to_price = st.slider(
+            "Filter Price",
+            min_value = min_value_price,
+            max_value = max_value_price,
+            value= [min_value_price, max_value_price],
+            step = 10.00,
+            help = "Select range of prices you want to see"
+        )
+
+
+
+        # Multiselect filter - Additional service
+        ''
+        ''
+        filter_multiselect_2 = st.multiselect(
+            "Select Additional service",
+			unique_add_ser,
+            default= unique_add_ser,
+            help = "Select additional service which you want to see. Multiple categories allowed"
+            )
+
+	
+        if not len(filter_multiselect_2):
+            st.warning("Select at lease 1 category to see overview table and charts")
+            
+		
         
-        # Slider na price, zatím nefunkcni
-        # from_price, to_price = st.slider(
-        #     "Filter Price",
-        #     min_value = min_value_price,
-        #     max_value = max_value_price,
-        #     help = "Select range of prices you want to see"
-        # )
+		# Slider - price additional services
+        ''
+        from_price_ads, to_price_ads = st.slider(
+            "Filter Price of Additional Services",
+            min_value = min_value_ads,
+            max_value = max_value_ads,
+            value= [min_value_ads, max_value_ads],
+            step = 5.00,
+            help = "Select range of prices you want to see"
+        )
         
-        
+
+      
+        # Set of filters applied into the dataframe/table throught this part of code
         filtered_data = data_table[
-        (data_table["Category"].isin(filter_multiselect))
-        # & (data_table["Price"] <= max_value_price)
-        # & (min_value_price <= data_table["Price"]) 
+        (data_table["Category"].isin(filter_multiselect)) & (data_table["Additional service"].isin(filter_multiselect_2))
+
+        & ((data_table["Price"] <= to_price)
+        & (data_table["Price"] >= from_price))
+
+        & ((data_table["Additional service price"] <= to_price_ads)
+        & (data_table["Additional service price"] >= from_price_ads))
+
         ]
 
-        # This is adjusting the table
+		
+
+        # Visualization of the table (where filters already applied)
+        ''
         ''
         data_table_2 = st.dataframe(data=filtered_data, hide_index=True, use_container_width=True)
-
-        
 
         # Pie chart
         data = pd.DataFrame({
@@ -528,6 +581,8 @@ if object_from_upload is not None:
 
         with st.container(border=True):
             st.plotly_chart(fig_pie, use_container_width=True)
+        
+
         
         # Bar chart
         fig_bar = px.bar(

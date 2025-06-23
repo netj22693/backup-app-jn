@@ -523,7 +523,8 @@ if object_from_upload is not None:
         filter_multiselect_2 = st.multiselect(
             "Select Additional service",
 			unique_add_ser,
-            default= unique_add_ser
+            default= unique_add_ser,
+            help = "Select additional service which you want to see. Multiple categories allowed"
             )
 
 	
@@ -545,7 +546,7 @@ if object_from_upload is not None:
         
 
       
-        
+        # Set of filters applied into the dataframe/table throught this part of code
         filtered_data = data_table[
         (data_table["Category"].isin(filter_multiselect)) & (data_table["Additional service"].isin(filter_multiselect_2))
 
@@ -559,7 +560,7 @@ if object_from_upload is not None:
 
 		
 
-        # This is adjusting the table
+        # Visualization of the table (filters applied)
         ''
         ''
         data_table_2 = st.dataframe(data=filtered_data, hide_index=True, use_container_width=True)
@@ -580,6 +581,8 @@ if object_from_upload is not None:
 
         with st.container(border=True):
             st.plotly_chart(fig_pie, use_container_width=True)
+        
+
         
         # Bar chart
         fig_bar = px.bar(
