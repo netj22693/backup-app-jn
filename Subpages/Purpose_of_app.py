@@ -161,6 +161,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 2:
+		- **v8.1** - More filters/Advanced filtering - 23-Jun-2025		
 		- **v5.2** - Try/Except - Error handling, if wrong file uploaded  - 17-Jun-2025		  
 		- **v5.0** - New expanders with SQL queries (Data highlights) - 16-Jun-2025
 		- **v0.1** - F2 released (together with F1) - 20-Feb-2025
