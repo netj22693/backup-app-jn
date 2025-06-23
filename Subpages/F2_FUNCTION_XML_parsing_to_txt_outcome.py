@@ -771,12 +771,22 @@ if object_from_upload is not None:
             ''
             st.write("- **Or** you can see more about the XSD/XML definition for this Function 2 -> which should help to fix data/XML structure quality issue:")
             ''
-            st.page_link(
-                label = "XML princpiles for this Function 2",
-                page="Subpages/F1_F2_description_XML_XSD.py",
+            # st.page_link(
+            #     label = "XML princpiles for this Function 2",
+            #     page="Subpages/F1_F2_description_XML_XSD.py",
+            #     help="The button will redirect to the relevant page within this app.",
+            #     use_container_width=True,
+            #     icon=":material/launch:",
+            #     )
+
+            st.link_button(
+                label = "XML principles for this Function 2",
+                url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
                 help="The button will redirect to the relevant page within this app.",
                 use_container_width=True,
                 icon=":material/launch:",
                 )
+
+
             ''
             ''

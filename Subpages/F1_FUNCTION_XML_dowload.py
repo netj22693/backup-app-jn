@@ -703,9 +703,18 @@ with st.expander(
     
 	st.write("1) Download XSD Schema from this application:")
 	''
-	st.page_link(
+	# st.page_link(
+	# 	label = "Go to XSD page",
+	# 	page="Subpages/F1_F2_description_XML_XSD.py",
+	# 	help="The button will redirect to the relevant page within this app for download.",
+	# 	use_container_width=True,
+	# 	icon=":material/launch:"
+
+	# 	) 
+
+	st.link_button(
 		label = "Go to XSD page",
-		page="Subpages/F1_F2_description_XML_XSD.py",
+		url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
 		help="The button will redirect to the relevant page within this app for download.",
 		use_container_width=True,
 		icon=":material/launch:"
