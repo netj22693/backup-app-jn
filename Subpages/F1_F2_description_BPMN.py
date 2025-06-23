@@ -46,9 +46,17 @@ with tab1:
         ''
         st.write("More details about the XML and data parsing:")
 
-        st.page_link(
+        # st.page_link(
+        #     label = "Go to XSD, XML description page",
+        #     page="Subpages/F1_F2_description_XML_XSD.py",
+        #     help="The button will redirect to the relevant page within this app for download.",
+        #     use_container_width=True,
+        #     icon=":material/launch:"
+        # )
+
+        st.link_button(
             label = "Go to XSD, XML description page",
-            page="Subpages/F1_F2_description_XML_XSD.py",
+            url="Subpages/F1_F2_description_XML_XSD.py",
             help="The button will redirect to the relevant page within this app for download.",
             use_container_width=True,
             icon=":material/launch:"
