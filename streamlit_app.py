@@ -2,6 +2,9 @@ import streamlit as st
 
 
  # ============= LOGO - SHARED ON ALL PAGES ==========
+st.set_page_config(initial_sidebar_state="auto") 
+
+ # ============= LOGO - SHARED ON ALL PAGES ==========
 st.logo("Pictures/V2_pictures/Logo_7.png", size='large')
 
 
@@ -130,6 +133,13 @@ function_5_desc_api = st.Page(
     icon= ":material/code:"
 )
 
+
+function_6_zipcode = st.Page(
+    "Subpages/F6_FUNCTION_zip_code.py",
+    title="6. Zip code",
+    icon= ":material/play_circle:"
+)
+
 # Navigation:
 pg = st.navigation(
     {
@@ -161,7 +171,11 @@ pg = st.navigation(
         "Function 5": [
             function_5_desc_api,
             function_5
-        ]
+        ],
+        # "Function 6": [
+        #     function_6_zipcode
+        # ]
+
     },
     expanded=True  #23-Jun-2025: since streamlit version 1.46.0, this is needed to have the right menu bar always open as default (possibility to collaps still available)
 )
