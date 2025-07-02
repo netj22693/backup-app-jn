@@ -148,6 +148,18 @@ with st.expander("Have you seen a bug? Report it here.",icon= ":material/pest_co
     st.caption("Powered by FormSubmit")
     st.image("Pictures/formsubmitlogo.png", width=150)
 
+# LinkedIn - expander
+
+with st.expander(
+	"Contact - LinkedIn",
+	icon=":material/id_card:"
+):	
+
+	''
+	''
+	st.image("Pictures/linkedin-logo-2013-1.svg", width=95)
+	st.write("- Do you like this app? :) LinkedIn profile [Here](https://www.linkedin.com/in/jan-netolicka-12209a221/)")
+
 
 
 # Release notes - expander
