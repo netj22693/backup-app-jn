@@ -10,7 +10,7 @@ st.write("# ZIP Code search:")
 ''
 st.write("""
 - API based 
-- The information comes from (1) https://app.zipcodestack.com/ and (2) https://app.zipcodebase.com
+- The information comes from (1) https://app.zipcodebase.com and (2) https://app.zipcodestack.com/
 - **Note:** Because it is about 2 differnt applications sending the data, it can happen that sometimes there will not be 100% match 
 """)
 
@@ -46,7 +46,27 @@ with st.expander("How to use this function",
     st.write("- There can be **only 1 city per request**")
     # st.image("Pictures/Function_6/F6_menu2_city.svg")
 
+with st.expander("Some examples of Cities you can use",
+    icon=":material/help:"
+    ):
 
+    ''
+    ''
+    st.write("""
+    - **CZ** - Czech Republic
+        - Prague
+        - Olomouc
+        - Zlin
+    """
+    )
+
+    st.write("""
+    - **SK** - Slovakia
+        - Kosice
+        - Trencin
+        - Banska Bystrica
+    """
+    )
 
 # ================= API ============================
 
@@ -86,10 +106,17 @@ def get_api_2(city,country):
     try:
         response = requests.get('https://app.zipcodebase.com/api/v1/code/city?apikey=7a293f40-56a9-11f0-9c80-b10c7877b63a', headers=headers, params=params, timeout=10);
 
-        st.write(response.text)
+        # st.write(f" write před return {response.text}")
+        response = response.text
+        # st.write(f" po response.text {response}")
+
+        #Very important step to make for data type
+        response = json.loads(response) 
+        return response
 
     except:
         st.warning("Apologies - The API is currently not available - connection timeout (10 seconds) stopped the request")
+        exit()
 
 
 # ================== User inputs ==========================
@@ -115,17 +142,19 @@ with st.form("List of ZIP codes"):
         st.write(country)
 
         # This is for PROD
-        # f_data_json_2 = get_api_2(city,country)
+        f_data_json_2 = get_api_2(city,country)
 
         # This for TESTING
-        f_data_json_2 = TEST_get_request_2(city,country)
-        st.write(f_data_json_2)
+        # f_data_json_2 = TEST_get_request_2(city,country)
+        st.write(f" here data should be for parsing: {f_data_json_2}")
 
     
         # Data parsing from JSON
-
+        st.write("dostanu se až sem před parsing?")
         ds = f_data_json_2['results']
         ds = list(map(str, ds))
+
+        st.write("dostanu se až sem za parsing??")
 
         # data visualization APP
         data_serie = pd.Series(ds, name="ZIP codes",)
@@ -141,7 +170,7 @@ with st.form("List of ZIP codes"):
         ''
         ''
         st.write("- **(!) Important note:**")
-        st.warning("Because the API 2 is a different application/works with differen data -> it can happen that some of these ZIP codes might not be neccessary matching and the API 2 will NOT have the same data/ZIP codes")
+        st.info("Because the API 2 is a different application/works with differen data -> it can happen that some of these ZIP codes might not be neccessary matching and the API 2 will NOT have the same data/ZIP codes")
 
 
 
@@ -242,7 +271,7 @@ def  get_request(codes, country):
         return f_data_json
     
     except:
-        st.warning("Apologies - The API is currently not available - connection timeout (10 seconds) stopped the request")
+        st.warning("Apologies - The API is currently not available - connection timeout (10 seconds) stopped the request or API limit per month was reached")
 
 # ================= App Scree ============================
 
@@ -278,6 +307,7 @@ with st.expander("How to use this function",
     st.image("Pictures/Function_6/F6_menu_post_single.svg")
     ''
     st.write("- **(!) RECOMMENDED:** If you want to check more, fill it like this: ZIPcode,ZIPcode,ZIPcode... and use a comma , as a separator")
+    st.write("- **(!) BUT** have **MAX 10** ZIP codes in 1 request")
     st.image("Pictures/Function_6/F6_menu_post_multiple.svg")
     ''
     st.caption("** This approach of multiple inputs in one request helps to save/limit the number of API calls (source application limits this)")
@@ -290,18 +320,22 @@ with st.expander("How to use this function",
     st.image("Pictures/Function_6/F6_menu_nozip.svg")
     st.write("- In case that your ZIP code is **NOT** related to the CZ or SK, but you provided multiple codes, then the exiting will be delivered the others not. E.g. 4 codes filled in (3 existing, 1 not) -> 3 will be delivered")
 
-with st.expander("Some example of ZIP codes you can use",
+with st.expander("Some examples of ZIP codes you can use",
     icon=":material/help:"
     ):
+
+    ''
+    ''
+    st.write("- In case that you do not have any/do not know, you can use any of these:")
     st.write("""
-    - CZ
+    - **CZ** - Czech Republic
         - 3 ZIP codes
         - 11000,25163,15800
     """
     )
 
     st.write("""
-    - SK
+    - **SK** - Slovakia
         - 3 ZIP codes
         - 013 41,013 06,811 08 
     """

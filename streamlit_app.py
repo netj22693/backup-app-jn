@@ -136,7 +136,7 @@ function_5_desc_api = st.Page(
 
 function_6_zipcode = st.Page(
     "Subpages/F6_FUNCTION_zip_code.py",
-    title="6. Zip code",
+    title="6. ZIP code",
     icon= ":material/play_circle:"
 )
 
