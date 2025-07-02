@@ -4,7 +4,7 @@ import streamlit as st
 st.write("# Welcome!")
 ''
 st.write(
-    "Purpose of this application is to play with XML and JSON data. The application has **5 functions**:"
+    "Purpose of this application is to play with XML and JSON data. The application has **6 functions**:"
     )
 ''
 st.write("""
@@ -18,8 +18,13 @@ st.write("""
     """)
 ''
 st.write("""
-    - **Function 5:** Exchange rate/calculation (CZK, EUR, USD) - API based with actual exchange rate
+    - **Function 5:** Exchange rate/calculation (CZK, EUR, USD) - **API based** with actual exchange rate
     """)
+''
+st.write("""
+    - **Function 6:** ZIP code - (1) Get ZIP code(s) based on City, (2) Get City based on ZIP code - **API based**
+    """
+    )
 ''
 ''
 "More details about the functions can be seen in the subpages - what the functions do, what data structures are used, etc."
@@ -38,7 +43,8 @@ tab1,tab2 = st.tabs([
 with tab1:
 	st.write("###### ArchiMate - Overview of the functions:")
 	''
-	st.image("Pictures/Archimate_functions_overview.svg")
+	# st.image("Pictures/Archimate_functions_overview.svg")
+	st.image("Pictures/Archimate_functions_overview_3.svg")
 	
 with tab2:
 	st.write("###### UML - Overview of the functions:")
@@ -48,6 +54,8 @@ with tab2:
 	st.image("Pictures/Overall_UML_F3 and F4.svg")
 	''
 	st.image("Pictures/Overall_UML_F5.svg")
+	''
+	st.image("Pictures/Overall_UML_F6.svg")
 ''
 ''
 # Buttons for redirectiong to the relevant Functions
@@ -115,6 +123,22 @@ st.page_link(
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/play_circle:"
+	)
+''
+st.page_link(
+    label = "Description about F6",
+	page="Subpages/F6_description_API.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+    icon=":material/code:",
+	)
+
+st.page_link(
+	label = "Function 6",
+	page="Subpages/F6_FUNCTION_zip_code.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+	icon=":material/play_circle:"
 	) 
 
 # Bug - expander
@@ -159,6 +183,7 @@ with st.expander(
 	''
 	st.image("Pictures/linkedin-logo-2013-1.svg", width=95)
 	st.write("- Do you like this app? :) LinkedIn profile [Here](https://www.linkedin.com/in/jan-netolicka-12209a221/)")
+	st.write("- Author: Jan Netolicka")
 
 
 
@@ -172,6 +197,11 @@ with st.expander(
 	''
 	st.write("Key highlights:")
 
+	''
+	st.write("""
+	- Function 6:
+		- **v10.0** - F6 release  - 02-July-2025
+	""")
 
 	''
 	st.write("""

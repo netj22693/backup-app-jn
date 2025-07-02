@@ -127,9 +127,12 @@ def get_api_2(city,country):
 with st.form("List of ZIP codes"):
     country = st.selectbox("Country:",
         ["CZ", "SK"],
+        help="Select country, based on the City you are looking for. CZ - Czech Republic, SK - Slovakia",
         ).casefold()
     
-    city = st.text_input("City").capitalize()
+    city = st.text_input("City",
+        help="Only 1 city is allowed",
+        ).capitalize()
     
     ''
     ''
@@ -347,12 +350,15 @@ with st.expander("Some examples of ZIP codes you can use",
 ''
 ''
 ''
-with st.form("Ahoj"):
+with st.form("Get city based on ZIP code(s)"):
     country = st.selectbox("Country:",
         ["CZ", "SK"],
+        help="Select country you assume that your ZIP code is from. CZ - Czech Republic, SK - Slovakia",
         )
     
-    codes = st.text_input("ZIP code")
+    codes = st.text_input("ZIP code",
+        help = "You can put 1 or more ZIP codes. If more the format is: ZIPcode,ZIPcode,ZIPcode... To do not overwhelm the API, put MAX 10 ZIP codes in one search."
+        )
     
     ''
     ''

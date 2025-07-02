@@ -261,7 +261,7 @@ with st.expander("API JSON structure - Kurzy.cz", icon= ":material/help:"):
 		json_api_structure_1,
 		language= 'json',
 		line_numbers=True,
-		height=700)
+		height=400)
 
 	
 
