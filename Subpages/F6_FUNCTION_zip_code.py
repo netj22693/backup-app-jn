@@ -138,27 +138,28 @@ with st.form("List of ZIP codes"):
         use_container_width=True,
         icon = ":material/apps:",
         ):
-        st.write(city)
-        st.write(country)
 
-        # This is for PROD
+
+        # This is for PROD   ///////////////////////////////////////////////
         f_data_json_2 = get_api_2(city,country)
 
         # This for TESTING
         # f_data_json_2 = TEST_get_request_2(city,country)
-        st.write(f" here data should be for parsing: {f_data_json_2}")
+        # st.write(f" here data should be for parsing: {f_data_json_2}")
 
     
         # Data parsing from JSON
-        st.write("dostanu se až sem před parsing?")
+
         ds = f_data_json_2['results']
         ds = list(map(str, ds))
 
-        st.write("dostanu se až sem za parsing??")
 
         # data visualization APP
         data_serie = pd.Series(ds, name="ZIP codes",)
         data_serie.index += 1
+
+        ''
+        ''
         st.write(data_serie)
 
         # data translation into string with coma , for the (1) API
@@ -170,7 +171,7 @@ with st.form("List of ZIP codes"):
         ''
         ''
         st.write("- **(!) Important note:**")
-        st.info("Because the API 2 is a different application/works with differen data -> it can happen that some of these ZIP codes might not be neccessary matching and the API 2 will NOT have the same data/ZIP codes")
+        st.info("Because the API 2 (below) is a different application/works with different data -> it can happen that some of these ZIP codes might not be neccessary matching and the API 2 will NOT have the same data/ZIP codes")
 
 
 
@@ -361,10 +362,10 @@ with st.form("Ahoj"):
         icon = ":material/apps:",
         ):
 
-        # Function
+        # PROD ///////////////////////////////////////////////
         f_data_json = get_request(codes, country)
 
-        # For testing purposes 
+        # For TEST purposes 
         # f_data_json = TEST_get_request(codes, country)
         # st.write(f_data_json)
 
