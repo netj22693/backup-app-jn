@@ -1,29 +1,33 @@
 import streamlit as st
+import requests
+from fastapi import HTTPException
 
 
-with st.expander("Have you seen a bug? Report it here.",icon= ":material/pest_control:"):
+# https://app.zipcodebase.com/ - 1 api call to pocita jako 6 :(
+def get_api():
 
-    ''
-    st.write("Please provide details:")
+    try: 
+        headers = { 
+        "apikey": "7a293f40-56a9-11f0-9c80-b10c7877b63a"}
 
-    contact_form ="""
-        <form action="https://formsubmit.co/honza.ne@seznam.cz" method="POST">
-            <input type="hidden" name="_captcha" value="false">
-            <input type="text" name="subject" placeholder= "Subject" required>
-            <textarea name="message" placeholder="Description..."></textarea>
-            <button type="submit">Send</button>
-        </form>
-    """
+        params = (
+        ("city","Bratislava"),
+        ("country","sk"),
+        );
 
-    st.markdown(contact_form, unsafe_allow_html = True)
+        response = requests.get('https://app.zipcodebase.com/api/v1/code/city?apikey=7a293f40-56a9-11f0-9c80-b10c7877b63a', headers=headers, params=params);
+        st.write(response.text)
 
-    def local_css(file_name):
-        with open(file_name) as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+        st.write(response)
 
-    local_css("Subpages/CSS/style.css")
+        if response == "<Response [200]>":
+            pass
 
-    ''
-    ''
-    st.caption("Powered by FormSubmit")
-    st.image("Pictures/formsubmitlogo.png", width=150)
+        else:
+            st.warning("API is not available - either technical issue or API calls limit reached.")
+    
+    except:
+        st.warning("API is not available - either technical issue or API calls limit reached.")
+
+if st.button("Test"):  
+    get_api()

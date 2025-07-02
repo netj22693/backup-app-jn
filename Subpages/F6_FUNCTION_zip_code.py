@@ -1,7 +1,155 @@
 import streamlit as st
 import requests
 import json
+import pandas as pd
 
+# ================= App Screen ============================
+
+st.write("# ZIP Code search:")
+''
+''
+st.write("""
+- API based 
+- The information comes from (1) https://app.zipcodestack.com/ and (2) https://app.zipcodebase.com
+- **Note:** Because it is about 2 differnt applications sending the data, it can happen that sometimes there will not be 100% match 
+""")
+
+''
+''
+''
+st.write("#### (1) ZIP code(s) based on City:")
+
+# ================== Rules for users ======================
+
+
+''
+with st.expander("How to use this function",
+    icon=":material/help:"
+    ):
+    ''
+    ''
+    st.write("""
+    - This function helps to provide **ZIP code number for particular city**
+    - It is for **shipping purposes**
+    """
+    )
+
+    ''
+    st.write("- Firstly - Select country from the list (either CZ or SK): ")
+    st.image("Pictures/Function_6/F6_menu_skcz.svg")
+
+    ''
+    ''
+    ''
+    st.write("- Secondly - Fill in the name of city:  can and cannot use capital leter: Prague/prague")
+    # st.image("Pictures/Function_6/F6_menu2_city.svg")
+    st.write("- There can be **only 1 city per request**")
+    # st.image("Pictures/Function_6/F6_menu2_city.svg")
+
+
+
+# ================= API ============================
+
+# FOR TESTINGS - to do not call API, if not neccessary
+
+def TEST_get_request_2(city,country):
+
+    json_data_api_2 ={
+            "query": {
+                "city": city,
+                "state": "null",
+                "country": country
+            },
+            "results": [
+                "251 63",
+                "110 00",
+                "140 21",
+                "140 78",
+                "144 00",
+            ]
+        }
+    
+    return json_data_api_2
+
+
+# For PROD purposes 
+# https://app.zipcodebase.com/ - Bug: 1 api call is counted like 6
+def get_api_2(city,country):
+    headers = { 
+    "apikey": "7a293f40-56a9-11f0-9c80-b10c7877b63a"}
+
+    params = (
+    ("city", city),
+    ("country", country),
+    );
+
+    try:
+        response = requests.get('https://app.zipcodebase.com/api/v1/code/city?apikey=7a293f40-56a9-11f0-9c80-b10c7877b63a', headers=headers, params=params, timeout=10);
+
+        st.write(response.text)
+
+    except:
+        st.warning("Apologies - The API is currently not available - connection timeout (10 seconds) stopped the request")
+
+
+# ================== User inputs ==========================
+
+''
+''
+''
+with st.form("List of ZIP codes"):
+    country = st.selectbox("Country:",
+        ["CZ", "SK"],
+        ).casefold()
+    
+    city = st.text_input("City").capitalize()
+    
+    ''
+    ''
+    if st.form_submit_button(
+        label="Submit",
+        use_container_width=True,
+        icon = ":material/apps:",
+        ):
+        st.write(city)
+        st.write(country)
+
+        # This is for PROD
+        # f_data_json_2 = get_api_2(city,country)
+
+        # This for TESTING
+        f_data_json_2 = TEST_get_request_2(city,country)
+        st.write(f_data_json_2)
+
+    
+        # Data parsing from JSON
+
+        ds = f_data_json_2['results']
+        ds = list(map(str, ds))
+
+        # data visualization APP
+        data_serie = pd.Series(ds, name="ZIP codes",)
+        data_serie.index += 1
+        st.write(data_serie)
+
+        # data translation into string with coma , for the (1) API
+        string_for_api_1 = ",".join(ds)
+
+        ''
+        st.write("- Here **you can take the string** and put it into the box below (the second API/Search):")
+        st.write(string_for_api_1)
+        ''
+        ''
+        st.write("- **(!) Important note:**")
+        st.warning("Because the API 2 is a different application/works with differen data -> it can happen that some of these ZIP codes might not be neccessary matching and the API 2 will NOT have the same data/ZIP codes")
+
+
+
+
+
+# ==========================================================================
+# //////////////////////////////////////////////////////////////////////////
+# ==========================================================================
 # for testign purposes to do not call api 
 def TEST_get_request(codes,country):
 
@@ -87,20 +235,23 @@ def  get_request(codes, country):
     );
 
     # get reguest
-    api_1 = requests.get(api_url, headers=headers, params=params,  verify=False).text
+    try:
+        api_1 = requests.get(api_url, headers=headers, params=params,  verify=False, timeout=10).text
     
-    f_data_json = json.loads(api_1)
-    return f_data_json
+        f_data_json = json.loads(api_1)
+        return f_data_json
+    
+    except:
+        st.warning("Apologies - The API is currently not available - connection timeout (10 seconds) stopped the request")
 
 # ================= App Scree ============================
 
-st.write("# ZIP Code search:")
 ''
 ''
-st.write("""
-- API based 
-- The information comes from https://app.zipcodestack.com/
-""")
+''
+st.write("#### (2) Validation of city based on ZIP code:")
+''
+''
 
 # ================== Rules for users ======================
 
@@ -177,10 +328,10 @@ with st.form("Ahoj"):
         ):
 
         # Function
-        # f_data_json = get_request(codes, country)
+        f_data_json = get_request(codes, country)
 
         # For testing purposes 
-        f_data_json = TEST_get_request(codes, country)
+        # f_data_json = TEST_get_request(codes, country)
         # st.write(f_data_json)
 
 
