@@ -200,7 +200,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 6:
-		- **v10.0** - F6 release  - 02-July-2025
+		- **v10.0** - F6 released  - 02-July-2025
 	""")
 
 	''
@@ -216,7 +216,7 @@ with st.expander(
 	st.write("""
 	- Function 4:
 		- **v7.2** - Try/Except - Error handling, if wrong file uploaded  - 18-Jun-2025	
-		- **v0.7** - F4 release  - 23-March-2025
+		- **v0.7** - F4 released  - 23-March-2025
 	""")
 	
 
