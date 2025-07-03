@@ -342,6 +342,7 @@ https://zipcodestack.com/
 # Expander API 2 JSON 
 with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/help:"):
 
+
 	''
 	st.write("""
 	- API - **HTTP GET** request to retrieve data from a server
@@ -388,46 +389,50 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 		use_container_width=True,
 		icon=":material/monitoring:"
 	):
-			
+            try:
 
-		# API count/remaining
-		api_count = "https://api.zipcodestack.com/v1/status?apikey=zip_live_pWsWrXrfbOBJpOjUwXuVT8RDRkWCtUj44M2RKzLd"
+                # API count/remaining
+                api_count = "https://api.zipcodestack.com/v1/status?apikey=zip_live_pWsWrXrfbOBJpOjUwXuVT8RDRkWCtUj44M2RKzLd"
 
-		# get reguest - cached for 10 minutes
-		@st.cache_data(ttl=600)
-		def get_response_api_3(api_count):
-			api_3 = requests.get(api_count, verify=False).text
-			return api_3
+                # get reguest - cached for 10 minutes
+                @st.cache_data(ttl=600)
+                def get_response_api_3(api_count):
+                    api_3 = requests.get(api_count, verify=False).text
+                    return api_3
 
-		api_3 = get_response_api_3(api_count)
+                api_3 = get_response_api_3(api_count)
 
-		# JSON format creation
-		api_3_json = json.loads(api_3)
+                # JSON format creation
+                api_3_json = json.loads(api_3)
 
-		# Search for data in the API defined format - JSON
-		used = api_3_json['quotas']['month']['used']
-		remaining = api_3_json['quotas']['month']['remaining']
+                # Search for data in the API defined format - JSON
+                used = api_3_json['quotas']['month']['used']
+                remaining = api_3_json['quotas']['month']['remaining']
 
-		# Description on the screen
-		st.write(f"- In this month subscription period - **used: {used}** and **remaining: {remaining}** requests")
-		st.write("- This data will be **cached** here for **next 10 minutes**")
+                # Description on the screen
+                st.write(f"- In this month subscription period - **used: {used}** and **remaining: {remaining}** requests")
+                st.write("- This data will be **cached** here for **next 10 minutes**")
 
-		# Simple pie chart
-		data_pie_api = pd.DataFrame({
-		"Figures" : [used,remaining],
-		"Topics" : [f"Used:  {used}",f"Remaining:  {remaining}"],
+                # Simple pie chart
+                data_pie_api = pd.DataFrame({
+                "Figures" : [used,remaining],
+                "Topics" : [f"Used:  {used}",f"Remaining:  {remaining}"],
 
-		})
+                })
 
-		fig_api = px.pie(
-			data_pie_api, 
-			names = "Topics",
-			values = "Figures",
-			title = "API status of GET requests from this application - month period"
-		)  
+                fig_api = px.pie(
+                    data_pie_api, 
+                    names = "Topics",
+                    values = "Figures",
+                    title = "API status of GET requests from this application - month period"
+                )  
 
 
-		st.write(fig_api)
+                st.write(fig_api)
+
+            except:
+                  st.warning("The limit of the API calls per month has been reached 300/300 calls. It will be **renewed by 1st next month**.")
+                  
 
 ''
 ''
@@ -441,6 +446,13 @@ st.image("Pictures/Function_6/F6_description_archimate_api.svg")
 
 ''
 ''
+''
+st.write("""
+    - The 2 APIs are **independent** on each other -> each one is called separatelly
+        - Depending what part of the Function 6 you use
+        - Not possible to call both **at the exactly same moment** as part of 1 user session. 
+        - Each is **called based on different user button** (that is why - you never push 2 buttons at the same time)
+""")
 ''
 st.write("""
 - Data quality **Zipcodestack.com**
