@@ -200,6 +200,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 6:
+		- **v10.2** - Additional try-except logic to cover API limit reached situation  - 03-July-2025
 		- **v10.0** - F6 released  - 02-July-2025
 	""")
 
