@@ -335,46 +335,56 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 		use_container_width=True,
 		icon=":material/monitoring:"
 	):
-			
+                
+                # try-except logic to cover API unavailability
+                try:
+                    # API count/remaining
+                    api_count = "https://api.freecurrencyapi.com/v1/status?apikey=fca_live_6SzWJxPYa8Co3Xr9ziCTd7Mt7Yavrhpy2M5A0JZ4"
 
-		# API count/remaining
-		api_count = "https://api.freecurrencyapi.com/v1/status?apikey=fca_live_6SzWJxPYa8Co3Xr9ziCTd7Mt7Yavrhpy2M5A0JZ4"
+                    # get reguest - cached for 10 minutes
+                    @st.cache_data(ttl=600)
+                    def get_response_api_3(api_count):
+                        api_3 = requests.get(api_count, verify=False, timeout=5).text
+                        return api_3
 
-		# get reguest - cached for 10 minutes
-		@st.cache_data(ttl=600)
-		def get_response_api_3(api_count):
-			api_3 = requests.get(api_count, verify=False).text
-			return api_3
+                    api_3 = get_response_api_3(api_count)
 
-		api_3 = get_response_api_3(api_count)
+                    # JSON format creation
+                    api_3_json = json.loads(api_3)
 
-		# JSON format creation
-		api_3_json = json.loads(api_3)
+                    # Search for data in the API defined format - JSON
+                    used = api_3_json['quotas']['month']['used']
+                    remaining = api_3_json['quotas']['month']['remaining']
 
-		# Search for data in the API defined format - JSON
-		used = api_3_json['quotas']['month']['used']
-		remaining = api_3_json['quotas']['month']['remaining']
+                    # Description on the screen
+                    st.write(f"- In this month subscription period - **used: {used}** and **remaining: {remaining}** requests")
+                    st.write("- This data will be **cached** here for **next 10 minutes**")
 
-		# Description on the screen
-		st.write(f"- In this month subscription period - **used: {used}** and **remaining: {remaining}** requests")
-		st.write("- This data will be **cached** here for **next 10 minutes**")
+                    # Simple pie chart
+                    data_pie_api = pd.DataFrame({
+                    "Figures" : [used,remaining],
+                    "Topics" : [f"Used:  {used}",f"Remaining:  {remaining}"],
 
-		# Simple pie chart
-		data_pie_api = pd.DataFrame({
-		"Figures" : [used,remaining],
-		"Topics" : [f"Used:  {used}",f"Remaining:  {remaining}"],
+                    })
 
-		})
-
-		fig_api = px.pie(
-			data_pie_api, 
-			names = "Topics",
-			values = "Figures",
-			title = "API status of GET requests from this application - month period"
-		)  
+                    fig_api = px.pie(
+                        data_pie_api, 
+                        names = "Topics",
+                        values = "Figures",
+                        title = "API status of GET requests from this application - month period"
+                    )  
 
 
-		st.write(fig_api)
+                    st.write(fig_api)
+        
+                except:
+                    st.warning("""
+                    - Apologies, the status API is currently NOT available due to:
+                        - Either the API system refused to establish connection
+                        - Or limit of 5k requests per month has been reached              
+                    """
+                    )
+              
 
 ''
 ''
@@ -390,10 +400,19 @@ st.image("Pictures/Function_5/F5_description_archimate_api.svg")
 ''
 ''
 st.write("""
+- The **both** APIs are called **at the same time**
+	- The reason is that the **calls for both happen when the function 5 (the page) is opened** -> to get the fresh data (Exchange rates) visible in the application
+    """
+)
+
+''
+''
+st.write("""
 - **To do not overutilize the API calls, there is a DATA CACHING set on our application**
 	- The caching is applied for **1 hour** (3600 seconds)
 	- The caching is applicable for **1 session**
-"""
+    - Also there is a **timeout after 5 seconds** in case that target system will, from some reason, refuse to establish connection with our application
+    """
 )
 
 ''
