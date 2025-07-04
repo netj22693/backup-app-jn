@@ -411,7 +411,7 @@ st.write("""
 - **To do not overutilize the API calls, there is a DATA CACHING set on our application**
 	- The caching is applied for **1 hour** (3600 seconds)
 	- The caching is applicable for **1 session**
-    - Also there is a **timeout after 5 seconds** in case that target system will, from some reason, refuse to establish connection with our application
+    - Also there is a **timeout after 5 seconds** in case that target systems (any of them) will, from some reason, refuse to establish connection with our application
     """
 )
 
