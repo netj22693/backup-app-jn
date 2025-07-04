@@ -181,7 +181,7 @@ with st.form("List of ZIP codes"):
         # st.write(b)
 
         if b == -1:
-            st.warning("Your ZIP code(s) is not related to the selected country or doesn't exist in DB")
+            st.warning("Your City is not related to the selected country or doesn't exist in DB")
 
         
         else:
