@@ -3,47 +3,63 @@ import json
 import streamlit as st
 
 
-# ========================= API 1 ====================
-# API kurzy.cz 
-api_kurzy = "https://data.kurzy.cz/json/meny/b[1].json"
+# Try except logic - in case that any of the APIs will not work how it should
+try:
+  
+  # ========================= API 1 ====================
+  # API kurzy.cz 
+  api_kurzy = "https://data.kurzy.cz/json/meny/b[1].json"
 
-# get reguest
-@st.cache_data(ttl=3600)
-def get_response_api_1(api_kurzy):
-    api_1 = requests.get(api_kurzy, verify=False).text
-    return api_1
+  # get reguest
+  @st.cache_data(ttl=3600)
+  def get_response_api_1(api_kurzy):
+      api_1 = requests.get(api_kurzy, verify=False, timeout=5).text
+      return api_1
 
-api_1 = get_response_api_1(api_kurzy)
+  api_1 = get_response_api_1(api_kurzy)
 
-# JSON format creation
-api_1_json = json.loads(api_1)
+  # JSON format creation
+  api_1_json = json.loads(api_1)
 
-# Search for data in the API defined format - JSON
-eur_rate = api_1_json['kurzy']['EUR']['dev_stred']
-usd_rate = api_1_json['kurzy']['USD']['dev_stred']
+  # Search for data in the API defined format - JSON
+  eur_rate = api_1_json['kurzy']['EUR']['dev_stred']
+  usd_rate = api_1_json['kurzy']['USD']['dev_stred']
 
-eur_rate = round(eur_rate, 3)
-usd_rate = round(usd_rate, 3)
-
-
-# ========================= API 2 ====================
-api_freecurrency_api = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_6SzWJxPYa8Co3Xr9ziCTd7Mt7Yavrhpy2M5A0JZ4&currencies=USD&base_currency=EUR"
-
-#get reguest
-@st.cache_data(ttl=3600)
-def get_response_api_2(api_freecurrency_api):
-    api_2 = requests.get(api_freecurrency_api, verify=False).text
-    return api_2
-
-api_2 = get_response_api_2(api_freecurrency_api)
+  eur_rate = round(eur_rate, 3)
+  usd_rate = round(usd_rate, 3)
 
 
-# JSON format creation
-api_2_json = json.loads(api_2)
+  # ========================= API 2 ====================
+  api_freecurrency_api = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_6SzWJxPYa8Co3Xr9ziCTd7Mt7Yavrhpy2M5A0JZ4&currencies=USD&base_currency=EUR"
 
-# Search for data in the API defined format - JSON
-eur_to_usd_rate = api_2_json['data']['USD']
-eur_to_usd_rate = round(eur_to_usd_rate, 3)
+  #get reguest
+  @st.cache_data(ttl=3600)
+  def get_response_api_2(api_freecurrency_api):
+      api_2 = requests.get(api_freecurrency_api, verify=False, timeout=5).text
+      return api_2
+
+  api_2 = get_response_api_2(api_freecurrency_api)
+
+
+  # JSON format creation
+  api_2_json = json.loads(api_2)
+
+  # Search for data in the API defined format - JSON
+  eur_to_usd_rate = api_2_json['data']['USD']
+  eur_to_usd_rate = round(eur_to_usd_rate, 3)
+
+except:
+  st.warning("""
+  - Apologies, one of the APIs refused to make a connection. So to see the function, there are temporary values:
+    - CZK to EUR = 24
+    - CZK to USD = 21
+    - EUR to USD = 1.14
+  """
+  )
+
+  eur_rate = 24
+  usd_rate = 21
+  eur_to_usd_rate = 1.14
 
 # ======= Values for testing purposed to do not call/utilize API
 # # API 1
@@ -61,6 +77,7 @@ st.write("""
 - The exchange rate is API based 
 - The information comes from https://www.kurzy.cz/ and https://app.freecurrencyapi.com/
 """)
+
 
 ''
 ''

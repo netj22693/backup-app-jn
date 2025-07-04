@@ -207,6 +207,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 5:
+		- **11.0** - try-except logic added + timeout 5 secs, to cover unavailability of APIs  - 04-July-2025
 		- **v4.1** - API 3 added (status/monitoring of API 2 get requests)  - 16-Jun-2025
 		- **v2.7** - API 2 added  - 10-Jun-2025
 		- **v2.6** - F5 developed (API 1)  - 10-Jun-2025

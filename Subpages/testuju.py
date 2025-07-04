@@ -1,592 +1,259 @@
-import streamlit as st
 import requests
 import json
-import pandas as pd
-import plotly.express as px
-
-# For visibility the API structure from kurzy.cz
-json_api_structure_1 = """
-{
-	"query": {
-		"city": "Zlin",
-		"state": null,
-		"country": "cz"
-	},
-	"results": [
-		"760 01",
-		"760 07",
-	]
-}
-"""
-
-# For visibility the API structure from freecurrencyapi.com
-json_api_structure_2 = """
-{
-  "query": {
-    "codes": [
-      "251 63",
-      "110 00",
-      "140 21"
-    ],
-    "country": "CZ"
-  },
-  "results": {
-    "251 63": [
-      {
-        "postal_code": "251 63",
-        "country_code": "CZ",
-        "latitude": 49.9333,
-        "longitude": 14.6667,
-        "city": "Vidovice",
-        "state": "Středočeský kraj",
-        "city_en": "Vidovice",
-        "state_en": "Středočeský kraj",
-        "state_code": "88"
-      },
-      {
-        "postal_code": "251 63",
-        "country_code": "CZ",
-        "latitude": 49.95,
-        "longitude": 14.7,
-        "city": "Menčice",
-        "state": "Středočeský kraj",
-        "city_en": "Menčice",
-        "state_en": "Středočeský kraj",
-        "state_code": "88"
-      },
-      {
-        "postal_code": "251 63",
-        "country_code": "CZ",
-        "latitude": 49.95,
-        "longitude": 14.6667,
-        "city": "Svojšovice",
-        "state": "Středočeský kraj",
-        "city_en": "Svojšovice",
-        "state_en": "Středočeský kraj",
-        "state_code": "88"
-      },
-      {
-        "postal_code": "251 63",
-        "country_code": "CZ",
-        "latitude": 49.9667,
-        "longitude": 14.65,
-        "city": "Otice",
-        "state": "Středočeský kraj",
-        "city_en": "Otice",
-        "state_en": "Středočeský kraj",
-        "state_code": "88"
-      },
-      {
-        "postal_code": "251 63",
-        "country_code": "CZ",
-        "latitude": 49.9667,
-        "longitude": 14.6833,
-        "city": "Všestary",
-        "state": "Středočeský kraj",
-        "city_en": "Všestary",
-        "state_en": "Středočeský kraj",
-        "state_code": "88"
-      },
-      {
-        "postal_code": "251 63",
-        "country_code": "CZ",
-        "latitude": 49.95,
-        "longitude": 14.65,
-        "city": "Všechromy",
-        "state": "Středočeský kraj",
-        "city_en": "Všechromy",
-        "state_en": "Středočeský kraj",
-        "state_code": "88"
-      },
-      {
-        "postal_code": "251 63",
-        "country_code": "CZ",
-        "latitude": 49.95,
-        "longitude": 14.6833,
-        "city": "Strančice",
-        "state": "Středočeský kraj",
-        "city_en": "Strančice",
-        "state_en": "Středočeský kraj",
-        "state_code": "88"
-      },
-      {
-        "postal_code": "251 63",
-        "country_code": "CZ",
-        "latitude": 49.95,
-        "longitude": 14.6333,
-        "city": "Předboř",
-        "state": "Středočeský kraj",
-        "city_en": "Předboř",
-        "state_en": "Středočeský kraj",
-        "state_code": "88"
-      },
-      {
-        "postal_code": "251 63",
-        "country_code": "CZ",
-        "latitude": 49.9333,
-        "longitude": 14.6667,
-        "city": "Kunice",
-        "state": "Středočeský kraj",
-        "city_en": "Kunice",
-        "state_en": "Středočeský kraj",
-        "state_code": "88"
-      },
-      {
-        "postal_code": "251 63",
-        "country_code": "CZ",
-        "latitude": 49.95,
-        "longitude": 14.6667,
-        "city": "Sklenka",
-        "state": "Středočeský kraj",
-        "city_en": "Sklenka",
-        "state_en": "Středočeský kraj",
-        "state_code": "88"
-      },
-      {
-        "postal_code": "251 63",
-        "country_code": "CZ",
-        "latitude": 49.95,
-        "longitude": 14.6667,
-        "city": "Kašovice",
-        "state": "Středočeský kraj",
-        "city_en": "Kašovice",
-        "state_en": "Středočeský kraj",
-        "state_code": "88"
-      }
-    ],
-    "110 00": [
-      {
-        "postal_code": "110 00",
-        "country_code": "CZ",
-        "latitude": 50.3667,
-        "longitude": 16.0417,
-        "city": "Praha 1-Josefov",
-        "state": "Hlavní město Praha",
-        "city_en": "Praha 1-Josefov",
-        "state_en": "Hlavní město Praha",
-        "state_code": "52"
-      },
-      {
-        "postal_code": "110 00",
-        "country_code": "CZ",
-        "latitude": 50.3333,
-        "longitude": 15.9167,
-        "city": "Josefov",
-        "state": "Hlavní město Praha",
-        "city_en": "Josefov",
-        "state_en": "Hlavní město Praha",
-        "state_code": "52"
-      },
-      {
-        "postal_code": "110 00",
-        "country_code": "CZ",
-        "latitude": 50.4,
-        "longitude": 16.1667,
-        "city": "Staré Město",
-        "state": "Hlavní město Praha",
-        "city_en": "Staré Město",
-        "state_en": "Hlavní město Praha",
-        "state_code": "52"
-      },
-      {
-        "postal_code": "110 00",
-        "country_code": "CZ",
-        "latitude": 50.3667,
-        "longitude": 16.0417,
-        "city": "Praha 1-Nové Město",
-        "state": "Hlavní město Praha",
-        "city_en": "Praha 1-Nové Město",
-        "state_en": "Hlavní město Praha",
-        "state_code": "52"
-      },
-      {
-        "postal_code": "110 00",
-        "country_code": "CZ",
-        "latitude": 50.3667,
-        "longitude": 16.0417,
-        "city": "Vinohrady",
-        "state": "Hlavní město Praha",
-        "city_en": "Vinohrady",
-        "state_en": "Hlavní město Praha",
-        "state_code": "52"
-      },
-      {
-        "postal_code": "110 00",
-        "country_code": "CZ",
-        "latitude": 50.3667,
-        "longitude": 16.0417,
-        "city": "Praha 1-Vinohrady",
-        "state": "Hlavní město Praha",
-        "city_en": "Praha 1-Vinohrady",
-        "state_en": "Hlavní město Praha",
-        "state_code": "52"
-      },
-      {
-        "postal_code": "110 00",
-        "country_code": "CZ",
-        "latitude": 50.3667,
-        "longitude": 16.0417,
-        "city": "Nové Město",
-        "state": "Hlavní město Praha",
-        "city_en": "Nové Město",
-        "state_en": "Hlavní město Praha",
-        "state_code": "52"
-      },
-      {
-        "postal_code": "110 00",
-        "country_code": "CZ",
-        "latitude": 50.3667,
-        "longitude": 16.0417,
-        "city": "Praha 1-Staré Město",
-        "state": "Hlavní město Praha",
-        "city_en": "Praha 1-Staré Město",
-        "state_en": "Hlavní město Praha",
-        "state_code": "52"
-      }
-    ]
-  }
-}
-"""
+import streamlit as st
 
 
 
-# ==================== Application scree + backend functions ==============
-st.write("# Description - Function 6")
-''
-''
-st.write("""
-    - **Function 6:** ZIP code - (1) Get ZIP code(s) based on City, (2) Get City based on ZIP code - **API based**
-    """
-    )
-''
-''
-st.write("##### Business scenario:") 
+try:
+  # ========================= API 1 ====================
+  # API kurzy.cz 
+  api_kurzy = "https://data.kurzy.cz/json/meny/b[1].json"
 
-st.write("""
-- ZIP codes are important part of logistic, this function can be used for
-		 
-	- Validation of ZIP codes
-	- Search for ZIP codes
-	 
-"""
-)
-''
-''
+  # get reguest
+  @st.cache_data(ttl=3600)
+  def get_response_api_1(api_kurzy):
+      api_1 = requests.get(api_kurzy, verify=False, timeout=5).text
+      return api_1
 
-st.write("##### ZIP codes:") 
+  api_1 = get_response_api_1(api_kurzy)
 
-st.write("""
-- API based (open API)
-- Comes from Zipcodebase.com https://app.zipcodebase.com/
-- Insert City -> Get ZIP codes 
-"""
-)
+  # JSON format creation
+  api_1_json = json.loads(api_1)
 
-''
+  # Search for data in the API defined format - JSON
+  eur_rate = api_1_json['kurzy']['EUR']['dev_stred']
+  usd_rate = api_1_json['kurzy']['USD']['dev_stred']
 
-st.caption("""
-Zipcodebase.com is a website that provides a free ZIP code API for accessing worldwide postal code data. It allows users to perform lookups, distance calculations, radius searches, and more. The service is designed to be a simple solution for tasks related to postal code information. 
-"""
-)
+  eur_rate = round(eur_rate, 3)
+  usd_rate = round(usd_rate, 3)
 
 
-''
-''
-# Expander API 1 JSON 
-with st.expander("API JSON structure - Zipcodebase.com", icon= ":material/help:"):
+  # ========================= API 2 ====================
+  api_freecurrency_api = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_6SzWJxPYa8Co3Xr9ziCTd7Mt7Yavrhpy2M5A0JZ4&currencies=USD&base_currency=EUR"
 
-	''
-	st.write("""
-	- API - **HTTP GET** request to retrieve data from a server
-	- There is **5k requests limit per month**
-	- This Function 6 receives **CUSTOMIZED** data from the API
-	- The customization is based on the user inputs (Country CZ/SK and City)		
-	""")
+  #get reguest
+  @st.cache_data(ttl=3600)
+  def get_response_api_2(api_freecurrency_api):
+      api_2 = requests.get(api_freecurrency_api, verify=False, timeout=5).text
+      return api_2
+
+  api_2 = get_response_api_2(api_freecurrency_api)
 
 
-	''
-	''
-	''
-	st.write("The full JSON data:")
-	st.code(
-		json_api_structure_1,
-		language= 'json',
-		line_numbers=True,
-	)
-	
-	
-	st.write("""
-	- There is a possibility to monitor the requests in their portal		
-	""")
-	st.image("Pictures/Function_6/F6_api_monitoring_zipcodebase.png")
-	
+  # JSON format creation
+  api_2_json = json.loads(api_2)
 
-''
-''
-''
-st.write("""
-- Comes from Zipcodestack.com https://app.zipcodestack.com/
-- Insert ZIP code(s) -> Get City/Cities
-"""
-)
+  # Search for data in the API defined format - JSON
+  eur_to_usd_rate = api_2_json['data']['USD']
+  eur_to_usd_rate = round(eur_to_usd_rate, 3)
 
-''
-st.caption("""
-Zip Code API - Free Postal Code Search & Validation. A completely free Zip Code REST API and the best way to get accurate zip code data for your application.
-https://zipcodestack.com/
-"""
-)
-
-''
-''
-# Expander API 2 JSON 
-with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/help:"):
-
-
-	''
-	st.write("""
-	- API - **HTTP GET** request to retrieve data from a server
-	- This Function 6 receives **CUSTOMIZED** data from Zipcodestack.com
-	- The customization is based on the user inputs (Country CZ/SK and ZIP code(s))
-	"""
-	)
-
-
-	''
-	''
-	''
-	st.write("- Customized JSON API data:")
-	st.write('- This is what an user input via application screen {"query": {"codes": **["251 63","110 00","140 21"]**,"country": **"CZ"**} and customized the query.')
-	st.code(
-		json_api_structure_2,
-		language= 'json',
-		line_numbers=True,
-		height=400
-		)
-
-	''
-	''
-	st.write("The API portal allows:")
-	st.write("""
-	- Make a registration 
-	- Monitor the API requests 
-	- And see some statistics
-	- Also this UI is allowing to troubleshoot and reproduce the request + **retrospectivelly see every JSON data which were sent out** based on every GET the source application got. 
-	- Possible to search based on API status, time, date...
-	"""
-	)
-	''
-	st.image("Pictures/Function_6/F6_api_monitoring_zipcodestack_charts.png")
-	''
-	st.image("Pictures/Function_6/F6_api_monitoring_zipcodestack_overview.png")
-	''
-	''
-	''
-	st.write("- This API is **limited to 300 requests per month**")
-	st.write("- So here is also simple GET API to see statistics:")
-	if st.button(
-		"API Status",
-		use_container_width=True,
-		icon=":material/monitoring:"
-	):
-            try:
-
-                # API count/remaining
-                api_count = "https://api.zipcodestack.com/v1/status?apikey=zip_live_pWsWrXrfbOBJpOjUwXuVT8RDRkWCtUj44M2RKzLd"
-
-                # get reguest - cached for 10 minutes
-                @st.cache_data(ttl=600)
-                def get_response_api_3(api_count):
-                    api_3 = requests.get(api_count, verify=False).text
-                    return api_3
-
-                api_3 = get_response_api_3(api_count)
-
-                # JSON format creation
-                api_3_json = json.loads(api_3)
-
-                # Search for data in the API defined format - JSON
-                used = api_3_json['quotas']['month']['used']
-                remaining = api_3_json['quotas']['month']['remaining']
-
-                # Description on the screen
-                st.write(f"- In this month subscription period - **used: {used}** and **remaining: {remaining}** requests")
-                st.write("- This data will be **cached** here for **next 10 minutes**")
-
-                # Simple pie chart
-                data_pie_api = pd.DataFrame({
-                "Figures" : [used,remaining],
-                "Topics" : [f"Used:  {used}",f"Remaining:  {remaining}"],
-
-                })
-
-                fig_api = px.pie(
-                    data_pie_api, 
-                    names = "Topics",
-                    values = "Figures",
-                    title = "API status of GET requests from this application - month period"
-                )  
-
-
-                st.write(fig_api)
-
-            except:
-                  st.warning("The limit of the API calls per month has been reached 300/300 calls. It will be **renewed by 1st next month**.")
-                  
-
-''
-''
-''
-''
-
-# ========= SPlit into tabs =======
-
-tab1, tab2, tab3 = st.tabs([
-"Archimate Diagram",
-"UML Activity Diagram 1/2",
-"UML Activity Diagram 2/2 - API"
-])
-
-# Archimate
-
-with tab1:
-  st.write("##### Archimate Diagram:") 
-  ''
-  st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
-  st.image("Pictures/Function_6/F6_description_archimate_api.svg")
-
-
-  ''
-  st.write("##### Description of the APIs:")
-  ''
-  st.write("""
-      - The 2 APIs are **independent** on each other -> each one is called separatelly
-          - Depending what part of the Function 6 you use
-          - Not possible to call both **at the exactly same moment** as part of 1 user session. 
-          - Each is **called based on different user button** (that is why - you never push 2 buttons at the same time)
-  """)
-  ''
-  st.write("""
-  - Data quality **Zipcodestack.com**
-    - **They say**: Our postal code database is updated regularly to ensure high accuracy. We source our data from official postal services and government databases, making it reliable for business use, address validation, and shipping calculations.
-    - **They say**: We update our postal code database monthly for most countries. For regions with frequent postal code changes, we provide more frequent updates to ensure you always have access to the most current data.
-
+except:
+  st.warning("""
+  - Apologies, one of the APIs refused to make a connection. So to see the function, there are temporary values:
+    - CZK to EUR = 24
+    - CZK to USD = 21
+    - EUR to USD = 1.14
   """
   )
 
-  ''
-  ''
-  st.write("""
-  - Frequency of data updates from **Zipcodebase.com**
-    - **They say**: We constantly update and verify our data from multiple sources to ensure the accuracy of our data.
-    - **They say**: An uptime of 99.9%, calculated on the past 12 months.
-  """
-  )
+  eur_rate = 24
+  usd_rate = 21
+  eur_to_usd_rate = 1.14
+
+# ======= Values for testing purposed to do not call/utilize API
+# # API 1
+# eur_rate = 24
+# usd_rate = 21
+# # API 2
+# eur_to_usd_rate = 1.14
 
 
-#UML 
+# ============== App screen part ===================
+st.write("# Exchange rate:")
+''
+''
+st.write("""
+- The exchange rate is API based 
+- The information comes from https://www.kurzy.cz/ and https://app.freecurrencyapi.com/
+""")
 
-with tab2:
-    st.write("##### UML Activity Diagram 1/2 - overall process:") 
-    ''
-    st.write("""
-            - Description of how the function 6 works
-            - The "Receive JSON and Display results" (VIOLET box) part is described in detail in the next diagram
-            """
-            )
+
+''
+''
+''
+st.metric(label="CZK to EUR", value= eur_rate)
+
+st.metric(label="CZK to USD", value= usd_rate)
+
+st.metric(label="EUR to USD", value= eur_to_usd_rate)
+
+
+''
+''
+''
+''
+
+# =============== Form ==============================
+
+st.write("#### Calculation: ")
+# User inputs
+with st.form(key="calculation form"):
+    czk_obj = st.number_input(
+        "CZK",
+        step=10.00,
+        min_value=0.00,
+        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
+        )
     
 
-    ''
-    st.image("Pictures/Function_6/F6_uml_description_process.svg")
-
-
-with tab3:
-    st.write("##### UML Activity Diagram 2/2 - Receive JSON and Display results:") 
-
-    ''
-    st.write("""
-            - Visibility of what types of **states** the application can get **based on API response**
-            """
-            )
+    eur_obj = st.number_input(
+        "EUR",
+        step=10.00,
+        min_value=0.00,
+        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
+        )
     
 
-    ''
-    st.image("Pictures/Function_6/F6_uml_description_api_detail.svg")
-    ''
-    ''
-    st.write("- **Scenario 1**: Limit of API calls reached (response from the API system Zipcodestack.com):")
+    usd_obj = st.number_input(
+        "USD",
+        step=10.00,
+        min_value=0.00,
+        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
+        )
 
-    st.code("""
-      {
-        "message": "You used all your monthly requests. Please upgrade your plan at https://app.zipcodestack.com/subscription"
-      }
+    # Functions for calculation
 
-      """, language="json", wrap_lines=True  
+    def f1_czk_to_eur(czk_obj, eur_rate):
+        result = czk_obj / eur_rate
+        return result
+
+
+    f1_result = round(f1_czk_to_eur(czk_obj,eur_rate), 2)
+
+
+    def f2_czk_to_usd(czk_obj, usd_rate):
+        result = czk_obj / usd_rate
+        return result
+
+    f2_result = round(f2_czk_to_usd(czk_obj, usd_rate), 2)
+
+
+    def f3_eur_to_czk(eur_obj, eur_rate):
+        result = eur_obj * eur_rate
+        return result
+
+    f3_result = round(f3_eur_to_czk(eur_obj, eur_rate), 2)
+
+    def f4_usd_to_czk(usd_obj, usd_rate):
+        result = usd_obj * usd_rate
+        return result
+
+    f4_result = round(f4_usd_to_czk(usd_obj, usd_rate), 2)
+
+
+    def f5_eur_to_usd(eur_obj, eur_to_usd_rate):
+        result = eur_obj * eur_to_usd_rate
+        return result
+
+    f5_result = round(f5_eur_to_usd(eur_obj, eur_to_usd_rate), 2)
+
+
+    def f6_usd_to_eur(usd_obj, eur_to_usd_rate):
+        result = usd_obj / eur_to_usd_rate
+        return result
+
+    f6_result = round(f6_usd_to_eur(usd_obj, eur_to_usd_rate), 2)
+
+# ----- Buttons ------
+
+    # ALL exchanges button 
+    ''
+    ''
+    sub_butt_all = st.form_submit_button(
+    label="To show all conversions",
+    use_container_width=True,
+    icon = ":material/apps:"
     )
 
+    if sub_butt_all:
+        st.write(f"{czk_obj:.2f} CZK = {f1_result:.2f} EUR")
+        st.write(f"{czk_obj:.2f} CZK = {f2_result:.2f} USD")
+        st.write(f"{eur_obj:.2f} EUR = {f3_result:.2f} CZK")
+        st.write(f"{usd_obj:.2f} USD = {f4_result:.2f} CZK")
+        st.write(f"{eur_obj:.2f} EUR = {f5_result:.2f} USD")
+        st.write(f"{usd_obj:.2f} USD = {f6_result:.2f} EUR")
 
+
+    # CZK -> EUR
     ''
     ''
-    st.write("""
-    - **Scenario 2**: Relevant response but no match what our application asked for(user input) and what the API systems have in DB
-      - Either we have asked for nonsense (examples: "city": "Not existing city" or "codes": [
-      "0000000000"])
-      - Or they do not have data
-      - Which means -> "results" : [] element **comes empty**
-    """)
-
-    st.write("Zipcodebase.com:")
-
-    st.code("""
-      {		
-        "query": {	
-          "city": "Not existing city",
-          "state" : "None",
-          "country": "cz"
-        },	
-        "results": [	
-        ]	
-      }
-    """, language="json", wrap_lines=True  
+    ''
+    sub_butt_1 = st.form_submit_button(
+    label="CZK -> EUR",
+    use_container_width=True
     )
 
-    st.write("Zipcodestack.com:")
+    if sub_butt_1:
+        st.write(f"{czk_obj:.2f} CZK = {f1_result:.2f} EUR")
 
-    st.code("""
-      {
-        "query": {
-          "codes": [
-            "0000000000"
-          ],
-          "country": "CZ"
-        },
-        "results": {
-        }
-      }
-    """, language="json", wrap_lines=True  
+
+
+    # CZK -> USD
+    sub_butt_2 = st.form_submit_button(
+    label="CZK -> USD",
+    use_container_width=True
     )
 
+    if sub_butt_2:
+        st.write(f"{czk_obj:.2f} CZK = {f2_result:.2f} USD")
 
+
+
+    # EUR -> CZK
     ''
     ''
-    st.write("""
-      - **Scenario 3**: The ideal case - user request match API DB:
-        - Examples of JSON were provided upper in the expanders "(?) API - JSON structure..."
-      """)
+    sub_butt_3 = st.form_submit_button(
+    label="EUR -> CZK",
+    use_container_width=True
+    )
+
+    if sub_butt_3:
+        st.write(f"{eur_obj:.2f} EUR = {f3_result:.2f} CZK")
+
+
+    # USD -> CZK
+    sub_butt_4 = st.form_submit_button(
+    label="USD -> CZK",
+    use_container_width=True
+    )
+
+    if sub_butt_4:
+        st.write(f"{usd_obj:.2f} USD = {f4_result:.2f} CZK")
+
+    
+    
+    # EUR -> USD
+    ''
+    ''
+    sub_butt_5 = st.form_submit_button(
+    label="EUR -> USD",
+    use_container_width=True
+    )
+
+    if sub_butt_5:
+        st.write(f"{eur_obj:.2f} EUR = {f5_result:.2f} USD")
+
+    
+    # USD -> EUR
+
+    sub_butt_6 = st.form_submit_button(
+    label="USD -> EUR",
+    use_container_width=True
+    )
+
+    if sub_butt_6:
+        st.write(f"{usd_obj:.2f} USD = {f6_result:.2f} EUR")
 
 
 
-# ===== Page navigation at the bottom ======
-''
-''
-''
-''
-st.write("-------")
 
-st.page_link(
-	label = "Function 6",
-	page="Subpages/F6_FUNCTION_zip_code.py",
-	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
-	icon=":material/play_circle:"
-	) 
