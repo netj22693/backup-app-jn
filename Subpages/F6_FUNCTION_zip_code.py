@@ -69,6 +69,22 @@ with st.expander("Some examples of Cities you can use",
     """
     )
 
+with st.expander("Known limitation",
+    icon=":material/sync_problem:"
+    ):
+
+    ''
+    ''
+    st.write("""
+    - Sometimes this API **is not able to establish connection**
+    - It is probably on the Zipcodebase.com side
+    - So the API call timeout is set to 2 seconds (which is max 2 calls) and then I set an intteruption in the code
+    - They actually gurantee 99.9% up time but **I have a Free subscription** of the API so I will have **probably less** :)
+    - In case that connectivity not established and this app will display an alert. You can try again in 10-20 minutes. 
+    - Sometimes the API connectivity works perfectly but sometimes not. 
+    """
+    )
+
 # ================= API ============================
 
 # FOR TESTINGS - to do not call API, if not neccessary
@@ -116,7 +132,7 @@ def get_api_2(city,country):
         return response
 
     except:
-        st.warning("Apologies - The API is currently not available - connection timeout (2 seconds) stopped the request- In case that the application continue to run - PLEASE USE THE 'STOP' BUTTON AT THE RIGHT UPPER CORNER")
+        st.warning("Apologies - The API is currently not available - connection timeout (2 seconds) stopped the request- In case that the application continue to run - PLEASE USE THE 'STOP' BUTTON AT THE RIGHT UPPER CORNER. Try again in 10-20 minutes.")
         sys.exit()
 
 
