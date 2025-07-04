@@ -438,38 +438,143 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 ''
 ''
 ''
+
+# ========= SPlit into tabs =======
+
+tab1, tab2, tab3 = st.tabs([
+"Archimate Diagram",
+"UML Activity Diagram 1/2",
+"UML Activity Diagram 2/2 - API"
+])
+
 # Archimate
-st.write("##### Archimate Diagram:") 
-''
-st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
-st.image("Pictures/Function_6/F6_description_archimate_api.svg")
 
-''
-''
-''
-st.write("""
-    - The 2 APIs are **independent** on each other -> each one is called separatelly
-        - Depending what part of the Function 6 you use
-        - Not possible to call both **at the exactly same moment** as part of 1 user session. 
-        - Each is **called based on different user button** (that is why - you never push 2 buttons at the same time)
-""")
-''
-st.write("""
-- Data quality **Zipcodestack.com**
-	- **They say**: Our postal code database is updated regularly to ensure high accuracy. We source our data from official postal services and government databases, making it reliable for business use, address validation, and shipping calculations.
-	- **They say**: We update our postal code database monthly for most countries. For regions with frequent postal code changes, we provide more frequent updates to ensure you always have access to the most current data.
+with tab1:
+  st.write("##### Archimate Diagram:") 
+  ''
+  st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
+  st.image("Pictures/Function_6/F6_description_archimate_api.svg")
 
-"""
-)
 
-''
-''
-st.write("""
-- Frequency of data updates from **Zipcodebase.com**
-	- **They say**: We constantly update and verify our data from multiple sources to ensure the accuracy of our data.
-	- **They say**: An uptime of 99.9%, calculated on the past 12 months.
-"""
-)
+  ''
+  st.write("##### Description of the APIs:")
+  ''
+  st.write("""
+      - The 2 APIs are **independent** on each other -> each one is called separatelly
+          - Depending what part of the Function 6 you use
+          - Not possible to call both **at the exactly same moment** as part of 1 user session. 
+          - Each is **called based on different user button** (that is why - you never push 2 buttons at the same time)
+  """)
+  ''
+  st.write("""
+  - Data quality **Zipcodestack.com**
+    - **They say**: Our postal code database is updated regularly to ensure high accuracy. We source our data from official postal services and government databases, making it reliable for business use, address validation, and shipping calculations.
+    - **They say**: We update our postal code database monthly for most countries. For regions with frequent postal code changes, we provide more frequent updates to ensure you always have access to the most current data.
+
+  """
+  )
+
+  ''
+  ''
+  st.write("""
+  - Frequency of data updates from **Zipcodebase.com**
+    - **They say**: We constantly update and verify our data from multiple sources to ensure the accuracy of our data.
+    - **They say**: An uptime of 99.9%, calculated on the past 12 months.
+  """
+  )
+
+
+#UML 
+
+with tab2:
+    st.write("##### UML Activity Diagram 1/2 - overall process:") 
+    ''
+    st.write("""
+            - Description of how the function 6 works
+            - The "Receive JSON and Display results" (VIOLET box) part is described in detail in the next diagram
+            """
+            )
+    
+
+    ''
+    st.image("Pictures/Function_6/F6_uml_description_process.svg")
+
+
+with tab3:
+    st.write("##### UML Activity Diagram 2/2 - Receive JSON and Display results:") 
+
+    ''
+    st.write("""
+            - Visibility of what types of **states** the application can get **based on API response**
+            """
+            )
+    
+
+    ''
+    st.image("Pictures/Function_6/F6_uml_description_api_detail.svg")
+    ''
+    ''
+    st.write("- **Scenario 1**: Limit of API calls reached (response from the API system Zipcodestack.com):")
+
+    st.code("""
+      {
+        "message": "You used all your monthly requests. Please upgrade your plan at https://app.zipcodestack.com/subscription"
+      }
+
+      """, language="json", wrap_lines=True  
+    )
+
+
+    ''
+    ''
+    st.write("""
+    - **Scenario 2**: Relevant response but no match what our application asked for(user input) and what the API systems have in DB
+      - Either we have asked for nonsense (examples: "city": "Not existing city" or "codes": [
+      "0000000000"])
+      - Or they do not have data
+      - Which means -> "results" : [] element **comes empty**
+    """)
+
+    st.write("Zipcodebase.com:")
+
+    st.code("""
+      {		
+        "query": {	
+          "city": "Not existing city",
+          "state" : "None",
+          "country": "cz"
+        },	
+        "results": [	
+        ]	
+      }
+    """, language="json", wrap_lines=True  
+    )
+
+    st.write("Zipcodestack.com:")
+
+    st.code("""
+      {
+        "query": {
+          "codes": [
+            "0000000000"
+          ],
+          "country": "CZ"
+        },
+        "results": {
+        }
+      }
+    """, language="json", wrap_lines=True  
+    )
+
+
+    ''
+    ''
+    st.write("""
+      - **Scenario 3**: The ideal case - user request match API DB:
+        - Examples of JSON were provided upper in the expanders "(?) API - JSON structure..."
+      """)
+
+
 
 # ===== Page navigation at the bottom ======
 ''
