@@ -258,13 +258,21 @@ if object_from_upload is not None:
             """)
 
             ''
-            st.page_link(
-                label = "XML princpiles for this Function 2",
-                page="Subpages/F1_F2_description_XML_XSD.py",
-                help="The button will redirect to the relevant page within this app.",
+            # st.page_link(
+            #     label = "XML princpiles for this Function 2",
+            #     page="Subpages/F1_F2_description_XML_XSD.py",
+            #     help="The button will redirect to the relevant page within this app.",
+            #     use_container_width=True,
+            #     icon=":material/launch:",
+            #     ) 
+
+            st.link_button(
+                label = "Go to XSD, XML description page",
+                url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
+                help="The button will redirect to the relevant page within this app for download.",
                 use_container_width=True,
-                icon=":material/launch:",
-                ) 
+                icon=":material/launch:"
+            )
             ''
             ''
             st.image("Pictures/Function_2/F2_validation_xml.png")
