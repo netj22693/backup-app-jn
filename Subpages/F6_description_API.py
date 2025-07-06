@@ -570,7 +570,7 @@ with tab3:
     ''
     ''
     st.write("""
-      - **Scenario 3**: The ideal case - user request match API DB:
+      - **Scenario 3**: The ideal case - user request matches API DB:
         - Examples of JSON were provided upper in the expanders "(?) API - JSON structure..."
       """)
 

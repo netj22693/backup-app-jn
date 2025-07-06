@@ -201,7 +201,7 @@ with st.expander(
 	st.write("""
 	- Function 6:
 		- **v12.1** - Better visualization of results (tabs) - 06-July-2025
-		- **v12.0** - APIs not call in case of empty forms (misisng inputs) - to not waste API calls - 06-July-2025
+		- **v12.0** - APIs not call in case of empty forms (missing inputs) - to not waste API calls - 06-July-2025
 		- **v10.2** - Additional try-except logic to cover API limit reached situation  - 03-July-2025
 		- **v10.0** - F6 released  - 02-July-2025
 	""")
