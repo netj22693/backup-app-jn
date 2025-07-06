@@ -441,10 +441,11 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 
 # ========= SPlit into tabs =======
 
-tab1, tab2, tab3 = st.tabs([
+tab1, tab2, tab3, tab4 = st.tabs([
 "Archimate Diagram",
 "UML Activity Diagram 1/2",
-"UML Activity Diagram 2/2 - API"
+"UML Activity Diagram 2/2 - API",
+"Code Logic Description"
 ])
 
 # Archimate
@@ -574,6 +575,24 @@ with tab3:
         - Examples of JSON were provided upper in the expanders "(?) API - JSON structure..."
       """)
 
+with tab4:
+     
+     ''
+     st.write("""
+              Description of all **5 states** the function can get to in **our code**:
+                1) User did not provide input -> API call did not happen, program stops
+                2) API called, but no response (timeout) or HTT 4xx/5xx -> program stops
+                3) API called, response received, parsing -> parsing not done -> API limit reached -> program stops
+                4) API called, response received, parsing done -> but data is empty -> API DB does not have a much with hour requested data -> program stops
+                5) API called, response received, data match -> programs continues till the end (GREEN)
+              
+              
+              """)
+     
+     st.write("**Note**: This is particularly related to the API **Zipcodestack.com** but Zipcodebase.com has the code principle very similar.")
+     ''
+     ''
+     st.image("Pictures/Function_6/F6_code_description.svg")
 
 
 # ===== Page navigation at the bottom ======
