@@ -4,6 +4,7 @@ import json
 import pandas as pd
 import sys
 
+
 # ================= App Screen ============================
 
 st.write("# ZIP Code search:")
@@ -167,10 +168,10 @@ with st.form("List of ZIP codes"):
         else:
              
              # This is for PROD   ///////////////////////////////////////////////
-             # f_data_json_2 = get_api_2(city,country)
+             f_data_json_2 = get_api_2(city,country)
              
              # This for TESTING
-             f_data_json_2 = TEST_get_request_2(city,country)
+             # f_data_json_2 = TEST_get_request_2(city,country)
              # st.write(f" here data should be for parsing: {f_data_json_2}")
              
 
@@ -274,7 +275,7 @@ def TEST_get_request(codes,country):
 		]
 	}
 }
-
+  
 
     return data_json
  
@@ -375,17 +376,6 @@ with st.expander("Some examples of ZIP codes you can use",
     """
     )
     
-def api_1_validation(city):
-    
-	if city == "":
-		# exit()
-		st.write("ahoj")
-            
-	else:
-		pass
-
-
-
 # ================== User inputs ==========================
 
 ''
@@ -408,6 +398,7 @@ with st.form("Get city based on ZIP code(s)"):
         use_container_width=True,
         icon = ":material/apps:",
         ):
+
         
 		# if/else logic for validation of input -> to do not call API  is no codes provided
 		# Reason: if no ZIP code sprovided it will send 300+ ZIP codes (propably all under CZ or SK). BUT - 10 ZIP codes is charge as 1 API call -> this one single call would costs 30+ calls.
@@ -417,8 +408,8 @@ with st.form("Get city based on ZIP code(s)"):
              
         else:
              
-             # PROD ///////////////////////////////////////////////
-             # f_data_json = get_request(codes, country)
+            # PROD /////////////////////////////////////////////// API 2
+            #  f_data_json = get_request(codes, country)
              
              # For TEST purposes 
              f_data_json = TEST_get_request(codes, country)
@@ -446,7 +437,7 @@ with st.form("Get city based on ZIP code(s)"):
                        
                        #mapping into string
                        result_val = list(map(str, result_val))
-                       # st.write(result_val)
+                    #    st.write(f"after mapping into string: {result_val}")
                        
 
                   # step 2 - number of items in the list
@@ -461,6 +452,19 @@ with st.form("Get city based on ZIP code(s)"):
                        st.warning("Your ZIP code(s) is not related to the selected country or doesn't exist in DB")
                        
                   else:
+                       # ---- inserted steps of visualization on the user screen ------
+                       # why here in the code? Because if the upper conditions passed visualization is needed, not earlier
+                       ''
+                       ''
+                       
+					   
+                       st.write("##### Results:")
+                       
+                       # split into tabs
+                       tab1,tab2 = st.tabs(["Table","Raw data"])
+
+                       # --------------------------------------------------------------
+                       
                        # step 4 - setting a default index for for loop as O (to take the first dynamic number from the list as variable)
                        index = 0
                        
@@ -471,17 +475,43 @@ with st.form("Get city based on ZIP code(s)"):
                             # the dynamic value are run based on the index number
                             result_val_single = result_val[index]
                             
-                            for result in f_data_json["results"][result_val_single]:
-                                 st.write(f"- ZIP code: {result['postal_code']}")
-                                 st.write(f"- City name: {result['city_en']}")
-                                 st.write(f"- State: {result['state_en']}")
-                                 st.write(f"=====================================")
-                                 
-                            # the dynamic value are run based on the index number
-                            index = index + 1
+							#empty variables -> to be filled by data from the foor loop
+                            postal_code_list = []
+                            city_list = []
+                            state_list = []
                             
-							
+                            for result in f_data_json["results"][result_val_single]:
+                                 tab2.write(f"- ZIP code: {result['postal_code']}")
+                                 tab2.write(f"- City name: {result['city_en']}")
+                                 tab2.write(f"- State: {result['state_en']}")
+                                 tab2.write(f"=====================================")
+                                 
+                                 postal_code_list.append(result['postal_code'])
+                                 city_list.append(result['city_en'])
+                                 state_list.append(result['state_en'])
+
+                            # this increases the index number/move to the next item in the list
+                            index = index + 1
+
+
+							# Note: important to keep this DF after the for loop -> to have the lists already filled with values (from the for loop)
+                            result_dict = pd.DataFrame ({
+                                "ZIP code" : postal_code_list,
+                                "City name" : city_list,
+                                "State" :  state_list                                
+							})
+                            
+
+							# Tables - data visualization on the screen
+                            
+                            result_dict.index += 1	 
+                                                      
+                            tab1.write(result_dict)                              
+                                
+                         
+						
              except:
                  st.warning("Apologies, the limit of the API calls per month has been reached. It will be **renewed by 1st next month**. THIS PART OF APPLICATION IS CURRENTLY NOT AVAILABLE.")
+
 
 
