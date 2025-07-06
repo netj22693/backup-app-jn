@@ -2,440 +2,486 @@ import streamlit as st
 import requests
 import json
 import pandas as pd
-import plotly.express as px
+import sys
 
-# For visibility the API structure from kurzy.cz
-json_api_structure_1 = """
-{
-	"den": "20250610",
-	"denc": "10.6.2025",
-	"banka": "ČSOB",
-	"url": "https://www.kurzy.cz/kurzy-men/kurzovni-listek/csob/",
-	"kurzy": {
-		"AUD": {
-			"jednotka": 1,
-			"dev_stred": 14.189,
-			"dev_nakup": 13.811,
-			"dev_prodej": 14.567,
-			"val_stred": null,
-			"val_nakup": null,
-			"val_prodej": null,
-			"nazev": "Australský dolar",
-			"url": "https://www.kurzy.cz/aud"
-		},
-		"GBP": {
-			"jednotka": 1,
-			"dev_stred": 29.447,
-			"dev_nakup": 28.663,
-			"dev_prodej": 30.23,
-			"val_stred": 29.447,
-			"val_nakup": 28.663,
-			"val_prodej": 30.23,
-			"nazev": "Britská libra",
-			"url": "https://www.kurzy.cz/gbp"
-		},
-		"CNY": {
-			"jednotka": 1,
-			"dev_stred": 3.026,
-			"dev_nakup": 2.844,
-			"dev_prodej": 3.208,
-			"val_stred": null,
-			"val_nakup": null,
-			"val_prodej": null,
-			"nazev": "Čínský juan",
-			"url": "https://www.kurzy.cz/cny"
-		},
-		"DKK": {
-			"jednotka": 1,
-			"dev_stred": 3.324,
-			"dev_nakup": 3.236,
-			"dev_prodej": 3.412,
-			"val_stred": null,
-			"val_nakup": null,
-			"val_prodej": null,
-			"nazev": "Dánská koruna",
-			"url": "https://www.kurzy.cz/dkk"
-		},
-		"EUR": {
-			"jednotka": 1,
-			"dev_stred": 24.796,
-			"dev_nakup": 24.139,
-			"dev_prodej": 25.454,
-			"val_stred": 24.796,
-			"val_nakup": 24.139,
-			"val_prodej": 25.454,
-			"nazev": "Euro",
-			"url": "https://www.kurzy.cz/eur"
-		},
-		"JPY": {
-			"jednotka": 100,
-			"dev_stred": 15.014,
-			"dev_nakup": 14.615,
-			"dev_prodej": 15.413,
-			"val_stred": null,
-			"val_nakup": null,
-			"val_prodej": null,
-			"nazev": "Japonský jen",
-			"url": "https://www.kurzy.cz/jpy"
-		},
-		"CAD": {
-			"jednotka": 1,
-			"dev_stred": 15.865,
-			"dev_nakup": 15.442,
-			"dev_prodej": 16.287,
-			"val_stred": null,
-			"val_nakup": null,
-			"val_prodej": null,
-			"nazev": "Kanadský dolar",
-			"url": "https://www.kurzy.cz/cad"
-		},
-		"HUF": {
-			"jednotka": 100,
-			"dev_stred": 6.169,
-			"dev_nakup": 5.999,
-			"dev_prodej": 6.339,
-			"val_stred": null,
-			"val_nakup": null,
-			"val_prodej": null,
-			"nazev": "Maďarský forint",
-			"url": "https://www.kurzy.cz/huf"
-		},
-		"NOK": {
-			"jednotka": 1,
-			"dev_stred": 2.158,
-			"dev_nakup": 2.1,
-			"dev_prodej": 2.216,
-			"val_stred": null,
-			"val_nakup": null,
-			"val_prodej": null,
-			"nazev": "Norská koruna",
-			"url": "https://www.kurzy.cz/nok"
-		},
-		"PLN": {
-			"jednotka": 1,
-			"dev_stred": 5.805,
-			"dev_nakup": 5.648,
-			"dev_prodej": 5.963,
-			"val_stred": null,
-			"val_nakup": null,
-			"val_prodej": null,
-			"nazev": "Polský zlotý",
-			"url": "https://www.kurzy.cz/pln"
-		},
-		"RON": {
-			"jednotka": 1,
-			"dev_stred": 4.918,
-			"dev_nakup": 4.778,
-			"dev_prodej": 5.057,
-			"val_stred": null,
-			"val_nakup": null,
-			"val_prodej": null,
-			"nazev": "Rumunský lei",
-			"url": "https://www.kurzy.cz/ron"
-		},
-		"SEK": {
-			"jednotka": 1,
-			"dev_stred": 2.264,
-			"dev_nakup": 2.202,
-			"dev_prodej": 2.325,
-			"val_stred": null,
-			"val_nakup": null,
-			"val_prodej": null,
-			"nazev": "Švédská koruna",
-			"url": "https://www.kurzy.cz/sek"
-		},
-		"CHF": {
-			"jednotka": 1,
-			"dev_stred": 26.437,
-			"dev_nakup": 25.741,
-			"dev_prodej": 27.132,
-			"val_stred": 26.437,
-			"val_nakup": 25.741,
-			"val_prodej": 27.132,
-			"nazev": "Švýcarský frank",
-			"url": "https://www.kurzy.cz/chf"
-		},
-		"TRY": {
-			"jednotka": 100,
-			"dev_stred": 55.284,
-			"dev_nakup": 51.849,
-			"dev_prodej": 58.72,
-			"val_stred": null,
-			"val_nakup": null,
-			"val_prodej": null,
-			"nazev": "Turecká lira",
-			"url": "https://www.kurzy.cz/try"
-		},
-		"USD": {
-			"jednotka": 1,
-			"dev_stred": 21.743,
-			"dev_nakup": 21.165,
-			"dev_prodej": 22.321,
-			"val_stred": 21.743,
-			"val_nakup": 21.165,
-			"val_prodej": 22.321,
-			"nazev": "Americký dolar",
-			"url": "https://www.kurzy.cz/usd"
-		}
-	}
-}
-"""
+# ================= App Screen ============================
 
-# For visibility the API structure from freecurrencyapi.com
-json_api_structure_2 = """
-{
-  "data": {
-    "USD": 1.1430007052
-  }
-}
-"""
-
-
-
-# ==================== Application scree + backend functions ==============
-st.write("# Description - Function 5")
+st.write("# ZIP Code search:")
 ''
 ''
 st.write("""
-    - **Function 5:** Exchange rate/calculation (CZK, EUR, USD) - **API based** with actual exchange rate
+- API based 
+- The information comes from (1) https://app.zipcodebase.com and (2) https://app.zipcodestack.com/
+- **Note:** Because it is about 2 differnt applications sending the data, it can happen that sometimes there will not be 100% match 
+""")
+
+''
+''
+''
+st.write("#### (1) ZIP code(s) based on City:")
+
+# ================== Rules for users ======================
+
+
+''
+with st.expander("How to use this function",
+    icon=":material/help:"
+    ):
+    ''
+    ''
+    st.write("""
+    - This function helps to provide **ZIP code number for particular city**
+    - It is for **shipping purposes**
     """
     )
+
+    ''
+    st.write("- Firstly - Select country from the list (either CZ or SK): ")
+    st.image("Pictures/Function_6/F6_menu_skcz.svg")
+
+    ''
+    ''
+    ''
+    st.write("- Secondly - Fill in the name of city:  can and cannot use capital leter: Prague/prague")
+    # st.image("Pictures/Function_6/F6_menu2_city.svg")
+    st.write("- There can be **only 1 city per request**")
+    # st.image("Pictures/Function_6/F6_menu2_city.svg")
+
+with st.expander("Some examples of Cities you can use",
+    icon=":material/help:"
+    ):
+
+    ''
+    ''
+    st.write("""
+    - **CZ** - Czech Republic
+        - Prague
+        - Olomouc
+        - Zlin
+    """
+    )
+
+    st.write("""
+    - **SK** - Slovakia
+        - Kosice
+        - Trencin
+        - Banska Bystrica
+    """
+    )
+
+with st.expander("Known limitation",
+    icon=":material/sync_problem:"
+    ):
+
+    ''
+    ''
+    st.write("""
+    - Sometimes this API **is not able to establish connection**
+    - It is probably on the Zipcodebase.com side
+    - So the API call timeout is set to 2 seconds (which is max 2 calls) and then I set an intteruption in the code
+    - They actually gurantee 99.9% uptime but **I have a Free subscription** of the API so I will have **probably less** :)
+    - In case that connectivity not established and this app will display an alert. You can try again in 10-20 minutes. 
+    - Sometimes the API connectivity works perfectly but sometimes not. 
+    """
+    )
+
+# ================= API ============================
+
+# FOR TESTINGS - to do not call API, if not neccessary
+
+def TEST_get_request_2(city,country):
+
+    json_data_api_2 ={
+            "query": {
+                "city": city,
+                "state": "null",
+                "country": country
+            },
+            "results": [
+                "251 63",
+                "110 00",
+                "140 21",
+                "140 78",
+                "144 00",
+            ]
+        }
+    
+    return json_data_api_2
+
+
+# For PROD purposes 
+# https://app.zipcodebase.com/ - Bug: 1 api call is counted like 6
+def get_api_2(city,country):
+    headers = { 
+    "apikey": "7a293f40-56a9-11f0-9c80-b10c7877b63a"}
+
+    params = (
+    ("city", city),
+    ("country", country),
+    );
+
+    try:
+        response = requests.get('https://app.zipcodebase.com/api/v1/code/city?apikey=7a293f40-56a9-11f0-9c80-b10c7877b63a', headers=headers, params=params, timeout=2);
+
+        # st.write(f" write před return {response.text}")
+        response = response.text
+        # st.write(f" po response.text {response}")
+
+        #Very important step to make for data type
+        response = json.loads(response) 
+        return response
+
+    except:
+        st.warning("Apologies - The API is currently not available - connection timeout (2 seconds) stopped the request- In case that the application continue to run - PLEASE USE THE 'STOP' BUTTON AT THE RIGHT UPPER CORNER. Try again in 10-20 minutes.")
+        sys.exit()
+
+
+
+# ================== User inputs ==========================
+
 ''
 ''
-st.write("##### Business scenario:") 
-
-st.write("""
-- For visibility and calculation purposes. This function offers **a simple calculator** to convert values between currencies.
-		 
-	- CZK 
-	- EUR
-	- USD	 
-"""
-)
 ''
-''
-
-st.write("##### Actual conversion rate:") 
-
-st.write("""
-- API based (open API)
-- Comes from Kurzy.cz https://www.kurzy.cz/ 	
-- CZK  to EUR and USD	 
-"""
-)
-
-''
-
-st.caption("""
-Kurzy.cz is a Czech portal specializing in the field of finance - investments, business and personal finance. It was founded in 2000 originally at fin.cz and since 2006 at kurzy.cz. According to Netmonitor statistics, the kurzy.cz server was visited by a total of 3,207,000 real users in March 2022, making the server one of the 15 most visited Czech media.
-https://cs.wikipedia.org/wiki/Kurzy.cz
-"""
-)
-
-
-''
-''
-# Expander API 1 JSON 
-with st.expander("API JSON structure - Kurzy.cz", icon= ":material/help:"):
-
-	''
-	st.write("""
-	- API - **HTTP GET** request to retrieve data from a server
-	- There is no limit defined (I didn't find) for get requests (but anyway  data caching set for 1 hour)
-	- This Function 5 receives the full predefined API data from Kurzy.cz 
-	- There is no possibility to customize the API data
-		  
-	- So once received, there is a parsing, specifically:
-		- "EUR" : { "dev_stred" : float value }
-		- "USD" : { "dev_stred" : float value }
-		  
-		
-	""")
-
-
-	''
-	''
-	''
-	st.write("The full JSON data:")
-	st.code(
-		json_api_structure_1,
-		language= 'json',
-		line_numbers=True,
-		height=400)
-
-	
-
-''
-''
-''
-st.write("""
-- Comes from Freecurrencyapi.com https://app.freecurrencyapi.com/	
-- EUR to USD	 
-"""
-)
-
-''
-st.caption("""
-Free Currency Conversion API
-The 100% free solution for handling exchange rate conversions. Our currency API provides live & historical exchange rate data ranging from 1999 until today.
-https://freecurrencyapi.com/
-"""
-)
-
-''
-''
-# Expander API 2 JSON 
-with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/help:"):
-
-	''
-	st.write("""
-	- API - **HTTP GET** request to retrieve data from a server
-	- This Function 5 receives **CUSTOMIZED** data from Freecurrencyapi.com 
-	
-		- "data" : { "USD" : float value }
-		
-		- Base Currency: EUR
-		- Currency/Rate to: USD
-	"""
-	)
-
-
-	''
-	''
-	''
-	st.write("Customized JSON API data:")
-	st.code(
-		json_api_structure_2,
-		language= 'json',
-		line_numbers=True
-		)
-
-	''
-	''
-	st.write("The customization allows:")
-	st.write("""
-	- Make a registration 
-	- Monitor the API requests 
-	- And see some statistics
-	- Also this UI is allowing to troubleshoot and reproduce the request + **retrospectivelly see every JSON data which were sent out** based on every GET the source application got. 
-	- Possible to search based on API status, time, date...
-	"""
-	)
-	''
-	st.image("Pictures/Function_5/F5_description_api_statistics.png")
-	''
-	st.image("Pictures/Function_5/F5_description_api_statistics_another.png")
-	''
-	''
-	''
-	st.write("- This API is **limited to 5k requests per month**")
-	st.write("- So here is also simple GET API to see statistics:")
-	if st.button(
-		"API Status",
-		use_container_width=True,
-		icon=":material/monitoring:"
-	):
-                
-                # try-except logic to cover API unavailability
-                try:
-                    # API count/remaining
-                    api_count = "https://api.freecurrencyapi.com/v1/status?apikey=fca_live_6SzWJxPYa8Co3Xr9ziCTd7Mt7Yavrhpy2M5A0JZ4"
-
-                    # get reguest - cached for 10 minutes
-                    @st.cache_data(ttl=600)
-                    def get_response_api_3(api_count):
-                        api_3 = requests.get(api_count, verify=False).text
-                        return api_3
-
-                    api_3 = get_response_api_3(api_count)
-
-                    # JSON format creation
-                    api_3_json = json.loads(api_3)
-
-                    # Search for data in the API defined format - JSON
-                    used = api_3_json['quotas']['month']['used']
-                    remaining = api_3_json['quotas']['month']['remaining']
-
-                    # Description on the screen
-                    st.write(f"- In this month subscription period - **used: {used}** and **remaining: {remaining}** requests")
-                    st.write("- This data will be **cached** here for **next 10 minutes**")
-
-                    # Simple pie chart
-                    data_pie_api = pd.DataFrame({
-                    "Figures" : [used,remaining],
-                    "Topics" : [f"Used:  {used}",f"Remaining:  {remaining}"],
-
-                    })
-
-                    fig_api = px.pie(
-                        data_pie_api, 
-                        names = "Topics",
-                        values = "Figures",
-                        title = "API status of GET requests from this application - month period"
-                    )  
-
-
-                    st.write(fig_api)
+with st.form("List of ZIP codes"):
+    country = st.selectbox("Country:",
+        ["CZ", "SK"],
+        help="Select country, based on the City you are looking for. CZ - Czech Republic, SK - Slovakia",
+        ).casefold()
+    
+    city = st.text_input("City",
+        help="Only 1 city is allowed",
+        ).capitalize()
+    
+    ''
+    ''
+    if st.form_submit_button(
+        label="Submit",
+        use_container_width=True,
+        icon = ":material/apps:",
+        ):
         
-                except:
-                    st.warning("""
-                    - Apologies, the status API is currently NOT available due to:
-                        - Either the API system refused to establish connection
-                        - Or limit of 5k requests per month has been reached              
-                    """
-                    )
-              
+		# Firstly a validation that inputs provided -> if not, API will not be called
+        if city == "":
+             st.warning("Please provide City")
+             
+        else:
+             
+             # This is for PROD   ///////////////////////////////////////////////
+             # f_data_json_2 = get_api_2(city,country)
+             
+             # This for TESTING
+             f_data_json_2 = TEST_get_request_2(city,country)
+             # st.write(f" here data should be for parsing: {f_data_json_2}")
+             
+
+             # Data parsing from JSON
+             ds = f_data_json_2['results']
+             ds = list(map(str, ds))
+             
+
+             # logic for validation of income 
+             b = len(ds)
+             b = b - 1
+             # st.write(b)
+             
+
+             if b == -1:
+                  st.warning("Your City is not related to the selected country or doesn't exist in DB")
+                  
+             else:
+                  # data visualization APP
+                  data_serie = pd.Series(ds, name="ZIP codes",)
+                  data_serie.index += 1
+                  ''
+                  ''
+                  st.write(data_serie)
+                  
+
+                  # data translation into string with coma , for the (1) API
+                  string_for_api_1 = ",".join(ds)
+                  
+
+                  ''
+                  st.write("- Here **you can take the string** and put it into the box below (the second API/Search):")
+                  st.write(string_for_api_1)
+                  ''
+                  '' 
+                  st.write("- **(!) Important note:**")
+                  st.info("Because the API 2 (below) is a different application/works with different data -> it can happen that some of these ZIP codes might not be neccessary matching and the API 2 will NOT have the same data/ZIP codes")
+
+
+# ==========================================================================
+# //////////////////////////////////////////////////////////////////////////
+# ==========================================================================
+# for testign purposes to do not call api 
+def TEST_get_request(codes,country):
+
+    data_json = {
+	"query": {
+		"codes": [
+			codes
+		],
+		"country": country
+	},
+	"results": {
+		"110007": [
+			{
+				"postal_code": "110 008888",
+				"country_code": "CZ",
+				"latitude": 50.3667,
+				"longitude": 16.0417,
+				"city": "Praha 1-Josefov",
+				"state": "Hlavní město Praha",
+				"city_en": "Praha 1-Josefov",
+				"state_en": "Hlavní město Praha",
+				"state_code": "52"
+			},
+			{
+				"postal_code": "110 007777",
+				"country_code": "CZ",
+				"latitude": 50.3333,
+				"longitude": 15.9167,
+				"city": "Josefov",
+				"state": "Hlavní město Praha",
+				"city_en": "Josefov",
+				"state_en": "Hlavní město Praha",
+				"state_code": "52"
+			}
+		],
+        "9999": [
+			{
+				"postal_code": "123",
+				"country_code": "CZ",
+				"latitude": 50.3667,
+				"longitude": 16.0417,
+				"city": "Praha 1-Josefov",
+				"state": "Hlavní město Praha",
+				"city_en": "Praha 1-Josefov",
+				"state_en": "Hlavní město Praha",
+				"state_code": "52"
+			},
+			{
+				"postal_code": "456",
+				"country_code": "CZ",
+				"latitude": 50.3333,
+				"longitude": 15.9167,
+				"city": "Josefov",
+				"state": "Hlavní město Praha",
+				"city_en": "Josefov",
+				"state_en": "Hlavní město Praha",
+				"state_code": "52"
+			}
+		]
+	}
+}
+
+
+    return data_json
+ 
+
+
+
+# ============= Real API - GET request ===================== 
+
+def  get_request(codes, country):
+
+    # API ZIPCODESTACK
+    api_url = "https://api.zipcodestack.com/v1/search"
+
+
+    headers = { 
+    "apikey": "zip_live_pWsWrXrfbOBJpOjUwXuVT8RDRkWCtUj44M2RKzLd"}
+
+    params = (
+    ("codes",codes),
+    ("country",country),
+    );
+
+    # get reguest
+    try:
+        api_1 = requests.get(api_url, headers=headers, params=params,  verify=False, timeout=2).text
+    
+        f_data_json = json.loads(api_1)
+        return f_data_json
+    
+    except:
+        st.warning("Apologies - The API is currently not available - connection timeout (2 seconds) stopped the request- In case that the application continue to run - PLEASE USE THE 'STOP' BUTTON AT THE RIGHT UPPER CORNER")
+
+# ================= App Scree ============================
 
 ''
 ''
 ''
+st.write("#### (2) Validation of city based on ZIP code:")
 ''
-# Archimate
-st.write("##### Archimate Diagram:") 
 ''
-st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
-st.image("Pictures/Function_5/F5_description_archimate_api.svg")
+
+# ================== Rules for users ======================
+
+
+with st.expander("How to use this function",
+    icon=":material/help:"
+    ):
+    ''
+    ''
+    st.write("""
+    - This function is for **validation of ZIP codes** to which **city, state/region** it belongs
+    - It is for **shipping purposes**
+    """
+    )
+
+    ''
+    st.write("- Firstly - Select country from the list (either CZ or SK): ")
+    st.image("Pictures/Function_6/F6_menu_skcz.svg")
+
+    ''
+    ''
+    ''
+    st.write("- Secondly - Fill in the ZIP code you would like to check:")
+    st.image("Pictures/Function_6/F6_menu_post_single.svg")
+    ''
+    st.write("- **(!) RECOMMENDED:** If you want to check more, fill it like this: ZIPcode,ZIPcode,ZIPcode... and use a comma , as a separator")
+    st.write("- **(!) BUT** have **MAX 10** ZIP codes in 1 request")
+    st.image("Pictures/Function_6/F6_menu_post_multiple.svg")
+    ''
+    st.caption("** This approach of multiple inputs in one request helps to save/limit the number of API calls (source application limits this)")
+
+
+    ''
+    ''
+    st.write("Negative scenarios:")
+    st.write("- In case that your ZIP code input (one) is **NOT** related to the CZ or SK country warning note will be displayed ")
+    st.image("Pictures/Function_6/F6_menu_nozip.svg")
+    st.write("- In case that your ZIP code is **NOT** related to the CZ or SK, but you provided multiple codes, then the exiting will be delivered the others not. E.g. 4 codes filled in (3 existing, 1 not) -> 3 will be delivered")
+
+with st.expander("Some examples of ZIP codes you can use",
+    icon=":material/help:"
+    ):
+
+    ''
+    ''
+    st.write("- In case that you do not have any/do not know, you can use any of these:")
+    st.write("""
+    - **CZ** - Czech Republic
+        - 3 ZIP codes
+        - 11000,25163,15800
+    """
+    )
+
+    st.write("""
+    - **SK** - Slovakia
+        - 3 ZIP codes
+        - 013 41,013 06,811 08 
+    """
+    )
+    
+def api_1_validation(city):
+    
+	if city == "":
+		# exit()
+		st.write("ahoj")
+            
+	else:
+		pass
+
+
+
+# ================== User inputs ==========================
 
 ''
 ''
 ''
-st.write("""
-- **To do not overutilize the API calls, there is a DATA CACHING set on our application**
-	- The caching is applied for **1 hour** (3600 seconds)
-	- The caching is applicable for **1 session**
-"""
-)
+with st.form("Get city based on ZIP code(s)"):
+    country = st.selectbox("Country:",
+        ["CZ", "SK"],
+        help="Select country you assume that your ZIP code is from. CZ - Czech Republic, SK - Slovakia",
+        )
+    
+    codes = st.text_input("ZIP code",
+        help = "You can put 1 or more ZIP codes. If more the format is: ZIPcode,ZIPcode,ZIPcode... To do not overwhelm the API, put MAX 10 ZIP codes in one search."
+        )
+    
+    ''
+    ''
+    if st.form_submit_button(
+        label="Submit",
+        use_container_width=True,
+        icon = ":material/apps:",
+        ):
+        
+		# if/else logic for validation of input -> to do not call API  is no codes provided
+		# Reason: if no ZIP code sprovided it will send 300+ ZIP codes (propably all under CZ or SK). BUT - 10 ZIP codes is charge as 1 API call -> this one single call would costs 30+ calls.
+          
+        if codes == "":
+             st.warning("Please provide ZIP code(s)")
+             
+        else:
+             
+             # PROD ///////////////////////////////////////////////
+             # f_data_json = get_request(codes, country)
+             
+             # For TEST purposes 
+             f_data_json = TEST_get_request(codes, country)
+             # st.write(f_data_json)
+             
 
-''
-''
-st.write("""
-- Frequency of data updates from **Kurzy.cz**
-	- **They say**: Exchange rates are updated continuously, with a few minutes delay compared to the source.
-	- Based on my observing should be 1x per 24 hours
-	- History can be seen (Page in Czech language): https://www.kurzy.cz/kurzy-men/kurzovni-listek/csob/
-"""
-)
+             # ============ Data parsing from JSON ================
+             #03-July-2025 - I am trying try/except for principle of not enought API requests 
+			 # {"message":"You used all your monthly requests. Please upgrade your plan at https://app.zipcodestack.com/subscription"}  -> try except block
+                
+             try:
+                  # ==== Parsing of the ZIP codes from JSON =======
+                  # Those are the same ZIP CODES as entered in user input
+                  # But in case that user will put a ZIP code which is not existing on the API side -> this mechanism will prevent from failing and just simply, will not get any response to show from the API. 
+                  # the JSON structure is build on dynamic value principle in segment
+                  # "results": { "11000": [{}],"12300": [{}]}   - the numbers (in string type) are the dynamic ones -> yes, those are the inputs from user -> JSON reflects that in the message
+                  
+                  # step 1 - the dynamic values to be parsed into list
+                  result_val = []
+                  
+                  # step 2 - number of items in the list 
+                  for result_jsn in f_data_json["results"]:
+                       result_jsn = str(result_jsn)
+                       result_val.append(result_jsn)
+                       
+                       #mapping into string
+                       result_val = list(map(str, result_val))
+                       # st.write(result_val)
+                       
 
-''
-''
-st.write("""
-- Frequency of data updates from **Freecurrencyapi.com**
-	- **They say**: The currency data on freecurrencyapi.com is updated on a daily basis. This means that while the API provides live and historical exchange rates, the data is refreshed once a day with end-of-day figures. 
-	- 1x per 24 hours
-"""
-)
+                  # step 2 - number of items in the list
+                  a = len(result_val)
+                  
+                  # step 3 - the number of items - 1 => we get number of indexes
+                  a = a - 1
+                  # st.write(a)
+                  
 
-# ===== Page navigation at the bottom ======
-''
-''
-''
-''
-st.write("-------")
+                  if a == -1:
+                       st.warning("Your ZIP code(s) is not related to the selected country or doesn't exist in DB")
+                       
+                  else:
+                       # step 4 - setting a default index for for loop as O (to take the first dynamic number from the list as variable)
+                       index = 0
+                       
+                       # step 5 - while loop - to run until all the indexes checked/run
+                       while index <= a:
+                            
+                            # parsing of other values on the another JSON level
+                            # the dynamic value are run based on the index number
+                            result_val_single = result_val[index]
+                            
+                            for result in f_data_json["results"][result_val_single]:
+                                 st.write(f"- ZIP code: {result['postal_code']}")
+                                 st.write(f"- City name: {result['city_en']}")
+                                 st.write(f"- State: {result['state_en']}")
+                                 st.write(f"=====================================")
+                                 
+                            # the dynamic value are run based on the index number
+                            index = index + 1
+                            
+							
+             except:
+                 st.warning("Apologies, the limit of the API calls per month has been reached. It will be **renewed by 1st next month**. THIS PART OF APPLICATION IS CURRENTLY NOT AVAILABLE.")
 
-st.page_link(
-	label = "Function 5",
-	page="Subpages/F5_FUNCTION_exchange.py",
-	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
-	icon=":material/play_circle:"
-	) 
+

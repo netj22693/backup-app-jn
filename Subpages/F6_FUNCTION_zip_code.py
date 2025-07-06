@@ -136,6 +136,7 @@ def get_api_2(city,country):
         sys.exit()
 
 
+
 # ================== User inputs ==========================
 
 ''
@@ -158,56 +159,55 @@ with st.form("List of ZIP codes"):
         use_container_width=True,
         icon = ":material/apps:",
         ):
-
-
-        # This is for PROD   ///////////////////////////////////////////////
-        f_data_json_2 = get_api_2(city,country)
-
-        # This for TESTING
-        # f_data_json_2 = TEST_get_request_2(city,country)
-        # st.write(f" here data should be for parsing: {f_data_json_2}")
-
-    
-        # Data parsing from JSON
-
-        ds = f_data_json_2['results']
-        ds = list(map(str, ds))
-
-        # logic for validation of income 
-
-        b = len(ds)
-
-        b = b - 1
-        # st.write(b)
-
-        if b == -1:
-            st.warning("Your City is not related to the selected country or doesn't exist in DB")
-
         
+		# Firstly a validation that inputs provided -> if not, API will not be called
+        if city == "":
+             st.warning("Please provide City")
+             
         else:
-            
+             
+             # This is for PROD   ///////////////////////////////////////////////
+             f_data_json_2 = get_api_2(city,country)
+             
+             # This for TESTING
+             # f_data_json_2 = TEST_get_request_2(city,country)
+             # st.write(f" here data should be for parsing: {f_data_json_2}")
+             
 
-            # data visualization APP
-            data_serie = pd.Series(ds, name="ZIP codes",)
-            data_serie.index += 1
+             # Data parsing from JSON
+             ds = f_data_json_2['results']
+             ds = list(map(str, ds))
+             
 
-            ''
-            ''
-            st.write(data_serie)
+             # logic for validation of income 
+             b = len(ds)
+             b = b - 1
+             # st.write(b)
+             
 
-            # data translation into string with coma , for the (1) API
-            string_for_api_1 = ",".join(ds)
+             if b == -1:
+                  st.warning("Your City is not related to the selected country or doesn't exist in DB")
+                  
+             else:
+                  # data visualization APP
+                  data_serie = pd.Series(ds, name="ZIP codes",)
+                  data_serie.index += 1
+                  ''
+                  ''
+                  st.write(data_serie)
+                  
 
-            ''
-            st.write("- Here **you can take the string** and put it into the box below (the second API/Search):")
-            st.write(string_for_api_1)
-            ''
-            ''
-            st.write("- **(!) Important note:**")
-            st.info("Because the API 2 (below) is a different application/works with different data -> it can happen that some of these ZIP codes might not be neccessary matching and the API 2 will NOT have the same data/ZIP codes")
+                  # data translation into string with coma , for the (1) API
+                  string_for_api_1 = ",".join(ds)
+                  
 
-
-
+                  ''
+                  st.write("- Here **you can take the string** and put it into the box below (the second API/Search):")
+                  st.write(string_for_api_1)
+                  ''
+                  '' 
+                  st.write("- **(!) Important note:**")
+                  st.info("Because the API 2 (below) is a different application/works with different data -> it can happen that some of these ZIP codes might not be neccessary matching and the API 2 will NOT have the same data/ZIP codes")
 
 
 # ==========================================================================
@@ -374,7 +374,7 @@ with st.expander("Some examples of ZIP codes you can use",
         - 013 41,013 06,811 08 
     """
     )
-
+    
 # ================== User inputs ==========================
 
 ''
@@ -397,72 +397,80 @@ with st.form("Get city based on ZIP code(s)"):
         use_container_width=True,
         icon = ":material/apps:",
         ):
-
-        # PROD ///////////////////////////////////////////////
-        f_data_json = get_request(codes, country)
-
-        # For TEST purposes 
-        # f_data_json = TEST_get_request(codes, country)
-        # st.write(f_data_json)
-
-
-        # ============ Data parsing from JSON ================
-
-        #03-July-2025 - I am trying try/except for principle of not enought API requests 
-        #{"message":"You used all your monthly requests. Please upgrade your plan at https://app.zipcodestack.com/subscription"}  -> try except block 
-
-        try:
-
-            # ==== Parsing of the ZIP codes from JSON =======
-            # Those are the same ZIP CODES as entered in user input 
-            # But in case that user will put a ZIP code which is not existing on the API side -> this mechanism will prevent from failing and just simply, will not get any response to show from the API. 
-
-            # the JSON structure is build on dynamic value principle in segment 
-            # "results": { "11000": [{}],"12300": [{}]}   - the numbers (in string type) are the dynamic ones -> yes, those are the inputs from user -> JSON reflects that in the message
-
-            # step 1 - the dynamic values to be parsed into list
-            result_val = []
-            for result_jsn in f_data_json["results"]:
-                result_jsn = str(result_jsn)
-                result_val.append(result_jsn)
-                
-                #mapping into string
-                result_val = list(map(str, result_val))
-                # st.write(result_val)
-
-            # step 2 - number of items in the list 
-            a = len(result_val)
-
-            # step 3 - the number of items - 1 => we get number of indexes 
-            a = a - 1
-            # st.write(a)
-
-            if a == -1:
-                st.warning("Your ZIP code(s) is not related to the selected country or doesn't exist in DB")
-            
-            else:
-            
-                # step 4 - setting a default index for for loop as O (to take the first dynamic number from the list as variable)
-                index = 0
-
-                # step 5 - while loop - to run until all the indexes checked/run
-                while index <= a:
-
-                    # parsing of other values on the another JSON level 
-                    # the dynamic value are run based on the index number 
-                    result_val_single = result_val[index]
-
-                    for result in f_data_json["results"][result_val_single]:
-                        st.write(f"- ZIP code: {result['postal_code']}")
-                        st.write(f"- City name: {result['city_en']}")
-                        st.write(f"- State: {result['state_en']}")
-                        st.write(f"=====================================")
-                    
-                    # this increases the index number/move to the next item in the list
         
-                    index = index + 1
+		# if/else logic for validation of input -> to do not call API  is no codes provided
+		# Reason: if no ZIP code sprovided it will send 300+ ZIP codes (propably all under CZ or SK). BUT - 10 ZIP codes is charge as 1 API call -> this one single call would costs 30+ calls.
+          
+        if codes == "":
+             st.warning("Please provide ZIP code(s)")
+             
+        else:
+             
+             # PROD ///////////////////////////////////////////////
+             f_data_json = get_request(codes, country)
+             
+             # For TEST purposes 
+             # f_data_json = TEST_get_request(codes, country)
+             # st.write(f_data_json)
+             
+
+             # ============ Data parsing from JSON ================
+             #03-July-2025 - I am trying try/except for principle of not enought API requests 
+			 # {"message":"You used all your monthly requests. Please upgrade your plan at https://app.zipcodestack.com/subscription"}  -> try except block
+                
+             try:
+                  # ==== Parsing of the ZIP codes from JSON =======
+                  # Those are the same ZIP CODES as entered in user input
+                  # But in case that user will put a ZIP code which is not existing on the API side -> this mechanism will prevent from failing and just simply, will not get any response to show from the API. 
+                  # the JSON structure is build on dynamic value principle in segment
+                  # "results": { "11000": [{}],"12300": [{}]}   - the numbers (in string type) are the dynamic ones -> yes, those are the inputs from user -> JSON reflects that in the message
+                  
+                  # step 1 - the dynamic values to be parsed into list
+                  result_val = []
+                  
+                  # step 2 - number of items in the list 
+                  for result_jsn in f_data_json["results"]:
+                       result_jsn = str(result_jsn)
+                       result_val.append(result_jsn)
+                       
+                       #mapping into string
+                       result_val = list(map(str, result_val))
+                       # st.write(result_val)
+                       
+
+                  # step 2 - number of items in the list
+                  a = len(result_val)
+                  
+                  # step 3 - the number of items - 1 => we get number of indexes
+                  a = a - 1
+                  # st.write(a)
+                  
+
+                  if a == -1:
+                       st.warning("Your ZIP code(s) is not related to the selected country or doesn't exist in DB")
+                       
+                  else:
+                       # step 4 - setting a default index for for loop as O (to take the first dynamic number from the list as variable)
+                       index = 0
+                       
+                       # step 5 - while loop - to run until all the indexes checked/run
+                       while index <= a:
+                            
+                            # parsing of other values on the another JSON level
+                            # the dynamic value are run based on the index number
+                            result_val_single = result_val[index]
+                            
+                            for result in f_data_json["results"][result_val_single]:
+                                 st.write(f"- ZIP code: {result['postal_code']}")
+                                 st.write(f"- City name: {result['city_en']}")
+                                 st.write(f"- State: {result['state_en']}")
+                                 st.write(f"=====================================")
+                                 
+                            # this increases the index number/move to the next item in the list
+                            index = index + 1
+                            
+							
+             except:
+                 st.warning("Apologies, the limit of the API calls per month has been reached. It will be **renewed by 1st next month**. THIS PART OF APPLICATION IS CURRENTLY NOT AVAILABLE.")
 
 
-
-        except:
-            st.warning("Apologies, the limit of the API calls per month has been reached. It will be **renewed by 1st next month**. THIS PART OF APPLICATION IS CURRENTLY NOT AVAILABLE.")
