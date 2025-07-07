@@ -185,6 +185,18 @@ with st.expander(
 	st.write("- Do you like this app? :) LinkedIn profile [Here](https://www.linkedin.com/in/jan-netolicka-12209a221/)")
 	st.write("- Author: Jan Netolicka")
 
+# GitHub - expander
+
+with st.expander(
+	"Repository - GitHub",
+	icon=":material/deployed_code_history:"
+):	
+
+	''
+	''
+	st.write("- GitHub code repository link [Here](https://github.com/netj22693/backup-app-jn/blob/main/streamlit_app.py)")
+	st.image("Pictures/Github_archimate_2.svg")
+
 
 
 # Release notes - expander
