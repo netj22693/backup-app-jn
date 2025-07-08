@@ -583,7 +583,7 @@ with tab4:
                 1) User did not provide input -> API call did not happen, program stops with warning message
                 2) API called, but no response (timeout) or HTTP 4xx/5xx -> program stops with warning message
                 3) API called, response received, parsing -> parsing not done -> API limit reached -> program stops with warning message
-                4) API called, response received, parsing done -> but data {"results": [ ] } is **empty** -> API DB does not have a match with hour requested data -> program stops with warning message
+                4) API called, response received, parsing done -> but data {"results": [ ] } is **empty** -> API DB does not have a match with our requested data -> program stops with warning message
                 5) API called, response received, data match -> programs continues till the end (GREEN)
               
               

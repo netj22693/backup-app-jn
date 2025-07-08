@@ -379,6 +379,17 @@ with st.expander("Some examples of ZIP codes you can use",
         - 013 41,013 06,811 08 
     """
     )
+
+with st.expander("Known limitation",
+    icon=":material/sync_problem:"
+    ):
+
+    ''
+    ''
+    st.write("""
+    - This API allows **only 300** calls/requests per month (Free subscription)
+    """
+    )
     
 # ================== User inputs ==========================
 
