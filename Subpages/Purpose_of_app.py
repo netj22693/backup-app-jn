@@ -223,7 +223,7 @@ with st.expander(
 ):	
 
 	''
-	st.write("Key highlights:")
+	st.write("Key highlights (* **vX.X** -> version of application):")
 
 	''
 	st.write("""
