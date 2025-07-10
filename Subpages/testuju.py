@@ -313,7 +313,16 @@ if object_from_upload is not None:
         sum_price_pc_addserv = sum(price_pc_addserv)
         sum_price_tv_addserv = sum(price_tv_addserv)
         sum_price_majappl_addserv = sum(price_majappl_addserv)
-        price_households_addserv = sum(price_households_addserv)
+        sum_price_households_addserv = sum(price_households_addserv)
+
+        # sum of sum - price + additional service price -> for chart in SQL 3 expander
+        ss_gaming = sum_price_gaming + sum_price_gaming_addserv
+        ss_mobile = sum_price_mobile_phone + sum_price_mobphones_addserv
+        ss_tablets = sum_price_tablets + sum_price_tablets_addserv
+        ss_pc = sum_price_pc + sum_price_pc_addserv
+        ss_tv = sum_price_tv + sum_price_tv_addserv
+        ss_majapp = sum_price_majapliances + sum_price_majappl_addserv
+        ss_househlds = sum_price_househol + sum_price_households_addserv
 
 
         # Sum of prices - type change string -> float for calculation
@@ -510,7 +519,7 @@ if object_from_upload is not None:
             GROUP BY
                 Category
             ORDER BY 
-                count DESC
+                count DESC, category ASC
             """
 
 
@@ -642,7 +651,7 @@ if object_from_upload is not None:
             st.dataframe(ps.sqldf(q4b, locals()), hide_index=True, use_container_width=True)
 
         # Expander SQL 3 
-        with st.expander("SQL Queries 3 - % Ratio", icon = ":material/view_list:"):
+        with st.expander("SQL Queries 3 & Pie Charts - % Ratio", icon = ":material/clock_loader_60:"):
             ''
             ''
             st.write(f"- Currency: **{currency}**")
@@ -650,15 +659,15 @@ if object_from_upload is not None:
 
 
             # Percentage % ratio of product prices per Category - NOT including additional services
-            q5 = f"""SELECT category, count(*) as 'count', sum(price) as 'sum price', round(((sum(price)/'{value_total_sum}')*100),1) as '% ratio'
+            q5 = f"""SELECT category, count(*) as 'count', sum(price) as 'sum price', round(((sum(price)/'{value_total_sum}')*100),2) as '% ratio'
             FROM
                 data_table_sql
             GROUP BY
                 Category
             ORDER BY 
-                count DESC""".format(value_total_sum)
+                count DESC, category ASC""".format(value_total_sum)
 
-            st.write(f"- **Percentage % ratio** of product prices per **Category**. From  total sum of products: **{value_total_sum:,.2f} {currency}** ")
+            st.write(f"- **(1) Percentage % ratio** of product costs per **Category**. From  total sum of products: **{value_total_sum:,.2f} {currency}** ")
 
             st.dataframe(ps.sqldf(q5, locals()), hide_index=True, use_container_width=True)
 
@@ -674,60 +683,76 @@ if object_from_upload is not None:
 
 
             # Percentage % ratio of product prices per Category - INCLUDING additional services
-            q5 = f"""SELECT category, count(*) as 'count', sum(price+Additional_service_price) as 'sum price + add. services', round(((sum(price+Additional_service_price)/'{value_total_sum}')*100),1) as '% ratio.'
+            q5 = f"""SELECT category, count(*) as 'count', sum(price+Additional_service_price) as 'sum price + add. services', round(((sum(price+Additional_service_price)/'{value_to_paid}')*100),2) as '% ratio.'
             FROM
                 data_table_sql
             GROUP BY
                 Category
             ORDER BY 
-                count DESC""".format(value_total_sum)
+                count DESC, category ASC""".format(value_to_paid)
 
 
             ''
-            st.write(f"- **Percentage % ratio** of product prices per **Category**. From  total sum of products: **{value_to_paid:,.2f} {currency}**, **including** additional services **{sum_additional_serv:,.2f} {currency}**.")
+            st.write(f"- (2) **Percentage % ratio** of product prices per **Category**. From  total sum of products: **{value_to_paid:,.2f} {currency}**, **including** additional services **{sum_additional_serv:,.2f} {currency}**.")
 
             st.dataframe(ps.sqldf(q5, locals()), hide_index=True, use_container_width=True)
 
 
 
-            # st.write(f" gaming: {sum_price_gaming}")
-            # st.write(f" mobile phones: {sum_price_mobile_phone}")
-            # st.write(f" tablets: {sum_price_tablets}")
-            # st.write(f" pc: {sum_price_pc}")
-            # st.write(f" tv: {sum_price_tv}")
-            # st.write(f" major appliances: {sum_price_majapliances}")
-            # st.write(f" house holds: {sum_price_househol}")
+            # Percentage % ratio of additional services per category
+            q6 = f"""SELECT category, count(*) as 'count', sum(Additional_service_price) as 'sum add. services', round(((sum(Additional_service_price)/'{sum_additional_serv}')*100),2) as '% ratio.'
+            FROM
+                data_table_sql
+            GROUP BY
+                Category
+            ORDER BY 
+                count DESC, category ASC""".format(sum_additional_serv)
 
 
+            ''
+            st.write(f"- **(3) Percentage % ratio** of **additional services** per Category (**{sum_additional_serv:,.2f} {currency}**)")
 
-            st.write(f"gaming: {price_gaming_addserv}")
-            st.write(f"mob phones: {price_mobphones_addserv}")
-            st.write(f"tablets: {price_tablets_addserv}")
-            st.write(f"pc: {price_pc_addserv}")
-            st.write(f"tv: {price_tv_addserv}")
-            st.write(f"maj: {price_majappl_addserv}")
-            st.write(f"house: {price_households_addserv}")
+            st.dataframe(ps.sqldf(q6, locals()), hide_index=True, use_container_width=True)
 
 
-            
+         
 
-
-
-
-
+            # Data frames for Charts in SQL 3 expander
             data_pie_sql3_1 = pd.DataFrame({
 
-                "Costs" : [sum_price_gaming,sum_price_mobile_phone,sum_price_tablets,sum_price_pc,sum_price_tv, sum_price_majapliances, sum_price_househol],
-                "Category" : ["Gaming","Mobile phones","Tablets","PC","TV","Major Appliances","Households"],
+                "Costs" : [sum_price_gaming,
+                           sum_price_mobile_phone,
+                           sum_price_tablets,
+                           sum_price_pc,
+                           sum_price_tv,
+                           sum_price_majapliances,
+                           sum_price_househol
+                           ],
+
+                "Category" : ["Gaming",
+                              "Mobile phones",
+                              "Tablets",
+                              "PC",
+                              "TV",
+                              "Major Appliances",
+                              "Households"
+                              ]
 
                 })
+            
+
+            # Important logic, to drop() rows with 0 costs to do not appear in chart 
+            index_0 = data_pie_sql3_1[ (data_pie_sql3_1['Costs'] == 0)].index
+            data_pie_sql3_1.drop(index_0 , inplace=True)
 
             fig_pie_sql3_1 = px.pie(
                 data_pie_sql3_1, 
                 names = "Category",
                 values = "Costs",
-                title = "Costs per Category"
+                title = "(1) Ratio of product costs per Category:"
                 )
+            
+
             
             data_pie_sql3_2 = pd.DataFrame({
 
@@ -737,23 +762,81 @@ if object_from_upload is not None:
                            sum_price_pc_addserv,
                            sum_price_tv_addserv,
                            sum_price_majappl_addserv,
-                           price_households_addserv
+                           sum_price_households_addserv
                            ],
 
-                "Category" : ["Gaming","Mobile phones","Tablets","PC","TV","Major Appliances","Households"],
+                "Category" : ["Gaming",
+                              "Mobile phones",
+                              "Tablets",
+                              "PC",
+                              "TV"
+                              ,"Major Appliances"
+                              ,"Households"
+                              ]
 
                 })
+
+
+            # Important logic, to drop() rows with 0 costs to do not appear in chart 
+            index_0_2 = data_pie_sql3_2[ (data_pie_sql3_2['Costs'] == 0)].index
+            data_pie_sql3_2.drop(index_0_2 , inplace=True)
+
 
             fig_pie_sql3_2 = px.pie(
                 data_pie_sql3_2, 
                 names = "Category",
                 values = "Costs",
-                title = "Costs per Category"
+                title = "(3) Ratio of additional services per Category:"
+                )
+            
+
+            data_pie_sql3_3 = pd.DataFrame({
+
+                "Costs" : [ss_gaming,
+                           ss_mobile,
+                           ss_tablets,
+                           ss_pc,
+                           ss_tv,
+                           ss_majapp,
+                           ss_househlds
+                           ],
+
+                "Category" : ["Gaming",
+                              "Mobile phones",
+                              "Tablets",
+                              "PC",
+                              "TV"
+                              ,"Major Appliances"
+                              ,"Households"
+                              ]
+
+                })
+
+
+            # Important logic, to drop() rows with 0 costs to do not appear in chart 
+            index_0_3 = data_pie_sql3_3[ (data_pie_sql3_3['Costs'] == 0)].index
+            data_pie_sql3_3.drop(index_0_3 , inplace=True)
+
+
+            fig_pie_sql3_3 = px.pie(
+                data_pie_sql3_3, 
+                names = "Category",
+                values = "Costs",
+                title = "(2) ...including add. services:"
                 )
 
-            col1, col2 = st.columns(2)
+
+            ''
+            ''
+            col1, col2 = st.columns(2, gap="medium")
+
+
             col1.plotly_chart(fig_pie_sql3_1, use_container_width=True)
-            col2.plotly_chart(fig_pie_sql3_2, use_container_width=True)
+            col2.plotly_chart(fig_pie_sql3_3, use_container_width=True)
+            col1.plotly_chart(fig_pie_sql3_2, use_container_width=True)
+
+
+
         
         # ========= Data Visualization ====================
         ''

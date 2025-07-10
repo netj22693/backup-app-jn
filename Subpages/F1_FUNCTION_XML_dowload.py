@@ -11,7 +11,7 @@ xml_data_euro = """<?xml version="1.0" encoding="UTF-8"?>
 		<date>2025-03-10</date>
 		<price>
 			<total_sum>3291.00</total_sum>
-			<total_sum_services>168.00</total_sum_services>
+			<total_sum_services>118.00</total_sum_services>
 			<currency>euro</currency>
 		</price>
 	</header>
@@ -142,7 +142,7 @@ xml_data_euro = """<?xml version="1.0" encoding="UTF-8"?>
 		<additional_service>
 			<service>Y</service>
 			<service_type>insurance</service_type>
-			<service_price>100.00</service_price>
+			<service_price>50.00</service_price>
 		</additional_service>
 	</detail>
 	<detail id="14">

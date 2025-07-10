@@ -147,7 +147,183 @@ if object_from_upload is not None:
                 add_ser_price_full.append(0.00)
 
 
+
+
+        # Extra parsing for charts in SQL 3 expander  - NOT including add.services
+        price_gaming = []
+        for i_category in root.findall('detail'):
+            condition = i_category.find('category').text
+            if condition == 'Gaming':
+                item = i_category.find('price_amount').text
+                price_gaming.append(item)
+
         
+        price_mobile_phone = []
+        for i_category in root.findall('detail'):
+            condition = i_category.find('category').text
+            if condition == 'Mobile phones':
+                item = i_category.find('price_amount').text
+                price_mobile_phone.append(item)
+
+        price_tablets = []
+        for i_category in root.findall('detail'):
+            condition = i_category.find('category').text
+            if condition == 'Tablets':
+                item = i_category.find('price_amount').text
+                price_tablets.append(item)
+
+        price_pc = []
+        for i_category in root.findall('detail'):
+            condition = i_category.find('category').text
+            if condition == 'PC':
+                item = i_category.find('price_amount').text
+                price_pc.append(item)
+
+        price_tv = []
+        for i_category in root.findall('detail'):
+            condition = i_category.find('category').text
+            if condition == 'TV':
+                item = i_category.find('price_amount').text
+                price_tv.append(item)
+
+        price_majapliances = []
+        for i_category in root.findall('detail'):
+            condition = i_category.find('category').text
+            if condition == 'Major Appliances':
+                item = i_category.find('price_amount').text
+                price_majapliances.append(item)
+
+        price_househol = []
+        for i_category in root.findall('detail'):
+            condition = i_category.find('category').text
+            if condition == 'Households':
+                item = i_category.find('price_amount').text
+                price_househol.append(item)
+
+
+        # Type change from string to float
+        price_gaming = list(map(float, price_gaming))
+        price_mobile_phone = list(map(float, price_mobile_phone))
+        price_tablets = list(map(float, price_tablets))
+        price_pc = list(map(float, price_pc))
+        price_tv = list(map(float, price_tv))
+        price_majapliances = list(map(float, price_majapliances))
+        price_househol = list(map(float, price_househol))
+
+        # Sum of the list values
+        sum_price_gaming = sum(price_gaming)
+        sum_price_mobile_phone = sum(price_mobile_phone)
+        sum_price_tablets = sum(price_tablets)
+        sum_price_pc = sum(price_pc)
+        sum_price_tv = sum(price_tv)
+        sum_price_majapliances = sum(price_majapliances)
+        sum_price_househol = sum(price_househol)
+
+
+        # 10-July-2025 Extra parsing for charts in SQL 3 expander  - INCLUDING add services
+        price_gaming_addserv = []
+        for i_category in root.findall('detail'):
+            condition = i_category.find('category').text
+            if condition == 'Gaming':
+                # This 'None' condition follows the rule to parse data from <additional_service> element specifically <additional_service>/<service_price> only in case that <additional_service>/<service> is NOT 'None
+                item = i_category.find('additional_service/service_type').text
+                if item != 'None':
+                    item_2 = i_category.find('additional_service/service_price').text
+                    price_gaming_addserv.append(item_2)
+
+        
+        price_mobphones_addserv = []
+        for i_category in root.findall('detail'):
+            condition = i_category.find('category').text
+            if condition == 'Mobile phones':
+                # This 'None' condition follows the rule to parse data from <additional_service> element specifically <additional_service>/<service_price> only in case that <additional_service>/<service> is NOT 'None
+                item = i_category.find('additional_service/service_type').text
+                if item != 'None':
+                    item_2 = i_category.find('additional_service/service_price').text
+                    price_mobphones_addserv.append(item_2)
+
+        price_tablets_addserv = []
+        for i_category in root.findall('detail'):
+            condition = i_category.find('category').text
+            if condition == 'Tablets':
+                # This 'None' condition follows the rule to parse data from <additional_service> element specifically <additional_service>/<service_price> only in case that <additional_service>/<service> is NOT 'None
+                item = i_category.find('additional_service/service_type').text
+                if item != 'None':
+                    item_2 = i_category.find('additional_service/service_price').text
+                    price_tablets_addserv.append(item_2)
+
+        price_pc_addserv = []
+        for i_category in root.findall('detail'):
+            condition = i_category.find('category').text
+            if condition == 'PC':
+                # This 'None' condition follows the rule to parse data from <additional_service> element specifically <additional_service>/<service_price> only in case that <additional_service>/<service> is NOT 'None
+                item = i_category.find('additional_service/service_type').text
+                if item != 'None':
+                    item_2 = i_category.find('additional_service/service_price').text
+                    price_pc_addserv.append(item_2)
+
+        
+
+        price_tv_addserv = []
+        for i_category in root.findall('detail'):
+            condition = i_category.find('category').text
+            if condition == 'TV':
+                # This 'None' condition follows the rule to parse data from <additional_service> element specifically <additional_service>/<service_price> only in case that <additional_service>/<service> is NOT 'None
+                item = i_category.find('additional_service/service_type').text
+                if item != 'None':
+                    item_2 = i_category.find('additional_service/service_price').text
+                    price_tv_addserv.append(item_2)
+
+
+        price_majappl_addserv = []
+        for i_category in root.findall('detail'):
+            condition = i_category.find('category').text
+            if condition == 'Major Appliances':
+                # This 'None' condition follows the rule to parse data from <additional_service> element specifically <additional_service>/<service_price> only in case that <additional_service>/<service> is NOT 'None
+                item = i_category.find('additional_service/service_type').text
+                if item != 'None':
+                    item_2 = i_category.find('additional_service/service_price').text
+                    price_majappl_addserv.append(item_2)
+
+        
+        price_households_addserv = []
+        for i_category in root.findall('detail'):
+            condition = i_category.find('category').text
+            if condition == 'Households':
+                # This 'None' condition follows the rule to parse data from <additional_service> element specifically <additional_service>/<service_price> only in case that <additional_service>/<service> is NOT 'None
+                item = i_category.find('additional_service/service_type').text
+                if item != 'None':
+                    item_2 = i_category.find('additional_service/service_price').text
+                    price_households_addserv.append(item_2)
+
+
+        # Type change from string to float
+        price_gaming_addserv = list(map(float, price_gaming_addserv))
+        price_mobphones_addserv = list(map(float, price_mobphones_addserv))
+        price_tablets_addserv = list(map(float, price_tablets_addserv))
+        price_pc_addserv = list(map(float, price_pc_addserv))
+        price_tv_addserv = list(map(float, price_tv_addserv))
+        price_majappl_addserv = list(map(float, price_majappl_addserv))
+        price_households_addserv = list(map(float, price_households_addserv))
+
+        # Sum of the list values
+        sum_price_gaming_addserv = sum(price_gaming_addserv)
+        sum_price_mobphones_addserv = sum(price_mobphones_addserv)
+        sum_price_tablets_addserv = sum(price_tablets_addserv)
+        sum_price_pc_addserv = sum(price_pc_addserv)
+        sum_price_tv_addserv = sum(price_tv_addserv)
+        sum_price_majappl_addserv = sum(price_majappl_addserv)
+        sum_price_households_addserv = sum(price_households_addserv)
+
+        # sum of sum - price + additional service price -> for chart in SQL 3 expander
+        ss_gaming = sum_price_gaming + sum_price_gaming_addserv
+        ss_mobile = sum_price_mobile_phone + sum_price_mobphones_addserv
+        ss_tablets = sum_price_tablets + sum_price_tablets_addserv
+        ss_pc = sum_price_pc + sum_price_pc_addserv
+        ss_tv = sum_price_tv + sum_price_tv_addserv
+        ss_majapp = sum_price_majapliances + sum_price_majappl_addserv
+        ss_househlds = sum_price_househol + sum_price_households_addserv
+
 
         # Sum of prices - type change string -> float for calculation
         value_price_list_float = list(map(float, value_price_list)) 
@@ -343,7 +519,7 @@ if object_from_upload is not None:
             GROUP BY
                 Category
             ORDER BY 
-                count DESC
+                count DESC, category ASC
             """
 
 
@@ -473,6 +649,194 @@ if object_from_upload is not None:
             st.write("- The **cheapest additional service** (Extended warranty and Insurance):")
             st.dataframe(ps.sqldf(q4, locals()), hide_index=True, use_container_width=True)
             st.dataframe(ps.sqldf(q4b, locals()), hide_index=True, use_container_width=True)
+
+        # Expander SQL 3 
+        with st.expander("SQL Queries 3 & Pie Charts - % Ratio", icon = ":material/clock_loader_60:"):
+            ''
+            ''
+            st.write(f"- Currency: **{currency}**")
+            '' 
+
+
+            # Percentage % ratio of product prices per Category - NOT including additional services
+            q5 = f"""SELECT category, count(*) as 'count', sum(price) as 'sum price', round(((sum(price)/'{value_total_sum}')*100),2) as '% ratio'
+            FROM
+                data_table_sql
+            GROUP BY
+                Category
+            ORDER BY 
+                count DESC, category ASC""".format(value_total_sum)
+
+            st.write(f"- **(1) Percentage % ratio** of product costs per **Category**. From  total sum of products: **{value_total_sum:,.2f} {currency}** ")
+
+            st.dataframe(ps.sqldf(q5, locals()), hide_index=True, use_container_width=True)
+
+            # Data for chart -  Percentage % ratio of product prices per Category - NOT including additional services
+            data_variable_dict = {
+                "Order" : value_attribut,
+                "Product" : value_product_name_list,
+                "Price" : value_price_list_fl, # must be float due to filtring in table    
+                "Category" : value_category_list, 
+                "Additional service" : add_service_full, 
+                "Additional service price" : add_ser_price_full_float  # must be float due to filtring in table                
+                }
+
+
+            # Percentage % ratio of product prices per Category - INCLUDING additional services
+            q5 = f"""SELECT category, count(*) as 'count', sum(price+Additional_service_price) as 'sum price + add. services', round(((sum(price+Additional_service_price)/'{value_to_paid}')*100),2) as '% ratio'
+            FROM
+                data_table_sql
+            GROUP BY
+                Category
+            ORDER BY 
+                count DESC, category ASC""".format(value_to_paid)
+
+
+            ''
+            st.write(f"- (2) **Percentage % ratio** of product prices per **Category**. From  total sum of products: **{value_to_paid:,.2f} {currency}**, **including** additional services **{sum_additional_serv:,.2f} {currency}**.")
+
+            st.dataframe(ps.sqldf(q5, locals()), hide_index=True, use_container_width=True)
+
+
+
+            # Percentage % ratio of additional services per category
+            q6 = f"""SELECT category, count(*) as 'count', sum(Additional_service_price) as 'sum add. services', round(((sum(Additional_service_price)/'{sum_additional_serv}')*100),2) as '% ratio'
+            FROM
+                data_table_sql
+            GROUP BY
+                Category
+            ORDER BY 
+                count DESC, category ASC""".format(sum_additional_serv)
+
+
+            ''
+            st.write(f"- **(3) Percentage % ratio** of **additional services** per Category (**{sum_additional_serv:,.2f} {currency}**)")
+
+            st.dataframe(ps.sqldf(q6, locals()), hide_index=True, use_container_width=True)
+
+
+         
+
+            # Data frames for Charts in SQL 3 expander
+            data_pie_sql3_1 = pd.DataFrame({
+
+                "Costs" : [sum_price_gaming,
+                           sum_price_mobile_phone,
+                           sum_price_tablets,
+                           sum_price_pc,
+                           sum_price_tv,
+                           sum_price_majapliances,
+                           sum_price_househol
+                           ],
+
+                "Category" : ["Gaming",
+                              "Mobile phones",
+                              "Tablets",
+                              "PC",
+                              "TV",
+                              "Major Appliances",
+                              "Households"
+                              ]
+
+                })
+            
+
+            # Important logic, to drop() rows with 0 costs to do not appear in chart 
+            index_0 = data_pie_sql3_1[ (data_pie_sql3_1['Costs'] == 0)].index
+            data_pie_sql3_1.drop(index_0 , inplace=True)
+
+            fig_pie_sql3_1 = px.pie(
+                data_pie_sql3_1, 
+                names = "Category",
+                values = "Costs",
+                title = "(1) Ratio of product costs per Category:"
+                )
+            
+
+            
+            data_pie_sql3_2 = pd.DataFrame({
+
+                "Costs" : [sum_price_gaming_addserv,
+                           sum_price_mobphones_addserv,
+                           sum_price_tablets_addserv,
+                           sum_price_pc_addserv,
+                           sum_price_tv_addserv,
+                           sum_price_majappl_addserv,
+                           sum_price_households_addserv
+                           ],
+
+                "Category" : ["Gaming",
+                              "Mobile phones",
+                              "Tablets",
+                              "PC",
+                              "TV"
+                              ,"Major Appliances"
+                              ,"Households"
+                              ]
+
+                })
+
+
+            # Important logic, to drop() rows with 0 costs to do not appear in chart 
+            index_0_2 = data_pie_sql3_2[ (data_pie_sql3_2['Costs'] == 0)].index
+            data_pie_sql3_2.drop(index_0_2 , inplace=True)
+
+
+            fig_pie_sql3_2 = px.pie(
+                data_pie_sql3_2, 
+                names = "Category",
+                values = "Costs",
+                title = "(3) Ratio of additional services per Category:"
+                )
+            
+
+            data_pie_sql3_3 = pd.DataFrame({
+
+                "Costs" : [ss_gaming,
+                           ss_mobile,
+                           ss_tablets,
+                           ss_pc,
+                           ss_tv,
+                           ss_majapp,
+                           ss_househlds
+                           ],
+
+                "Category" : ["Gaming",
+                              "Mobile phones",
+                              "Tablets",
+                              "PC",
+                              "TV"
+                              ,"Major Appliances"
+                              ,"Households"
+                              ]
+
+                })
+
+
+            # Important logic, to drop() rows with 0 costs to do not appear in chart 
+            index_0_3 = data_pie_sql3_3[ (data_pie_sql3_3['Costs'] == 0)].index
+            data_pie_sql3_3.drop(index_0_3 , inplace=True)
+
+
+            fig_pie_sql3_3 = px.pie(
+                data_pie_sql3_3, 
+                names = "Category",
+                values = "Costs",
+                title = "(2) ...including add. services:"
+                )
+
+
+            ''
+            ''
+            col1, col2 = st.columns(2, gap="medium")
+
+
+            col1.plotly_chart(fig_pie_sql3_1, use_container_width=True)
+            col2.plotly_chart(fig_pie_sql3_3, use_container_width=True)
+            col1.plotly_chart(fig_pie_sql3_2, use_container_width=True)
+
+
+
         
         # ========= Data Visualization ====================
         ''
