@@ -693,7 +693,7 @@ if object_from_upload is not None:
 
 
             ''
-            st.write(f"- (2) **Percentage % ratio** of product prices per **Category**. From  total sum of products: **{value_to_paid:,.2f} {currency}**, **including** additional services **{sum_additional_serv:,.2f} {currency}**.")
+            st.write(f"- **(2) Percentage % ratio** of product prices per **Category**. From  total sum of products: **{value_to_paid:,.2f} {currency}**, **including** additional services **{sum_additional_serv:,.2f} {currency}**.")
 
             st.dataframe(ps.sqldf(q5, locals()), hide_index=True, use_container_width=True)
 
