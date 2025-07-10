@@ -180,8 +180,6 @@ xml_as_string ='''<?xml version="1.0" encoding="UTF-8"?>
 
 # ================= Screen ================================
 
-st.set_page_config(page_title="XSD, XML Schema")
-
 st.write("# XSD, XML Schema")
 st.write('''
 Description of XML structure/XML Schema with which these **Functions 3 and 4 work**. There is a **download button at the end of this page** to download XML Schema in both .txt and .xsd formats.

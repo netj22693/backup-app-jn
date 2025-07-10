@@ -575,7 +575,6 @@ xml_empty_template = """<?xml version="1.0" encoding="UTF-8"?>
 """
 # ======================== Screen part ==================================
 
-st.set_page_config(page_title="XML download")
 st.write("# XML download")
 ''
 st.write(
