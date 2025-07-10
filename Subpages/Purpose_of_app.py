@@ -185,6 +185,22 @@ with st.expander(
 	st.write("- Do you like this app? :) LinkedIn profile [Here](https://www.linkedin.com/in/jan-netolicka-12209a221/)")
 	st.write("- Author: Jan Netolicka")
 
+
+# No AI - expander
+
+with st.expander(
+	"No AI used in the code",
+	icon=":material/block:"
+):	
+
+	''
+	st.write("""
+	- **NO** vibe-coding/AI used in this app 
+	- I build this app as a hobby to train my brain
+	- The code is written by me with help of Python documentation, Google, Stack Overflow and other forums in case I get stuck :)
+	""")
+	''
+
 # GitHub - expander
 
 with st.expander(
