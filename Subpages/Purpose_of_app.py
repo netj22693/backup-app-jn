@@ -213,7 +213,20 @@ with st.expander(
 	st.write("- GitHub code repository link [Here](https://github.com/netj22693/backup-app-jn/blob/main/streamlit_app.py)")
 	st.image("Pictures/Github_archimate_2.svg")
 
+# Web app - expander
 
+with st.expander(
+	"Web app - Recommendation",
+	icon=":material/computer:"
+):	
+
+	''
+	''
+	st.write("- The Streamlit Framework helps to build web apps")
+	st.write("- The **primary** approach is through **web browser**")
+	st.write('- :green[**The best way is to use the app on your laptop or some "bigger" device to get the full experience**]')
+	st.write("- It is also working on Mobile phones - but some of the features might be slightly impacted. Specifically charts and images due to screen size")
+	''
 
 # Release notes - expander
 
@@ -264,6 +277,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 2:
+		- **v15.0** - Input XML validated against XSD (new feature built) - 11-July-2025
 		- **v14.0** - New expander (SQL 3) - another SQL queries & Pie charts - 10-July-2025
 		- **v8.1** - More filters/Advanced filtering - 23-Jun-2025		
 		- **v5.2** - Try/Except - Error handling, if wrong file uploaded  - 17-Jun-2025		  
