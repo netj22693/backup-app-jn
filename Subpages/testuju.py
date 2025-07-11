@@ -488,7 +488,7 @@ if object_from_upload is not None:
 
         # Transformation of Data to table -> not editable table
         data_table = pd.DataFrame({
-            "Order" : value_attribut,
+            "Item id" : value_attribut,
             "Product" : value_product_name_list,
             "Price" : value_price_list_fl, # must be float due to filtring in table    
             "Category" : value_category_list, 
@@ -498,7 +498,7 @@ if object_from_upload is not None:
 
         
         data_table_sql = pd.DataFrame({
-            "Order" : value_attribut,
+            "Item_id" : value_attribut,
             "Product" : value_product_name_list,
             "Price" : value_price_list_fl, # must be float due to filtring in table    
             "Category" : value_category_list, 
@@ -523,7 +523,7 @@ if object_from_upload is not None:
             """
 
 
-            st.write("- Number of items in **each product Category**:")
+            st.write(f"- Number of items in **each product Category** (No. of items - {max_value_attribut}):")
             st.dataframe(ps.sqldf(q0a, locals()), hide_index=True, use_container_width=True)
 
             # Number of items with additional service
@@ -656,6 +656,8 @@ if object_from_upload is not None:
             ''
             st.write(f"- Currency: **{currency}**")
             '' 
+            st.write(f"- No. of items: **{max_value_attribut}**")
+            '' 
 
 
             # Percentage % ratio of product prices per Category - NOT including additional services
@@ -683,7 +685,7 @@ if object_from_upload is not None:
 
 
             # Percentage % ratio of product prices per Category - INCLUDING additional services
-            q5 = f"""SELECT category, count(*) as 'count', sum(price+Additional_service_price) as 'sum price + add. services', round(((sum(price+Additional_service_price)/'{value_to_paid}')*100),2) as '% ratio.'
+            q5 = f"""SELECT category, count(*) as 'count', sum(price+Additional_service_price) as 'sum price + add. services', round(((sum(price+Additional_service_price)/'{value_to_paid}')*100),2) as '% ratio'
             FROM
                 data_table_sql
             GROUP BY
@@ -693,14 +695,14 @@ if object_from_upload is not None:
 
 
             ''
-            st.write(f"- (2) **Percentage % ratio** of product prices per **Category**. From  total sum of products: **{value_to_paid:,.2f} {currency}**, **including** additional services **{sum_additional_serv:,.2f} {currency}**.")
+            st.write(f"- **(2) Percentage % ratio** of product prices per **Category**. From  total sum of products: **{value_to_paid:,.2f} {currency}**, **including** additional services **{sum_additional_serv:,.2f} {currency}**.")
 
             st.dataframe(ps.sqldf(q5, locals()), hide_index=True, use_container_width=True)
 
 
 
             # Percentage % ratio of additional services per category
-            q6 = f"""SELECT category, count(*) as 'count', sum(Additional_service_price) as 'sum add. services', round(((sum(Additional_service_price)/'{sum_additional_serv}')*100),2) as '% ratio.'
+            q6 = f"""SELECT category, count(*) as 'count', sum(Additional_service_price) as 'sum add. services', round(((sum(Additional_service_price)/'{sum_additional_serv}')*100),2) as '% ratio'
             FROM
                 data_table_sql
             GROUP BY
