@@ -5,26 +5,161 @@ import plotly.express as px
 import pandas as pd
 import math
 import pandasql as ps
+from lxml import etree
 
 
-# ======== Upload button to trigger the application ========
+
+# ======= XSD not passed ======
+
+def xsd_not_passed():
+
+    ''
+    ''
+    st.error("The uploaded XML doesn't follow XSD rules -> the XML is not valid for this application")
+
+    with st.expander(
+        "Help",
+        icon= ":material/help_outline:"
+        ):
+
+        ''
+        st.write("- Please check the uploaded file")
+        ''
+        st.write("- Data issue/structure issue not following XSD/XML definition for this Function 2")
+        ''
+        ''
+        st.write("**How to fix this?**")
+        st.write("- **Either** you can use any of the **predefined files**:")
+        ''
+        st.link_button(
+                    label = "Go to: Function 1",
+                    url="https://dataparsing.streamlit.app/F1_FUNCTION_XML_dowload",
+                    help="The button will redirect to the relevant page within this app.",
+                    use_container_width=True,
+                    icon=":material/launch:",
+        ) 
+
+        ''
+        st.write("- **Or** you can see more about the XSD/XML definition for this Function 2 -> which should help to fix. **XSD** is at the bottom of the page")
+        ''
+
+        st.link_button(
+                    label = "XML principles for this Function 2",
+                    url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
+                    help="The button will redirect to the relevant page within this app.",
+                    use_container_width=True,
+                    icon=":material/launch:",
+                    )
+
+    st.stop()
+
+
+
+# ======= Function for validation uploaded XML against XSD =========
+
+def validate(xml_path: str, xsd_path: str) -> bool:
+
+
+        xmlschema_doc = etree.parse(xsd_path)
+        xmlschema = etree.XMLSchema(xmlschema_doc)
+
+        xml_doc = etree.parse(xml_path)
+        result = xmlschema.validate(xml_doc)
+
+        # variable 'result' returns True = valid or False = not valid - defined as 'bool' in the function header
+        if result == True:
+            pass
+
+        else:
+            xsd_not_passed()
+        
+
+
+# //////////////////////////   OPENING SCREEN   //////////////////////////////////////////
+
+# ======== Upload button to trigger the application ======================================
 
 st.write("# Upload XML:")
 
-object_from_upload = st.file_uploader("")
+# type = ".xml" - allows to upload only xml files
+object_from_upload = st.file_uploader("", type=".xml")
 
 if object_from_upload is None:
-    st.info("When a file uploaded, application will start")
-        
+    st.info("When a file uploaded, the application will start")
+
+    # (?) Help expander
+    with st.expander(
+                "Help",
+                icon= ":material/help_outline:"
+                ):
+
+                ''
+                ''
+                st.write("**What file?**")
+                st.write("- Only **XML** is allowed to be uploaded")
+                st.write("- You can use any of the **predefined files**")
+
+                st.link_button(
+                    label = "Go to: Function 1",
+                    url="https://dataparsing.streamlit.app/F1_FUNCTION_XML_dowload",
+                    help="The button will redirect to the relevant page within this app.",
+                    use_container_width=True,
+                    icon=":material/launch:",
+                    ) 
+                ''
+                ''
+                st.write("-------")
+                st.write("**Advanced approach:**")
+                st.write("- If you know XML and XSD principles, you can try this")
+                st.write("- The XML files can be **customized** or you can create **your own** following a template/structure")
+
+                ''
+                ''
+                st.write("Steps:")
+                st.write("""
+                        1) Go to Function 1
+                            - **Either** you can **customize** the predefines files 1), 2), 3)
+                            - **Or** you can **create your own** from scratch. You can use template 4) for the beginning
+
+                                            
+                        """)
+                st.link_button(
+                    label = "Go to: Function 1",
+                    url="https://dataparsing.streamlit.app/F1_FUNCTION_XML_dowload#4-xml-template",
+                    help="The button will redirect to the relevant page within this app.",
+                    use_container_width=True,
+                    icon=":material/launch:",
+                    ) 
+
+                st.write("2) Download a XML file")
+                st.write("3) Do/change/customize it how you like but **follow rules of XSD**")
+
+                ''
+                st.write("The rules of the XML and **XSD file** for download here:")
+
+                st.link_button(
+                    label = "XML principles for this Function 2",
+                    url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
+                    help="The button will redirect to the relevant page within this app.",
+                    use_container_width=True,
+                    icon=":material/launch:",
+                    )
+
+
+# //////////////////////////   LOGIC / SCRIPT AFTER FILE UPLOAD //////////////////////////////////
+
 # The key logic of this application
 if object_from_upload is not None:
 
 
     # try - Opening statement for the full parsing and visualization logic
-    # Except - prevents the application from error + providing extra info/help
+    # Except - prevents the application from crashing
     try:
 
-        # Data import 
+
+        validate(xml_path = object_from_upload, xsd_path ="F2_XSD_validation/XML_Schema_for_functions_1_and_2.xsd")
+        
+        # # Data import 
         tree_element_data = ET.parse(object_from_upload)
 
         root = tree_element_data.getroot()
@@ -1113,54 +1248,5 @@ if object_from_upload is not None:
     except:
         ''
         ''
-        st.error("The uploaded file is not supported by this application")
+        st.error("Something went wrong, please try again. If not working, please report it as a bug (on the main page).")
 
-        with st.expander(
-            "Help",
-            icon= ":material/help_outline:"
-            ):
-
-            ''
-            ''
-            st.write("**The file is wrong because:**")
-            st.write("""
-            - Either completelly differnt file than this Fucntion 2 supports
-            - Or data issue, not following XSD/XML definition
-            """)
-            ''
-            ''
-            ''
-            ''
-            st.write("**How to fix this?**")
-            st.write("- **Either** you can use any of the **predefined files**:")
-            ''
-            st.page_link(
-                label = "Go to: Function 1",
-                page="Subpages/F1_FUNCTION_XML_dowload.py",
-                help="The button will redirect to the relevant page within this app.",
-                use_container_width=True,
-                icon=":material/play_circle:",
-                ) 
-
-            ''
-            st.write("- **Or** you can see more about the XSD/XML definition for this Function 2 -> which should help to fix data/XML structure quality issue:")
-            ''
-            # st.page_link(
-            #     label = "XML princpiles for this Function 2",
-            #     page="Subpages/F1_F2_description_XML_XSD.py",
-            #     help="The button will redirect to the relevant page within this app.",
-            #     use_container_width=True,
-            #     icon=":material/launch:",
-            #     )
-
-            st.link_button(
-                label = "XML principles for this Function 2",
-                url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
-                help="The button will redirect to the relevant page within this app.",
-                use_container_width=True,
-                icon=":material/launch:",
-                )
-
-
-            ''
-            ''

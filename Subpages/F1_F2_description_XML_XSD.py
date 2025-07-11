@@ -300,7 +300,7 @@ st.write("- Format .xsd")
 if st.download_button(
             "Download",
             data = xsd_structure,
-            file_name="XML Schema for functions 1 and 2.xsd",
+            file_name="XML_Schema_for_functions_1_and_2.xsd",
             icon = ":material/download:"
             ):
 
@@ -311,7 +311,7 @@ if st.download_button(
 st.write("- Format .txt")  
 if st.download_button("Download",
             data = xsd_structure,
-            file_name="XML Schema for functions 1 and 2.txt",
+            file_name="XML_Schema_for_functions_1_and_2.txt",
             icon = ":material/download:"
             ):
         
