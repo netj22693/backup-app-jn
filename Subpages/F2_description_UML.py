@@ -156,7 +156,7 @@ with tab3:
         <xs:pattern value="[I]{1}[N]{1}[V]{1}[-]{1}[0-9]{6}"/>
 
         <!-- ... and other stuff possible to define in XSD -->
-        """,language= "xml", wrap_lines=True )
+        """,language= "xml", wrap_lines=False)
 
 
 
