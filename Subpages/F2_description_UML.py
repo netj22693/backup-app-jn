@@ -136,6 +136,7 @@ with tab3:
                     - Correct inputs will be used in case there are predefined paterns -> which is also how the Function 2 is designed
                 """)
 
+# Not nice looking in the code - only like this the PROD version of APP shows the code nicelly formatted
         st.code("""
 <!-- DATA TYPES -->
 <xs:restriction base="xs:string">
