@@ -137,26 +137,26 @@ with tab3:
                 """)
 
         st.code("""
-                <!-- DATA TYPES -->
-                <xs:restriction base="xs:string">
-                <xs:restriction base="xs:decimal">
+        <!-- DATA TYPES -->
+        <xs:restriction base="xs:string">
+        <xs:restriction base="xs:decimal">
 
 
-                <!-- PATTERNS -->
-                <!-- Category -->
-                <xs:pattern value="PC|TV|Gaming|Mobile phones|Tablets|Major Appliances|Households"/>
+        <!-- PATTERNS -->
+        <!-- Category -->
+        <xs:pattern value="PC|TV|Gaming|Mobile phones|Tablets|Major Appliances|Households"/>
 
-                <!-- Currency -->
-                <xs:pattern value="euro|US dollar|Kč"/>
+        <!-- Currency -->
+        <xs:pattern value="euro|US dollar|Kč"/>
 
-                <!-- Service type -->
-                <xs:pattern value="None|extended warranty|insurance"/>
+        <!-- Service type -->
+        <xs:pattern value="None|extended warranty|insurance"/>
 
-                <!-- Invoice number -->
-                <xs:pattern value="[I]{1}[N]{1}[V]{1}[-]{1}[0-9]{6}"/>
+        <!-- Invoice number -->
+        <xs:pattern value="[I]{1}[N]{1}[V]{1}[-]{1}[0-9]{6}"/>
 
-                <!-- ... and other stuff possible to define in XSD -->
-                """,language= "xml", wrap_lines=True )
+        <!-- ... and other stuff possible to define in XSD -->
+        """,language= "xml", wrap_lines=True )
 
 
 
