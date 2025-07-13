@@ -16,13 +16,13 @@ with tab1:
     ''
     st.write("###### Function 3: ")
     ''
-    st.image("Pictures/Function_3/F3_UML - Use case.PNG")
+    st.image("Pictures/Function_3/F3_UML_UseCase.svg")
     ''
     ''
     ''
     st.write("###### Function 4: ")
     ''
-    st.image("Pictures/Function_4/F4_UML - Use case.PNG")
+    st.image("Pictures/Function_4/F4_UML_UseCase.svg")
 
 with tab2:
     st.write("#### UML Activity diagram:")

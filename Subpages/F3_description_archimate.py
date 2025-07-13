@@ -39,14 +39,15 @@ st.write("""
 
 ''
 ''
-st.image("Pictures/Function_2/F2_archimate_google cloud.png", width=190)
+st.image("Pictures/Logo/Logo_GoogleCloud.svg", width=180)
 ''
+st.image("Pictures/Logo/Logo_GitHub.svg", width=140)
 ''
-st.image("Pictures/Function_2/F2_Archimate_vscode logo.png", width=190)
-''
-st.image("Pictures/Function_2/F2_Archimate_github logo.png", width=170)
-''
-st.image("Pictures/Function_2/F2_Archimate_streamlit logo.png", width=210)
+st.image("Pictures/Logo/Logo_python.svg", width=140)
+
+st.image("Pictures/Logo/Logo_streamlit.svg", width=180)
+
+st.image("Pictures/Logo/Logo_vscode.svg", width=35)
 
 
 # ===== Page navigation at the bottom ======

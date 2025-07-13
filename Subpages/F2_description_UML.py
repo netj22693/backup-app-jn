@@ -4,10 +4,11 @@ st.write("# UML diagrams:")
 
 
 # Split into tabs
-tab1, tab2, tab3 = st.tabs([
+tab1, tab2, tab3, tab4 = st.tabs([
 	"1 - Use Case diagram",
 	"2 - Activity diagram",
-	"3 - Activity diagram - Error handling"
+	"3 - Activity diagram - Error handling",
+    "4 - XML against XSD validation"
 ])
 
 
@@ -21,13 +22,13 @@ with tab1:
     ''
     st.write("###### Function 1: ")
     ''
-    st.image("Pictures/Function_1/F1_UML - Use case.PNG")
+    st.image("Pictures/Function_1/F1_UML_UseCase.svg")
     ''
     ''
     ''
     st.write("###### Function 2: ")
     ''
-    st.image("Pictures/Function_2/F2_UML - Use case.PNG")
+    st.image("Pictures/Function_2/F2_UML_UseCase.svg")
 
 
 # Tab 2
@@ -193,7 +194,24 @@ with tab3:
         ''
 
 
+# Tab 4
+with tab4:
 
+    ''
+    ''
+    st.write("#### XML against XSD validation:")
+    ''
+    st.write("""
+    - This is **not** specifically UML modelling language 
+    - But this diagram is here for a context of **the validation XML against XSD**
+        - To visualize that the XSD is stored in **repository**
+        - And when XML file is uploaded, there is function which "calls" the XSD and makes a validation 
+        - This step **reduces 99% of failures** in the application (my estimate), because the data/data quality/data parsing is the key process 
+    """)
+
+    ''
+    ''
+    st.image("Pictures/Function_2/F2_diagram_xml_xsd_validation.svg")
 
 
 # ===== Page navigation at the bottom ======

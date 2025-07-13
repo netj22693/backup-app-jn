@@ -289,6 +289,24 @@ with st.expander(
 ''
 st.write("------")
 
+st.write("#### XML against XSD validation:")
+''
+st.write("""
+- Why the **XSD/XML Schema** is important?
+	- Because it is **main function** programmed in the **Function 2**
+	- It helps to **keep the expected data quality** and helps to **reduce 99% of failures** (my estimate) during processing of the XML invoice
+    - The **XSD is stored in repository** and whenever XML invoice uploaded by user -> the XSD is called by the programmed function to make a validation:
+		- If data **okay** -> Function 2 executes next steps
+        - If data **not** okay -> User will see an alert on screen -> Function 2 stopped
+""")
+
+''
+''
+st.image("Pictures/Function_2/F2_diagram_xml_xsd_validation.svg")
+
+''
+st.write("------")
+
 
 # Download of XSD
 
