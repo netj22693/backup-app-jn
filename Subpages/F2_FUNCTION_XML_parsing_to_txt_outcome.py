@@ -59,19 +59,24 @@ def xsd_not_passed():
 
 def validate(xml_path: str, xsd_path: str) -> bool:
 
+        #try-except - for case when uploaded file is RECOGNIZED as XML (has suffux .xml) but the content is NOT XML. (If the try-except not here the script would jump to the very bottom of the script and raise the "something went wrong - report it as a bug" alert. But this is nto bug in the application, but file content issue)
+        try:
+            xmlschema_doc = etree.parse(xsd_path)
+            xmlschema = etree.XMLSchema(xmlschema_doc)
 
-        xmlschema_doc = etree.parse(xsd_path)
-        xmlschema = etree.XMLSchema(xmlschema_doc)
+            xml_doc = etree.parse(xml_path)
+            result = xmlschema.validate(xml_doc)
 
-        xml_doc = etree.parse(xml_path)
-        result = xmlschema.validate(xml_doc)
+            # variable 'result' returns True = valid or False = not valid - defined as 'bool' in the function header
+            if result == True:
+                pass
 
-        # variable 'result' returns True = valid or False = not valid - defined as 'bool' in the function header
-        if result == True:
-            pass
+            else:
+                xsd_not_passed()
 
-        else:
+        except:
             xsd_not_passed()
+
         
 
 
