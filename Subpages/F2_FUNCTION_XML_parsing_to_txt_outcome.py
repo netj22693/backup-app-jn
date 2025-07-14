@@ -712,7 +712,13 @@ if object_from_upload is not None:
             ''
             '' 
             # The most expensive item
-            q1 = """SELECT *
+            q1 = """SELECT
+                item_id as 'Item id',
+                Product,
+                Price, 
+                Category, 
+                Additional_service as 'Additional service',
+                Additional_service_price as 'Additional service price'
             FROM
                 data_table_sql
             ORDER BY
@@ -724,7 +730,13 @@ if object_from_upload is not None:
 
 
             # The most expensive item including Additional service
-            q2 = """SELECT *
+            q2 = """SELECT
+                item_id as 'Item id',
+                Product,
+                Price, 
+                Category, 
+                Additional_service as 'Additional service',
+                Additional_service_price as 'Additional service price'
             FROM
                 data_table_sql
             WHERE
@@ -733,7 +745,13 @@ if object_from_upload is not None:
                 Additional_service_price DESC
             LIMIT 1"""
 
-            q2b = """SELECT *
+            q2b = """SELECT
+                item_id as 'Item id',
+                Product,
+                Price, 
+                Category, 
+                Additional_service as 'Additional service',
+                Additional_service_price as 'Additional service price'
             FROM
                 data_table_sql
             WHERE
@@ -750,7 +768,13 @@ if object_from_upload is not None:
             st.dataframe(ps.sqldf(q2b, locals()), hide_index=True, use_container_width=True)
 
             # The cheapest item
-            q3 = """SELECT *
+            q3 = """SELECT
+                item_id as 'Item id',
+                Product,
+                Price, 
+                Category, 
+                Additional_service as 'Additional service',
+                Additional_service_price as 'Additional service price'
             FROM
                 data_table_sql
             ORDER BY
@@ -765,7 +789,13 @@ if object_from_upload is not None:
 
 
             # The cheapest additional services
-            q4 = """SELECT *
+            q4 = """SELECT
+                item_id as 'Item id',
+                Product,
+                Price, 
+                Category, 
+                Additional_service as 'Additional service',
+                Additional_service_price as 'Additional service price'
             FROM
                 data_table_sql
             WHERE
@@ -774,7 +804,13 @@ if object_from_upload is not None:
                 Additional_service_price ASC
             LIMIT 1"""
 
-            q4b = """SELECT *
+            q4b = """SELECT
+                item_id as 'Item id',
+                Product,
+                Price, 
+                Category, 
+                Additional_service as 'Additional service',
+                Additional_service_price as 'Additional service price'
             FROM
                 data_table_sql
             WHERE
