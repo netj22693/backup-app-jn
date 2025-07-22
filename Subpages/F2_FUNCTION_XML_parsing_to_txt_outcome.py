@@ -728,9 +728,18 @@ if object_from_upload is not None:
             ORDER BY
                 Price DESC
             LIMIT 1"""
+            
 
+			# Data styling before visualization  -> 2 decimals
+            style_q1 = ps.sqldf(q1, locals())
+            style_q1 = style_q1.style.format({
+                "Price":"{:,.2f}",
+                "Additional service price":"{:,.2f}"  # here it works with the alias (AS) name
+                })
+
+			# Q1 visualization	
             st.write("- The **most expensive** item (Price):")
-            st.dataframe(ps.sqldf(q1, locals()), hide_index=True, use_container_width=True)
+            st.dataframe(data=style_q1, hide_index=True, use_container_width=True)
 
 
             # The most expensive item including Additional service
@@ -765,11 +774,27 @@ if object_from_upload is not None:
             LIMIT 1"""
 
 
+			# Data styling before visualization  -> 2 decimals
+            style_q2 = ps.sqldf(q2, locals())
+            style_q2 = style_q2.style.format({
+                "Price":"{:,.2f}",
+                "Additional service price":"{:,.2f}"  # here it works with the alias (AS) name
+                })
+
+			# Data styling before visualization  -> 2 decimals
+            style_q2b = ps.sqldf(q2b, locals())
+            style_q2b = style_q2b.style.format({
+                "Price":"{:,.2f}",
+                "Additional service price":"{:,.2f}"  # here it works with the alias (AS) name
+                })
+
+
+			# Data visualization
             ''
             ''
             st.write("- The **most expensive additional service** (Extended warranty and Insurance):")
-            st.dataframe(ps.sqldf(q2, locals()), hide_index=True, use_container_width=True)
-            st.dataframe(ps.sqldf(q2b, locals()), hide_index=True, use_container_width=True)
+            st.dataframe(data=style_q2, hide_index=True, use_container_width=True)
+            st.dataframe(data=style_q2b, hide_index=True, use_container_width=True)
 
             # The cheapest item
             q3 = """SELECT
@@ -784,12 +809,19 @@ if object_from_upload is not None:
             ORDER BY
                 (Price + 'Additional service price') ASC
             LIMIT 1"""
+            
+			# Data styling before visualization  -> 2 decimals
+            style_q3 = ps.sqldf(q3, locals())
+            style_q3 = style_q3.style.format({
+                "Price":"{:,.2f}",
+                "Additional service price":"{:,.2f}"  # here it works with the alias (AS) name
+                })
 
-
+			# Data visualization
             ''
             ''
             st.write("- The **cheapest** item (lowest Price):")
-            st.dataframe(ps.sqldf(q3, locals()), hide_index=True, use_container_width=True)
+            st.dataframe(data=style_q3, hide_index=True, use_container_width=True)
 
 
             # The cheapest additional services
@@ -822,13 +854,28 @@ if object_from_upload is not None:
             ORDER BY
                 Additional_service_price ASC
             LIMIT 1"""
+            
+			# Data styling before visualization  -> 2 decimals
+            style_q4 = ps.sqldf(q4, locals())
+            style_q4 = style_q4.style.format({
+                "Price":"{:,.2f}",
+                "Additional service price":"{:,.2f}"  # here it works with the alias (AS) name
+                })       
 
 
+            style_q4b = ps.sqldf(q4b, locals())
+            style_q4b = style_q4b.style.format({
+                "Price":"{:,.2f}",
+                "Additional service price":"{:,.2f}"  # here it works with the alias (AS) name
+                })    
+
+			# Visualization
             ''
             ''
             st.write("- The **cheapest additional service** (Extended warranty and Insurance):")
-            st.dataframe(ps.sqldf(q4, locals()), hide_index=True, use_container_width=True)
-            st.dataframe(ps.sqldf(q4b, locals()), hide_index=True, use_container_width=True)
+            st.dataframe(data= style_q4, hide_index=True, use_container_width=True)
+            st.dataframe(data= style_q4b, hide_index=True, use_container_width=True)
+
 
         # Expander SQL 3 
         with st.expander("SQL Queries 3 & Pie Charts - % Ratio", icon = ":material/clock_loader_60:"):
@@ -841,7 +888,11 @@ if object_from_upload is not None:
 
 
             # Percentage % ratio of product prices per Category - NOT including additional services
-            q5 = f"""SELECT category, count(*) as 'count', sum(price) as 'sum price', round(((sum(price)/'{value_total_sum}')*100),2) as '% ratio'
+            q5 = f"""SELECT
+            	category,
+                count(*) as 'count',
+                sum(price) as 'sum price',
+                round(((sum(price)/'{value_total_sum}')*100),2) as '% ratio'
             FROM
                 data_table_sql
             GROUP BY
@@ -849,9 +900,19 @@ if object_from_upload is not None:
             ORDER BY 
                 count DESC, category ASC""".format(value_total_sum)
 
+			
+			# Data styling before visualization  -> 2 decimals
+            style_q5 = ps.sqldf(q5, locals())
+            style_q5 = style_q5.style.format({
+                "sum price":"{:,.2f}",
+                "% ratio" : "{:.2f}"
+                })
+
+			# Data visualization
             st.write(f"- **(1) Percentage % ratio** of product costs per **Category**. From  total sum of products: **{value_total_sum:,.2f} {currency}** ")
 
-            st.dataframe(ps.sqldf(q5, locals()), hide_index=True, use_container_width=True)
+            st.dataframe(data=style_q5, hide_index=True, use_container_width=True)
+            
 
             # Data for chart -  Percentage % ratio of product prices per Category - NOT including additional services
             data_variable_dict = {
@@ -865,7 +926,11 @@ if object_from_upload is not None:
 
 
             # Percentage % ratio of product prices per Category - INCLUDING additional services
-            q5 = f"""SELECT category, count(*) as 'count', sum(price+Additional_service_price) as 'sum price + add. services', round(((sum(price+Additional_service_price)/'{value_to_paid}')*100),2) as '% ratio'
+            q5b = f"""SELECT
+            	category,
+				count(*) as 'count',
+                sum(price+Additional_service_price) as 'sum price + add. services',
+                round(((sum(price+Additional_service_price)/'{value_to_paid}')*100),2) as '% ratio'
             FROM
                 data_table_sql
             GROUP BY
@@ -874,27 +939,50 @@ if object_from_upload is not None:
                 count DESC, category ASC""".format(value_to_paid)
 
 
+			# Data styling before visualization  -> 2 decimals
+            style_q5b = ps.sqldf(q5b, locals())
+            style_q5b = style_q5b.style.format({
+                "sum price + add. services":"{:,.2f}",
+                "% ratio" : "{:.2f}"
+                })
+
+
+			# Data visualization
             ''
             st.write(f"- **(2) Percentage % ratio** of product prices per **Category**. From  total sum of products: **{value_to_paid:,.2f} {currency}**, **including** additional services **{sum_additional_serv:,.2f} {currency}**.")
 
-            st.dataframe(ps.sqldf(q5, locals()), hide_index=True, use_container_width=True)
+            st.dataframe(data = style_q5b, hide_index=True, use_container_width=True)
+
 
 
 
             # Percentage % ratio of additional services per category
-            q6 = f"""SELECT category, count(*) as 'count', sum(Additional_service_price) as 'sum add. services', round(((sum(Additional_service_price)/'{sum_additional_serv}')*100),2) as '% ratio'
+            q6 = f"""SELECT
+            	category,
+				count(*) as 'count',
+                sum(Additional_service_price) as 'sum add. services',
+                round(((sum(Additional_service_price)/'{sum_additional_serv}')*100),2) as '% ratio'
             FROM
                 data_table_sql
             GROUP BY
                 Category
             ORDER BY 
                 count DESC, category ASC""".format(sum_additional_serv)
+            
+
+			# Data styling before visualization  -> 2 decimals
+            style_q6 = ps.sqldf(q6, locals())
+            style_q6 = style_q6.style.format({
+                "sum add. services":"{:,.2f}",
+                "% ratio" : "{:.2f}"
+                })
 
 
+			# Data visualization
             ''
             st.write(f"- **(3) Percentage % ratio** of **additional services** per Category (**{sum_additional_serv:,.2f} {currency}**)")
 
-            st.dataframe(ps.sqldf(q6, locals()), hide_index=True, use_container_width=True)
+            st.dataframe(data=style_q6, hide_index=True, use_container_width=True)
 
 
          
@@ -1017,6 +1105,7 @@ if object_from_upload is not None:
             col2.plotly_chart(fig_pie_sql3_3, use_container_width=True)
             col1.plotly_chart(fig_pie_sql3_2, use_container_width=True)
 
+
         # SQL 4
         with st.expander("SQL Queries 4 - Average", icon = ":material/view_list:"):
             ''
@@ -1028,7 +1117,7 @@ if object_from_upload is not None:
             ''
 
             # AVG Price without additional services
-            q4a = """SELECT category,
+            q4_1 = """SELECT category,
                     count(Price) as 'count',
                     round(avg(Price), 2) as 'average price'
                 FROM
@@ -1040,15 +1129,22 @@ if object_from_upload is not None:
                 ORDER BY 
                     category ASC
             """
+            
 
+			# Data styling before visualization  -> 2 decimals
+            style_q4_1 = ps.sqldf(q4_1, locals())
+            style_q4_1 = style_q4_1.style.format({
+                "average price":"{:,.2f}",
+                })
 
+			# Data visualization
             st.write(f"- **Average price** in each product Category (Total price **{value_total_sum:,.2f} {currency}** - **without** additional services):")
-            st.dataframe(ps.sqldf(q4a, locals()), hide_index=True, use_container_width=True)
+            st.dataframe(data=style_q4_1, hide_index=True, use_container_width=True)
 
 
 
             # AVG Price WITH additional services
-            q4b = """SELECT category,
+            q4_2 = """SELECT category,
                     count(*) as 'count',
                     round((sum(Price) + sum(Additional_service_price))/count(*), 2) as 'average price WITH add. services',
                     round(((sum(Price) + sum(Additional_service_price))/count(*) - avg(Price)), 2) as 'Δ delta'
@@ -1061,7 +1157,15 @@ if object_from_upload is not None:
                 ORDER BY 
                     category ASC
             """
+            
+			# Data styling before visualization  -> 2 decimals
+            style_q4_2 = ps.sqldf(q4_2, locals())
+            style_q4_2 = style_q4_2.style.format({
+                "average price WITH add. services":"{:,.2f}",
+                "Δ delta" : "{:,.2f}"
+                })
 
+			# Data visualization
             ''
             ''
             st.write(f"""
@@ -1072,11 +1176,11 @@ if object_from_upload is not None:
             
             """)
 
-            st.dataframe(ps.sqldf(q4b, locals()), hide_index=True, use_container_width=True)
+            st.dataframe(data=style_q4_2, hide_index=True, use_container_width=True)
 
 
             # AVG Price of additional services
-            q4c = """SELECT Additional_service, 
+            q4_3 = """SELECT Additional_service, 
                     count(*) as 'count',
                     sum(Additional_service_price) as 'sum',
                     round(sum(Additional_service_price)/count(*), 2) as 'average'
@@ -1089,6 +1193,13 @@ if object_from_upload is not None:
                 ORDER BY
                     count(*) DESC
             """
+            
+			# Data styling before visualization  -> 2 decimals
+            style_q4_3 = ps.sqldf(q4_3, locals())
+            style_q4_3 = style_q4_3.style.format({
+                "sum":"{:,.2f}",
+                "average" : "{:,.2f}"
+                })
 
             ''
             ''
@@ -1098,7 +1209,7 @@ if object_from_upload is not None:
                 - sum - sum of costs
                 - average - average cost per item 
             """)
-            st.dataframe(ps.sqldf(q4c, locals()), hide_index=True, use_container_width=True)
+            st.dataframe(data = style_q4_3, hide_index=True, use_container_width=True)
         
         # ========= Data Visualization ====================
         ''
@@ -1191,13 +1302,21 @@ if object_from_upload is not None:
         & (data_table["Additional service price"] >= from_price_ads))
 
         ]
+        
 
-		
+		# DF style formating prior data visualization - to have 2 decimals
+        df_filtered_styled = filtered_data.style.format({
+            "Price": "{:,.2f}",
+			"Additional service price": "{:,.2f}"
+            })
+
+
 
         # Visualization of the table (where filters already applied)
         ''
         ''
-        data_table_2 = st.dataframe(data=filtered_data, hide_index=True, use_container_width=True)
+        data_table_2 = st.dataframe(data=df_filtered_styled, hide_index=True, use_container_width=True)
+        
 
         # Pie chart
         data = pd.DataFrame({

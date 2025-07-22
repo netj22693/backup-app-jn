@@ -277,6 +277,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 2:
+		- **v16.4** - Better visualization in dataframes - 2 decimals always - 22-July-2025
 		- **v16.2** - New expander (SQL 4 - average values) - 22-July-2025
 		- **v15.0** - Input XML validated against XSD (new feature built) - 11-July-2025
 		- **v14.0** - New expander (SQL 3) - another SQL queries & Pie charts - 10-July-2025
