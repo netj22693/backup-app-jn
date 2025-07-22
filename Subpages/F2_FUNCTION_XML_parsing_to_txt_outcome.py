@@ -1022,7 +1022,8 @@ if object_from_upload is not None:
                 title = "(1) Ratio of product costs per Category:"
                 )
             
-
+            # Adjustment to see 2 decimals always in the chart
+            fig_pie_sql3_1.update_traces(texttemplate="%{percent:.2%}")
             
             data_pie_sql3_2 = pd.DataFrame({
 
@@ -1059,6 +1060,9 @@ if object_from_upload is not None:
                 title = "(3) Ratio of additional services per Category:"
                 )
             
+            # Adjustment to see 2 decimals always in the chart
+            fig_pie_sql3_2.update_traces(texttemplate="%{percent:.2%}")
+
 
             data_pie_sql3_3 = pd.DataFrame({
 
@@ -1095,7 +1099,11 @@ if object_from_upload is not None:
                 title = "(2) ...including add. services:"
                 )
 
+            # Adjustment to see 2 decimals always in the chart
+            fig_pie_sql3_3.update_traces(texttemplate="%{percent:.2%}")
 
+
+            # Charts visualization
             ''
             ''
             col1, col2 = st.columns(2, gap="medium")
@@ -1332,6 +1340,9 @@ if object_from_upload is not None:
             title = "Costs - ratio of product prices"
             )
 
+        # Adjustment to see 2 decimals always in the chart
+        fig_pie.update_traces(texttemplate="%{percent:.2%}")
+
         with st.container(border=True):
             st.plotly_chart(fig_pie, use_container_width=True)
         
@@ -1392,6 +1403,9 @@ if object_from_upload is not None:
             title = "How much additional services increase the costs"
             )
 
+        # Adjustment to see 2 decimals always in the chart
+        fig_pie_2.update_traces(texttemplate="%{percent:.2%}")
+
         with st.container(border=True):
             st.plotly_chart(fig_pie_2, use_container_width=True)
             st.write(f"- Products costs: **{value_total_sum_fl:,.2f}** {currency}")
@@ -1416,7 +1430,8 @@ if object_from_upload is not None:
             title = "Costs Insurance"
             )
         
-
+        # Adjustment to see 2 decimals always in the chart
+        fig_pie_3.update_traces(texttemplate="%{percent:.2%}")
 
 
         data_pie_4 = pd.DataFrame({
@@ -1433,6 +1448,8 @@ if object_from_upload is not None:
             title = "Costs Extended warranty"
             )  
 
+        # Adjustment to see 2 decimals always in the chart
+        fig_pie_4.update_traces(texttemplate="%{percent:.2%}")
 
 
         with col1.container(border=True):

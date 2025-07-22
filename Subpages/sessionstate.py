@@ -1,39 +1,31 @@
 import streamlit as st
+import xml.etree.ElementTree as ET
+import time
+import plotly.express as px
+import pandas as pd
+import math
+import pandasql as ps
 from lxml import etree
 
+# try: 
+data_pie_sql3_3 = pd.DataFrame({
+        "Category": ["A","B"],
+        "Costs" : [1.11,2.22]
 
-upload = st.file_uploader("Upload")
-if upload == None:
-    st.write("none")
-
-else: 
-    st.write("uploaded")
-
-if st.button("cau"):
-
-    def validate(xml_path: str, xsd_path: str) -> bool:
-
-        st.write("tu som")
-
-        xmlschema_doc = etree.parse(xsd_path)
-
-        st.write("zde som")
-        xmlschema = etree.XMLSchema(xmlschema_doc)
-
-        st.write("tu")
-        xml_doc = etree.parse(xml_path)
-        st.write("tady")
-        result = xmlschema.validate(xml_doc)
-
-        st.write("tamhle")
-        return result
+    })
 
 
-    if validate(xml_path = upload, xsd_path ="F2_XSD_validation/XML_Schema_for_functions_1_and_2.xsd"):
-        st.write('Valid! :)')
-    else:
-        st.write('Not valid! :(')
+fig = px.pie(
+                    data_pie_sql3_3, 
+                    names = "Category",
+                    values = "Costs",
+                    title = "(2) ...including add. services:"
+                    )
 
 
-# for commit
-# for commit
+fig.update_traces(texttemplate="%{percent:.3%}")
+
+st.write(fig)
+
+
+fig_pie_sql3_1.update_traces(texttemplate="%{percent:.2%}")
