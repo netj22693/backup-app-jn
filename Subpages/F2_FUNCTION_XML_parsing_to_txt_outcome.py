@@ -647,7 +647,7 @@ if object_from_upload is not None:
             })
 
 
-
+        # SQL 1
         with st.expander("SQL Queries 1 - Overview", icon = ":material/view_list:"):
             ''
             '' 
@@ -667,7 +667,9 @@ if object_from_upload is not None:
             st.dataframe(ps.sqldf(q0a, locals()), hide_index=True, use_container_width=True)
 
             # Number of items with additional service
-            q0b = """SELECT Additional_service, count(*) as 'count'
+            q0b = """SELECT 
+                Additional_service as 'Additional service',
+                count(*) as 'count'
             FROM
                 data_table_sql
             
@@ -686,7 +688,9 @@ if object_from_upload is not None:
             st.dataframe(ps.sqldf(q0b, locals()), hide_index=True, use_container_width=True)
 
             # Number of items with  NO additional service = 'None'
-            q0c = """SELECT Additional_service, count(*) as 'count'
+            q0c = """SELECT
+                Additional_service as 'Additional service',
+                count(*) as 'count'
             FROM
                 data_table_sql
             
@@ -1013,8 +1017,88 @@ if object_from_upload is not None:
             col2.plotly_chart(fig_pie_sql3_3, use_container_width=True)
             col1.plotly_chart(fig_pie_sql3_2, use_container_width=True)
 
+        # SQL 4
+        with st.expander("SQL Queries 4 - Average", icon = ":material/view_list:"):
+            ''
+            ''
+            st.write(f"- Currency: **{currency}**")
+            '' 
+            st.write("- Tables show values **only** if there is more than 1 item/product in specific category -> **no. of products > 1**")
+            '' 
+            ''
+
+            # AVG Price without additional services
+            q4a = """SELECT category,
+                    count(Price) as 'count',
+                    round(avg(Price), 2) as 'average price'
+                FROM
+                    data_table_sql
+                GROUP BY
+                    Category
+                HAVING 
+                    count(*) > 1
+                ORDER BY 
+                    category ASC
+            """
 
 
+            st.write(f"- **Average price** in each product Category (Total price **{value_total_sum:,.2f} {currency}** - **without** additional services):")
+            st.dataframe(ps.sqldf(q4a, locals()), hide_index=True, use_container_width=True)
+
+
+
+            # AVG Price WITH additional services
+            q4b = """SELECT category,
+                    count(*) as 'count',
+                    round((sum(Price) + sum(Additional_service_price))/count(*), 2) as 'average price WITH add. services',
+                    round(((sum(Price) + sum(Additional_service_price))/count(*) - avg(Price)), 2) as 'Δ delta'
+                FROM
+                    data_table_sql
+                GROUP BY
+                    Category
+                HAVING 
+                    count(*) > 1
+                ORDER BY 
+                    category ASC
+            """
+
+            ''
+            ''
+            st.write(f"""
+            - **Average price including additional service price** in each product Category:
+                - Total price **{value_to_paid:,.2f} {currency}** - **with** additional services
+                - Δ delta = avg(Price with add. services)  - avg(Price without add. services)   
+                - if Δ delta is **0** -> there was no additional service purchased in the category  
+            
+            """)
+
+            st.dataframe(ps.sqldf(q4b, locals()), hide_index=True, use_container_width=True)
+
+
+            # AVG Price of additional services
+            q4c = """SELECT Additional_service, 
+                    count(*) as 'count',
+                    sum(Additional_service_price) as 'sum',
+                    round(sum(Additional_service_price)/count(*), 2) as 'average'
+                FROM
+                    data_table_sql
+                WHERE 
+                    Additional_service != 'None'
+                GROUP BY
+                    Additional_service
+                ORDER BY
+                    count(*) DESC
+            """
+
+            ''
+            ''
+            st.write(f"""
+            - **Average price of additional services:**
+                - count - no. of items having the type of service purchased
+                - sum - sum of costs
+                - average - average cost per item 
+            """)
+            st.dataframe(ps.sqldf(q4c, locals()), hide_index=True, use_container_width=True)
         
         # ========= Data Visualization ====================
         ''
