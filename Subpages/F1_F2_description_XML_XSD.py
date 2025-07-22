@@ -336,6 +336,59 @@ if st.download_button("Download",
             st.info("Download will happen in few seconds")
 
 
+# How to pair XSD with XML
+
+''
+''
+''
+''
+st.write("*In case you want to troubleshoot your XML message:")
+with st.expander(
+	"How to pair XML with XSD",
+	icon= ":material/help_outline:"
+	):
+
+        ''
+        ''
+        st.write("1) Download XSD Schema **.xsd**")
+        ''
+        st.write("2) Find location where the XSD is located on your device (probably in Downloads folder)")
+        ''
+        st.write("3) Open the XML file, you want to check, in your data editor (Notepad++ is for free)")
+        ''
+        st.image("Pictures/V2_pictures/Altova notepad.png")
+        ''
+        ''
+        st.write("4) Extend the XML root element <invoice> by the following:")
+        ''
+        st.image("Pictures/V2_pictures/root extended.png")
+        ''
+        st.write('''
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="*location of your XSD file*">
+            '''
+        )
+        ''
+        ''
+        st.write("5) **XML should be paired with XSD now**")
+        ''
+        ''
+        st.write("6) Depending on data editor tool you use - you can work with the validation and control that you follow predefined rules in the XSD")
+        ''
+        st.image("Pictures/V2_pictures/validation xsd final_2.png")
+        ''
+        ''
+        st.write("7) Once no error detected in your XML -> you can upload it in the app in Function 2 section")
+        ''
+        st.image("Pictures/V2_pictures/no error.png")
+
+
+
+
+
+
+
+
 ''
 ''
 # ===== Page navigation at the bottom ======
