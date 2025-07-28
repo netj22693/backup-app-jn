@@ -546,15 +546,16 @@ if  (st.button(
             
             
         with open('Data/Function_3_do NOT delete.xml') as f:
-            if st.download_button(
+            st.download_button(
                 'Download - XML',
                 f, file_name = file_name_xml_fstring,
                 use_container_width=True,
                 icon = ":material/download:",
                 on_click=process_done
-                ):
+                )
 
-                st.info("download will start in few seconds")
+            time.sleep(1)
+            st.info("download will start in few seconds")
 
 
 
@@ -569,6 +570,7 @@ if  (st.button(
                 icon = ":material/download:",
                 on_click=process_done
                 )
+            time.sleep(1)
         
             
 ("---------")
