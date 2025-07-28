@@ -1,28 +1,28 @@
 {
     "header": {
-        "order_number": "57939142276925039446",
+        "order_number": "51452913652208461447",
         "customer": "Jan s.r.o.",
-        "invoice_number": "INV-121873",
+        "invoice_number": "INV-808213",
         "date": "2025-07-28",
         "price": {
-            "total_sum": 12.4,
-            "currency": "euro"
+            "total_sum": 59.67,
+            "currency": "US dollar"
         }
     },
     "detail": {
-        "category": "PC",
+        "category": "Tablets",
         "product_name": "A22",
-        "price_amount": 10.0,
+        "price_amount": 50.0,
         "additional_service": {
-            "service": "N",
-            "service_type": "None",
-            "service_price": 0.0
+            "service": "Y",
+            "service_type": "insurance",
+            "service_price": 7.5
         }
     },
     "transportation": {
-        "transporter": "Fedex",
+        "transporter": "DHL",
         "country": "Czech Republic",
         "size": "small",
-        "transport_price": 2.4
+        "transport_price": 2.17
     }
 }

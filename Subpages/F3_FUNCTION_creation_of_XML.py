@@ -108,9 +108,23 @@ with st.expander("Extra purchase", icon = ":material/exposure_plus_1:"):
 
     if add_service_select == 'Insurance':
         st.info("costs 15% from product price")
+        ''
+        if price == 0.00 or currency_selb == None:
+            pass
+
+        else:
+            st.write(f"Product price: {price:,.2f} -> Service costs: **{((price/100)*15):,.2f} {currency_selb}**")
     
     if add_service_select == 'Extended warranty':
         st.info("costs 10% from product price")
+        ''
+        if price == 0.00 or currency_selb == None:
+            pass
+
+        else:
+            st.write(f"Product price: {price:,.2f} -> Service costs: **{((price/100)*10):,.2f} {currency_selb}**")
+
+
 
 with st.expander("Transportation", icon = ":material/directions_bus:"):
 

@@ -108,9 +108,23 @@ with st.expander("Extra purchase", icon = ":material/exposure_plus_1:"):
 
     if add_service_select == 'Insurance':
         st.info("costs 15% from product price")
+        ''
+        if price == 0.00 or currency_selb == None:
+            pass
+
+        else:
+            st.write(f"Product price: {price:,.2f} -> Service costs: **{((price/100)*15):,.2f} {currency_selb}**")
     
     if add_service_select == 'Extended warranty':
         st.info("costs 10% from product price")
+        ''
+        if price == 0.00 or currency_selb == None:
+            pass
+
+        else:
+            st.write(f"Product price: {price:,.2f} -> Service costs: **{((price/100)*10):,.2f} {currency_selb}**")
+
+
 
 with st.expander("Transportation", icon = ":material/directions_bus:"):
 
@@ -372,42 +386,19 @@ def reset():
 
 
 
-#st.session initiation + callback function
-if "button_clicked" not in st.session_state:
-    st.session_state.button_clicked = False
-
-def callback():
-    st.session_state.button_clicked = True
-
-
-
-
 # Submit button
-if  (st.button(
+if  st.button(
     "Submit",
     use_container_width=True,
     icon = ":material/apps:",
-    help = "Submit runs the application -> provide calculation -> summary of the invoice and option of generating either XML or JSON file",
-    on_click= callback,
-    ) 
-    or st.session_state.button_clicked):
+    help = "Submit runs the application -> provide calculation -> summary of the invoice and option of generating either XML or JSON file"
+    ):
 
     if customer_input == '' or product_name_inp == '' or category_selb == None or currency_selb == None or price == 0.00 or add_service_select == '' or city_selb == None or transport_co_selb == None or size_selb == None :
 
         # This step is stopping the script it this 'if' condition is met. 
         # Simply, if missing input and Submit button pushed -> the application will nto continue
         st.error("**Not all inputs provided** - please check, fill in and then push the **Submit** button again.")
-
-        # This Reset button is specific for this nested condition 
-        ("---------")
-        st.button(
-        "Reset",
-        use_container_width= True,
-        on_click = reset,
-        help = "Clear all text/number inputs from the form")
-
-        # This is what completelly stopping the script
-        st.stop()
 
 
     else:
@@ -555,8 +546,9 @@ if  (st.button(
                 icon = ":material/download:",
                 on_click=process_done
                 ):
-
                 st.info("download will start in few seconds")
+
+
 
 
 
@@ -564,13 +556,16 @@ if  (st.button(
         
         
         with open('Data/Function_3_do NOT delete - JSON.json') as j:
-            st.download_button(
+            if st.download_button(
                 'Download - JSON',
                 j, file_name = file_name_json_fstring,
                 use_container_width=True,
                 icon = ":material/download:",
                 on_click=process_done
-                )
+                ):
+            
+                st.info("download will start in few seconds")
+
         
             
 ("---------")
@@ -578,5 +573,5 @@ st.button(
     "Reset",
     use_container_width= True,
     on_click = reset,
-    help = "Clear all text/number inputs from the form")
+    help = "It will clear the form")
 
