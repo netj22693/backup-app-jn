@@ -370,35 +370,15 @@ def reset():
     st.session_state["k_transp"] = None
     st.session_state["k_size"] = None
 
-    # Page refresh
-    # st.markdown("""
-    #             <meta http-equiv="refresh" content="0; url='https://dataparsing.streamlit.app/F3_FUNCTION_creation_of_XML'" />
-    #             """, unsafe_allow_html=True
-    #             )
-
-
-
-
-
-#st.session initiation + callback function
-if "button_clicked" not in st.session_state:
-    st.session_state.button_clicked = False
-
-def callback():
-    st.session_state.button_clicked = True
-
-
 
 
 # Submit button
-if  (st.button(
+if  st.button(
     "Submit",
     use_container_width=True,
     icon = ":material/apps:",
-    help = "Submit runs the application -> provide calculation -> summary of the invoice and option of generating either XML or JSON file",
-    on_click= callback,
-    ) 
-    or st.session_state.button_clicked):
+    help = "Submit runs the application -> provide calculation -> summary of the invoice and option of generating either XML or JSON file"
+    ):
 
     if customer_input == '' or product_name_inp == '' or category_selb == None or currency_selb == None or price == 0.00 or add_service_select == '' or city_selb == None or transport_co_selb == None or size_selb == None :
 
@@ -553,7 +533,7 @@ if  (st.button(
                 on_click=process_done
                 ):
                 st.info("download will start in few seconds")
-                time.sleep(1)
+
 
 
 
@@ -571,7 +551,7 @@ if  (st.button(
                 ):
             
                 st.info("download will start in few seconds")
-                time.sleep(1)
+
         
             
 ("---------")
