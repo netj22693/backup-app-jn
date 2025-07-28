@@ -372,13 +372,25 @@ def reset():
 
 
 
+#st.session initiation + callback function
+if "button_clicked" not in st.session_state:
+    st.session_state.button_clicked = False
+
+def callback():
+    st.session_state.button_clicked = True
+
+
+
+
 # Submit button
-if st.button(
+if  (st.button(
     "Submit",
     use_container_width=True,
     icon = ":material/apps:",
-    help = "Submit runs the application -> provide calculation -> summary of the invoice and option of generating either XML or JSON file"
-    ):
+    help = "Submit runs the application -> provide calculation -> summary of the invoice and option of generating either XML or JSON file",
+    on_click= callback,
+    ) 
+    or st.session_state.button_clicked):
 
     if customer_input == '' or product_name_inp == '' or category_selb == None or currency_selb == None or price == 0.00 or add_service_select == '' or city_selb == None or transport_co_selb == None or size_selb == None :
 
@@ -425,7 +437,12 @@ if st.button(
         ''
         st.write(f" - Total price to pay: **{final_price_fl:,.2f} {currency_selb}**")
 
-        st.info("If this is what you expect, you can proceed with Download button which will create a file (XML or JSON). If not, you can go up and change your inputs and then use the Submit button again.")
+
+        ''
+        ''
+        st.info("""
+                - If this is what you expect, you can proceed with Download button which will create a file (XML or JSON). 
+                - If not, you can go up and change your inputs.""")
         
         # Change of data type
         calc_transport_price_str = str(calc_transport_price)
@@ -509,6 +526,23 @@ if st.button(
         file_name_xml_fstring = f"{invoice_number_generated}.xml"
         file_name_json_fstring = f"{invoice_number_generated}.json"
 
+
+        # ================ Process complete function =================
+
+        @st.dialog("Complete!")
+        def process_done():
+            st.write("""
+                     - File was downloaded -> :green[**The process is successfully DONE**].
+                     - The function will be **refreshed**.
+                     """)
+            if st.button('OK'):
+                st.markdown("""
+                <meta http-equiv="refresh" content="0; url='https://dataparsing.streamlit.app/F3_FUNCTION_creation_of_XML'" />
+                """, unsafe_allow_html=True
+                )
+
+
+
         ''
         st.write("###### Download:")
             
@@ -518,24 +552,25 @@ if st.button(
                 'Download - XML',
                 f, file_name = file_name_xml_fstring,
                 use_container_width=True,
-                icon = ":material/download:"
+                icon = ":material/download:",
+                on_click=process_done
                 ):
 
-                st.session_state["Submit"]
+                st.info("download will start in few seconds")
+
 
 
 
         
         
         with open('Data/Function_3_do NOT delete - JSON.json') as j:
-            if st.download_button(
+            st.download_button(
                 'Download - JSON',
                 j, file_name = file_name_json_fstring,
                 use_container_width=True,
-                icon = ":material/download:"
-                ):
-
-                st.info("download will start in few seconds")
+                icon = ":material/download:",
+                on_click=process_done
+                )
         
             
 ("---------")

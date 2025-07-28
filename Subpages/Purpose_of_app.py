@@ -268,6 +268,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 3:
+		- **v16.7** - Callback function implemented (to keep session state)  - 28-July-2025	
 		- **v5.2** - Try/Except - Error handling, if wrong file uploaded  - 17-Jun-2025		  
 		- **v0.7** - Bug fix/fine tuning  - 23-March-2025
 		- **v0.6** - F3 released - 13-March-2025
