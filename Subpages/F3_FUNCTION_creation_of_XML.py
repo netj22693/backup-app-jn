@@ -524,12 +524,41 @@ if  st.button(
         def process_done():
             st.write("""
                      - File was downloaded -> :green[**The process is successfully DONE**].
-                     - The function will be **refreshed**.
                      """)
-            if st.button('OK'):
-                st.markdown("""
-                <meta http-equiv="refresh" content="0; url='https://dataparsing.streamlit.app/F3_FUNCTION_creation_of_XML'" />
-                """, unsafe_allow_html=True
+            
+            ''
+            st.write("**Go to:**")
+            st.page_link(
+                label = "Again use this Function 3",
+                page="Subpages/F3_FUNCTION_creation_of_XML.py",
+                help="The button will redirect to the relevant page within this app.",
+                use_container_width=True,
+                icon=":material/play_circle:",
+                )
+
+            st.page_link(
+                label = "Function 4 - Mapping",
+                page="Subpages/F4_FUNCTION_translation_mapping.py",
+                help="The button will redirect to the relevant page within this app.",
+                use_container_width=True,
+                icon=":material/play_circle:",
+                )
+            
+            ''
+            st.page_link(
+                label = "Function 5 - Description - API",
+                page="Subpages/F5_description_API.py",
+                help="The button will redirect to the relevant page within this app.",
+                use_container_width=True,
+                icon=":material/code:",
+                )
+            
+            st.page_link(
+                label = "Home page",
+                page="Subpages/Purpose_of_app.py",
+                help="The button will redirect to the relevant page within this app.",
+                use_container_width=True,
+                icon=":material/code:",
                 )
 
 
