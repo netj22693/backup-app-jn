@@ -528,14 +528,14 @@ if  st.button(
             
             ''
             st.write("**Go to:**")
-            if st.page_link(
+            st.page_link(
                 label = "Again use this Function 3",
                 page="Subpages/F3_FUNCTION_creation_of_XML.py",
                 help="The button will redirect to the relevant page within this app.",
                 use_container_width=True,
                 icon=":material/play_circle:",
-                ):
-                st.rerun()
+                )
+
 
             st.page_link(
                 label = "Function 4 - Mapping",
