@@ -527,9 +527,6 @@ if  st.button(
                      """)
             
 
-            if st.button("Use this Function 3 again"):
-                st.rerun(scope="app")
-
             ''
             st.write("**Go to:**")
             # st.page_link(
