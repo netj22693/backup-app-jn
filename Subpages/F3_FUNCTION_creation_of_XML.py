@@ -360,15 +360,23 @@ else:
 
 # Clear of inputs - Reset button
 def reset():
-    st.session_state["k_customer"] = None
-    st.session_state["k_product"] = None
-    st.session_state["k_category"] = None
-    st.session_state["k_currency"] = None
-    st.session_state["k_price"] = 0.00
-    st.session_state["k_add_service"] = "No additional service"
-    st.session_state["k_country"] = None
-    st.session_state["k_transp"] = None
-    st.session_state["k_size"] = None
+    # st.session_state["k_customer"] = None
+    # st.session_state["k_product"] = None
+    # st.session_state["k_category"] = None
+    # st.session_state["k_currency"] = None
+    # st.session_state["k_price"] = 0.00
+    # st.session_state["k_add_service"] = "No additional service"
+    # st.session_state["k_country"] = None
+    # st.session_state["k_transp"] = None
+    # st.session_state["k_size"] = None
+
+    # Page refresh
+    st.markdown("""
+                <meta http-equiv="refresh" content="0; url='https://dataparsing.streamlit.app/F3_FUNCTION_creation_of_XML'" />
+                """, unsafe_allow_html=True
+                )
+
+
 
 
 
@@ -397,17 +405,6 @@ if  (st.button(
         # This step is stopping the script it this 'if' condition is met. 
         # Simply, if missing input and Submit button pushed -> the application will nto continue
         st.error("**Not all inputs provided** - please check, fill in and then push the **Submit** button again.")
-
-        # This Reset button is specific for this nested condition 
-        ("---------")
-        st.button(
-        "Reset",
-        use_container_width= True,
-        on_click = reset,
-        help = "Clear all text/number inputs from the form")
-
-        # This is what completelly stopping the script
-        st.stop()
 
 
     else:
@@ -578,5 +575,5 @@ st.button(
     "Reset",
     use_container_width= True,
     on_click = reset,
-    help = "Clear all text/number inputs from the form")
+    help = "It will refresh the page -> clear the form")
 
