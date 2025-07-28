@@ -545,15 +545,15 @@ if  (st.button(
             
             
         with open('Data/Function_3_do NOT delete.xml') as f:
-            st.download_button(
+            if st.download_button(
                 'Download - XML',
                 f, file_name = file_name_xml_fstring,
                 use_container_width=True,
                 icon = ":material/download:",
                 on_click=process_done
-                )
-            st.info("download will start in few seconds")
-            time.sleep(1)
+                ):
+                st.info("download will start in few seconds")
+                time.sleep(1)
 
 
 
@@ -562,16 +562,16 @@ if  (st.button(
         
         
         with open('Data/Function_3_do NOT delete - JSON.json') as j:
-            st.download_button(
+            if st.download_button(
                 'Download - JSON',
                 j, file_name = file_name_json_fstring,
                 use_container_width=True,
                 icon = ":material/download:",
                 on_click=process_done
-                )
+                ):
             
-            st.info("download will start in few seconds")
-            time.sleep(1)
+                st.info("download will start in few seconds")
+                time.sleep(1)
         
             
 ("---------")
