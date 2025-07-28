@@ -523,7 +523,7 @@ if  st.button(
         @st.dialog("Complete!")
         def process_done():
             st.write("""
-                     - File was downloaded -> :green[**The process is successfully DONE**].
+                     - File was created and downloaded -> :green[**The process is successfully DONE**].
                      """)
             
 
