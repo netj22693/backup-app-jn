@@ -528,7 +528,6 @@ if  (st.button(
 
         @st.dialog("Complete!")
         def process_done():
-            time.sleep(2)
             st.write("""
                      - File was downloaded -> :green[**The process is successfully DONE**].
                      - The function will be **refreshed**.
@@ -553,9 +552,9 @@ if  (st.button(
                 icon = ":material/download:",
                 on_click=process_done
                 )
-
-            time.sleep(1)
             st.info("download will start in few seconds")
+            time.sleep(1)
+
 
 
 
@@ -570,6 +569,8 @@ if  (st.button(
                 icon = ":material/download:",
                 on_click=process_done
                 )
+            
+            st.info("download will start in few seconds")
             time.sleep(1)
         
             
