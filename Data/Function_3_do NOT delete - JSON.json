@@ -1,9 +1,9 @@
 {
     "header": {
-        "order_number": "92675771096506176782",
-        "customer": "fvbfsfbgggggggggggggggggggggggggggggg",
-        "invoice_number": "INV-330366",
-        "date": "2025-06-18",
+        "order_number": "53555464786012018203",
+        "customer": "Jan s.r.o.",
+        "invoice_number": "INV-446522",
+        "date": "2025-07-28",
         "price": {
             "total_sum": 12.0,
             "currency": "euro"
@@ -11,7 +11,7 @@
     },
     "detail": {
         "category": "PC",
-        "product_name": "ggggggggggggggggggggggg",
+        "product_name": "A22",
         "price_amount": 10.0,
         "additional_service": {
             "service": "N",
