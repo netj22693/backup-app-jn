@@ -528,6 +528,7 @@ if  (st.button(
 
         @st.dialog("Complete!")
         def process_done():
+            time.wait(2)
             st.write("""
                      - File was downloaded -> :green[**The process is successfully DONE**].
                      - The function will be **refreshed**.
