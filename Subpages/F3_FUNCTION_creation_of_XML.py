@@ -526,15 +526,19 @@ if  st.button(
                      - File was downloaded -> :green[**The process is successfully DONE**].
                      """)
             
+
+            if st.button("Use this Function 3 again"):
+                st.rerun(scope="app")
+
             ''
             st.write("**Go to:**")
-            st.page_link(
-                label = "Again use this Function 3",
-                page="Subpages/F3_FUNCTION_creation_of_XML.py",
-                help="The button will redirect to the relevant page within this app.",
-                use_container_width=True,
-                icon=":material/play_circle:",
-                )
+            # st.page_link(
+            #     label = "Again use this Function 3",
+            #     page="Subpages/F3_FUNCTION_creation_of_XML.py",
+            #     help="The button will redirect to the relevant page within this app.",
+            #     use_container_width=True,
+            #     icon=":material/play_circle:",
+            #     )
 
 
             st.page_link(
