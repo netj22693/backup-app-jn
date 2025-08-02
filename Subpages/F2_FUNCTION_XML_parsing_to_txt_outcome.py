@@ -1505,7 +1505,7 @@ if object_from_upload is not None:
         
         st.write("-------")
 
-                #Closing button/part of the app
+        #Closing button/part of the app
 
         @st.dialog("Go to:")
         def process_done():
