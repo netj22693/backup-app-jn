@@ -308,3 +308,62 @@ if object_upl_json is not None:
 					use_container_width=True,
 					icon=":material/play_circle:",
 					)
+
+''
+with st.expander(
+	"How to use this function",
+	icon= ":material/help_outline:"		
+    ):
+	''
+	st.write("""
+    - It allows file format translation XML <-> JSON
+    - It works with files produced by **Function 3**
+    """)
+	st.page_link(
+        label = "Function 3",
+        page="Subpages/F3_FUNCTION_creation_of_XML.py",
+        help="The button will redirect to the relevant page within this app.",
+        use_container_width=True,
+        icon=":material/play_circle:",
+        )
+		
+
+st.write("-------")
+
+#Closing button/part of the app
+
+@st.dialog("Go to:")
+def process_done():
+
+    ''
+    st.page_link(
+        label = "Function 5 - Description",
+        page="Subpages/F5_description_API.py",
+        help="The button will redirect to the relevant page within this app.",
+        use_container_width=True,
+        icon=":material/code:",
+        )
+
+    st.page_link(
+        label = "Function 5",
+        page="Subpages/F5_FUNCTION_exchange.py",
+        help="The button will redirect to the relevant page within this app.",
+        use_container_width=True,
+        icon=":material/play_circle:",
+        )
+    
+    st.page_link(
+        label = "Home page",
+        page="Subpages/Purpose_of_app.py",
+        help="The button will redirect to the relevant page within this app.",
+        use_container_width=True,
+        icon=":material/code:",
+        )
+    
+
+if st.button(
+    "Close Function 4",
+    use_container_width= True,
+    icon=":material/close:"
+):
+    process_done()

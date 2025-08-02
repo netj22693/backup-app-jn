@@ -1,23 +1,23 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <invoice>
   <header>
-    <order_number>92675771096506176782</order_number>
-    <customer>fvbfsfbgggggggggggggggggggggggggggggg</customer>
-    <invoice_number>INV-330366</invoice_number>
-    <date>2025-06-18</date>
+    <order_number>30861226990566989956</order_number>
+    <customer>gfgffg</customer>
+    <invoice_number>INV-912499</invoice_number>
+    <date>2025-07-29</date>
     <price>
-      <total_sum>12.0</total_sum>
+      <total_sum>25.0</total_sum>
       <currency>euro</currency>
   </price>
   </header>
   <detail>
     <category>PC</category>
-    <product_name>ggggggggggggggggggggggg</product_name>
-    <price_amount>10.0</price_amount>
+    <product_name>A22</product_name>
+    <price_amount>20.0</price_amount>
     <additional_service>
-      <service>N</service>
-      <service_type>None</service_type>
-      <service_price>0.0</service_price>
+      <service>Y</service>
+      <service_type>insurance</service_type>
+      <service_price>3.0</service_price>
   </additional_service>
   </detail>
   <transportation>

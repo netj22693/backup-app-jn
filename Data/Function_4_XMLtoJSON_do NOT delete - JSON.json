@@ -1,9 +1,9 @@
 {
     "header": {
-        "order_number": "92675771096506176782",
-        "customer": "fvbfsfbgggggggggggggggggggggggggggggg",
-        "invoice_number": "INV-330366",
-        "date": "2025-06-18",
+        "order_number": "60475609082692325499",
+        "customer": "CLERK",
+        "invoice_number": "INV-664365",
+        "date": "2025-08-02",
         "price": {
             "total_sum": 12.0,
             "currency": "euro"
@@ -11,7 +11,7 @@
     },
     "detail": {
         "category": "PC",
-        "product_name": "ggggggggggggggggggggggg",
+        "product_name": "a",
         "price_amount": 10.0,
         "additional_service": {
             "service": "N",
