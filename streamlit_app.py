@@ -153,7 +153,7 @@ pg = st.navigation(
         "About this application": [
             app_purpose,
             ],
-        "TESTING": [testing, testuju_stsession],
+        # "TESTING": [testing, testuju_stsession],
 
         "Functions 1 and 2" : [
             fun_1and2_descrip,
