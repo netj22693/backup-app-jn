@@ -1505,6 +1505,44 @@ if object_from_upload is not None:
         
         st.write("-------")
 
+                #Closing button/part of the app
+
+        @st.dialog("Go to:")
+        def process_done():
+
+            ''
+            st.page_link(
+                label = "Function 3 - Description",
+                page="Subpages/F3_F4_description.py",
+                help="The button will redirect to the relevant page within this app.",
+                use_container_width=True,
+                icon=":material/code:",
+                )
+
+            st.page_link(
+                label = "Function 3",
+                page="Subpages/F3_FUNCTION_creation_of_XML.py",
+                help="The button will redirect to the relevant page within this app.",
+                use_container_width=True,
+                icon=":material/play_circle:",
+                )
+            
+            st.page_link(
+                label = "Home page",
+                page="Subpages/Purpose_of_app.py",
+                help="The button will redirect to the relevant page within this app.",
+                use_container_width=True,
+                icon=":material/code:",
+                )
+            
+        
+        if st.button(
+            "Close Function 2",
+            use_container_width= True,
+            icon=":material/close:"
+        ):
+            process_done()
+
     # Except - prevents the application from error + providing extra info/help
     except:
         ''
