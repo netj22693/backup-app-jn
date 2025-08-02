@@ -1510,6 +1510,7 @@ if object_from_upload is not None:
         @st.dialog("Go to:")
         def process_done():
 
+
             ''
             st.page_link(
                 label = "Function 3 - Description",
@@ -1548,4 +1549,5 @@ if object_from_upload is not None:
         ''
         ''
         st.error("Something went wrong, please try again. If not working, please report it as a bug (on the main page).")
+
 
