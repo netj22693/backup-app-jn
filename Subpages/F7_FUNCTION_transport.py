@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import math
 
 
 
@@ -8,23 +9,58 @@ import pandas as pd
 
 
 # Data set 
+# dataset_test = ({
+# "cz" : {
+#     "A" : {"big" : ["1","1"], "small" : ["2","2"], "train":"y", "air":"y"},
+#     "B" : {"big" : ["2","1"], "small" : ["5","2"], "train":"n", "air":"y"},
+#     "C" : {"big" : ["2","2"], "small" : ["5","5"], "train":"n", "air":"n"},
+#     "D" : {"big" : ["2","3"], "small" : ["5","8"], "train":"n", "air":"n"},
+#     "E" : {"big" : ["1","1"], "small" : ["2","3"], "train":"n", "air":"n"},
+#     "G" : {"big" : ["2","1"], "small" : ["6","3"], "train":"n", "air":"n"},
+#     "H" : {"big" : ["2","2"], "small" : ["6","4"], "train":"y", "air":"y"},
+#     "I" : {"big" : ["3","1"], "small" : ["9","2"], "train":"y", "air":"y"},
+#     "K" : {"big" : ["1","3"], "small" : ["2","9"], "train":"n", "air":"y"}
+# },
+# "sk" : {
+# 	"SA" : {"big" : ["3","4"], "small" : ["8","11"], "train":"n", "air":"y"},
+#     "SB" : {"big" : ["4","4"], "small" : ["11","11"], "train":"n", "air":"y"},
+#     "SC" : {"big" : ["4","5"], "small" : ["11","14"], "train":"n", "air":"n"},
+#     "SD" : {"big" : ["3","5"], "small" : ["8","13"], "train":"y", "air":"y"}		
+# }
+# })
+
 dataset_test = ({
 "cz" : {
-    "A" : {"big" : ["1","1"], "small" : ["2","2"], "train":"y", "air":"y"},
-    "B" : {"big" : ["2","1"], "small" : ["5","2"], "train":"n", "air":"y"},
-    "C" : {"big" : ["2","2"], "small" : ["5","5"], "train":"n", "air":"n"},
-    "D" : {"big" : ["2","3"], "small" : ["5","8"], "train":"n", "air":"n"},
-    "E" : {"big" : ["1","1"], "small" : ["2","3"], "train":"n", "air":"n"},
-    "G" : {"big" : ["2","1"], "small" : ["6","3"], "train":"n", "air":"n"},
-    "H" : {"big" : ["2","2"], "small" : ["6","4"], "train":"y", "air":"y"},
-    "I" : {"big" : ["3","1"], "small" : ["9","2"], "train":"y", "air":"y"},
-    "K" : {"big" : ["1","3"], "small" : ["2","9"], "train":"n", "air":"y"}
+    "Prague" : {"big" : ["2","3"], "small" : ["6","7"], "train":"y", "air":"y"},
+    "Brno" : {"big" : ["4","5"], "small" : ["10","13"], "train":"y", "air":"y"},
+    "Olomouc" : {"big" : ["3","5"], "small" : ["8","15"], "train":"n", "air":"n"},
+    "Plzen" : {"big" : ["3","2"], "small" : ["7","4"], "train":"n", "air":"n"},
+    "Tabor" : {"big" : ["3","3"], "small" : ["9","8"], "train":"n", "air":"n"},
+    "Ostrava" : {"big" : ["3","6"], "small" : ["7","18"], "train":"y", "air":"n"},
+    "Liberec" : {"big" : ["1","3"], "small" : ["3","9"], "train":"n", "air":"n"},
+    "Hradec Kralove" : {"big" : ["2","4"], "small" : ["5","11"], "train":"n", "air":"n"},
+    "Pardubice" : {"big" : ["2","4"], "small" : ["6","11"], "train":"y", "air":"y"},
+    "Zlin" : {"big" : ["3","6"], "small" : ["9","16"], "train":"n", "air":"n"},
+    "Chomutov" : {"big" : ["2","2"], "small" : ["4","4"], "train":"n", "air":"n"},
+    "Ceske Budejovice" : {"big" : ["4","3"], "small" : ["10","7"], "train":"n", "air":"n"},
+    "Teplice" : {"big" : ["2","2"], "small" : ["4","6"], "train":"n", "air":"n"},
+    "Most" : {"big" : ["2","2"], "small" : ["4","5"], "train":"y", "air":"n"},
+    "Karlovy Vary" : {"big" : ["2","1"], "small" : ["5","3"], "train":"n", "air":"n"},
+    "Kolin" : {"big" : ["2","3"], "small" : ["6","9"], "train":"y", "air":"n"},
+    "Ceska Trebova" : {"big" : ["3","5"], "small" : ["7","13"], "train":"y", "air":"n"},
+    "Jihlava" : {"big" : ["3","4"], "small" : ["9","10"], "train":"n", "air":"n"},
+    "Pisek" : {"big" : ["3","2"], "small" : ["9","7"], "train":"y", "air":"n"},
 },
 "sk" : {
-	"SA" : {"big" : ["3","4"], "small" : ["8","11"], "train":"n", "air":"y"},
-    "SB" : {"big" : ["4","4"], "small" : ["11","11"], "train":"n", "air":"y"},
-    "SC" : {"big" : ["4","5"], "small" : ["11","14"], "train":"n", "air":"n"},
-    "SD" : {"big" : ["3","5"], "small" : ["8","13"], "train":"y", "air":"y"}		
+	"Bratislava" : {"big" : ["5","5"], "small" : ["14","14"], "train":"y", "air":"y"},
+    "Kosice" : {"big" : ["4","9"], "small" : ["12","27"], "train":"y", "air":"y"},
+    "Banska Bystrica" : {"big" : ["4","7"], "small" : ["12","21"], "train":"n", "air":"n"},
+    "Zilina" : {"big" : ["3","7"], "small" : ["9","19"], "train":"y", "air":"n"},	
+    "Presov" : {"big" : ["4","9"], "small" : ["10","27"], "train":"n", "air":"n"},	
+    "Trnava" : {"big" : ["5","6"], "small" : ["14","17"], "train":"y", "air":"n"},	
+    "Trencin" : {"big" : ["4","6"], "small" : ["11","17"], "train":"n", "air":"n"},	
+    "Poprad" : {"big" : ["4","8"], "small" : ["10","24"], "train":"y", "air":"n"},	
+    "Banska Stiavnica" : {"big" : ["5","7"], "small" : ["13","20"], "train":"n", "air":"n"},		
 }
 })
 
@@ -60,7 +96,6 @@ for item in dataset_test['sk']:
     l3 = dataset_test['sk'][item]['train']
     train_sk_yn.append(l3)
 
-
 # Airplanes YES - ONLY YES
 
 air_cz = []
@@ -91,29 +126,55 @@ for item in dataset_test['sk']:
     air_sk_yn.append(l3)
 
 
+# Function for change of data from original data object to have a meaning for visualization 
+def text_output(list_input):
+
+    output = []
+    for i in list_input:
+        if i == 'y':
+            output.append('Available')
+        if i == 'n':
+            output.append('No')
+
+    return output
+       
+
+train_cz_yn_text = text_output(train_cz_yn)
+train_sk_yn_text = text_output(train_sk_yn)
+air_cz_yn_text = text_output(air_cz_yn)
+air_sk_yn_text = text_output(air_sk_yn)
+
+
 # Names of cities 
+list_cz_az = []
 list_cz = []
 for item in dataset_test['cz']:
     list_cz.append(item)
+    list_cz_az.append(item)
 
 # st.write(list_cz)
 
-
+list_sk_az = []
 list_sk = []
 for item in dataset_test['sk']:
     list_sk.append(item)
+    list_sk_az.append(item)
 
 
 # st.write(list_sk)
 
+# Sorting A-Z for select 
+
+list_cz_az.sort()
+list_sk_az.sort()
 
 # Table overview - data set 
 
 table_overview_full_cz = pd.DataFrame({
     "City" : list_cz,
-    "Road" : 'y',
-    "Train" : train_cz_yn,
-    "Airplane" : air_cz_yn
+    "Road" : 'Available',
+    "Train" : train_cz_yn_text,
+    "Airplane" : air_cz_yn_text
 })
 
 table_overview_full_cz.index +=1
@@ -121,9 +182,9 @@ table_overview_full_cz.index +=1
 
 table_overview_full_sk = pd.DataFrame({
     "City" : list_sk,
-    "Road" : 'y',
-    "Train" : train_sk_yn,
-    "Airplane" : air_sk_yn
+    "Road" : 'Available',
+    "Train" : train_sk_yn_text,
+    "Airplane" : air_sk_yn_text
 })
 
 table_overview_full_sk.index +=1
@@ -200,11 +261,11 @@ radio_from_country = radio_from_country.lower()
 
 if radio_from_country == "cz":
     
-    from_city = col1.selectbox("City from:", list_cz)
+    from_city = col1.selectbox("City from:", list_cz_az)
 
 if radio_from_country == "sk":
 
-    from_city = col1.selectbox("City from:", list_sk)
+    from_city = col1.selectbox("City from:", list_sk_az)
 
 
 
@@ -219,11 +280,11 @@ radio_to_country = radio_to_country.lower()
 
 if radio_to_country == "cz":
     
-    to_city = col2.selectbox("City to:", list_cz)
+    to_city = col2.selectbox("City to:", list_cz_az)
 
 if radio_to_country == "sk":
 
-    to_city = col2.selectbox("City to:", list_sk)
+    to_city = col2.selectbox("City to:", list_sk_az)
 
 
 
@@ -470,8 +531,12 @@ if st.button("Submit", use_container_width=True):
         comp = small_result_r + small_result_c
         st.write(f"LEVEL 3 comp {comp}")
 
+        pythagoras = round(math.sqrt((small_result_r**2) + (small_result_c**2)), 1)
+        st.write(f" pythagoras: {pythagoras}    - {pythagoras*50}") 
+
         if comp < 8:
             price = (small_result_r + small_result_c - 1) * price_square
+            st.write(f"LEVEL 3 if 1 - před navratem price: {price}")
             return price
         
         elif 8 <= comp < 10:
@@ -481,19 +546,25 @@ if st.button("Submit", use_container_width=True):
 
 
         elif 10 <= comp < 13:
-            price = (small_result_r + small_result_c - 3) * price_square
+            price = (small_result_r + small_result_c - 2.5) * price_square
             st.write(f"LEVEL 3 if 3 -před navratem price: {price}")
             return price
         
         elif 13 <= comp < 16:
-            price = (small_result_r + small_result_c - 6) * price_square
+            price = (small_result_r + small_result_c - 4) * price_square
             st.write(f"LEVEL 3 if 4 -před navratem price: {price}")
             return price
         
-        elif 16 <= comp:
-            price = (small_result_r + small_result_c - 8) * price_square
+        elif 16 <= comp < 18:
+            price = (small_result_r + small_result_c - 5) * price_square
             st.write(f"LEVEL 3 if 5 -před navratem price: {price}")
             return price
+        
+        elif 18 <= comp:
+            price = (small_result_r + small_result_c - 8) * price_square
+            st.write(f"LEVEL 3 if 6 -před navratem price: {price}")
+            return price
+
 
 
     #Calculation in case that move is on horizontal r=0 or vertical level c=0
@@ -504,12 +575,12 @@ if st.button("Submit", use_container_width=True):
 
         if small_result_r == 0:
             price = small_result_c * price_square
-            st.write(f"LEVEL 3B small_result_c price *50: {price}")
+            st.write(f"LEVEL 3A small_result_c price *50: {price}")
             return price
         
         if small_result_c == 0:
             price = small_result_r * price_square
-            st.write(f"LEVEL 3B small_result_r price *50: {price}")
+            st.write(f"LEVEL 3A small_result_r price *50: {price}")
             return price
 
 
@@ -518,6 +589,9 @@ if st.button("Submit", use_container_width=True):
         st.write("LEVEL 2 inside detail calculation")
         small_result_r = abs(from_small_r - to_small_r)
         small_result_c = abs(from_small_c - to_small_c)
+
+        st.write(f"LEVEL 2: small r : {small_result_r}")
+        st.write(f"LEVEL 2: small c : {small_result_c}")
 
         if small_result_r <= 1 and small_result_c <= 1:
             price = price_square
