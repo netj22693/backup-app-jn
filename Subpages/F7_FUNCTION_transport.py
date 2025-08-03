@@ -1,33 +1,21 @@
 import streamlit as st
 import pandas as pd
+import math
 
 
 
 
+# Price per 1t/per approx 30km (one square on map)
+
+truck_kc = 689
+train_kc = 230
+plane_kc = 4_590
 
 
+truck_eur = 27
+train_eur = 9
+plane_eur = 180
 
-
-# Data set 
-# dataset_test = ({
-# "cz" : {
-#     "A" : {"big" : ["1","1"], "small" : ["2","2"], "train":"y", "air":"y"},
-#     "B" : {"big" : ["2","1"], "small" : ["5","2"], "train":"n", "air":"y"},
-#     "C" : {"big" : ["2","2"], "small" : ["5","5"], "train":"n", "air":"n"},
-#     "D" : {"big" : ["2","3"], "small" : ["5","8"], "train":"n", "air":"n"},
-#     "E" : {"big" : ["1","1"], "small" : ["2","3"], "train":"n", "air":"n"},
-#     "G" : {"big" : ["2","1"], "small" : ["6","3"], "train":"n", "air":"n"},
-#     "H" : {"big" : ["2","2"], "small" : ["6","4"], "train":"y", "air":"y"},
-#     "I" : {"big" : ["3","1"], "small" : ["9","2"], "train":"y", "air":"y"},
-#     "K" : {"big" : ["1","3"], "small" : ["2","9"], "train":"n", "air":"y"}
-# },
-# "sk" : {
-# 	"SA" : {"big" : ["3","4"], "small" : ["8","11"], "train":"n", "air":"y"},
-#     "SB" : {"big" : ["4","4"], "small" : ["11","11"], "train":"n", "air":"y"},
-#     "SC" : {"big" : ["4","5"], "small" : ["11","14"], "train":"n", "air":"n"},
-#     "SD" : {"big" : ["3","5"], "small" : ["8","13"], "train":"y", "air":"y"}		
-# }
-# })
 
 dataset_test = ({
 "cz" : {
@@ -215,14 +203,34 @@ with st.expander("City overview", icon = ":material/pin_drop:"):
 
 
 # /////////////////////////////////////////////////////////////////////////
-def price_decision(selected_currency):
+def price_decision(selected_currency, selected_transport):
+
     if selected_currency == 'koruna':
-        price_square = 50
-        return price_square
+        if selected_transport == 'Truck':
+            price_square = truck_kc
+            return price_square
+        
+        if selected_transport == 'Train':
+            price_square = train_kc
+            return price_square
+
+        if selected_transport == 'Airplane':
+            price_square = plane_kc
+            return price_square
     
+
     if selected_currency == 'euro':
-        price_square = 2.5
-        return price_square
+        if selected_transport == 'Truck':
+            price_square = truck_eur
+            return price_square
+        
+        if selected_transport == 'Train':
+            price_square = train_eur
+            return price_square
+
+        if selected_transport == 'Airplane':
+            price_square = plane_eur
+            return price_square
 
 
 
@@ -315,7 +323,7 @@ selected_currency = st.radio(
     currency
 )
 
-price_square = price_decision(selected_currency)
+
 
 
 #train / truck / plaine
@@ -358,7 +366,7 @@ air_from, air_to = aircraft_available(dataset_test,radio_from_country, radio_to_
 def options_air_result(air_from, air_to):
     
     if air_from == 'y' and air_to == 'y':
-        train_result = ['Airplaine']
+        train_result = ['Airplane']
     else:
         train_result = []
         
@@ -371,6 +379,10 @@ air_result = options_air_result(air_from, air_to)
 transport_options_list = train_result + air_result
 ''
 selected_transport = st.radio("Transport type:", transport_options_list)
+
+# //////////////// Price per square, based on selected transport  ///////
+price_square = price_decision(selected_currency,selected_transport)
+st.write(f"price square after function: {price_square}")
 
 ''
 with st.expander("Truck / Road", icon=":material/local_shipping:"):
@@ -537,7 +549,7 @@ if st.button("Submit", use_container_width=True):
             price = calcul * price_square
             st.write(f"LEVEL 3 if 1 - před navratem price: {price}")
 
-            distance = round(calcul * 31.57, 2)
+            distance = calcul * 31.57
             return price, distance
         
         elif 8 <= comp < 10:
@@ -545,7 +557,7 @@ if st.button("Submit", use_container_width=True):
             price = calcul * price_square
             st.write(f"LEVEL 3 if 2 - před navratem price: {price}")
 
-            distance = round(calcul * 33.08, 2) #musim upravit nemam testovaci vzorky
+            distance = calcul * 33.08 #musim upravit nemam testovaci vzorky
             return price, distance
 
 
@@ -554,7 +566,7 @@ if st.button("Submit", use_container_width=True):
             price = calcul * price_square
             st.write(f"LEVEL 3 if 3 -před navratem price: {price}")
 
-            distance = round(calcul * 33.08, 2) #musim upravit nemam testovaci vzorky
+            distance = calcul * 33.08   #musim upravit nemam testovaci vzorky
             return price, distance
         
         elif 13 <= comp < 16:
@@ -562,7 +574,7 @@ if st.button("Submit", use_container_width=True):
             price = calcul * price_square
             st.write(f"LEVEL 3 if 4 -před navratem price: {price}")
 
-            distance = round(calcul * 35.68, 2)
+            distance = calcul * 35.68
             return price, distance
         
         elif 16 <= comp < 18:
@@ -570,7 +582,7 @@ if st.button("Submit", use_container_width=True):
             price = calcul * price_square
             st.write(f"LEVEL 3 if 5 -před navratem price: {price}")
 
-            distance = round(calcul * 34.24, 2)
+            distance = calcul * 34.24
             return price, distance
         
         elif 18 <= comp:
@@ -578,7 +590,7 @@ if st.button("Submit", use_container_width=True):
             price = calcul * price_square
             st.write(f"LEVEL 3 if 6 -před navratem price: {price}")
 
-            distance = round(calcul * 36.75, 2)
+            distance = calcul * 36.75
             return price, distance
 
 
@@ -590,15 +602,22 @@ if st.button("Submit", use_container_width=True):
         st.write(f"LEVEL 3A_R0C0 small_result_c: {small_result_c}")
 
         if small_result_r == 0:
+            st.write("tady?")
             price = small_result_c * price_square
             st.write(f"LEVEL 3A small_result_c price *50: {price}")
-            distance = round(small_result_c * 31.86, 2)
+            distance = small_result_c * 31.86
             return price, distance
         
         if small_result_c == 0:
+            st.write("nebo tady?")
+            st.write(small_result_r)
+            st.write(price_square)
             price = small_result_r * price_square
+            st.write("co tady")
+            st.write(f"LEVEL 3A small_result_r price square: {price_square}")
+            st.write(f"LEVEL 3A small_result_r: {small_result_r}")
             st.write(f"LEVEL 3A small_result_r price *50: {price}")
-            distance = round(small_result_r * 31.86, 2)
+            distance = small_result_r * 31.86
             return price, distance
 
 
@@ -626,14 +645,7 @@ if st.button("Submit", use_container_width=True):
 
 
     # if big R = C -> same price
-    def calculation_L1(from_big_r,
-                            to_big_r,
-                            from_big_c,
-                            to_big_c,
-                            from_small_r,
-                            to_small_r,
-                            from_small_c,
-                            to_small_c):
+    def calculation_L1(from_big_r, to_big_r,from_big_c, to_big_c, from_small_r,to_small_r, from_small_c, to_small_c):
         
         big_result_r = abs(from_big_r - to_big_r)
         big_result_c = abs(from_big_c - to_big_c)
@@ -655,21 +667,77 @@ if st.button("Submit", use_container_width=True):
 
 
 
-    price, distance = calculation_L1(from_big_r,
-                            to_big_r,
-                            from_big_c,
-                            to_big_c,
-                            from_small_r,
-                            to_small_r,
-                            from_small_c,
-                            to_small_c)
+    price, distance = calculation_L1(from_big_r, to_big_r, from_big_c, to_big_c,from_small_r, to_small_r,from_small_c, to_small_c)
 
     st.write(f"po def returnu price {price}")
     st.write(f"po def returnu distance {distance}")
 
-    #Fronted 
-    st.write(f"- Price is: {price} {selected_currency}")
-    st.write(f"- Approximate distance: {distance} km")
+
+    # extra time for load unload and other admin stuff (in hours -> day)
+    extra_time_truck_h = 8
+    extra_time_train_h = 6
+    extra_time_air_h = 10
+
+    log_extra_time_truck = extra_time_truck_h / 24
+    log_extra_time_train = extra_time_train_h / 24   
+    log_extra_time_airplane = extra_time_air_h / 24  
+    st.write(f"log extea time: {log_extra_time_truck}")
+
+    def calcul_delivery_time(distance,selected_transport,log_extra_time_truck,log_extra_time_train, log_extra_time_airplane, extra_time_truck_h, extra_time_train_h, extra_time_air_h):
+
+        if selected_transport == 'Truck':
+            time_journey = distance / 70
+            time = time_journey + extra_time_truck_h
+            extra_time_h = extra_time_truck_h
+            extra_time_d = log_extra_time_truck
+            return time, extra_time_h, extra_time_d,time_journey 
+
+        if selected_transport == 'Train':
+            time_journey = distance / 80
+            time = time_journey + extra_time_train_h
+            extra_time_h = extra_time_train_h
+            extra_time_d = log_extra_time_train
+            return time, extra_time_h, extra_time_d,time_journey 
+        
+        if selected_transport == 'Airplane':
+            time_journey = distance / 700, 2
+            st.write(time_journey)
+            time = time_journey + extra_time_air_h, 2
+            extra_time_h = extra_time_air_h
+            extra_time_d = log_extra_time_airplane
+            return time, extra_time_h, extra_time_d,time_journey 
+
+    calculated_time_delivery, extra_time, extra_time_d, time_journey  = calcul_delivery_time(distance,selected_transport,log_extra_time_truck,log_extra_time_train, log_extra_time_airplane, extra_time_truck_h, extra_time_train_h, extra_time_air_h )
+
+
+
+
+    # CO UDELAT: je potřeba znovu napsat tuhle část appky, kvůli rounding ta čísla pak nevycházejí -> je potřeba postupovat přesně v pořadí v jakém ty hodnoty zobrazuju -> v tm pořadí ty hodnoty i počítat VYKAŠLAT SE NA ROUNDING A ZOBRAZOVAT 2 DESETINNÁ MÍSTA :.2F
+
+
+    # Final numbers + Rounding before visualizition:
+
+    calculated_time_delivery_d = calculated_time_delivery / 24
+
+    buffer_d = 0.5
+    guaranted_delivery_d = calculated_time_delivery_d + buffer_d + extra_time_d
+
+    time_journey_d = (time_journey / 24)
+
+    st.write(time_journey_d)
+    st.write(extra_time_d)
+    st.write(calculated_time_delivery_d)
+
+
+    #Frontend 
+    st.write(f"- Price is: {price:.2f} {selected_currency}")
+    st.write(f"- Approximate distance: {distance:.2f} km")
+    st.write(f"- Selected transport type: {selected_transport}")
+    st.write(f"- Time to cover the distance: {time_journey:.2f} hours -> {time_journey_d:.2f} day(s).")
+    st.write(f"- Selected transport type: {selected_transport} needs {extra_time:.2f} hours for administration /load / unload  -> {extra_time_d:.2f} day.")
+    st.write(f"- Expected time for delivery: {calculated_time_delivery:.2f} hours -> {calculated_time_delivery_d:.2f} day(s).")
+    ''
+    st.write(f"- Overall: Guaranted delivery (including 0.5 day buffer) {guaranted_delivery_d:.2f} day(s).")
 
 
 
