@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import math
+
 
 
 
@@ -531,39 +531,55 @@ if st.button("Submit", use_container_width=True):
         comp = small_result_r + small_result_c
         st.write(f"LEVEL 3 comp {comp}")
 
-        pythagoras = round(math.sqrt((small_result_r**2) + (small_result_c**2)), 1)
-        st.write(f" pythagoras: {pythagoras}    - {pythagoras*50}") 
 
         if comp < 8:
-            price = (small_result_r + small_result_c - 1) * price_square
+            calcul = (small_result_r + small_result_c - 1)
+            price = calcul * price_square
             st.write(f"LEVEL 3 if 1 - před navratem price: {price}")
-            return price
+
+            distance = round(calcul * 31.57, 2)
+            return price, distance
         
         elif 8 <= comp < 10:
-            price = (small_result_r + small_result_c - 2) * price_square
+            calcul = (small_result_r + small_result_c - 2)
+            price = calcul * price_square
             st.write(f"LEVEL 3 if 2 - před navratem price: {price}")
-            return price
+
+            distance = round(calcul * 33.08, 2) #musim upravit nemam testovaci vzorky
+            return price, distance
 
 
         elif 10 <= comp < 13:
-            price = (small_result_r + small_result_c - 2.5) * price_square
+            calcul = (small_result_r + small_result_c - 2.5)
+            price = calcul * price_square
             st.write(f"LEVEL 3 if 3 -před navratem price: {price}")
-            return price
+
+            distance = round(calcul * 33.08, 2) #musim upravit nemam testovaci vzorky
+            return price, distance
         
         elif 13 <= comp < 16:
-            price = (small_result_r + small_result_c - 4) * price_square
+            calcul = (small_result_r + small_result_c - 4)
+            price = calcul * price_square
             st.write(f"LEVEL 3 if 4 -před navratem price: {price}")
-            return price
+
+            distance = round(calcul * 35.68, 2)
+            return price, distance
         
         elif 16 <= comp < 18:
-            price = (small_result_r + small_result_c - 5) * price_square
+            calcul = (small_result_r + small_result_c - 5)
+            price = calcul * price_square
             st.write(f"LEVEL 3 if 5 -před navratem price: {price}")
-            return price
+
+            distance = round(calcul * 34.24, 2)
+            return price, distance
         
         elif 18 <= comp:
-            price = (small_result_r + small_result_c - 8) * price_square
+            calcul = (small_result_r + small_result_c - 8)
+            price = calcul * price_square
             st.write(f"LEVEL 3 if 6 -před navratem price: {price}")
-            return price
+
+            distance = round(calcul * 36.75, 2)
+            return price, distance
 
 
 
@@ -576,12 +592,14 @@ if st.button("Submit", use_container_width=True):
         if small_result_r == 0:
             price = small_result_c * price_square
             st.write(f"LEVEL 3A small_result_c price *50: {price}")
-            return price
+            distance = round(small_result_c * 31.86, 2)
+            return price, distance
         
         if small_result_c == 0:
             price = small_result_r * price_square
             st.write(f"LEVEL 3A small_result_r price *50: {price}")
-            return price
+            distance = round(small_result_r * 31.86, 2)
+            return price, distance
 
 
     # if different big region 
@@ -595,15 +613,15 @@ if st.button("Submit", use_container_width=True):
 
         if small_result_r <= 1 and small_result_c <= 1:
             price = price_square
-            return price
+            return price, distance
         
         elif small_result_r == 0 or small_result_c == 0:
-            price = calculation_L3A_R0C0(small_result_r, small_result_c)
-            return price
+            price, distance = calculation_L3A_R0C0(small_result_r, small_result_c)
+            return price, distance
         
         else:
-            price = calculation_L3B(small_result_r,small_result_c)
-            return price
+            price, distance = calculation_L3B(small_result_r,small_result_c)
+            return price, distance
 
 
 
@@ -619,22 +637,25 @@ if st.button("Submit", use_container_width=True):
         
         big_result_r = abs(from_big_r - to_big_r)
         big_result_c = abs(from_big_c - to_big_c)
+        small_result_r = abs(from_small_r - to_small_r)
+        small_result_c = abs(from_small_c - to_small_c)
         st.write(f" LEVEL 1: big_result_r: {big_result_r}")
         st.write(f" LEVEL 1: big_result_c: {big_result_c}")
 
-        if big_result_r == 0 and big_result_c == 0:
+        if (big_result_r == 0 and big_result_c == 0) and (small_result_r <= 1 and small_result_c <= 1):
             price = price_square
-            return price
+            distance = 24.15
+            return price, distance
 
         else:
             st.write("LEVEL 1: Else happened")
-            price = calculation_L2(from_small_r, to_small_r, from_small_c, to_small_c)
-            return price
+            price, distance = calculation_L2(from_small_r, to_small_r, from_small_c, to_small_c)
+            return price, distance
 
 
 
 
-    price = calculation_L1(from_big_r,
+    price, distance = calculation_L1(from_big_r,
                             to_big_r,
                             from_big_c,
                             to_big_c,
@@ -644,9 +665,11 @@ if st.button("Submit", use_container_width=True):
                             to_small_c)
 
     st.write(f"po def returnu price {price}")
+    st.write(f"po def returnu distance {distance}")
 
     #Fronted 
     st.write(f"- Price is: {price} {selected_currency}")
+    st.write(f"- Approximate distance: {distance} km")
 
 
 
