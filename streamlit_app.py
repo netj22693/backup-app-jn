@@ -146,6 +146,18 @@ function_6_desc_api = st.Page(
     icon= ":material/code:"
 )
 
+function_7_transport = st.Page(
+    "Subpages/F7_FUNCTION_transport.py",
+    title="7. Transportation",
+    icon= ":material/play_circle:"
+)
+
+function_7_desc = st.Page(
+    "Subpages/F7_description.py",
+    title="Description",
+    icon= ":material/code:"
+)
+
 
 # Navigation:
 pg = st.navigation(
@@ -182,7 +194,11 @@ pg = st.navigation(
         "Function 6": [
             function_6_desc_api,
             function_6_zipcode
-        ]
+        ],
+        # "Function 7": [
+        #     function_7_desc,
+        #     function_7_transport
+        # ],
 
     },
     expanded=True  #23-Jun-2025: since streamlit version 1.46.0, this is needed to have the right menu bar always open as default (possibility to collaps still available)
