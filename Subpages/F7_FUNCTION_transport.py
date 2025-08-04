@@ -1,12 +1,13 @@
 import streamlit as st
 import pandas as pd
 import math
-
+import datetime
 
 
 
 # Price per 1t/per approx 30km (one square on map)
 
+#STANDAR - DELIVERY SERVICE
 truck_kc = 689
 train_kc = 230
 plane_kc = 4_590
@@ -15,6 +16,37 @@ plane_kc = 4_590
 truck_eur = 27
 train_eur = 9
 plane_eur = 180
+
+
+# extra time for load unload and other admin stuff (in hours -> day)
+#STANDAR - DELIVERY SERVICE
+extra_time_truck_h = 48
+extra_time_train_h = 48
+extra_time_air_h = 72
+
+express_extra_time_truck_h = 6
+express_extra_time_train_h = 10
+express_extra_time_air_h = 24
+
+slow_extra_time_truck_h = 120
+slow_extra_time_train_h = 120
+slow_extra_time_air_h = 240
+
+
+extra_time_df = pd.DataFrame({
+    "Transport" : ['Truck','Train','Airplane'],
+    "Express" : [express_extra_time_truck_h,express_extra_time_train_h, express_extra_time_air_h],
+    "Standard" : [extra_time_truck_h,extra_time_train_h, extra_time_air_h],
+    "Slow" : [slow_extra_time_truck_h,slow_extra_time_train_h, slow_extra_time_air_h]
+})
+
+
+
+
+# PRICE Coeficients increasing(Express delivery) or decreasign (Slow delivery) price per square 
+coef_truck = 0.4
+coef_train = 0.5 
+coef_air = 0.5
 
 
 dataset_test = ({
@@ -382,7 +414,6 @@ selected_transport = st.radio("Transport type:", transport_options_list)
 
 # //////////////// Price per square, based on selected transport  ///////
 price_square = price_decision(selected_currency,selected_transport)
-st.write(f"price square after function: {price_square}")
 
 ''
 with st.expander("Truck / Road", icon=":material/local_shipping:"):
@@ -435,15 +466,162 @@ with st.expander("Airplane", icon=":material/travel:"):
     st.dataframe(data_table_air_sk)
 
 
-# //////////////// Submit button ////////////////////
+# Radio - urgency input
+urgency_offer = ['Express', 'Standard', 'Slow']
 
 ''
 ''
+urgency = st.radio("Delivery service:", urgency_offer, index=1, captions=[
+        "Fast administration process -> delivery as soon as possible",
+        "Within 2-3 days cargo should be ready to go",
+        "5-10 days to get cargo ready to go ",
+    ],)
+
+
+
+
+st.write(urgency)
+
+
+
+
+#STANDAR - DELIVERY SERVICE
+# truck_kc = 689
+# train_kc = 230
+# plane_kc = 4_590
+
+
+# truck_eur = 27
+# train_eur = 9
+# plane_eur = 180
+
+# extra time for load unload and other admin stuff (in hours -> day)
+#STANDAR - DELIVERY SERVICE
+# extra_time_truck_h = 6
+# extra_time_train_h = 10
+# extra_time_air_h = 20
+
+st.write(f"kontrola price squere p5ed : {price_square}")
+
+def change_express(price_square, selected_transport):
+
+    if selected_transport == 'Truck':
+        price_square = price_square + (price_square * coef_truck)
+        return price_square
+    
+    elif selected_transport == 'Train':
+        price_square = price_square + (price_square * coef_train)
+        return price_square
+    
+    elif selected_transport == 'Airplane':
+        price_square = price_square + (price_square * coef_air)
+        return price_square
+
+def change_slow(price_square, selected_transport):
+
+    if selected_transport == 'Truck':
+        price_square = price_square - (price_square * coef_truck)
+        return price_square
+    
+    elif selected_transport == 'Train':
+        price_square = price_square - (price_square * coef_train)
+        return price_square
+    
+    elif selected_transport == 'Airplane':
+        price_square = price_square - (price_square * coef_air)
+        return price_square
+
+
+
+if urgency  == 'Express':
+    price_square = change_express(price_square, selected_transport)
+
+
+if urgency  == 'Slow':
+    price_square = change_slow(price_square, selected_transport)
+
+
+st.write(f"kontrola price squere: {price_square}")
+
+def extra_time_decision(urgency, selected_transport, extra_time_truck_h, extra_time_train_h, extra_time_air_h):
+
+    if urgency == 'Slow':
+        if selected_transport == 'Truck':
+            extra_time = slow_extra_time_truck_h
+            return extra_time
+        
+        elif selected_transport == 'Train':
+            extra_time = slow_extra_time_train_h 
+            return extra_time
+        
+        elif selected_transport == 'Airplane':
+            extra_time = slow_extra_time_air_h 
+            return extra_time
+
+    if urgency == 'Standard':
+        if selected_transport == 'Truck':
+            extra_time = extra_time_truck_h
+            return extra_time
+        
+        elif selected_transport == 'Train':
+            extra_time = extra_time_train_h
+            return extra_time
+        
+        elif selected_transport == 'Airplane':
+            extra_time = extra_time_air_h
+            return extra_time
+
+    if urgency == 'Express':
+        if selected_transport == 'Truck':
+            extra_time = express_extra_time_truck_h 
+            return extra_time
+        
+        elif selected_transport == 'Train':
+            extra_time = express_extra_time_train_h
+            return extra_time
+        
+        elif selected_transport == 'Airplane':
+            extra_time = express_extra_time_air_h
+            return extra_time
+    
+
+
+extra_time = extra_time_decision(urgency, selected_transport, extra_time_truck_h, extra_time_train_h, extra_time_air_h)
+
+
+
+
+if urgency == 'Express' or urgency == 'Standard':
+    
+    str_extra_time = str(extra_time)
+    extra_time_vizualization = (str_extra_time + " " + "hours")
+
+
+if urgency == 'Slow':
+    extra_time_callc = extra_time / 24
+    extra_time_callc = int(extra_time_callc)
+    extra_time_callc = str(extra_time_callc)
+    extra_time_vizualization = (extra_time_callc + " " + "days")
+
+st.write(f" - **{selected_transport}** - **{urgency}** -> the cargo can be on its way in **{extra_time_vizualization}**.")
+
+st.write(f" - Unit price for distance calculation: **{price_square} {selected_currency}**")
+
 ''
+with st.expander("**SLA** - Service Level Agreement", icon= ":material/contract:"):
+
+    ''
+    st.write(" - **Time** - Cargo on its way till this time - **HOURS**")
+    st.dataframe(extra_time_df, hide_index=True)
+
+# //////////////// Submit button ////////////////////
+
+
+''
+st.write("------")
 if st.button("Submit", use_container_width=True):
     st.write(from_city)
     st.write(to_city)
-
 
 
     def input_validation(from_city,to_city):
@@ -673,30 +851,34 @@ if st.button("Submit", use_container_width=True):
     st.write(f"po def returnu distance {distance}")
 
 
-    # extra time for load unload and other admin stuff (in hours -> day)
-    extra_time_truck_h = 4
-    extra_time_train_h = 8
-    extra_time_air_h = 13
+    # # extra time for load unload and other admin stuff (in hours -> day)
+    # #STANDAR - DELIVERY SERVICE
+    # extra_time_truck_h = 6
+    # extra_time_train_h = 10
+    # extra_time_air_h = 20
 
 
-    def calcul_delivery_time(distance,selected_transport,extra_time_truck_h, extra_time_train_h, extra_time_air_h):
+    def calcul_delivery_time(distance,selected_transport):
 
         if selected_transport == 'Truck':
             time_journey = distance / 70
-            extra_time_h = extra_time_truck_h
-            return extra_time_h, time_journey 
+            # extra_time_h = extra_time_truck_h
+            # return extra_time_h, time_journey 
+            return time_journey 
 
         if selected_transport == 'Train':
             time_journey = distance / 80
-            extra_time_h = extra_time_train_h
-            return extra_time_h, time_journey 
+            # extra_time_h = extra_time_train_h
+            # return extra_time_h, time_journey 
+            return time_journey 
         
         if selected_transport == 'Airplane':
             time_journey = distance / 700
-            extra_time_h = extra_time_air_h
-            return extra_time_h, time_journey 
+            # extra_time_h = extra_time_air_h
+            # return extra_time_h, time_journey 
+            return time_journey 
 
-    extra_time, time_journey  = calcul_delivery_time(distance,selected_transport, extra_time_truck_h, extra_time_train_h, extra_time_air_h)
+    time_journey  = calcul_delivery_time(distance,selected_transport)
 
     # mandatory breaks for truck 
 
@@ -720,12 +902,18 @@ if st.button("Submit", use_container_width=True):
         if time_journey <= 9:
             break_n = one_shift(time_journey)
             return break_n
+
+        # Law alows to drive 10 hours and no longer (for journey between 9-10 hours)
+        # 2 x 45 minutes break -> 0.75 hour
+        if 9 < time_journey <= 10:
+            break_n = 0.75
+            return break_n
             
-        elif time_journey > 9:
+        elif time_journey > 10:
 
             shift_full = time_journey / 9
 
-            # split of the number for calculation logi
+            # split of the number for calculation 
             y = math.modf(shift_full)
             decimal_shift = y[0]
             number_of_shifts = y[1]
@@ -771,11 +959,13 @@ if st.button("Submit", use_container_width=True):
     st.write(f"Time to cover the distance: time_journey {time_journey} HODIN")
 
     if selected_transport == 'Truck':
-        st.write(f"Truck potřebuje tento extra čas v HODINÁCH povinné přestávky {time_break}, a čas na administrativua  naložení {extra_time} HODINY ." )
+        st.write(f"Truck potřebuje tento extra čas v HODINÁCH povinné přestávky {time_break}, a čas na administrativua  naložení {extra_time} for {urgency} HODINY ." )
         st.write(f"Takže celkový čas, aby Truck dorazil na místo určení je {time_journey + time_break + extra_time} HODIN" )
 
     elif selected_transport == 'Train' or 'Airplane':
-        st.write(f"{selected_transport} potřebuje tento extra čas v HODINÁCH na administrativua  naložení {extra_time} HODINY ." )
+        st.write(f"{selected_transport} potřebuje tento extra čas v HODINÁCH na administrativua  naložení {extra_time} for {urgency} HODINY ." )
         st.write(f"Takže celkový čas, aby {selected_transport} dorazil na místo určení je {time_journey + extra_time} HODIN" )
 
- 
+    
+
+
