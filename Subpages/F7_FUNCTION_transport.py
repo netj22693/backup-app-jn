@@ -297,7 +297,7 @@ if radio_to_country == "sk":
 
 
 
-# function for offering relevant currencz to choose from in case that international transport CZ <-> SK
+# function for offering relevant currency to choose from in case that international transport CZ <-> SK
 def offer_currency(radio_from_country,radio_to_country):
 
     if radio_from_country == 'sk' and radio_to_country == 'sk':
@@ -567,6 +567,8 @@ if st.button("Submit", use_container_width=True):
             st.write(f"LEVEL 3 if 3 -před navratem price: {price}")
 
             distance = calcul * 33.08   #musim upravit nemam testovaci vzorky
+            st.write(f"trouble shoot - LEVEL 3 if 3 - price vykalkulovaná: {price} = calcul {calcul} * price square {price_square}")
+            st.write(f"trouble shoot - LEVEL 3 if 3 - distanc: kalkulace:   distance{distance} = ((calcul {calcul} = ({small_result_r} + {small_result_c} - 2.5)) * 33.08 korekcni cislo)")
             return price, distance
         
         elif 13 <= comp < 16:
@@ -665,8 +667,6 @@ if st.button("Submit", use_container_width=True):
             return price, distance
 
 
-
-
     price, distance = calculation_L1(from_big_r, to_big_r, from_big_c, to_big_c,from_small_r, to_small_r,from_small_c, to_small_c)
 
     st.write(f"po def returnu price {price}")
@@ -674,73 +674,108 @@ if st.button("Submit", use_container_width=True):
 
 
     # extra time for load unload and other admin stuff (in hours -> day)
-    extra_time_truck_h = 8
-    extra_time_train_h = 6
-    extra_time_air_h = 10
+    extra_time_truck_h = 4
+    extra_time_train_h = 8
+    extra_time_air_h = 13
 
-    log_extra_time_truck = extra_time_truck_h / 24
-    log_extra_time_train = extra_time_train_h / 24   
-    log_extra_time_airplane = extra_time_air_h / 24  
-    st.write(f"log extea time: {log_extra_time_truck}")
 
-    def calcul_delivery_time(distance,selected_transport,log_extra_time_truck,log_extra_time_train, log_extra_time_airplane, extra_time_truck_h, extra_time_train_h, extra_time_air_h):
+    def calcul_delivery_time(distance,selected_transport,extra_time_truck_h, extra_time_train_h, extra_time_air_h):
 
         if selected_transport == 'Truck':
             time_journey = distance / 70
-            time = time_journey + extra_time_truck_h
             extra_time_h = extra_time_truck_h
-            extra_time_d = log_extra_time_truck
-            return time, extra_time_h, extra_time_d,time_journey 
+            return extra_time_h, time_journey 
 
         if selected_transport == 'Train':
             time_journey = distance / 80
-            time = time_journey + extra_time_train_h
             extra_time_h = extra_time_train_h
-            extra_time_d = log_extra_time_train
-            return time, extra_time_h, extra_time_d,time_journey 
+            return extra_time_h, time_journey 
         
         if selected_transport == 'Airplane':
-            time_journey = distance / 700, 2
-            st.write(time_journey)
-            time = time_journey + extra_time_air_h, 2
+            time_journey = distance / 700
             extra_time_h = extra_time_air_h
-            extra_time_d = log_extra_time_airplane
-            return time, extra_time_h, extra_time_d,time_journey 
+            return extra_time_h, time_journey 
 
-    calculated_time_delivery, extra_time, extra_time_d, time_journey  = calcul_delivery_time(distance,selected_transport,log_extra_time_truck,log_extra_time_train, log_extra_time_airplane, extra_time_truck_h, extra_time_train_h, extra_time_air_h )
+    extra_time, time_journey  = calcul_delivery_time(distance,selected_transport, extra_time_truck_h, extra_time_train_h, extra_time_air_h)
+
+    # mandatory breaks for truck 
+
+    def one_shift(time_journey):
+
+        num_break = time_journey / 4.5    #mandatory break 
+        
+        if num_break <= 1:
+            # 0 breaks needed -> 0.0 hour of break time
+            result = 0
+            return result
+            
+        elif 1 <= num_break <= 2:
+            # 1 break needed -> 0.75 hour (45 minutues break after 4.5 hour of driving)
+            result = 0.75
+            return result
+
+    def calcul_time_break(time_journey):
+
+        # max 9 hours of driving a day 
+        if time_journey <= 9:
+            break_n = one_shift(time_journey)
+            return break_n
+            
+        elif time_journey > 9:
+
+            shift_full = time_journey / 9
+
+            # split of the number for calculation logi
+            y = math.modf(shift_full)
+            decimal_shift = y[0]
+            number_of_shifts = y[1]
+
+            # cas v HODINACH kolik mi zaberou pauzy Z CELÝCH  9 smen
+            time_breaks_h = (number_of_shifts * 45)/60  # 45 min (mandatory break)/60 => HOURS
+
+            # Number of mandatory breaks after every 9 hours (10 hours sleep/break)
+            # Example 18 hour journy -> 2x 9hour shift -> 1x 10 hour break in between
+            # Example 27 hour journy -> 3x 9hour shift -> 2x 10 hour break in between
+            if decimal_shift > 0.00:
+                time_spent_sleep_breaks_h = (number_of_shifts) * 10
+
+            if decimal_shift == 0.00:
+                time_spent_sleep_breaks_h = (number_of_shifts - 1) * 10
+                
+            # All the other hours in between the "full number of 9 hours" is covered here by "decimals" of hours indicating mandatory 45 minut break aftre 4.5 hours of driving (9 hours = 1.0 -> 4.5 hours = 0.5)
+            if decimal_shift < 0.5:
+                decimal_break = 0
+            
+            if 0.5 <= decimal_shift < 1:
+                decimal_break = 1
+            
+            if decimal_shift > 1:
+                st.write("error in calculation")
+
+            # cas v HODINACH kolik mi zaberou pauzy v rámci decimalni hodnoty (45 minut/60) = hodiny
+            decimal_time_h = (decimal_break * 45)/60
+
+            final_time_breaks = time_breaks_h + time_spent_sleep_breaks_h + decimal_time_h
+            return final_time_breaks
+
+
+    if selected_transport == 'Truck':
+        time_break = calcul_time_break(time_journey)
 
 
 
+    # Troubleshoot
+    st.write("------- Troubleshoot-----------")
+    st.write(f"Price: {price} {selected_currency} na tu distanci/vzdálenost")
+    st.write(f"Distance: {distance}km.")
+    st.write(f"Time to cover the distance: time_journey {time_journey} HODIN")
 
-    # CO UDELAT: je potřeba znovu napsat tuhle část appky, kvůli rounding ta čísla pak nevycházejí -> je potřeba postupovat přesně v pořadí v jakém ty hodnoty zobrazuju -> v tm pořadí ty hodnoty i počítat VYKAŠLAT SE NA ROUNDING A ZOBRAZOVAT 2 DESETINNÁ MÍSTA :.2F
+    if selected_transport == 'Truck':
+        st.write(f"Truck potřebuje tento extra čas v HODINÁCH povinné přestávky {time_break}, a čas na administrativua  naložení {extra_time} HODINY ." )
+        st.write(f"Takže celkový čas, aby Truck dorazil na místo určení je {time_journey + time_break + extra_time} HODIN" )
 
+    elif selected_transport == 'Train' or 'Airplane':
+        st.write(f"{selected_transport} potřebuje tento extra čas v HODINÁCH na administrativua  naložení {extra_time} HODINY ." )
+        st.write(f"Takže celkový čas, aby {selected_transport} dorazil na místo určení je {time_journey + extra_time} HODIN" )
 
-    # Final numbers + Rounding before visualizition:
-
-    calculated_time_delivery_d = calculated_time_delivery / 24
-
-    buffer_d = 0.5
-    guaranted_delivery_d = calculated_time_delivery_d + buffer_d + extra_time_d
-
-    time_journey_d = (time_journey / 24)
-
-    st.write(time_journey_d)
-    st.write(extra_time_d)
-    st.write(calculated_time_delivery_d)
-
-
-    #Frontend 
-    st.write(f"- Price is: {price:.2f} {selected_currency}")
-    st.write(f"- Approximate distance: {distance:.2f} km")
-    st.write(f"- Selected transport type: {selected_transport}")
-    st.write(f"- Time to cover the distance: {time_journey:.2f} hours -> {time_journey_d:.2f} day(s).")
-    st.write(f"- Selected transport type: {selected_transport} needs {extra_time:.2f} hours for administration /load / unload  -> {extra_time_d:.2f} day.")
-    st.write(f"- Expected time for delivery: {calculated_time_delivery:.2f} hours -> {calculated_time_delivery_d:.2f} day(s).")
-    ''
-    st.write(f"- Overall: Guaranted delivery (including 0.5 day buffer) {guaranted_delivery_d:.2f} day(s).")
-
-
-
-
-
-
+ 
