@@ -10,23 +10,23 @@ import datetime
 #STANDAR - DELIVERY SERVICE
 truck_kc = 689
 train_kc = 230
-plane_kc = 4_590
+plane_kc = 150_000
 
 
 truck_eur = 27
-train_eur = 9
-plane_eur = 180
+train_eur = 10
+plane_eur = 6250
 
 
 # extra time for load unload and other admin stuff (in hours -> day)
 #STANDAR - DELIVERY SERVICE
-extra_time_truck_h = 48
+extra_time_truck_h = 32
 extra_time_train_h = 48
 extra_time_air_h = 72
 
 express_extra_time_truck_h = 6
 express_extra_time_train_h = 10
-express_extra_time_air_h = 24
+express_extra_time_air_h = 2
 
 slow_extra_time_truck_h = 120
 slow_extra_time_train_h = 120
@@ -46,7 +46,7 @@ extra_time_df = pd.DataFrame({
 # PRICE Coeficients increasing(Express delivery) or decreasign (Slow delivery) price per square 
 coef_truck = 0.4
 coef_train = 0.5 
-coef_air = 0.5
+coef_air = 0.1
 
 
 dataset_test = ({
@@ -514,7 +514,7 @@ def change_express(price_square, selected_transport):
         return price_square
     
     elif selected_transport == 'Airplane':
-        price_square = price_square + (price_square * coef_air)
+        price_square = price_square + (price_square * (7*coef_air))
         return price_square
 
 def change_slow(price_square, selected_transport):
@@ -605,7 +605,7 @@ if urgency == 'Slow':
 
 st.write(f" - **{selected_transport}** - **{urgency}** -> the cargo can be on its way in **{extra_time_vizualization}**.")
 
-st.write(f" - Unit price for distance calculation: **{price_square} {selected_currency}**")
+st.write(f" - Unit price for distance calculation: **{price_square:,.2f} {selected_currency}**")
 
 ''
 with st.expander("**SLA** - Service Level Agreement", icon= ":material/contract:"):
@@ -954,7 +954,7 @@ if st.button("Submit", use_container_width=True):
 
     # Troubleshoot
     st.write("------- Troubleshoot-----------")
-    st.write(f"Price: {price} {selected_currency} na tu distanci/vzdálenost")
+    st.write(f"Price: {price:,.2f} {selected_currency} na tu distanci/vzdálenost")
     st.write(f"Distance: {distance}km.")
     st.write(f"Time to cover the distance: time_journey {time_journey} HODIN")
 
