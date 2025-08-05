@@ -1,20 +1,54 @@
 import streamlit as st
 import pandas as pd
 import math
-
+import datetime
+import requests
+import json
 
 
 
 # Price per 1t/per approx 30km (one square on map)
 
+#STANDAR - DELIVERY SERVICE
 truck_kc = 689
 train_kc = 230
-plane_kc = 4_590
+plane_kc = 150_000
 
 
 truck_eur = 27
-train_eur = 9
-plane_eur = 180
+train_eur = 10
+plane_eur = 6250
+
+
+# extra time for load unload and other admin stuff (in hours -> day)
+#STANDAR - DELIVERY SERVICE
+extra_time_truck_h = 32
+extra_time_train_h = 48
+extra_time_air_h = 72
+
+express_extra_time_truck_h = 6
+express_extra_time_train_h = 10
+express_extra_time_air_h = 2
+
+slow_extra_time_truck_h = 120
+slow_extra_time_train_h = 120
+slow_extra_time_air_h = 240
+
+
+extra_time_df = pd.DataFrame({
+    "Transport" : ['Truck','Train','Airplane'],
+    "Express" : [express_extra_time_truck_h,express_extra_time_train_h, express_extra_time_air_h],
+    "Standard" : [extra_time_truck_h,extra_time_train_h, extra_time_air_h],
+    "Slow" : [slow_extra_time_truck_h,slow_extra_time_train_h, slow_extra_time_air_h]
+})
+
+
+
+
+# PRICE Coeficients increasing(Express delivery) or decreasign (Slow delivery) price per square 
+coef_truck = 0.4
+coef_train = 0.5 
+coef_air = 0.1
 
 
 dataset_test = ({
@@ -51,6 +85,53 @@ dataset_test = ({
     "Banska Stiavnica" : {"big" : ["5","7"], "small" : ["13","20"], "train":"n", "air":"n"},		
 }
 })
+
+# //////////////////// API ///////////////////////
+
+def api_get_rate():
+    try:
+        # api_freecurrency_api = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_wD1NduThhBnySFJAlV9f6xnQmMhkJa6qFzX7DJz4&currencies=EUR%2CCZK"
+
+        #get reguest
+        # @st.cache_data(ttl=3600)
+        def get_response_api(api_freecurrency_api):
+            api_1 = requests.get(api_freecurrency_api, verify=False, timeout=5).text
+            return api_1
+
+        api_1 = get_response_api(api_freecurrency_api)
+
+
+        # JSON format creation
+        api_1_json = json.loads(api_1)
+
+
+        # Search for data in the API defined format - JSON
+        usd_to_czk_rate = api_1_json['data']['CZK']
+        usd_to_czk_rate = round(usd_to_czk_rate, 2)
+
+        usd_to_eur_rate = api_1_json['data']['EUR']
+        usd_to_eur_rate = round(usd_to_eur_rate, 2)
+
+        return  usd_to_czk_rate, usd_to_eur_rate
+
+    except:
+        st.warning("""
+        - Apologies, API refused to make a connection. So to see the function, there are temporary values.
+        """
+    )
+
+        usd_to_czk_rate = 0
+        usd_to_eur_rate = 0
+        
+        return usd_to_czk_rate, usd_to_eur_rate 
+
+
+
+usd_to_czk_rate, usd_to_eur_rate = api_get_rate()
+
+st.write(usd_to_czk_rate)
+st.write(usd_to_eur_rate)
+
 
 
 # /////////    Data parsing  /////////////
@@ -439,8 +520,148 @@ urgency_offer = ['Express', 'Standard', 'Slow']
 
 ''
 ''
-urgency = st.radio("Delivery service:", urgency_offer, index=1)
+urgency = st.radio("Delivery service:", urgency_offer, index=1, captions=[
+        "Fast administration process -> delivery as soon as possible",
+        "Within 2-3 days cargo should be ready to go",
+        "5-10 days to get cargo ready to go ",
+    ],)
 
+
+
+
+st.write(urgency)
+
+
+
+
+#STANDAR - DELIVERY SERVICE
+# truck_kc = 689
+# train_kc = 230
+# plane_kc = 4_590
+
+
+# truck_eur = 27
+# train_eur = 9
+# plane_eur = 180
+
+# extra time for load unload and other admin stuff (in hours -> day)
+#STANDAR - DELIVERY SERVICE
+# extra_time_truck_h = 6
+# extra_time_train_h = 10
+# extra_time_air_h = 20
+
+st.write(f"kontrola price squere p5ed : {price_square}")
+
+def change_express(price_square, selected_transport):
+
+    if selected_transport == 'Truck':
+        price_square = price_square + (price_square * coef_truck)
+        return price_square
+    
+    elif selected_transport == 'Train':
+        price_square = price_square + (price_square * coef_train)
+        return price_square
+    
+    elif selected_transport == 'Airplane':
+        price_square = price_square + (price_square * (7*coef_air))
+        return price_square
+
+def change_slow(price_square, selected_transport):
+
+    if selected_transport == 'Truck':
+        price_square = price_square - (price_square * coef_truck)
+        return price_square
+    
+    elif selected_transport == 'Train':
+        price_square = price_square - (price_square * coef_train)
+        return price_square
+    
+    elif selected_transport == 'Airplane':
+        price_square = price_square - (price_square * coef_air)
+        return price_square
+
+
+
+if urgency  == 'Express':
+    price_square = change_express(price_square, selected_transport)
+
+
+if urgency  == 'Slow':
+    price_square = change_slow(price_square, selected_transport)
+
+
+st.write(f"kontrola price squere: {price_square}")
+
+def extra_time_decision(urgency, selected_transport, extra_time_truck_h, extra_time_train_h, extra_time_air_h):
+
+    if urgency == 'Slow':
+        if selected_transport == 'Truck':
+            extra_time = slow_extra_time_truck_h
+            return extra_time
+        
+        elif selected_transport == 'Train':
+            extra_time = slow_extra_time_train_h 
+            return extra_time
+        
+        elif selected_transport == 'Airplane':
+            extra_time = slow_extra_time_air_h 
+            return extra_time
+
+    if urgency == 'Standard':
+        if selected_transport == 'Truck':
+            extra_time = extra_time_truck_h
+            return extra_time
+        
+        elif selected_transport == 'Train':
+            extra_time = extra_time_train_h
+            return extra_time
+        
+        elif selected_transport == 'Airplane':
+            extra_time = extra_time_air_h
+            return extra_time
+
+    if urgency == 'Express':
+        if selected_transport == 'Truck':
+            extra_time = express_extra_time_truck_h 
+            return extra_time
+        
+        elif selected_transport == 'Train':
+            extra_time = express_extra_time_train_h
+            return extra_time
+        
+        elif selected_transport == 'Airplane':
+            extra_time = express_extra_time_air_h
+            return extra_time
+    
+
+
+extra_time = extra_time_decision(urgency, selected_transport, extra_time_truck_h, extra_time_train_h, extra_time_air_h)
+
+
+
+
+if urgency == 'Express' or urgency == 'Standard':
+    
+    str_extra_time = str(extra_time)
+    extra_time_vizualization = (str_extra_time + " " + "hours")
+
+
+if urgency == 'Slow':
+    extra_time_callc = extra_time / 24
+    extra_time_callc = int(extra_time_callc)
+    extra_time_callc = str(extra_time_callc)
+    extra_time_vizualization = (extra_time_callc + " " + "days")
+
+st.write(f" - **{selected_transport}** - **{urgency}** -> the cargo can be on its way in **{extra_time_vizualization}**.")
+
+st.write(f" - Unit price for distance calculation: **{price_square:,.2f} {selected_currency}**")
+
+''
+with st.expander("**SLA** - Service Level Agreement", icon= ":material/contract:"):
+
+    ''
+    st.write(" - **Time** - Cargo on its way till this time - **HOURS**")
+    st.dataframe(extra_time_df, hide_index=True)
 
 # //////////////// Submit button ////////////////////
 
@@ -450,7 +671,6 @@ st.write("------")
 if st.button("Submit", use_container_width=True):
     st.write(from_city)
     st.write(to_city)
-
 
 
     def input_validation(from_city,to_city):
@@ -680,30 +900,34 @@ if st.button("Submit", use_container_width=True):
     st.write(f"po def returnu distance {distance}")
 
 
-    # extra time for load unload and other admin stuff (in hours -> day)
-    extra_time_truck_h = 6
-    extra_time_train_h = 10
-    extra_time_air_h = 20
+    # # extra time for load unload and other admin stuff (in hours -> day)
+    # #STANDAR - DELIVERY SERVICE
+    # extra_time_truck_h = 6
+    # extra_time_train_h = 10
+    # extra_time_air_h = 20
 
 
-    def calcul_delivery_time(distance,selected_transport,extra_time_truck_h, extra_time_train_h, extra_time_air_h):
+    def calcul_delivery_time(distance,selected_transport):
 
         if selected_transport == 'Truck':
             time_journey = distance / 70
-            extra_time_h = extra_time_truck_h
-            return extra_time_h, time_journey 
+            # extra_time_h = extra_time_truck_h
+            # return extra_time_h, time_journey 
+            return time_journey 
 
         if selected_transport == 'Train':
             time_journey = distance / 80
-            extra_time_h = extra_time_train_h
-            return extra_time_h, time_journey 
+            # extra_time_h = extra_time_train_h
+            # return extra_time_h, time_journey 
+            return time_journey 
         
         if selected_transport == 'Airplane':
             time_journey = distance / 700
-            extra_time_h = extra_time_air_h
-            return extra_time_h, time_journey 
+            # extra_time_h = extra_time_air_h
+            # return extra_time_h, time_journey 
+            return time_journey 
 
-    extra_time, time_journey  = calcul_delivery_time(distance,selected_transport, extra_time_truck_h, extra_time_train_h, extra_time_air_h)
+    time_journey  = calcul_delivery_time(distance,selected_transport)
 
     # mandatory breaks for truck 
 
@@ -738,7 +962,7 @@ if st.button("Submit", use_container_width=True):
 
             shift_full = time_journey / 9
 
-            # split of the number for calculation logi
+            # split of the number for calculation 
             y = math.modf(shift_full)
             decimal_shift = y[0]
             number_of_shifts = y[1]
@@ -779,16 +1003,18 @@ if st.button("Submit", use_container_width=True):
 
     # Troubleshoot
     st.write("------- Troubleshoot-----------")
-    st.write(f"Price: {price} {selected_currency} na tu distanci/vzdálenost")
+    st.write(f"Price: {price:,.2f} {selected_currency} na tu distanci/vzdálenost")
     st.write(f"Distance: {distance}km.")
     st.write(f"Time to cover the distance: time_journey {time_journey} HODIN")
 
     if selected_transport == 'Truck':
-        st.write(f"Truck potřebuje tento extra čas v HODINÁCH povinné přestávky {time_break}, a čas na administrativua  naložení {extra_time} HODINY ." )
+        st.write(f"Truck potřebuje tento extra čas v HODINÁCH povinné přestávky {time_break}, a čas na administrativua  naložení {extra_time} for {urgency} HODINY ." )
         st.write(f"Takže celkový čas, aby Truck dorazil na místo určení je {time_journey + time_break + extra_time} HODIN" )
 
     elif selected_transport == 'Train' or 'Airplane':
-        st.write(f"{selected_transport} potřebuje tento extra čas v HODINÁCH na administrativua  naložení {extra_time} HODINY ." )
+        st.write(f"{selected_transport} potřebuje tento extra čas v HODINÁCH na administrativua  naložení {extra_time} for {urgency} HODINY ." )
         st.write(f"Takže celkový čas, aby {selected_transport} dorazil na místo určení je {time_journey + extra_time} HODIN" )
 
- 
+    
+
+
