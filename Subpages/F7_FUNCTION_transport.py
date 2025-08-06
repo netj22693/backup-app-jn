@@ -137,7 +137,7 @@ def api_get_rate():
 
     except:
         st.warning("""
-        - Apologies, API refused to make a connection. So to see the function, there are temporary values.
+        - Apologies, API refused to make a connection. So to see the function, there are predefined values for the currency exchange rate.
         """
     )
 
@@ -149,11 +149,6 @@ def api_get_rate():
 
 
 usd_to_czk_rate, usd_to_eur_rate = api_get_rate()
-
-st.write(usd_to_czk_rate)
-st.write(usd_to_eur_rate)
-
-
 
 
 # Change of price based on rate - % in percantage decrease/increase
@@ -180,7 +175,6 @@ crit_3_eur_cond = " 0.87 ≤ x < 0.90 "
 crit_4_eur_cond = " 0.90 ≤ x "
 
 list_crit_kc = crit_1_kc, crit_2_kc, crit_3_kc, crit_4_kc
-st.write(list_crit_kc)
 
 list_crit_eur = crit_1_eur, crit_2_eur, crit_3_eur, crit_4_eur
 
@@ -269,24 +263,11 @@ def rate_change_kc(usd_to_czk_rate, truck_kc, train_kc, plane_kc):
 
 truck_kc, train_kc, plane_kc = rate_change_kc(usd_to_czk_rate, truck_kc, train_kc, plane_kc)
 
-st.write(f"venku usd/czk: {usd_to_czk_rate}")
-st.write(f"venkutruck: {truck_kc}")
-st.write(f"venku train: {train_kc}")
-st.write(f"venku air: {plane_kc}")
-
-
-
 
 def rate_change_eur(usd_to_eur_rate, truck_eur, train_eur, plane_eur):
 
-    st.write(f"ve funkci usd/eur: {usd_to_eur_rate}")
-    st.write(f"ve funkci truck: {truck_eur}")
-    st.write(f"ve funkci train: {train_eur}")
-    st.write(f"ve funkci air: {plane_eur}")
-    st.write(f"ve funkci crit: {crit_3_eur }")
-
     if usd_to_eur_rate < 0.82:
-        st.write("jsem ve 1")
+        # st.write("jsem ve 1")
         truck_eur = round(truck_eur + (truck_eur / 100) * crit_1_eur, 2)
         train_eur = round(train_eur + (train_eur / 100) * crit_1_eur, 2)
         plane_eur = round(plane_eur + (plane_eur / 100) * crit_1_eur, 2)
@@ -294,7 +275,7 @@ def rate_change_eur(usd_to_eur_rate, truck_eur, train_eur, plane_eur):
         return truck_eur, train_eur, plane_eur
     
     elif 0.82 <= usd_to_eur_rate < 0.87:
-        st.write("jsem ve 2")
+        # st.write("jsem ve 2")
         truck_eur = truck_eur
         train_eur = train_eur
         plane_eur = plane_eur
@@ -302,7 +283,7 @@ def rate_change_eur(usd_to_eur_rate, truck_eur, train_eur, plane_eur):
         return truck_eur, train_eur, plane_eur
 
     elif 0.87 <= usd_to_eur_rate < 0.90:
-        st.write("jsem ve 3")
+        # st.write("jsem ve 3")
         truck_eur = round(truck_eur + (truck_eur / 100) * crit_3_eur,2)
         train_eur = round(train_eur  + (train_eur  / 100) * crit_3_eur,2)
         plane_eur = round(plane_eur + (plane_eur / 100) * crit_3_eur,2)
@@ -310,7 +291,7 @@ def rate_change_eur(usd_to_eur_rate, truck_eur, train_eur, plane_eur):
         return truck_eur, train_eur, plane_eur
     
     elif 0.90 <= usd_to_eur_rate:
-        st.write("jsem ve 4")
+        # st.write("jsem ve 4")
         truck_eur = round(truck_eur + (truck_eur / 100) * crit_4_eur, 2)
         train_eur  = round(train_eur  + (train_eur  / 100) * crit_4_eur, 2)
         plane_eur = round(plane_eur + (plane_eur / 100) * crit_4_eur, 2)
@@ -319,17 +300,6 @@ def rate_change_eur(usd_to_eur_rate, truck_eur, train_eur, plane_eur):
 
 
 truck_eur, train_eur, plane_eur = rate_change_eur(usd_to_eur_rate, truck_eur, train_eur, plane_eur)
-
-# st.write(truck_kc)
-# st.write(train_kc)
-# st.write(plane_kc)
-
-st.write(truck_eur)
-st.write(train_eur)
-st.write(plane_eur)
-
-
-
 
 
 # =======================================================================
@@ -754,7 +724,7 @@ with st.expander("Truck / Road", icon=":material/local_shipping:"):
     st.write(" -> Distance is **not** longer than **4.5 hours** - no mandatory break")
     st.write(" -> Distance is **longer** than **4.5 hours** - mandatory **45 minutes** break")
     st.write(" -> Distance is **not** longer than **9 hours** - mandatory **45 minutes** break")
-    st.write(" -> Distance is **not** longer than **10 hours** (exception) - mandatory **45 minutes** break")
+    st.write(" -> Distance is **not** longer than **10 hours** (exception) - mandatory **2x  45 minutes** break")
     st.write(" -> In case that the distance is longer than **9 and 10 hours** (10+) - there is **45 minutes** break + **10 hours** break")
     
     ''
@@ -821,31 +791,16 @@ urgency = st.radio("Delivery service:", urgency_offer, index=1, captions=[
         "5-10 days to get cargo ready to go ",
     ],)
 
+''
+''
+with st.expander("**SLA** - Service Level Agreement (Express, Standard, Slow)", icon= ":material/contract:"):
+
+    ''
+    st.write(" - **Time** - Cargo on its way till this time - **HOURS**")
+    st.dataframe(extra_time_df, hide_index=True)
 
 
 
-st.write(urgency)
-
-
-
-
-#STANDAR - DELIVERY SERVICE
-# truck_kc = 689
-# train_kc = 230
-# plane_kc = 4_590
-
-
-# truck_eur = 27
-# train_eur = 9
-# plane_eur = 180
-
-# extra time for load unload and other admin stuff (in hours -> day)
-#STANDAR - DELIVERY SERVICE
-# extra_time_truck_h = 6
-# extra_time_train_h = 10
-# extra_time_air_h = 20
-
-st.write(f"kontrola price squere p5ed : {price_square}")
 
 def change_express(price_square, selected_transport):
 
@@ -885,7 +840,6 @@ if urgency  == 'Slow':
     price_square = change_slow(price_square, selected_transport)
 
 
-st.write(f"kontrola price squere: {price_square}")
 
 def extra_time_decision(urgency, selected_transport, extra_time_truck_h, extra_time_train_h, extra_time_air_h):
 
@@ -947,20 +901,17 @@ if urgency == 'Slow':
     extra_time_callc = str(extra_time_callc)
     extra_time_vizualization = (extra_time_callc + " " + "days")
 
+
+
+''
 st.write(f" - **{selected_transport}** - **{urgency}** -> the cargo can be on its way in **{extra_time_vizualization}**.")
 
 st.write(f" - Unit price for distance calculation: **{price_square:,.2f} {selected_currency}**")
 
-truck_kc
-train_kc
-plane_kc
 
-
-truck_eur
-train_eur
-plane_eur
 
 # Expanders
+''
 with st.expander("Unit price", icon= ":material/info:"):
 
     ''
@@ -971,12 +922,221 @@ with st.expander("Unit price", icon= ":material/info:"):
     st.write("- **1 unit is approximatelly ~ 30 km** (but not always - there are some variables/coeficients making calculation corrections, dependings on case City A to City B )")
     st.write("- If the distance is **less than** ~ 30 km (You travel within 1 unit), the final price is calculated as 1 unit. This also helps to keep profit for the business.  Example: Teplice <-> Most")
 
+''
+''
+st.write("**Extra services:**")
 
-with st.expander("**SLA** - Service Level Agreement (Express, Standard, Slow)", icon= ":material/contract:"):
+col_ch_1, col_ch_2, col_ch_3 = st.columns(3)
 
+check_isurance = col_ch_1.checkbox("Insurance extra")
+
+check_fragile = col_ch_2.checkbox("Fragile goods")
+
+if selected_transport == 'Airplane':
+    check_danger = col_ch_3.checkbox("Danger", disabled= True)
+    col_ch_3.caption("Not allowed danger goods in aircraft")
+
+else:
+    check_danger = col_ch_3.checkbox("Danger goods")
+
+
+#determintation of value/option
+if selected_currency == 'koruna':
+    step_defined = 50_000
+    min_value = 50_000
+    max_value = 25_000_000
+    help_info = ("""
+        - Type a value of your shipment. It will be used for calculation. 
+        - Min value 50 000 koruna
+        - Max value 25 000 000 koruna
+        """)
+
+
+if selected_currency == 'euro':
+    step_defined = 10_000
+    min_value = 5_000
+    max_value = 1_000_000
+    help_info = ("""
+            - Type a value of your shipment. It will be used for calculation. 
+            - Min value: 5 000 euro
+            - Max value: 1 000 000 euro
+            """)
+
+
+if check_isurance or check_fragile or check_danger is True:
     ''
-    st.write(" - **Time** - Cargo on its way till this time - **HOURS**")
-    st.dataframe(extra_time_df, hide_index=True)
+    shipment_value = st.number_input(
+        label=f"Shipment value - currency: **{selected_currency}**",
+        value=None,
+        placeholder="Type shipment value",
+        min_value= min_value,
+        max_value= max_value,
+        # step = step_defined,
+        help = help_info
+        )
+    
+    if shipment_value == None:
+        st.warning("Please insert shipment value")
+
+else:
+    shipment_value = None
+
+
+with st.expander("Extra services", icon= ":material/info:"):
+    st.write("Extra services")
+
+''
+''
+st.write("**Delivery specification - Door-to-Door:**")
+st.write("From city:")
+
+# input validati / warning
+def more_true(list_bool):
+   
+    list_bool_result=[]
+
+    for item in list_bool:
+        if item == True:
+            item = 1
+            list_bool_result.append(item)
+        
+
+        if item == False:
+            item = 0
+            list_bool_result.append(item)
+    
+    sumary = sum(list_bool_result)
+    return sumary
+
+
+col_ch2_1, col_ch2_2, col_ch2_3 = st.columns(3)
+
+if selected_transport == 'Truck':
+    check_delivery_not_f = col_ch2_1.checkbox("Within city", key='city_1', value = True)
+
+    check_delivery_10_f = col_ch2_2.checkbox("10 km", key='10km_1')
+
+    check_delivery_20_f = col_ch2_3.checkbox("20 km", key='20km_1')
+
+
+    checkbox_list_from = [check_delivery_not_f, check_delivery_10_f, check_delivery_20_f]
+
+    sumary_from = more_true(checkbox_list_from)
+
+    if sumary_from == 0:
+        st.warning("Select one option")
+
+    if sumary_from > 1:
+        st.warning("Only one option can be selected")
+    
+
+
+if selected_transport == 'Airplane' or selected_transport == 'Train':
+    check_delivery_not_at_f = col_ch2_1.checkbox("No - train station", key='city_2', value = True)
+
+    check_delivery_10_at_f  = col_ch2_2.checkbox("10 km", key='10km_2')
+
+    check_delivery_20_at_f  = col_ch2_3.checkbox("20 km", key='20km_2')
+
+
+    checkbox_list_from = [check_delivery_not_at_f, check_delivery_10_at_f, check_delivery_20_at_f]
+
+    sumary_from = more_true(checkbox_list_from)
+
+    if sumary_from == 0:
+        st.warning("Select one option")
+
+    if sumary_from > 1:
+        st.warning("Only one option can be selected")
+
+''
+
+st.write("To city:")
+
+col_ch3_1, col_ch3_2, col_ch3_3 = st.columns(3)
+
+if selected_transport == 'Truck':
+    check_delivery_not_t = col_ch3_1.checkbox("Within city",key='city_3', value = True)
+
+    check_delivery_10_t = col_ch3_2.checkbox("10 km", key='10km_3')
+
+    check_delivery_20_t = col_ch3_3.checkbox("20 km", key='20km_3')
+
+    checkbox_list_to = [check_delivery_not_t, check_delivery_10_t, check_delivery_20_t]
+
+    sumary_to = more_true(checkbox_list_to)
+
+    if sumary_to == 0:
+        st.warning("Select one option")
+
+    if sumary_to > 1:
+        st.warning("Only one option can be selected")
+
+
+
+if selected_transport == 'Airplane' or selected_transport == 'Train':
+
+    check_delivery_not_at_t = col_ch3_1.checkbox("No - train station",key='city_4', value = True)
+
+    check_delivery_10_at_t = col_ch3_2.checkbox("10 km", key='10km_4')
+
+    check_delivery_20_at_t  = col_ch3_3.checkbox("20 km", key='20km_4')
+
+    checkbox_list_to = [check_delivery_not_at_t , check_delivery_10_at_t , check_delivery_20_at_t]
+
+
+    sumary_to = more_true(checkbox_list_to)
+
+    if sumary_to == 0:
+        st.warning("Select one option")
+
+    if sumary_to > 1:
+        st.warning("Only one option can be selected")
+
+
+''
+with st.expander("Door-to-Door", icon= ":material/info:"):
+    st.write("Door-to-Door")
+
+
+
+# Check box validation /transformation to money
+
+def check_box_money_extra_services(shipment_value, check_isurance, check_fragile, check_danger):
+
+    insurance = 10
+    fragile = 5
+    danger = 7
+
+
+    if check_isurance == True:
+        money_insurance = shipment_value / 100 * insurance
+    else:
+        money_insurance = 0
+
+    if check_fragile == True:
+        money_fragile = shipment_value / 100 * fragile
+    
+    else:
+        money_fragile = 0
+
+    if check_danger == True:
+        money_danger = shipment_value / 100 * danger
+    
+    else:
+        money_danger = 0
+
+    return money_insurance, money_fragile, money_danger
+
+
+# In case that any of extra services (insurance, fragile, danger) required. This condition allows to make a calculation, if not. it will be skipped. In case is required but the value of shipment is 'None' (not entered or forgoten), there is validation after submit button. 
+
+if shipment_value is not None:
+
+    money_insurance, money_fragile, money_danger = check_box_money_extra_services(shipment_value,check_isurance, check_fragile, check_danger)
+
+
+
 
 # //////////////// Submit button ////////////////////
 
@@ -984,10 +1144,8 @@ with st.expander("**SLA** - Service Level Agreement (Express, Standard, Slow)", 
 ''
 st.write("------")
 if st.button("Submit", use_container_width=True):
-    st.write(from_city)
-    st.write(to_city)
 
-
+    # Firstly, validation if all inputs are provided properly
     def input_validation(from_city,to_city):
         if from_city == to_city:
             st.warning("City From and To is the same -> They need to be different")
@@ -999,37 +1157,52 @@ if st.button("Submit", use_container_width=True):
     input_validation(from_city,to_city)
 
 
+    if sumary_from > 1 or sumary_to > 1:
+        st.warning("More than 1 option has been selected in Door-to-Door section. Please select just one.")
+        st.stop()
+
+    if sumary_from == 0 or sumary_to == 0:
+        st.warning("Missing select in Door-to-Door section. Please select one.")
+        st.stop()
+    
+    if (check_isurance or check_fragile or check_danger is True) and shipment_value == None:
+        st.warning("You didn't provide Shipment value. Please go up and provide.")
+        st.stop()  
+
+
+
+    if check_isurance is False  and check_fragile is False and check_danger is False:
+
+        money_insurance = 0
+        money_fragile = 0
+        money_danger = 0
+
+
+
+
+    # Parsing fo calculation
     def pars_from_city(from_city, dataset_test):
         
-        st.write(f"ve funkci {radio_from_country}")
-        st.write(f"ve funkci {from_city}")
- 
         from_big = dataset_test[radio_from_country][from_city]['big']
-        st.write(f"ve funkci from big - parsed: {from_big}")
 
         from_small = dataset_test[radio_from_country][from_city]['small']
-        st.write(f"ve funkci from small - parsed: {from_small}")
-
-
 
         return from_big, from_small
 
         
     def pars_to_city(to_city, dataset_test):
         
-        st.write("jsem tu?")
         to_big = dataset_test[radio_to_country][to_city]['big']
         to_small = dataset_test[radio_to_country][to_city]['small']
-        st.write("parsed?")
+
         return to_big, to_small
 
 
 
     from_big, from_small = pars_from_city(from_city, dataset_test)
-    st.write(f"FROM: po ukonceni def -> city: {from_city} retrun big: {from_big}, small: {from_small} ")
 
     to_big, to_small = pars_to_city(to_city, dataset_test)
-    st.write(f"TO: po ukonceni def -> city: {to_city} retrun big: {to_big}, small: {to_small} ")
+
 
 
     def pars_from_big_small_rc(from_big, from_small):
@@ -1068,28 +1241,27 @@ if st.button("Submit", use_container_width=True):
     to_small_c = int(to_small_c)
 
 
-    st.write(f"after function from_big R: {from_big_r}, C: {from_big_c}")
-    st.write(f"after function from_small R: {from_small_r}, C: {from_small_c}")
+    # st.write(f"after function from_big R: {from_big_r}, C: {from_big_c}")
+    # st.write(f"after function from_small R: {from_small_r}, C: {from_small_c}")
 
-    st.write(f"after function to_big R: {to_big_r}, C: {to_big_c}")
-    st.write(f"after function to_small R: {to_small_r}, C: {to_small_c}")
+    # st.write(f"after function to_big R: {to_big_r}, C: {to_big_c}")
+    # st.write(f"after function to_small R: {to_small_r}, C: {to_small_c}")
 
 
 
     def calculation_L3B(small_result_r,small_result_c):
-        st.write("LEVEL 3B inside detail calculation - ELSE")
-        st.write(f"LEVEL 3B small result_r: {small_result_r}")
-        st.write(f"LEVEL 3B small result_c: {small_result_c}")
+        # st.write("LEVEL 3B inside detail calculation - ELSE")
+        # st.write(f"LEVEL 3B small result_r: {small_result_r}")
+        # st.write(f"LEVEL 3B small result_c: {small_result_c}")
 
         #long diagonal distance compensation
         comp = small_result_r + small_result_c
-        st.write(f"LEVEL 3 comp {comp}")
 
 
         if comp < 8:
             calcul = (small_result_r + small_result_c - 1)
             price = calcul * price_square
-            st.write(f"LEVEL 3 if 1 - před navratem price: {price}")
+            # st.write(f"LEVEL 3 if 1 - před navratem price: {price}")
 
             distance = calcul * 31.57
             return price, distance
@@ -1097,7 +1269,7 @@ if st.button("Submit", use_container_width=True):
         elif 8 <= comp < 10:
             calcul = (small_result_r + small_result_c - 2)
             price = calcul * price_square
-            st.write(f"LEVEL 3 if 2 - před navratem price: {price}")
+            # st.write(f"LEVEL 3 if 2 - před navratem price: {price}")
 
             distance = calcul * 33.08 #musim upravit nemam testovaci vzorky
             return price, distance
@@ -1106,17 +1278,15 @@ if st.button("Submit", use_container_width=True):
         elif 10 <= comp < 13:
             calcul = (small_result_r + small_result_c - 2.5)
             price = calcul * price_square
-            st.write(f"LEVEL 3 if 3 -před navratem price: {price}")
+            # st.write(f"LEVEL 3 if 3 -před navratem price: {price}")
 
             distance = calcul * 33.08   #musim upravit nemam testovaci vzorky
-            st.write(f"trouble shoot - LEVEL 3 if 3 - price vykalkulovaná: {price} = calcul {calcul} * price square {price_square}")
-            st.write(f"trouble shoot - LEVEL 3 if 3 - distanc: kalkulace:   distance{distance} = ((calcul {calcul} = ({small_result_r} + {small_result_c} - 2.5)) * 33.08 korekcni cislo)")
             return price, distance
         
         elif 13 <= comp < 16:
             calcul = (small_result_r + small_result_c - 4)
             price = calcul * price_square
-            st.write(f"LEVEL 3 if 4 -před navratem price: {price}")
+            # st.write(f"LEVEL 3 if 4 -před navratem price: {price}")
 
             distance = calcul * 35.68
             return price, distance
@@ -1124,7 +1294,7 @@ if st.button("Submit", use_container_width=True):
         elif 16 <= comp < 18:
             calcul = (small_result_r + small_result_c - 5)
             price = calcul * price_square
-            st.write(f"LEVEL 3 if 5 -před navratem price: {price}")
+            # st.write(f"LEVEL 3 if 5 -před navratem price: {price}")
 
             distance = calcul * 34.24
             return price, distance
@@ -1132,7 +1302,7 @@ if st.button("Submit", use_container_width=True):
         elif 18 <= comp:
             calcul = (small_result_r + small_result_c - 8)
             price = calcul * price_square
-            st.write(f"LEVEL 3 if 6 -před navratem price: {price}")
+            # st.write(f"LEVEL 3 if 6 -před navratem price: {price}")
 
             distance = calcul * 36.75
             return price, distance
@@ -1141,38 +1311,26 @@ if st.button("Submit", use_container_width=True):
 
     #Calculation in case that move is on horizontal r=0 or vertical level c=0
     def calculation_L3A_R0C0(small_result_r, small_result_c):
-        st.write("LEVEL 3A_R0C0 inside detail calculation")
-        st.write(f"LEVEL 3A_R0C0 small_result_r: {small_result_r}")
-        st.write(f"LEVEL 3A_R0C0 small_result_c: {small_result_c}")
+        # st.write("LEVEL 3A_R0C0 inside detail calculation")
+        # st.write(f"LEVEL 3A_R0C0 small_result_r: {small_result_r}")
+        # st.write(f"LEVEL 3A_R0C0 small_result_c: {small_result_c}")
 
         if small_result_r == 0:
-            st.write("tady?")
             price = small_result_c * price_square
-            st.write(f"LEVEL 3A small_result_c price *50: {price}")
             distance = small_result_c * 31.86
             return price, distance
         
         if small_result_c == 0:
-            st.write("nebo tady?")
-            st.write(small_result_r)
-            st.write(price_square)
             price = small_result_r * price_square
-            st.write("co tady")
-            st.write(f"LEVEL 3A small_result_r price square: {price_square}")
-            st.write(f"LEVEL 3A small_result_r: {small_result_r}")
-            st.write(f"LEVEL 3A small_result_r price *50: {price}")
             distance = small_result_r * 31.86
             return price, distance
 
 
     # if different big region 
     def calculation_L2(from_small_r, to_small_r, from_small_c, to_small_c):
-        st.write("LEVEL 2 inside detail calculation")
+        # st.write("LEVEL 2 inside detail calculation")
         small_result_r = abs(from_small_r - to_small_r)
         small_result_c = abs(from_small_c - to_small_c)
-
-        st.write(f"LEVEL 2: small r : {small_result_r}")
-        st.write(f"LEVEL 2: small c : {small_result_c}")
 
         if small_result_r <= 1 and small_result_c <= 1:
             price = price_square
@@ -1195,8 +1353,8 @@ if st.button("Submit", use_container_width=True):
         big_result_c = abs(from_big_c - to_big_c)
         small_result_r = abs(from_small_r - to_small_r)
         small_result_c = abs(from_small_c - to_small_c)
-        st.write(f" LEVEL 1: big_result_r: {big_result_r}")
-        st.write(f" LEVEL 1: big_result_c: {big_result_c}")
+        # st.write(f" LEVEL 1: big_result_r: {big_result_r}")
+        # st.write(f" LEVEL 1: big_result_c: {big_result_c}")
 
         if (big_result_r == 0 and big_result_c == 0) and (small_result_r <= 1 and small_result_c <= 1):
             price = price_square
@@ -1204,23 +1362,14 @@ if st.button("Submit", use_container_width=True):
             return price, distance
 
         else:
-            st.write("LEVEL 1: Else happened")
+            # st.write("LEVEL 1: Else happened")
             price, distance = calculation_L2(from_small_r, to_small_r, from_small_c, to_small_c)
             return price, distance
 
 
     price, distance = calculation_L1(from_big_r, to_big_r, from_big_c, to_big_c,from_small_r, to_small_r,from_small_c, to_small_c)
 
-    st.write(f"po def returnu price {price}")
-    st.write(f"po def returnu distance {distance}")
-
-
-    # # extra time for load unload and other admin stuff (in hours -> day)
-    # #STANDAR - DELIVERY SERVICE
-    # extra_time_truck_h = 6
-    # extra_time_train_h = 10
-    # extra_time_air_h = 20
-
+ 
 
     def calcul_delivery_time(distance,selected_transport):
 
@@ -1243,6 +1392,8 @@ if st.button("Submit", use_container_width=True):
             return time_journey 
 
     time_journey  = calcul_delivery_time(distance,selected_transport)
+
+
 
     # mandatory breaks for truck 
 
@@ -1268,9 +1419,9 @@ if st.button("Submit", use_container_width=True):
             return break_n
 
         # Law alows to drive 10 hours and no longer (for journey between 9-10 hours)
-        # 2 x 45 minutes break -> 0.75 hour
+        # 2 x 45 minutes break -> 1.5 hour
         if 9 < time_journey <= 10:
-            break_n = 0.75
+            break_n = 1.5
             return break_n
             
         elif time_journey > 10:
@@ -1315,21 +1466,132 @@ if st.button("Submit", use_container_width=True):
         time_break = calcul_time_break(time_journey)
 
 
+    # Door-to-Door inputs -> transformation to costs
 
-    # Troubleshoot
-    st.write("------- Troubleshoot-----------")
-    st.write(f"Price: {price:,.2f} {selected_currency} na tu distanci/vzdálenost")
-    st.write(f"Distance: {distance}km.")
-    st.write(f"Time to cover the distance: time_journey {time_journey} HODIN")
+    if selected_currency == 'euro':
+        def door_to_door_eur(list_bool, selected_transport):
+            
+            if selected_transport == 'Truck':
+                if list_bool[0] == True:
+                    result = 0
+                    return result
 
-    if selected_transport == 'Truck':
-        st.write(f"Truck potřebuje tento extra čas v HODINÁCH povinné přestávky {time_break}, a čas na administrativua  naložení {extra_time} for {urgency} HODINY ." )
-        st.write(f"Takže celkový čas, aby Truck dorazil na místo určení je {time_journey + time_break + extra_time} HODIN" )
+                if list_bool[1] == True:
+                    result = 20
+                    return result
+                
+                if list_bool[2] == True:
+                    result = 40
+                    return result
 
-    elif selected_transport == 'Train' or 'Airplane':
-        st.write(f"{selected_transport} potřebuje tento extra čas v HODINÁCH na administrativua  naložení {extra_time} for {urgency} HODINY ." )
-        st.write(f"Takže celkový čas, aby {selected_transport} dorazil na místo určení je {time_journey + extra_time} HODIN" )
+            if selected_transport == 'Train' or selected_transport == 'Airplane':
+
+                if list_bool[0] == True:
+                    result = 0
+                    return result
+
+                if list_bool[1] == True:
+                    result = 40
+                    return result
+                
+                if list_bool[2] == True:
+                    result = 60
+                    return result
+
+
+        
+        door_to_result = door_to_door_eur(checkbox_list_to, selected_transport)
+        door_from_result = door_to_door_eur(checkbox_list_from, selected_transport)
+
+
+    if selected_currency == 'koruna':
+        def door_to_door_koruna(list_bool, selected_transport):
+            
+            if selected_transport == 'Truck':
+                if list_bool[0] == True:
+                    result = 0
+                    return result
+
+                if list_bool[1] == True:
+                    result = 500
+                    return result
+                
+                if list_bool[2] == True:
+                    result = 1000
+                    return result
+
+            if selected_transport == 'Train' or selected_transport == 'Airplane':
+
+                if list_bool[0] == True:
+                    result = 0
+                    return result
+
+                if list_bool[1] == True:
+                    result = 1000
+                    return result
+                
+                if list_bool[2] == True:
+                    result = 1500
+                    return result
+
+
+        
+        door_to_result = door_to_door_koruna(checkbox_list_to, selected_transport)
+        door_from_result = door_to_door_koruna(checkbox_list_from, selected_transport)
+
+
+    def dtd_distance(list_bool):
+        
+        if list_bool[0] == True:
+            result = 0
+            return result
+
+        if list_bool[1] == True:
+            result = 10
+            return result
+        
+        if list_bool[2] == True:
+            result = 20
+            return result
+
 
     
 
+    from_city_extra_doortdoor = dtd_distance(checkbox_list_from)
+    to_city_extra_doortdoor = dtd_distance(checkbox_list_to)
 
+
+    # Final result - SCREEN
+    ''
+    ''
+    st.write("##### Calculated values:")
+    '' 
+    st.write(f"- The distance costs: **{price:,.2f} {selected_currency}**.")
+    st.write(f"- The distance: **{distance:,.2f} km**.")
+    st.write(f"- Time to cover the distance: **{time_journey:.2f} hour(s)**.")
+
+    if selected_transport == 'Truck':
+        st.write(f"- **{selected_transport}** needs this extra time (adminitsration, load etc.):  **{extra_time:.2f} hours(s)** for selected **{urgency}** service - **the SLA** ." )
+        st.write(f"- The **overall time needed** to get to the 'To' city ({to_city}) is **{(time_journey + time_break + extra_time):.2f} hour(s)**." )
+
+    elif selected_transport == 'Train' or 'Airplane':
+        st.write(f"- **{selected_transport}** needs this extra time (adminitsration, load etc.):  **{extra_time:.2f} hours(s)** for selected **{urgency}** service - **the SLA** ." )
+        st.write(f"- The **overall time needed** to get to the 'To' city ({to_city}) is **{(time_journey + extra_time):.2f} hour(s)**." )
+    
+    ''
+    
+    st.write("###### Additional services:")
+    st.write(f"- Insurance extra costs: **{money_insurance:.2f} {selected_currency}**.")
+    st.write(f"- Fregile goods costs: **{money_fragile:.2f} {selected_currency}**.")
+    st.write(f"- Danger goods costs: **{money_danger:.2f} {selected_currency}**.")
+    st.write(f"- Door-To-Door - 'From' city ({from_city}):  **{door_from_result:.2f} {selected_currency}** - ({from_city_extra_doortdoor} km).")
+    st.write(f"- Door-To-Door - 'To' city ({to_city}):  **{door_to_result:.2f} {selected_currency}** - ({to_city_extra_doortdoor} km).")
+    
+    ''
+    with st.container(border=True):
+        st.write(f"- **Final price: {(price + money_insurance + money_fragile + money_danger + door_to_result + door_from_result):,.2f} {selected_currency}**.")
+
+
+
+
+    

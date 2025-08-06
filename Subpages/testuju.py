@@ -7,6 +7,8 @@ import json
 
 
 
+tranport_types_list = ['Truck','Train','Airplane']
+
 # Price per 1t/per approx 30km (one square on map)
 
 #STANDAR - DELIVERY SERVICE
@@ -14,11 +16,12 @@ truck_kc = 689
 train_kc = 230
 plane_kc = 150_000
 
-
 truck_eur = 27
 train_eur = 10
 plane_eur = 6250
 
+list_kc_standard_default = [truck_kc, train_kc, plane_kc]
+list_eur_standard_default = [truck_eur, train_eur, plane_eur]
 
 # extra time for load unload and other admin stuff (in hours -> day)
 #STANDAR - DELIVERY SERVICE
@@ -36,14 +39,32 @@ slow_extra_time_air_h = 240
 
 
 extra_time_df = pd.DataFrame({
-    "Transport" : ['Truck','Train','Airplane'],
+    "Transport" : tranport_types_list,
     "Express" : [express_extra_time_truck_h,express_extra_time_train_h, express_extra_time_air_h],
     "Standard" : [extra_time_truck_h,extra_time_train_h, extra_time_air_h],
     "Slow" : [slow_extra_time_truck_h,slow_extra_time_train_h, slow_extra_time_air_h]
 })
 
+standard_def_kc_df = pd.DataFrame({
+    "Transport" : tranport_types_list,
+    "Default": list_kc_standard_default,
+    "Currency": "Koruna"
+})
+
+standard_def_kc_df = standard_def_kc_df.style.format({
+    "Default": "{:,.2f}"
+})
 
 
+standard_def_eur_df = pd.DataFrame({
+    "Transport" : tranport_types_list,
+    "Default": list_eur_standard_default,
+    "Currency": "euro"
+})
+
+standard_def_eur_df = standard_def_eur_df.style.format({
+    "Default": "{:,.2f}"
+})
 
 # PRICE Coeficients increasing(Express delivery) or decreasign (Slow delivery) price per square 
 coef_truck = 0.4
@@ -93,7 +114,7 @@ def api_get_rate():
         # api_freecurrency_api = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_wD1NduThhBnySFJAlV9f6xnQmMhkJa6qFzX7DJz4&currencies=EUR%2CCZK"
 
         #get reguest
-        # @st.cache_data(ttl=3600)
+        @st.cache_data(ttl=3600)
         def get_response_api(api_freecurrency_api):
             api_1 = requests.get(api_freecurrency_api, verify=False, timeout=5).text
             return api_1
@@ -120,8 +141,8 @@ def api_get_rate():
         """
     )
 
-        usd_to_czk_rate = 0
-        usd_to_eur_rate = 0
+        usd_to_czk_rate = 19
+        usd_to_eur_rate = 0.90
         
         return usd_to_czk_rate, usd_to_eur_rate 
 
@@ -134,6 +155,184 @@ st.write(usd_to_eur_rate)
 
 
 
+
+# Change of price based on rate - % in percantage decrease/increase
+
+crit_1_kc = -9.3
+crit_2_kc = -4.7
+crit_3_kc = 0       # default range - crit_3_kc
+crit_4_kc = 4.7
+
+crit_1_eur = -5.9
+crit_2_eur  = 0   # default range - crit_2_eur
+crit_3_eur = 3.5 
+crit_4_eur = 7.1
+
+
+crit_1_kc_cond = " x < 20 "
+crit_2_kc_cond = " 20 ≤ x < 21 "
+crit_3_kc_cond = " 21 ≤ x < 22 "
+crit_4_kc_cond = " 22 ≤ x "
+
+crit_1_eur_cond = " x < 0.82 "
+crit_2_eur_cond = " 0.82 ≤ x < 0.87 "
+crit_3_eur_cond = " 0.87 ≤ x < 0.90 "
+crit_4_eur_cond = " 0.90 ≤ x "
+
+list_crit_kc = crit_1_kc, crit_2_kc, crit_3_kc, crit_4_kc
+st.write(list_crit_kc)
+
+list_crit_eur = crit_1_eur, crit_2_eur, crit_3_eur, crit_4_eur
+
+
+def increase_decrease(list):
+
+    list_impact = []
+    for item in list:
+        if item < 0:
+            result = 'cost decrease'
+            list_impact.append(result)
+        
+        elif item == 0:
+            result = 'default value'
+            list_impact.append(result)
+
+        elif item > 0:
+            result = 'cost increase'
+            list_impact.append(result)
+        
+        else:
+            print("Issue - not scenario not covered in this def function")
+
+    return list_impact
+
+
+list_crit_kc_text = increase_decrease(list_crit_kc)
+list_crit_eur_text = increase_decrease(list_crit_eur)
+
+
+
+
+crit_dataset_kc = pd.DataFrame ({
+    "Rule" : [crit_1_kc_cond, crit_2_kc_cond, crit_3_kc_cond, crit_4_kc_cond],
+    "Impact (%)" : [crit_1_kc, crit_2_kc, crit_3_kc, crit_4_kc],
+    "Impact " : list_crit_kc_text,
+},)
+
+
+crit_dataset_eur = pd.DataFrame ({
+    "Rule" : [crit_1_eur_cond, crit_2_eur_cond, crit_3_eur_cond, crit_4_eur_cond],
+    "Impact (%)" : [crit_1_eur, crit_2_eur, crit_3_eur, crit_4_eur],
+    "Impact " : list_crit_eur_text,
+},)
+
+
+def rate_change_kc(usd_to_czk_rate, truck_kc, train_kc, plane_kc):
+
+    # st.write(f"ve funkci usd/czk: {usd_to_czk_rate}")
+    # st.write(f"ve funkci truck: {truck_kc}")
+    # st.write(f"ve funkci train: {train_kc}")
+    # st.write(f"ve funkci air: {plane_kc}")
+    # st.write(f"ve funkci crit 1: {crit_2_kc }")
+
+    if usd_to_czk_rate < 20:
+        truck_kc = round(truck_kc + (truck_kc / 100) * crit_1_kc,0)
+        train_kc = round(train_kc + (train_kc / 100) * crit_1_kc, 0)
+        plane_kc = round(plane_kc + (plane_kc / 100) * crit_1_kc, 0)
+
+        return truck_kc, train_kc, plane_kc
+    
+    elif 20 <= usd_to_czk_rate < 21:
+        # st.write("jsem ve 2")
+        truck_kc = round(truck_kc + (truck_kc / 100) * crit_2_kc, 0)
+        train_kc = round(train_kc + (train_kc / 100) * crit_2_kc, 0)
+        plane_kc = round(plane_kc + (plane_kc / 100) * crit_2_kc, 0)
+
+        return truck_kc, train_kc, plane_kc
+
+    elif 21 <= usd_to_czk_rate < 22:
+        # st.write("jsem ve 3")
+        truck_kc = truck_kc
+        train_kc = train_kc
+        plane_kc = plane_kc
+
+        return truck_kc, train_kc, plane_kc
+    
+    elif 22 <= usd_to_czk_rate:
+        # st.write("jsem ve 4")
+        truck_kc = round(truck_kc + (truck_kc / 100) * crit_4_kc, 0)
+        train_kc = round(train_kc + (train_kc / 100) * crit_4_kc, 0)
+        plane_kc = round(plane_kc + (plane_kc / 100) * crit_4_kc, 0)
+
+        return truck_kc, train_kc, plane_kc
+
+
+truck_kc, train_kc, plane_kc = rate_change_kc(usd_to_czk_rate, truck_kc, train_kc, plane_kc)
+
+st.write(f"venku usd/czk: {usd_to_czk_rate}")
+st.write(f"venkutruck: {truck_kc}")
+st.write(f"venku train: {train_kc}")
+st.write(f"venku air: {plane_kc}")
+
+
+
+
+def rate_change_eur(usd_to_eur_rate, truck_eur, train_eur, plane_eur):
+
+    st.write(f"ve funkci usd/eur: {usd_to_eur_rate}")
+    st.write(f"ve funkci truck: {truck_eur}")
+    st.write(f"ve funkci train: {train_eur}")
+    st.write(f"ve funkci air: {plane_eur}")
+    st.write(f"ve funkci crit: {crit_3_eur }")
+
+    if usd_to_eur_rate < 0.82:
+        st.write("jsem ve 1")
+        truck_eur = round(truck_eur + (truck_eur / 100) * crit_1_eur, 2)
+        train_eur = round(train_eur + (train_eur / 100) * crit_1_eur, 2)
+        plane_eur = round(plane_eur + (plane_eur / 100) * crit_1_eur, 2)
+
+        return truck_eur, train_eur, plane_eur
+    
+    elif 0.82 <= usd_to_eur_rate < 0.87:
+        st.write("jsem ve 2")
+        truck_eur = truck_eur
+        train_eur = train_eur
+        plane_eur = plane_eur
+
+        return truck_eur, train_eur, plane_eur
+
+    elif 0.87 <= usd_to_eur_rate < 0.90:
+        st.write("jsem ve 3")
+        truck_eur = round(truck_eur + (truck_eur / 100) * crit_3_eur,2)
+        train_eur = round(train_eur  + (train_eur  / 100) * crit_3_eur,2)
+        plane_eur = round(plane_eur + (plane_eur / 100) * crit_3_eur,2)
+
+        return truck_eur, train_eur, plane_eur
+    
+    elif 0.90 <= usd_to_eur_rate:
+        st.write("jsem ve 4")
+        truck_eur = round(truck_eur + (truck_eur / 100) * crit_4_eur, 2)
+        train_eur  = round(train_eur  + (train_eur  / 100) * crit_4_eur, 2)
+        plane_eur = round(plane_eur + (plane_eur / 100) * crit_4_eur, 2)
+
+        return truck_eur, train_eur, plane_eur
+
+
+truck_eur, train_eur, plane_eur = rate_change_eur(usd_to_eur_rate, truck_eur, train_eur, plane_eur)
+
+# st.write(truck_kc)
+# st.write(train_kc)
+# st.write(plane_kc)
+
+st.write(truck_eur)
+st.write(train_eur)
+st.write(plane_eur)
+
+
+
+
+
+# =======================================================================
 # /////////    Data parsing  /////////////
 
 # Trains YES - ONLY YES
@@ -281,7 +480,55 @@ with st.expander("City overview", icon = ":material/pin_drop:"):
     st.write("- **Slovakia:**")
     st.dataframe(table_overview_full_sk)
 
+with st.expander("Currency and rate", icon = ":material/payments:"):
 
+    ''
+    ''
+    col_r1,col_r2 = st.columns(2)
+
+    col_r1.metric(label="USD to CZK", value= usd_to_czk_rate)
+
+    col_r2.metric(label="USD to EUR", value= usd_to_eur_rate)
+
+    ''
+    st.write("- This is a **dynamic part** - API based")
+    st.write("- **Exchange rate of the day** influences the costs/price within calculations")
+
+    ''
+    ''
+    st.write("###### CZ - Czech Republic:")
+    st.dataframe(crit_dataset_kc, hide_index=True)
+    ''
+
+    st.write("Overview:")
+    st.write("""
+             - The 0% change / default values (Rate: 21 <= x < 22 ) 
+                - For 1 calculation/distance unit 
+                - For **Standard** delivery
+             - These values are also used for the calculation:
+                - of % difference in case of rate in differnet range
+                - for different speed of delivery (Express, Slow)
+             """)
+    col_r3,col_r4 = st.columns(2)
+    col_r3.dataframe(standard_def_kc_df, hide_index=True, use_container_width=True)
+
+
+    ''
+    st.write("###### SK - Slovakia:")
+    st.dataframe(crit_dataset_eur, hide_index=True)
+    ''
+
+    st.write("Overview:")
+    st.write("""
+             - The 0% change / default values (Rate:  0.82 <= x < 0.87 ) 
+                - For 1 calculation/distance unit 
+                - For **Standard** delivery
+             - These values are also used for the calculation:
+                - of % difference in case of rate in differnet range
+                - for different speed of delivery (Express, Slow)
+             """)
+    col_r3,col_r4 = st.columns(2)
+    col_r3.dataframe(standard_def_eur_df, hide_index=True, use_container_width=True)
 
 # /////////////////////////////////////////////////////////////////////////
 def price_decision(selected_currency, selected_transport):
@@ -465,10 +712,58 @@ selected_transport = st.radio("Transport type:", transport_options_list)
 price_square = price_decision(selected_currency,selected_transport)
 
 ''
+
+with st.expander("Transport type comparison", icon=":material/info:"):
+
+    ''
+    st.write("""
+             - There is few factors to consider:
+                - Time, Costs
+                - Type of Cargo 
+                - Infrasture availability  
+             
+             """)
+
+    ''
+    st.image("Pictures/Function_7/F7_transport_comparison_table.svg")
+
+
 with st.expander("Truck / Road", icon=":material/local_shipping:"):
 
     ''
     st.write("""- Every city is available -> no restrictions""")
+
+
+    ''
+    st.write("###### Mandatory breaks:")
+
+    st.write("""
+             - The cargo can be impacted by **mandatory breaks for the driver**
+             - This also **influences the time of the delivery**
+             """)
+    
+    st.write("""
+             - **Rules/law**:
+                - A driver can drive **4.5 hours** and then needs to take a **mandatory 45 minutes break**
+                - A driver can drive for **9 hours a day** max.   
+                - After the 9 hours mandatory **10 hours break** before continuing to drive 
+                - **Exception:** in case that the distance is **within 10 hours** of driving, exception can be made                        
+             """)
+
+    ''
+    st.write(" -> Distance is **not** longer than **4.5 hours** - no mandatory break")
+    st.write(" -> Distance is **longer** than **4.5 hours** - mandatory **45 minutes** break")
+    st.write(" -> Distance is **not** longer than **9 hours** - mandatory **45 minutes** break")
+    st.write(" -> Distance is **not** longer than **10 hours** (exception) - mandatory **45 minutes** break")
+    st.write(" -> In case that the distance is longer than **9 and 10 hours** (10+) - there is **45 minutes** break + **10 hours** break")
+    
+    ''
+    st.caption("""
+               * Example of journey between 9 - 10 hours -> the exception: Karlovy Vary (CZ) - Poprad (SK)
+               * Example of journey longer than 9 or 10 hours with 10 hours sleep break: Teplice (CZ) - Kosice (SK) or Karlovy Vary (CZ) - Kosice (SK)
+                """)
+
+
 
 with st.expander("Train / Rails", icon=":material/train:"):
     ''
@@ -656,8 +951,28 @@ st.write(f" - **{selected_transport}** - **{urgency}** -> the cargo can be on it
 
 st.write(f" - Unit price for distance calculation: **{price_square:,.2f} {selected_currency}**")
 
-''
-with st.expander("**SLA** - Service Level Agreement", icon= ":material/contract:"):
+truck_kc
+train_kc
+plane_kc
+
+
+truck_eur
+train_eur
+plane_eur
+
+# Expanders
+with st.expander("Unit price", icon= ":material/info:"):
+
+    ''
+    st.write("- Is a price per specific distance")
+    st.write("- The function/calculation works based on **coordinate system**")
+    st.write("- Unit means specific field in this coordinate system")
+    st.write("- **Based on the units, distance and price is calculated**")
+    st.write("- **1 unit is approximatelly ~ 30 km** (but not always - there are some variables/coeficients making calculation corrections, dependings on case City A to City B )")
+    st.write("- If the distance is **less than** ~ 30 km (You travel within 1 unit), the final price is calculated as 1 unit. This also helps to keep profit for the business.  Example: Teplice <-> Most")
+
+
+with st.expander("**SLA** - Service Level Agreement (Express, Standard, Slow)", icon= ":material/contract:"):
 
     ''
     st.write(" - **Time** - Cargo on its way till this time - **HOURS**")
