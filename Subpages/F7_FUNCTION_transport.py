@@ -141,8 +141,8 @@ def api_get_rate():
         """
     )
 
-        usd_to_czk_rate = 19
-        usd_to_eur_rate = 0.90
+        usd_to_czk_rate = 24.89
+        usd_to_eur_rate = 0.87
         
         return usd_to_czk_rate, usd_to_eur_rate 
 
@@ -702,6 +702,7 @@ with st.expander("Truck / Road", icon=":material/local_shipping:"):
 
     ''
     st.write("""- Every city is available -> no restrictions""")
+    st.write("""- But the driver needs mandatory breaks which can prolong the journey/delivery time""")
 
 
     ''
@@ -736,8 +737,16 @@ with st.expander("Truck / Road", icon=":material/local_shipping:"):
 
 
 with st.expander("Train / Rails", icon=":material/train:"):
+
     ''
-    st.write("""- Only some cities connected""")
+    st.write("""
+    -   Train does **not need breaks** for the driver (in comparison with Truck)
+        - The transport planning includes also **change of the drivers**, if it is that long
+        - Train jurney is **not** inturupted by mandtory breaks  
+    """)
+
+    st.write("""- But is **less flexible** - Only some cities connected by rails""")
+    ''
     st.image("Pictures/Function_7/F7_map_trains.png")
 
     data_table_train_cz = pd.DataFrame({
@@ -759,7 +768,9 @@ with st.expander("Train / Rails", icon=":material/train:"):
 
 with st.expander("Airplane", icon=":material/travel:"):
     ''
+    st.write("""- Very expensive but fast -> Benficial for time critical goods/transports""")
     st.write("""- Only some cities connected""")
+    ''
     st.image("Pictures/Function_7/F7_map_air.png")
 
     data_table_air_cz = pd.DataFrame({
@@ -933,8 +944,8 @@ check_isurance = col_ch_1.checkbox("Insurance extra")
 check_fragile = col_ch_2.checkbox("Fragile goods")
 
 if selected_transport == 'Airplane':
-    check_danger = col_ch_3.checkbox("Danger", disabled= True)
-    col_ch_3.caption("Not allowed danger goods in aircraft")
+    check_danger = col_ch_3.checkbox("Danger goods", disabled= True)
+    col_ch_3.caption("*Not allowed in aircraft")
 
 else:
     check_danger = col_ch_3.checkbox("Danger goods")
@@ -982,13 +993,51 @@ else:
     shipment_value = None
 
 
-with st.expander("Extra services", icon= ":material/info:"):
-    st.write("Extra services")
+''
+with st.expander("Extra services - Overview", icon= ":material/info:"):
+
+    ''
+    st.write("""
+    - Multiple choices can be selected
+    - Note: **Airplane** - Danger goods is **not allowed**
+    """)
+
+    ''
+    st.write("""
+    - Costs:
+        - Insurance extra -> **10%** from shipment value
+        - Fragile goods -> **5%** from shipment value
+        - Danger goods -> **7%** from shipment value
+    """)
+
+    st.image("Pictures/Function_7/F7_table_shipment_value.svg")
+
+with st.expander("Fragile goods", icon= ":material/quick_reference:"):
+
+    ''
+    st.write("""
+    - Overview of goods and the common type of transport
+    """)
+
+    st.image("Pictures/Function_7/F7_table_fragile_truck_train.svg")
+    st.image("Pictures/Function_7/F7_table_fragile_airplane.svg")
+
+with st.expander("Danger goods", icon= ":material/warning:"):
+
+    ''
+    st.write("""
+    - Overview of goods and the common type of transport
+    - Note: **Airplane** - Danger goods is **not allowed**
+    """)
+
+    st.image("Pictures/Function_7/F7_table_danger_truck_train.svg")
+
+
 
 ''
 ''
 st.write("**Delivery specification - Door-to-Door:**")
-st.write("From city:")
+st.write(f"From city ({from_city}):")
 
 # input validati / warning
 def more_true(list_bool):
@@ -1032,7 +1081,7 @@ if selected_transport == 'Truck':
 
 
 if selected_transport == 'Airplane' or selected_transport == 'Train':
-    check_delivery_not_at_f = col_ch2_1.checkbox("No - train station", key='city_2', value = True)
+    check_delivery_not_at_f = col_ch2_1.checkbox("No", key='city_2', value = True)
 
     check_delivery_10_at_f  = col_ch2_2.checkbox("10 km", key='10km_2')
 
@@ -1051,7 +1100,7 @@ if selected_transport == 'Airplane' or selected_transport == 'Train':
 
 ''
 
-st.write("To city:")
+st.write(f"To city: ({to_city}):")
 
 col_ch3_1, col_ch3_2, col_ch3_3 = st.columns(3)
 
@@ -1076,7 +1125,7 @@ if selected_transport == 'Truck':
 
 if selected_transport == 'Airplane' or selected_transport == 'Train':
 
-    check_delivery_not_at_t = col_ch3_1.checkbox("No - train station",key='city_4', value = True)
+    check_delivery_not_at_t = col_ch3_1.checkbox("No",key='city_4', value = True)
 
     check_delivery_10_at_t = col_ch3_2.checkbox("10 km", key='10km_4')
 
@@ -1096,7 +1145,67 @@ if selected_transport == 'Airplane' or selected_transport == 'Train':
 
 ''
 with st.expander("Door-to-Door", icon= ":material/info:"):
-    st.write("Door-to-Door")
+
+    ''
+    st.write("""
+    - **The point of Door-to-Door is to define whether:**
+        - The transport between cities will be just from City A to City B **configured upper**
+        - Or eventually from/to somewhere else within defined areas (City, ~ 10km, ~20km)
+    """)
+
+    ''
+    st.write(""" 
+    - **Truck:**
+        - **City** - everywhere within City area **for free**
+        - **10 km** radius - **500 koruna** ; **20 euro**
+        - **20 km** radius - **1 000 koruna** ; **40 euro**
+    """)
+
+    ''
+    st.write(""" 
+    - **Train and Airplane:**
+        - Measured from Train Station or Airport
+        - **Higher price** due to need of **truck** and **Shipmant transfer**
+        - **No** - pick up/delivery just from/to Train Station/Airport by Train/Airplane
+        - **10 km** radius - **1 000 koruna** ; **40 euro**
+        - **20 km** radius - **1 500 koruna** ; **60 euro**
+    """)
+
+
+    ''
+    st.write("- **More details**:")
+
+    st.link_button(
+                label = "Go to Door-to-Door page",
+                url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
+                help="The button will redirect to the relevant page within this app for download.",
+                use_container_width=True,
+                icon=":material/launch:"
+            )
+
+
+    ''
+    ''
+    st.write("###### Simple view/example:")
+
+    st.image("Pictures/Function_7/Function_7_F7_dtd_legend_small_2.svg", width= 350)
+
+    ''
+    st.image("Pictures/Function_7/F7_dtd_transport_abb_air.svg")
+
+    ''
+    st.write(""" 
+    - Selected transport between **A** and **B** - **Airplane**
+    - Service **ordered** just from the **A** point ('From city') - **Airport**
+    - Delivery to **B** point ('To' city) - **Airport**, but customer pays extra delivery to point **B in the area of 20km**
+    """)
+    st.write(""" 
+    - Result:
+        -  Customer will deliver the Shipment to point **A** (Airport) **on his own**
+        - **A** to **B** distance (Airport to Airport) will be provided by our company (Airplane)
+        - Customer pays for delivery to **B - 20km** -> our company will make a shipament transfer from **Airplane to Truck** for the last **20 km**     
+    """)
+
 
 
 
@@ -1572,6 +1681,7 @@ if st.button("Submit", use_container_width=True):
 
     if selected_transport == 'Truck':
         st.write(f"- **{selected_transport}** needs this extra time (adminitsration, load etc.):  **{extra_time:.2f} hours(s)** for selected **{urgency}** service - **the SLA** ." )
+        st.write(f"- If the distance is longer, there is a need of breaks for driver: **{time_break} hours**.")
         st.write(f"- The **overall time needed** to get to the 'To' city ({to_city}) is **{(time_journey + time_break + extra_time):.2f} hour(s)**." )
 
     elif selected_transport == 'Train' or 'Airplane':
@@ -1581,15 +1691,17 @@ if st.button("Submit", use_container_width=True):
     ''
     
     st.write("###### Additional services:")
-    st.write(f"- Insurance extra costs: **{money_insurance:.2f} {selected_currency}**.")
-    st.write(f"- Fregile goods costs: **{money_fragile:.2f} {selected_currency}**.")
-    st.write(f"- Danger goods costs: **{money_danger:.2f} {selected_currency}**.")
-    st.write(f"- Door-To-Door - 'From' city ({from_city}):  **{door_from_result:.2f} {selected_currency}** - ({from_city_extra_doortdoor} km).")
-    st.write(f"- Door-To-Door - 'To' city ({to_city}):  **{door_to_result:.2f} {selected_currency}** - ({to_city_extra_doortdoor} km).")
+    st.write(f"- Insurance extra costs: **{money_insurance:,.2f} {selected_currency}**.")
+    st.write(f"- Fregile goods costs: **{money_fragile:,.2f} {selected_currency}**.")
+    st.write(f"- Danger goods costs: **{money_danger:,.2f} {selected_currency}**.")
+    st.write(f"- Door-To-Door - 'From' city ({from_city}):  **{door_from_result:,.2f} {selected_currency}** - ({from_city_extra_doortdoor} km).")
+    st.write(f"- Door-To-Door - 'To' city ({to_city}):  **{door_to_result:,.2f} {selected_currency}** - ({to_city_extra_doortdoor} km).")
     
     ''
+    st.write("###### Final price:")
     with st.container(border=True):
-        st.write(f"- **Final price: {(price + money_insurance + money_fragile + money_danger + door_to_result + door_from_result):,.2f} {selected_currency}**.")
+        st.write(f"**{(price + money_insurance + money_fragile + money_danger + door_to_result + door_from_result):,.2f} {selected_currency}**")
+        # st.write(f"**Final price: {(price + money_insurance + money_fragile + money_danger + door_to_result + door_from_result):,.2f} {selected_currency}**.")
 
 
 
