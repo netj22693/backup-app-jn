@@ -1177,7 +1177,7 @@ with st.expander("Door-to-Door", icon= ":material/info:"):
 
     st.link_button(
                 label = "Go to Door-to-Door page",
-                url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
+                url="https://dataparsing.streamlit.app/F7_FUNCTION_transport",
                 help="The button will redirect to the relevant page within this app for download.",
                 use_container_width=True,
                 icon=":material/launch:"
