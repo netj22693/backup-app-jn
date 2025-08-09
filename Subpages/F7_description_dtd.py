@@ -138,7 +138,7 @@ st.image("Pictures/Function_7/F7_dtd_cargo_transfer.svg", width=450)
 st.write("""
     **Example 5 (Different view)**: A - 10 km + A to B delivery
     - **Selected transport**: Airplane (applicable also for Train)
-    - **Case**: Customer will ensure pick up from to the Train Station/hub
+    - **Case**: Customer will ensure pick up from to the Airport
     - **The payed service**: Pick up by Truck, delivery to Airport (A), delivery to Airport (B) by Airplane
     """)
 
@@ -176,17 +176,17 @@ st.write("""
 
 st.write("""
     - **Truck** is more flexible thus has circles of delivery
-         - Within city - everywhere in the city for free
-         - 10 km area of the city edge 
-         - 20 km area of the city edge
+         - **Within city** - everywhere in the city for free
+         - **10 km** area from the city edge 
+         - **20 km** area from the city edge
     """)
 
 ''
 st.write("""
-    - **Train** and **Airplane**, due to Stations/Hubs/Airports are commonly not in the cities (so for "first/last mile" Truck needed), the offer is:
-         - No - just Train/Airplane transfare A to B
-         - 10 km area of pick up/delivery
-         - 20 km area of pick up/delivery
+    - **Train** and **Airplane**, due to Stations/Hubs/Airports commonly not in the cities (so for "first/last mile" Truck needed), the offer is:
+         - **No** - just Train/Airplane transfare A to B
+         - **10 km** area of pick up/delivery
+         - **20 km** area of pick up/delivery
     """)
 
 
