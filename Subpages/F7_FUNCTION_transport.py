@@ -111,7 +111,7 @@ dataset_test = ({
 
 def api_get_rate():
     try:
-        # api_freecurrency_api = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_wD1NduThhBnySFJAlV9f6xnQmMhkJa6qFzX7DJz4&currencies=EUR%2CCZK"
+        api_freecurrency_api = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_wD1NduThhBnySFJAlV9f6xnQmMhkJa6qFzX7DJz4&currencies=EUR%2CCZK"
 
         #get reguest
         @st.cache_data(ttl=3600)
@@ -1188,10 +1188,10 @@ with st.expander("Door-to-Door", icon= ":material/info:"):
     ''
     st.write("###### Simple view/example:")
 
-    st.image("Pictures/Function_7/Function_7_F7_dtd_legend_small_2.svg", width= 350)
+    st.image("Pictures/Function_7/F7_dtd_legend.svg")
 
     ''
-    st.image("Pictures/Function_7/F7_dtd_transport_abb_air.svg")
+    st.image("Pictures/Function_7/F7_dtd_abb_air.svg", width= 370)
 
     ''
     st.write(""" 

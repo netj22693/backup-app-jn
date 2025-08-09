@@ -4,7 +4,7 @@ import streamlit as st
 st.write("# Welcome!")
 ''
 st.write(
-    "Purpose of this application is to play with XML and JSON data. The application has **6 functions**:"
+    "Purpose of this application is to play with XML and JSON data. The application has **7 functions**:"
     )
 ''
 st.write("""
@@ -26,6 +26,11 @@ st.write("""
     """
     )
 ''
+st.write("""
+    - **Function 7:** Transport calculation - **API** provides input
+    """
+    )
+''
 ''
 "More details about the functions can be seen in the subpages - what the functions do, what data structures are used, etc."
 
@@ -44,7 +49,7 @@ with tab1:
 	st.write("###### ArchiMate - Overview of the functions:")
 	''
 	# st.image("Pictures/Archimate_functions_overview.svg")
-	st.image("Pictures/Archimate_functions_overview_3.svg")
+	st.image("Pictures/Archimate_functions_overview_4.svg")
 	
 with tab2:
 	st.write("###### UML - Overview of the functions:")
@@ -56,6 +61,8 @@ with tab2:
 	st.image("Pictures/Overall_UML_F5.svg")
 	''
 	st.image("Pictures/Overall_UML_F6.svg")
+	''
+	st.image("Pictures/Overall_UML_F7.svg")
 ''
 ''
 # Buttons for redirectiong to the relevant Functions
@@ -136,6 +143,23 @@ st.page_link(
 st.page_link(
 	label = "Function 6",
 	page="Subpages/F6_FUNCTION_zip_code.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+	icon=":material/play_circle:"
+	) 
+
+''
+st.page_link(
+    label = "Description about F7",
+	page="Subpages/F7_description.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+    icon=":material/code:",
+	)
+
+st.page_link(
+	label = "Function 7",
+	page="Subpages/F7_FUNCTION_transport.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/play_circle:"
@@ -237,6 +261,12 @@ with st.expander(
 
 	''
 	st.write("Key highlights (* **vX.X** -> version of application):")
+
+	''
+	st.write("""
+	- Function 7:
+		- **v20.0** - F7 released - 09-Aug-2025
+	""")
 
 	''
 	st.write("""
