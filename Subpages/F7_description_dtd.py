@@ -91,6 +91,7 @@ st.image("Pictures/Function_7/F7_dtd_ab_air.svg", width=400)
 ''
 ''
 ''
+''
 st.write("""
     **Example 2**: A to B delivery + B - 20 km
     - **Selected transport**: Airplane (applicable also for Train)
@@ -105,6 +106,7 @@ st.image("Pictures/Function_7/F7_dtd_abb_air.svg", width=480)
 ''
 ''
 ''
+''
 st.write("""
     **Example 3**: A - 20 km + A to B delivery + B - 20 km
     - **Selected transport**: Train (applicable also for Airplane)
@@ -116,6 +118,7 @@ st.write("""
 st.image("Pictures/Function_7/F7_dtd_aabb_train.svg", width=480)
 
 
+''
 ''
 ''
 ''
@@ -161,8 +164,9 @@ st.image("Pictures/Function_7/F7_dtd_aab_truck.svg", width=400)
 ''
 ''
 ''
+
+st.write("##### Conclusion:")
 st.write("""
-    **Conclusion**:
     - All the three transport types (Truck, Train, Airplane) allows the same type of pick up/delivery:
          - A to B only 
          - A -> A to B
