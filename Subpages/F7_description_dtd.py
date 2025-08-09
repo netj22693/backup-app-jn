@@ -131,6 +131,7 @@ st.image("Pictures/Function_7/F7_dtd_cargo_transfer.svg", width=450)
 ''
 ''
 ''
+''
 st.write("""
     **Example 5 (Different view)**: A - 10 km + A to B delivery
     - **Selected transport**: Airplane (applicable also for Train)
@@ -141,6 +142,7 @@ st.write("""
 ''
 st.image("Pictures/Function_7/F7_dtd_cargo_air.svg", width=600)
 
+''
 ''
 ''
 ''
