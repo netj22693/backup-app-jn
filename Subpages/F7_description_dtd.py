@@ -77,7 +77,7 @@ st.image("Pictures/Function_7/F7_dtd_legend.svg")
 
 ''
 st.write("""
-    **Example 1** - Only A to B delivery
+    **Example 1**: Only A to B delivery
     - **Selected transport**: Airplane (applicable also for Train)
     - **Case**: Customer wants just A to B delivery - Airplane
     - This means that the customer will ensure the delivery of the shipment to the Airport (A) and also ensure the pick up from the Airport (B)
@@ -92,7 +92,7 @@ st.image("Pictures/Function_7/F7_dtd_ab_air.svg", width=400)
 ''
 ''
 st.write("""
-    **Example 2** - A to B delivery + B - 20 km
+    **Example 2**: A to B delivery + B - 20 km
     - **Selected transport**: Airplane (applicable also for Train)
     - **Case**: Customer wants delivery to final destination in area of 20 km from airport
     - This means that the customer will ensure the delivery of the shipment to the Airport (A)
@@ -106,7 +106,7 @@ st.image("Pictures/Function_7/F7_dtd_abb_air.svg", width=480)
 ''
 ''
 st.write("""
-    **Example 3** - A - 20 km + A to B delivery + B - 20 km
+    **Example 3**: A - 20 km + A to B delivery + B - 20 km
     - **Selected transport**: Train (applicable also for Airplane)
     - **Case**: Full road
     - **The payed service**: Pick up by Truck, delivery to Airport (A), transfer to Airport (B) by Airplane, transfer to Truck, delivery to final destination. **End-to-end payed**
@@ -120,7 +120,7 @@ st.image("Pictures/Function_7/F7_dtd_aabb_train.svg", width=480)
 ''
 ''
 st.write("""
-    **Example 4 (Different view)** - A to B delivery + B - 20 km
+    **Example 4 (Different view)**: A to B delivery + B - 20 km
     - **Selected transport**: Train (applicable also for Airplane)
     - **Case**: Customer will ensure delivery to the Train Station/hub
     - **The payed service**: Delivery from Train Station (A) to Train Station (B), transfer to Truck, delivery to final destination
@@ -132,7 +132,7 @@ st.image("Pictures/Function_7/F7_dtd_cargo_transfer.svg", width=450)
 ''
 ''
 st.write("""
-    **Example 5 (Different view)** - A - 10 km + A to B delivery
+    **Example 5 (Different view)**: A - 10 km + A to B delivery
     - **Selected transport**: Airplane (applicable also for Train)
     - **Case**: Customer will ensure pick up from to the Train Station/hub
     - **The payed service**: Pick up by Truck, delivery to Airport (A), delivery to Airport (B) by Airplane
@@ -145,7 +145,7 @@ st.image("Pictures/Function_7/F7_dtd_cargo_air.svg", width=600)
 ''
 ''
 st.write("""
-    **Example 6** - A - 20 km + A to B delivery
+    **Example 6**: A - 20 km + A to B delivery
     - **Selected transport**: Truck
     - **Case**: End-to-end delivery - B point in the city area
     - **The payed service**: End-to-end covered by Truck
