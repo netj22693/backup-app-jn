@@ -1,1335 +1,237 @@
 import streamlit as st
-import pandas as pd
-import math
-import datetime
-import requests
-import json
 
 
 
-tranport_types_list = ['Truck','Train','Airplane']
-
-# Price per 1t/per approx 30km (one square on map)
-
-#STANDAR - DELIVERY SERVICE
-truck_kc = 689
-train_kc = 230
-plane_kc = 150_000
-
-truck_eur = 27
-train_eur = 10
-plane_eur = 6250
-
-list_kc_standard_default = [truck_kc, train_kc, plane_kc]
-list_eur_standard_default = [truck_eur, train_eur, plane_eur]
-
-# extra time for load unload and other admin stuff (in hours -> day)
-#STANDAR - DELIVERY SERVICE
-extra_time_truck_h = 32
-extra_time_train_h = 48
-extra_time_air_h = 72
-
-express_extra_time_truck_h = 6
-express_extra_time_train_h = 10
-express_extra_time_air_h = 2
-
-slow_extra_time_truck_h = 120
-slow_extra_time_train_h = 120
-slow_extra_time_air_h = 240
-
-
-extra_time_df = pd.DataFrame({
-    "Transport" : tranport_types_list,
-    "Express" : [express_extra_time_truck_h,express_extra_time_train_h, express_extra_time_air_h],
-    "Standard" : [extra_time_truck_h,extra_time_train_h, extra_time_air_h],
-    "Slow" : [slow_extra_time_truck_h,slow_extra_time_train_h, slow_extra_time_air_h]
-})
-
-standard_def_kc_df = pd.DataFrame({
-    "Transport" : tranport_types_list,
-    "Default": list_kc_standard_default,
-    "Currency": "Koruna"
-})
-
-standard_def_kc_df = standard_def_kc_df.style.format({
-    "Default": "{:,.2f}"
-})
-
-
-standard_def_eur_df = pd.DataFrame({
-    "Transport" : tranport_types_list,
-    "Default": list_eur_standard_default,
-    "Currency": "euro"
-})
-
-standard_def_eur_df = standard_def_eur_df.style.format({
-    "Default": "{:,.2f}"
-})
-
-# PRICE Coeficients increasing(Express delivery) or decreasign (Slow delivery) price per square 
-coef_truck = 0.4
-coef_train = 0.5 
-coef_air = 0.1
-
-
-dataset_test = ({
-"cz" : {
-    "Prague" : {"big" : ["2","3"], "small" : ["6","7"], "train":"y", "air":"y"},
-    "Brno" : {"big" : ["4","5"], "small" : ["10","13"], "train":"y", "air":"y"},
-    "Olomouc" : {"big" : ["3","5"], "small" : ["8","15"], "train":"n", "air":"n"},
-    "Plzen" : {"big" : ["3","2"], "small" : ["7","4"], "train":"n", "air":"n"},
-    "Tabor" : {"big" : ["3","3"], "small" : ["9","8"], "train":"n", "air":"n"},
-    "Ostrava" : {"big" : ["3","6"], "small" : ["7","18"], "train":"y", "air":"n"},
-    "Liberec" : {"big" : ["1","3"], "small" : ["3","9"], "train":"n", "air":"n"},
-    "Hradec Kralove" : {"big" : ["2","4"], "small" : ["5","11"], "train":"n", "air":"n"},
-    "Pardubice" : {"big" : ["2","4"], "small" : ["6","11"], "train":"y", "air":"y"},
-    "Zlin" : {"big" : ["3","6"], "small" : ["9","16"], "train":"n", "air":"n"},
-    "Chomutov" : {"big" : ["2","2"], "small" : ["4","4"], "train":"n", "air":"n"},
-    "Ceske Budejovice" : {"big" : ["4","3"], "small" : ["10","7"], "train":"n", "air":"n"},
-    "Teplice" : {"big" : ["2","2"], "small" : ["4","6"], "train":"n", "air":"n"},
-    "Most" : {"big" : ["2","2"], "small" : ["4","5"], "train":"y", "air":"n"},
-    "Karlovy Vary" : {"big" : ["2","1"], "small" : ["5","3"], "train":"n", "air":"n"},
-    "Kolin" : {"big" : ["2","3"], "small" : ["6","9"], "train":"y", "air":"n"},
-    "Ceska Trebova" : {"big" : ["3","5"], "small" : ["7","13"], "train":"y", "air":"n"},
-    "Jihlava" : {"big" : ["3","4"], "small" : ["9","10"], "train":"n", "air":"n"},
-    "Pisek" : {"big" : ["3","2"], "small" : ["9","7"], "train":"y", "air":"n"},
-},
-"sk" : {
-	"Bratislava" : {"big" : ["5","5"], "small" : ["14","14"], "train":"y", "air":"y"},
-    "Kosice" : {"big" : ["4","9"], "small" : ["12","27"], "train":"y", "air":"y"},
-    "Banska Bystrica" : {"big" : ["4","7"], "small" : ["12","21"], "train":"n", "air":"n"},
-    "Zilina" : {"big" : ["3","7"], "small" : ["9","19"], "train":"y", "air":"n"},	
-    "Presov" : {"big" : ["4","9"], "small" : ["10","27"], "train":"n", "air":"n"},	
-    "Trnava" : {"big" : ["5","6"], "small" : ["14","17"], "train":"y", "air":"n"},	
-    "Trencin" : {"big" : ["4","6"], "small" : ["11","17"], "train":"n", "air":"n"},	
-    "Poprad" : {"big" : ["4","8"], "small" : ["10","24"], "train":"y", "air":"n"},	
-    "Banska Stiavnica" : {"big" : ["5","7"], "small" : ["13","20"], "train":"n", "air":"n"},		
-}
-})
-
-# //////////////////// API ///////////////////////
-
-def api_get_rate():
-    try:
-        # api_freecurrency_api = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_wD1NduThhBnySFJAlV9f6xnQmMhkJa6qFzX7DJz4&currencies=EUR%2CCZK"
-
-        #get reguest
-        @st.cache_data(ttl=3600)
-        def get_response_api(api_freecurrency_api):
-            api_1 = requests.get(api_freecurrency_api, verify=False, timeout=5).text
-            return api_1
-
-        api_1 = get_response_api(api_freecurrency_api)
-
-
-        # JSON format creation
-        api_1_json = json.loads(api_1)
-
-
-        # Search for data in the API defined format - JSON
-        usd_to_czk_rate = api_1_json['data']['CZK']
-        usd_to_czk_rate = round(usd_to_czk_rate, 2)
-
-        usd_to_eur_rate = api_1_json['data']['EUR']
-        usd_to_eur_rate = round(usd_to_eur_rate, 2)
-
-        return  usd_to_czk_rate, usd_to_eur_rate
-
-    except:
-        st.warning("""
-        - Apologies, API refused to make a connection. So to see the function, there are temporary values.
-        """
-    )
-
-        usd_to_czk_rate = 19
-        usd_to_eur_rate = 0.90
-        
-        return usd_to_czk_rate, usd_to_eur_rate 
-
-
-
-usd_to_czk_rate, usd_to_eur_rate = api_get_rate()
-
-st.write(usd_to_czk_rate)
-st.write(usd_to_eur_rate)
-
-
-
-
-# Change of price based on rate - % in percantage decrease/increase
-
-crit_1_kc = -9.3
-crit_2_kc = -4.7
-crit_3_kc = 0       # default range - crit_3_kc
-crit_4_kc = 4.7
-
-crit_1_eur = -5.9
-crit_2_eur  = 0   # default range - crit_2_eur
-crit_3_eur = 3.5 
-crit_4_eur = 7.1
-
-
-crit_1_kc_cond = " x < 20 "
-crit_2_kc_cond = " 20 ≤ x < 21 "
-crit_3_kc_cond = " 21 ≤ x < 22 "
-crit_4_kc_cond = " 22 ≤ x "
-
-crit_1_eur_cond = " x < 0.82 "
-crit_2_eur_cond = " 0.82 ≤ x < 0.87 "
-crit_3_eur_cond = " 0.87 ≤ x < 0.90 "
-crit_4_eur_cond = " 0.90 ≤ x "
-
-list_crit_kc = crit_1_kc, crit_2_kc, crit_3_kc, crit_4_kc
-st.write(list_crit_kc)
-
-list_crit_eur = crit_1_eur, crit_2_eur, crit_3_eur, crit_4_eur
-
-
-def increase_decrease(list):
-
-    list_impact = []
-    for item in list:
-        if item < 0:
-            result = 'cost decrease'
-            list_impact.append(result)
-        
-        elif item == 0:
-            result = 'default value'
-            list_impact.append(result)
-
-        elif item > 0:
-            result = 'cost increase'
-            list_impact.append(result)
-        
-        else:
-            print("Issue - not scenario not covered in this def function")
-
-    return list_impact
-
-
-list_crit_kc_text = increase_decrease(list_crit_kc)
-list_crit_eur_text = increase_decrease(list_crit_eur)
-
-
-
-
-crit_dataset_kc = pd.DataFrame ({
-    "Rule" : [crit_1_kc_cond, crit_2_kc_cond, crit_3_kc_cond, crit_4_kc_cond],
-    "Impact (%)" : [crit_1_kc, crit_2_kc, crit_3_kc, crit_4_kc],
-    "Impact " : list_crit_kc_text,
-},)
-
-
-crit_dataset_eur = pd.DataFrame ({
-    "Rule" : [crit_1_eur_cond, crit_2_eur_cond, crit_3_eur_cond, crit_4_eur_cond],
-    "Impact (%)" : [crit_1_eur, crit_2_eur, crit_3_eur, crit_4_eur],
-    "Impact " : list_crit_eur_text,
-},)
-
-
-def rate_change_kc(usd_to_czk_rate, truck_kc, train_kc, plane_kc):
-
-    # st.write(f"ve funkci usd/czk: {usd_to_czk_rate}")
-    # st.write(f"ve funkci truck: {truck_kc}")
-    # st.write(f"ve funkci train: {train_kc}")
-    # st.write(f"ve funkci air: {plane_kc}")
-    # st.write(f"ve funkci crit 1: {crit_2_kc }")
-
-    if usd_to_czk_rate < 20:
-        truck_kc = round(truck_kc + (truck_kc / 100) * crit_1_kc,0)
-        train_kc = round(train_kc + (train_kc / 100) * crit_1_kc, 0)
-        plane_kc = round(plane_kc + (plane_kc / 100) * crit_1_kc, 0)
-
-        return truck_kc, train_kc, plane_kc
-    
-    elif 20 <= usd_to_czk_rate < 21:
-        # st.write("jsem ve 2")
-        truck_kc = round(truck_kc + (truck_kc / 100) * crit_2_kc, 0)
-        train_kc = round(train_kc + (train_kc / 100) * crit_2_kc, 0)
-        plane_kc = round(plane_kc + (plane_kc / 100) * crit_2_kc, 0)
-
-        return truck_kc, train_kc, plane_kc
-
-    elif 21 <= usd_to_czk_rate < 22:
-        # st.write("jsem ve 3")
-        truck_kc = truck_kc
-        train_kc = train_kc
-        plane_kc = plane_kc
-
-        return truck_kc, train_kc, plane_kc
-    
-    elif 22 <= usd_to_czk_rate:
-        # st.write("jsem ve 4")
-        truck_kc = round(truck_kc + (truck_kc / 100) * crit_4_kc, 0)
-        train_kc = round(train_kc + (train_kc / 100) * crit_4_kc, 0)
-        plane_kc = round(plane_kc + (plane_kc / 100) * crit_4_kc, 0)
-
-        return truck_kc, train_kc, plane_kc
-
-
-truck_kc, train_kc, plane_kc = rate_change_kc(usd_to_czk_rate, truck_kc, train_kc, plane_kc)
-
-st.write(f"venku usd/czk: {usd_to_czk_rate}")
-st.write(f"venkutruck: {truck_kc}")
-st.write(f"venku train: {train_kc}")
-st.write(f"venku air: {plane_kc}")
-
-
-
-
-def rate_change_eur(usd_to_eur_rate, truck_eur, train_eur, plane_eur):
-
-    st.write(f"ve funkci usd/eur: {usd_to_eur_rate}")
-    st.write(f"ve funkci truck: {truck_eur}")
-    st.write(f"ve funkci train: {train_eur}")
-    st.write(f"ve funkci air: {plane_eur}")
-    st.write(f"ve funkci crit: {crit_3_eur }")
-
-    if usd_to_eur_rate < 0.82:
-        st.write("jsem ve 1")
-        truck_eur = round(truck_eur + (truck_eur / 100) * crit_1_eur, 2)
-        train_eur = round(train_eur + (train_eur / 100) * crit_1_eur, 2)
-        plane_eur = round(plane_eur + (plane_eur / 100) * crit_1_eur, 2)
-
-        return truck_eur, train_eur, plane_eur
-    
-    elif 0.82 <= usd_to_eur_rate < 0.87:
-        st.write("jsem ve 2")
-        truck_eur = truck_eur
-        train_eur = train_eur
-        plane_eur = plane_eur
-
-        return truck_eur, train_eur, plane_eur
-
-    elif 0.87 <= usd_to_eur_rate < 0.90:
-        st.write("jsem ve 3")
-        truck_eur = round(truck_eur + (truck_eur / 100) * crit_3_eur,2)
-        train_eur = round(train_eur  + (train_eur  / 100) * crit_3_eur,2)
-        plane_eur = round(plane_eur + (plane_eur / 100) * crit_3_eur,2)
-
-        return truck_eur, train_eur, plane_eur
-    
-    elif 0.90 <= usd_to_eur_rate:
-        st.write("jsem ve 4")
-        truck_eur = round(truck_eur + (truck_eur / 100) * crit_4_eur, 2)
-        train_eur  = round(train_eur  + (train_eur  / 100) * crit_4_eur, 2)
-        plane_eur = round(plane_eur + (plane_eur / 100) * crit_4_eur, 2)
-
-        return truck_eur, train_eur, plane_eur
-
-
-truck_eur, train_eur, plane_eur = rate_change_eur(usd_to_eur_rate, truck_eur, train_eur, plane_eur)
-
-# st.write(truck_kc)
-# st.write(train_kc)
-# st.write(plane_kc)
-
-st.write(truck_eur)
-st.write(train_eur)
-st.write(plane_eur)
-
-
-
-
-
-# =======================================================================
-# /////////    Data parsing  /////////////
-
-# Trains YES - ONLY YES
-train_cz = []
-for item in dataset_test['cz']:
-    l2 = dataset_test['cz'][item]
-    l3 = dataset_test['cz'][item]['train']
-    if l3 == 'y':
-        train_cz.append(item)
-
-train_sk = []
-for item in dataset_test['sk']:
-    l2 = dataset_test['sk'][item]
-    l3 = dataset_test['sk'][item]['train']
-    if l3 == 'y':
-        train_sk.append(item)
-
-
-# Airplanes - overview (including no) - FULL LIST
-train_cz_yn = []
-for item in dataset_test['cz']:
-    l2 = dataset_test['cz'][item]
-    l3 = dataset_test['cz'][item]['train']
-    train_cz_yn.append(l3)
-
-train_sk_yn = []
-for item in dataset_test['sk']:
-    l2 = dataset_test['sk'][item]
-    l3 = dataset_test['sk'][item]['train']
-    train_sk_yn.append(l3)
-
-# Airplanes YES - ONLY YES
-
-air_cz = []
-for item in dataset_test['cz']:
-    l2 = dataset_test['cz'][item]
-    l3 = dataset_test['cz'][item]['air']
-    if l3 == 'y':
-        air_cz.append(item)
-
-air_sk = []
-for item in dataset_test['sk']:
-    l2 = dataset_test['sk'][item]
-    l3 = dataset_test['sk'][item]['air']
-    if l3 == 'y':
-        air_sk.append(item)
-
-# Airplanes - overview (including no) - FULL LIST
-air_cz_yn = []
-for item in dataset_test['cz']:
-    l2 = dataset_test['cz'][item]
-    l3 = dataset_test['cz'][item]['air']
-    air_cz_yn.append(l3)
-
-air_sk_yn = []
-for item in dataset_test['sk']:
-    l2 = dataset_test['sk'][item]
-    l3 = dataset_test['sk'][item]['air']
-    air_sk_yn.append(l3)
-
-
-# Function for change of data from original data object to have a meaning for visualization 
-def text_output(list_input):
-
-    output = []
-    for i in list_input:
-        if i == 'y':
-            output.append('Available')
-        if i == 'n':
-            output.append('No')
-
-    return output
-       
-
-train_cz_yn_text = text_output(train_cz_yn)
-train_sk_yn_text = text_output(train_sk_yn)
-air_cz_yn_text = text_output(air_cz_yn)
-air_sk_yn_text = text_output(air_sk_yn)
-
-
-# Names of cities 
-list_cz_az = []
-list_cz = []
-for item in dataset_test['cz']:
-    list_cz.append(item)
-    list_cz_az.append(item)
-
-# st.write(list_cz)
-
-list_sk_az = []
-list_sk = []
-for item in dataset_test['sk']:
-    list_sk.append(item)
-    list_sk_az.append(item)
-
-
-# st.write(list_sk)
-
-# Sorting A-Z for select 
-
-list_cz_az.sort()
-list_sk_az.sort()
-
-# Table overview - data set 
-
-table_overview_full_cz = pd.DataFrame({
-    "City" : list_cz,
-    "Road" : 'Available',
-    "Train" : train_cz_yn_text,
-    "Airplane" : air_cz_yn_text
-})
-
-table_overview_full_cz.index +=1
-
-
-table_overview_full_sk = pd.DataFrame({
-    "City" : list_sk,
-    "Road" : 'Available',
-    "Train" : train_sk_yn_text,
-    "Airplane" : air_sk_yn_text
-})
-
-table_overview_full_sk.index +=1
-
-# //////////////////// Frontend screen - top part ////////////////////////
-
-st.write("# Transport calculation")
+st.write("# Door-to-Door:")
 
 ''
-''
-''
-''
-st.image("Pictures/Function_7/F7_map_3.png")
+st.write("This page provides a description about **delivery logic** in the Function 7.")
 
 ''
+st.write("""
+    - Principle:
+         - You select delivery **From** city (A) **To** city (B)
+         - The predefined cities can be seen like **hubs**
+         - Based on the points **A** and **B**, the function will do **calculation of costs** based on **distance**
+         """)
+
 ''
-with st.expander("City overview", icon = ":material/pin_drop:"):
+st.write("""
+    - **But what about cases(!)**:
+        1. When the real pick up/delivery point is **not** in the city?
+        2. Or your transport type between the A and B is either **Train** or **Airplane** -> you also need to **get the shipment** from either **Station** or **Airport** to somewhere else?
+    """)
 
-    ''
-    st.image("Pictures/Function_7/F7_map_cities.png")
-    ''
-    st.write("- **Czech Republic:**")
-    st.dataframe(table_overview_full_cz)
-    ''
-    st.write("- **Slovakia:**")
-    st.dataframe(table_overview_full_sk)
-
-with st.expander("Currency and rate", icon = ":material/payments:"):
-
-    ''
-    ''
-    col_r1,col_r2 = st.columns(2)
-
-    col_r1.metric(label="USD to CZK", value= usd_to_czk_rate)
-
-    col_r2.metric(label="USD to EUR", value= usd_to_eur_rate)
-
-    ''
-    st.write("- This is a **dynamic part** - API based")
-    st.write("- **Exchange rate of the day** influences the costs/price within calculations")
-
-    ''
-    ''
-    st.write("###### CZ - Czech Republic:")
-    st.dataframe(crit_dataset_kc, hide_index=True)
-    ''
-
-    st.write("Overview:")
+''
+with st.expander("Additional context", icon= ":material/info:"):
     st.write("""
-             - The 0% change / default values (Rate: 21 <= x < 22 ) 
-                - For 1 calculation/distance unit 
-                - For **Standard** delivery
-             - These values are also used for the calculation:
-                - of % difference in case of rate in differnet range
-                - for different speed of delivery (Express, Slow)
-             """)
-    col_r3,col_r4 = st.columns(2)
-    col_r3.dataframe(standard_def_kc_df, hide_index=True, use_container_width=True)
+        - Note to 1. point:
+            - It is pretty common that industries, hubs, companies are around cities/close to cities
+            - Or eventuelly your delivery point is some smaller city, place in the area close to the city          
+    """)
 
-
-    ''
-    st.write("###### SK - Slovakia:")
-    st.dataframe(crit_dataset_eur, hide_index=True)
-    ''
-
-    st.write("Overview:")
     st.write("""
-             - The 0% change / default values (Rate:  0.82 <= x < 0.87 ) 
-                - For 1 calculation/distance unit 
-                - For **Standard** delivery
-             - These values are also used for the calculation:
-                - of % difference in case of rate in differnet range
-                - for different speed of delivery (Express, Slow)
-             """)
-    col_r3,col_r4 = st.columns(2)
-    col_r3.dataframe(standard_def_eur_df, hide_index=True, use_container_width=True)
-
-# /////////////////////////////////////////////////////////////////////////
-def price_decision(selected_currency, selected_transport):
-
-    if selected_currency == 'koruna':
-        if selected_transport == 'Truck':
-            price_square = truck_kc
-            return price_square
-        
-        if selected_transport == 'Train':
-            price_square = train_kc
-            return price_square
-
-        if selected_transport == 'Airplane':
-            price_square = plane_kc
-            return price_square
-    
-
-    if selected_currency == 'euro':
-        if selected_transport == 'Truck':
-            price_square = truck_eur
-            return price_square
-        
-        if selected_transport == 'Train':
-            price_square = train_eur
-            return price_square
-
-        if selected_transport == 'Airplane':
-            price_square = plane_eur
-            return price_square
+        - Note to 2. point:
+            - Using a **Truck** as a transport you can **get almost everywhere** where road is      
+            - But this is **not** the case for **Train** or **Airplane**
+            - You need to have some way how to get a shipment on Train or on Airplane and how to get it off -> **You need to plan how to get the shipment to/from Station/Airport**. 
+    """)
 
 
+''
+st.write("""
+    - **Solution** - In the Function 7 you can select whether you need to **serve just the A to B distance** or you want the company to **do more** for you -> **Door-to-Door delivery**.
+         """)
 
-
-# list_cz = []
-# for item in dataset_test['cz']:
-#     list_cz.append(item)
-
-# # st.write(list_cz)
-
-
-# list_sk = []
-# for item in dataset_test['sk']:
-#     list_sk.append(item)
-
-
-# # st.write(list_sk)
-
-
-
-# Filters 
 ''
 ''
+st.write("##### Area:")
+
+st.write("""
+    - **Truck**:
+         - More flexible 
+         - Includes City area for Free
+         - Additional distance in area of 10 or 20 km is payed 
+         """)
+
+st.write("""
+    - **Train** and **Airplane**:
+         - Less flexible as you also need an extra Truck for the "first/last mile"
+         - There is **a must to transfer the shipment**
+         - Usually the Train hubs or Airports are not directly in the city -> the delivery area is 10 or 20 km (payed)
+         """)
+
 ''
-
-
-col1,col2 = st.columns(2, gap="large")
-
-
-radio_from_country = col1.radio(
-    "Country from:",
-    options=["CZ","SK"],
-)
-
-radio_from_country = radio_from_country.lower()
-
-if radio_from_country == "cz":
-    
-    from_city = col1.selectbox("City from:", list_cz_az)
-
-if radio_from_country == "sk":
-
-    from_city = col1.selectbox("City from:", list_sk_az)
-
-
-
-
-
-radio_to_country = col2.radio(
-    "Country to:",
-    options=["CZ","SK"]
-)
-
-radio_to_country = radio_to_country.lower()
-
-if radio_to_country == "cz":
-    
-    to_city = col2.selectbox("City to:", list_cz_az)
-
-if radio_to_country == "sk":
-
-    to_city = col2.selectbox("City to:", list_sk_az)
-
-
-
-
-# function for offering relevant currency to choose from in case that international transport CZ <-> SK
-def offer_currency(radio_from_country,radio_to_country):
-
-    if radio_from_country == 'sk' and radio_to_country == 'sk':
-        currency = 'euro'
-        return currency
-    
-    elif radio_from_country == 'cz' and radio_to_country == 'cz':
-        currency = 'koruna'
-        return currency
-    
-    else:
-        currency = ['koruna', 'euro']
-        return currency
-
-currency = offer_currency(radio_from_country,radio_to_country)
-
+''
+col1, col2 = st.columns(2)
+col1.image("Pictures/Function_7/F7_dtd_area_truck.svg", width= 220)
+col2.image("Pictures/Function_7/F7_dtd_area_train_air.svg", width= 250)
 
 ''
 ''
 ''
-selected_currency = st.radio(
-    "Currency:",
-    currency
-)
-
-
-
-
-#train / truck / plaine
-
-def train_available(dataset_test, radio_from_country, radio_to_country, from_city,to_city):
-
-	train_from = dataset_test[radio_from_country][from_city]['train']
-	train_to = dataset_test[radio_to_country][to_city]['train']
-         
-	return train_from, train_to
-
-
-train_from, train_to = train_available(dataset_test,radio_from_country, radio_to_country, from_city,to_city)
-
-
-def options_train_result(train_from, train_to):
-    
-    if train_from == 'y' and train_to == 'y':
-        train_result = ['Truck','Train']
-    else:
-        train_result = ['Truck']
-        
-    return train_result
-
-train_result = options_train_result(train_from, train_to)
-
-
-
-def aircraft_available(dataset_test, radio_from_country, radio_to_country, from_city,to_city):
-
-	air_from = dataset_test[radio_from_country][from_city]['air']
-	air_to = dataset_test[radio_to_country][to_city]['air']
-         
-	return air_from, air_to
-
-
-air_from, air_to = aircraft_available(dataset_test,radio_from_country, radio_to_country, from_city,to_city)
-
-
-def options_air_result(air_from, air_to):
-    
-    if air_from == 'y' and air_to == 'y':
-        train_result = ['Airplane']
-    else:
-        train_result = []
-        
-    return train_result
-
-air_result = options_air_result(air_from, air_to)
-
-
-
-transport_options_list = train_result + air_result
+st.write("##### Examples:")
 ''
-selected_transport = st.radio("Transport type:", transport_options_list)
-
-# //////////////// Price per square, based on selected transport  ///////
-price_square = price_decision(selected_currency,selected_transport)
-
+st.image("Pictures/Function_7/F7_dtd_legend.svg")
 ''
 
-with st.expander("Transport type comparison", icon=":material/info:"):
+''
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    "Example 1",
+    "Example 2",
+    "Example 3",
+    "Example 4",
+    "Example 5",
+    "Example 6",
+])
+
+with tab1:
+    ''
+    st.write("""
+    **Example 1**: Only A to B delivery
+    - **Selected transport**: Airplane (applicable also for Train)
+    - **Case**: Customer wants just A to B delivery - Airplane
+    - This means that the customer will ensure the delivery of the shipment to the Airport (A) and also ensure the pick up from the Airport (B)
+    - **The payed service**: Airplane transfer from A to B
+    """)
+
+    ''
+    ''
+    st.image("Pictures/Function_7/F7_dtd_ab_air.svg", width=400)
+
+
+
+with tab2:
+    ''
+    st.write("""
+        **Example 2**: A to B delivery + B - 20 km
+        - **Selected transport**: Airplane (applicable also for Train)
+        - **Case**: Customer wants delivery to final destination in area of 20 km from airport
+        - This means that the customer will ensure the delivery of the shipment to the Airport (A)
+        - **The payed service**: Airplane transfer from A to B and transfer from Airplane to a Truck to deliver to the destination in area of 20 km from the Airport
+        """)
+
+
+    ''
+    ''
+    st.image("Pictures/Function_7/F7_dtd_abb_air.svg", width=480)
+
+
+with tab3:
+    ''
+    st.write("""
+        **Example 3**: A - 20 km + A to B delivery + B - 20 km
+        - **Selected transport**: Train (applicable also for Airplane)
+        - **Case**: Full road
+        - **The payed service**: Pick up by Truck, delivery to Airport (A), transfer to Airport (B) by Airplane, transfer to Truck, delivery to final destination. **End-to-end payed**
+        """)
+
+    ''
+    ''
+    st.image("Pictures/Function_7/F7_dtd_aabb_train.svg", width=480)
+    ''
+    ''
+
+
+
+with tab4:
 
     ''
     st.write("""
-             - There is few factors to consider:
-                - Time, Costs
-                - Type of Cargo 
-                - Infrasture availability  
-             
-             """)
+    **Example 4 (Different view)**: A to B delivery + B - 20 km
+    - **Selected transport**: Train (applicable also for Airplane)
+    - **Case**: Customer will ensure delivery to the Train Station/hub
+    - **The payed service**: Delivery from Train Station (A) to Train Station (B), transfer to Truck, delivery to final destination
+    """)
 
     ''
-    st.image("Pictures/Function_7/F7_transport_comparison_table.svg")
-
-
-with st.expander("Truck / Road", icon=":material/local_shipping:"):
-
     ''
-    st.write("""- Every city is available -> no restrictions""")
+    tab4.image("Pictures/Function_7/F7_dtd_cargo_transfer.svg", width=450)
 
 
+with tab5:
     ''
-    st.write("###### Mandatory breaks:")
-
     st.write("""
-             - The cargo can be impacted by **mandatory breaks for the driver**
-             - This also **influences the time of the delivery**
-             """)
-    
+        **Example 5 (Different view)**: A - 10 km + A to B delivery
+        - **Selected transport**: Airplane (applicable also for Train)
+        - **Case**: Customer will ensure pick up from to the Airport
+        - **The payed service**: Pick up by Truck, delivery to Airport (A), delivery to Airport (B) by Airplane
+        """)
+
+    ''
+    ''
+    st.image("Pictures/Function_7/F7_dtd_cargo_air.svg", width=600)
+    ''
+    ''
+    ''
+
+
+with tab6:
+    ''
     st.write("""
-             - **Rules/law**:
-                - A driver can drive **4.5 hours** and then needs to take a **mandatory 45 minutes break**
-                - A driver can drive for **9 hours a day** max.   
-                - After the 9 hours mandatory **10 hours break** before continuing to drive 
-                - **Exception:** in case that the distance is **within 10 hours** of driving, exception can be made                        
-             """)
+        **Example 6**: A - 20 km + A to B delivery
+        - **Selected transport**: Truck
+        - **Case**: End-to-end delivery - B point in the city area
+        - **The payed service**: End-to-end covered by Truck
+        """)
 
     ''
-    st.write(" -> Distance is **not** longer than **4.5 hours** - no mandatory break")
-    st.write(" -> Distance is **longer** than **4.5 hours** - mandatory **45 minutes** break")
-    st.write(" -> Distance is **not** longer than **9 hours** - mandatory **45 minutes** break")
-    st.write(" -> Distance is **not** longer than **10 hours** (exception) - mandatory **45 minutes** break")
-    st.write(" -> In case that the distance is longer than **9 and 10 hours** (10+) - there is **45 minutes** break + **10 hours** break")
-    
     ''
-    st.caption("""
-               * Example of journey between 9 - 10 hours -> the exception: Karlovy Vary (CZ) - Poprad (SK)
-               * Example of journey longer than 9 or 10 hours with 10 hours sleep break: Teplice (CZ) - Kosice (SK) or Karlovy Vary (CZ) - Kosice (SK)
-                """)
-
-
-
-with st.expander("Train / Rails", icon=":material/train:"):
+    st.image("Pictures/Function_7/F7_dtd_aab_truck.svg", width=400)
     ''
-    st.write("""- Only some cities connected""")
-    st.image("Pictures/Function_7/F7_map_trains.png")
-
-    data_table_train_cz = pd.DataFrame({
-        "City CZ" : train_cz
-        })
-    
-
-    data_table_train_sk = pd.DataFrame({
-        "City SK" : train_sk
-        })
-    
-    data_table_train_cz.index += 1
-    data_table_train_sk.index += 1
-
     ''
-    st.dataframe(data_table_train_cz)
     ''
-    st.dataframe(data_table_train_sk)
-
-with st.expander("Airplane", icon=":material/travel:"):
-    ''
-    st.write("""- Only some cities connected""")
-    st.image("Pictures/Function_7/F7_map_air.png")
-
-    data_table_air_cz = pd.DataFrame({
-        "City CZ" : air_cz
-        })
-    
-
-    data_table_air_sk = pd.DataFrame({
-        "City SK" : air_sk
-        })
-    
-    data_table_air_cz.index += 1
-    data_table_air_sk.index += 1
-
-    ''
-    st.dataframe(data_table_air_cz)
-    ''
-    st.dataframe(data_table_air_sk)
 
 
-# Radio - urgency input
-urgency_offer = ['Express', 'Standard', 'Slow']
 
 ''
 ''
-urgency = st.radio("Delivery service:", urgency_offer, index=1, captions=[
-        "Fast administration process -> delivery as soon as possible",
-        "Within 2-3 days cargo should be ready to go",
-        "5-10 days to get cargo ready to go ",
-    ],)
+''
+''
+st.write("##### Conclusion:")
+st.write("""
+    - All the three transport types (Truck, Train, Airplane) allows the same type of pick up/delivery:
+         - A to B only 
+         - A -> A to B
+         - A to B -> B
+         - A -> A to B -> B
+    """)
 
-
-
-
-st.write(urgency)
-
-
-
-
-#STANDAR - DELIVERY SERVICE
-# truck_kc = 689
-# train_kc = 230
-# plane_kc = 4_590
-
-
-# truck_eur = 27
-# train_eur = 9
-# plane_eur = 180
-
-# extra time for load unload and other admin stuff (in hours -> day)
-#STANDAR - DELIVERY SERVICE
-# extra_time_truck_h = 6
-# extra_time_train_h = 10
-# extra_time_air_h = 20
-
-st.write(f"kontrola price squere p5ed : {price_square}")
-
-def change_express(price_square, selected_transport):
-
-    if selected_transport == 'Truck':
-        price_square = price_square + (price_square * coef_truck)
-        return price_square
-    
-    elif selected_transport == 'Train':
-        price_square = price_square + (price_square * coef_train)
-        return price_square
-    
-    elif selected_transport == 'Airplane':
-        price_square = price_square + (price_square * (7*coef_air))
-        return price_square
-
-def change_slow(price_square, selected_transport):
-
-    if selected_transport == 'Truck':
-        price_square = price_square - (price_square * coef_truck)
-        return price_square
-    
-    elif selected_transport == 'Train':
-        price_square = price_square - (price_square * coef_train)
-        return price_square
-    
-    elif selected_transport == 'Airplane':
-        price_square = price_square - (price_square * coef_air)
-        return price_square
-
-
-
-if urgency  == 'Express':
-    price_square = change_express(price_square, selected_transport)
-
-
-if urgency  == 'Slow':
-    price_square = change_slow(price_square, selected_transport)
-
-
-st.write(f"kontrola price squere: {price_square}")
-
-def extra_time_decision(urgency, selected_transport, extra_time_truck_h, extra_time_train_h, extra_time_air_h):
-
-    if urgency == 'Slow':
-        if selected_transport == 'Truck':
-            extra_time = slow_extra_time_truck_h
-            return extra_time
-        
-        elif selected_transport == 'Train':
-            extra_time = slow_extra_time_train_h 
-            return extra_time
-        
-        elif selected_transport == 'Airplane':
-            extra_time = slow_extra_time_air_h 
-            return extra_time
-
-    if urgency == 'Standard':
-        if selected_transport == 'Truck':
-            extra_time = extra_time_truck_h
-            return extra_time
-        
-        elif selected_transport == 'Train':
-            extra_time = extra_time_train_h
-            return extra_time
-        
-        elif selected_transport == 'Airplane':
-            extra_time = extra_time_air_h
-            return extra_time
-
-    if urgency == 'Express':
-        if selected_transport == 'Truck':
-            extra_time = express_extra_time_truck_h 
-            return extra_time
-        
-        elif selected_transport == 'Train':
-            extra_time = express_extra_time_train_h
-            return extra_time
-        
-        elif selected_transport == 'Airplane':
-            extra_time = express_extra_time_air_h
-            return extra_time
-    
-
-
-extra_time = extra_time_decision(urgency, selected_transport, extra_time_truck_h, extra_time_train_h, extra_time_air_h)
-
-
-
-
-if urgency == 'Express' or urgency == 'Standard':
-    
-    str_extra_time = str(extra_time)
-    extra_time_vizualization = (str_extra_time + " " + "hours")
-
-
-if urgency == 'Slow':
-    extra_time_callc = extra_time / 24
-    extra_time_callc = int(extra_time_callc)
-    extra_time_callc = str(extra_time_callc)
-    extra_time_vizualization = (extra_time_callc + " " + "days")
-
-st.write(f" - **{selected_transport}** - **{urgency}** -> the cargo can be on its way in **{extra_time_vizualization}**.")
-
-st.write(f" - Unit price for distance calculation: **{price_square:,.2f} {selected_currency}**")
-
-truck_kc
-train_kc
-plane_kc
-
-
-truck_eur
-train_eur
-plane_eur
-
-# Expanders
-with st.expander("Unit price", icon= ":material/info:"):
-
-    ''
-    st.write("- Is a price per specific distance")
-    st.write("- The function/calculation works based on **coordinate system**")
-    st.write("- Unit means specific field in this coordinate system")
-    st.write("- **Based on the units, distance and price is calculated**")
-    st.write("- **1 unit is approximatelly ~ 30 km** (but not always - there are some variables/coeficients making calculation corrections, dependings on case City A to City B )")
-    st.write("- If the distance is **less than** ~ 30 km (You travel within 1 unit), the final price is calculated as 1 unit. This also helps to keep profit for the business.  Example: Teplice <-> Most")
-
-
-with st.expander("**SLA** - Service Level Agreement (Express, Standard, Slow)", icon= ":material/contract:"):
-
-    ''
-    st.write(" - **Time** - Cargo on its way till this time - **HOURS**")
-    st.dataframe(extra_time_df, hide_index=True)
-
-# //////////////// Submit button ////////////////////
-
+st.write("""
+    - **Truck** is more flexible thus has circles of delivery
+         - **Within city** - everywhere in the city for free
+         - **10 km** area from the city edge 
+         - **20 km** area from the city edge
+    """)
 
 ''
-st.write("------")
-if st.button("Submit", use_container_width=True):
-    st.write(from_city)
-    st.write(to_city)
-
-
-    def input_validation(from_city,to_city):
-        if from_city == to_city:
-            st.warning("City From and To is the same -> They need to be different")
-            st.stop()
-        
-        else:
-            pass
-
-    input_validation(from_city,to_city)
-
-
-    def pars_from_city(from_city, dataset_test):
-        
-        st.write(f"ve funkci {radio_from_country}")
-        st.write(f"ve funkci {from_city}")
- 
-        from_big = dataset_test[radio_from_country][from_city]['big']
-        st.write(f"ve funkci from big - parsed: {from_big}")
-
-        from_small = dataset_test[radio_from_country][from_city]['small']
-        st.write(f"ve funkci from small - parsed: {from_small}")
-
-
-
-        return from_big, from_small
-
-        
-    def pars_to_city(to_city, dataset_test):
-        
-        st.write("jsem tu?")
-        to_big = dataset_test[radio_to_country][to_city]['big']
-        to_small = dataset_test[radio_to_country][to_city]['small']
-        st.write("parsed?")
-        return to_big, to_small
-
-
-
-    from_big, from_small = pars_from_city(from_city, dataset_test)
-    st.write(f"FROM: po ukonceni def -> city: {from_city} retrun big: {from_big}, small: {from_small} ")
-
-    to_big, to_small = pars_to_city(to_city, dataset_test)
-    st.write(f"TO: po ukonceni def -> city: {to_city} retrun big: {to_big}, small: {to_small} ")
-
-
-    def pars_from_big_small_rc(from_big, from_small):
-        from_big_r = from_big[0]
-        from_big_c = from_big[1]
-
-        from_small_r = from_small[0]
-        from_small_c = from_small[1]
-        return from_big_r, from_big_c, from_small_r, from_small_c
-    
-
-    def pars_to_big_small_rc(to_big, to_small):
-        to_big_r = to_big[0]
-        to_big_c = to_big[1]
-
-        to_small_r = to_small[0]
-        to_small_c = to_small[1]
-        return to_big_r, to_big_c, to_small_r, to_small_c
-    
-
-
-
-    from_big_r, from_big_c, from_small_r, from_small_c = pars_from_big_small_rc(from_big,from_small)
-
-    to_big_r, to_big_c, to_small_r, to_small_c = pars_to_big_small_rc(to_big,to_small)
-
-    # Data type change str -> int
-    from_big_r = int(from_big_r)
-    from_big_c = int(from_big_c)
-    from_small_r = int(from_small_r)
-    from_small_c = int(from_small_c)
-
-    to_big_r = int(to_big_r)
-    to_big_c = int(to_big_c)
-    to_small_r = int(to_small_r)
-    to_small_c = int(to_small_c)
-
-
-    st.write(f"after function from_big R: {from_big_r}, C: {from_big_c}")
-    st.write(f"after function from_small R: {from_small_r}, C: {from_small_c}")
-
-    st.write(f"after function to_big R: {to_big_r}, C: {to_big_c}")
-    st.write(f"after function to_small R: {to_small_r}, C: {to_small_c}")
-
-
-
-    def calculation_L3B(small_result_r,small_result_c):
-        st.write("LEVEL 3B inside detail calculation - ELSE")
-        st.write(f"LEVEL 3B small result_r: {small_result_r}")
-        st.write(f"LEVEL 3B small result_c: {small_result_c}")
-
-        #long diagonal distance compensation
-        comp = small_result_r + small_result_c
-        st.write(f"LEVEL 3 comp {comp}")
-
-
-        if comp < 8:
-            calcul = (small_result_r + small_result_c - 1)
-            price = calcul * price_square
-            st.write(f"LEVEL 3 if 1 - před navratem price: {price}")
-
-            distance = calcul * 31.57
-            return price, distance
-        
-        elif 8 <= comp < 10:
-            calcul = (small_result_r + small_result_c - 2)
-            price = calcul * price_square
-            st.write(f"LEVEL 3 if 2 - před navratem price: {price}")
-
-            distance = calcul * 33.08 #musim upravit nemam testovaci vzorky
-            return price, distance
-
-
-        elif 10 <= comp < 13:
-            calcul = (small_result_r + small_result_c - 2.5)
-            price = calcul * price_square
-            st.write(f"LEVEL 3 if 3 -před navratem price: {price}")
-
-            distance = calcul * 33.08   #musim upravit nemam testovaci vzorky
-            st.write(f"trouble shoot - LEVEL 3 if 3 - price vykalkulovaná: {price} = calcul {calcul} * price square {price_square}")
-            st.write(f"trouble shoot - LEVEL 3 if 3 - distanc: kalkulace:   distance{distance} = ((calcul {calcul} = ({small_result_r} + {small_result_c} - 2.5)) * 33.08 korekcni cislo)")
-            return price, distance
-        
-        elif 13 <= comp < 16:
-            calcul = (small_result_r + small_result_c - 4)
-            price = calcul * price_square
-            st.write(f"LEVEL 3 if 4 -před navratem price: {price}")
-
-            distance = calcul * 35.68
-            return price, distance
-        
-        elif 16 <= comp < 18:
-            calcul = (small_result_r + small_result_c - 5)
-            price = calcul * price_square
-            st.write(f"LEVEL 3 if 5 -před navratem price: {price}")
-
-            distance = calcul * 34.24
-            return price, distance
-        
-        elif 18 <= comp:
-            calcul = (small_result_r + small_result_c - 8)
-            price = calcul * price_square
-            st.write(f"LEVEL 3 if 6 -před navratem price: {price}")
-
-            distance = calcul * 36.75
-            return price, distance
-
-
-
-    #Calculation in case that move is on horizontal r=0 or vertical level c=0
-    def calculation_L3A_R0C0(small_result_r, small_result_c):
-        st.write("LEVEL 3A_R0C0 inside detail calculation")
-        st.write(f"LEVEL 3A_R0C0 small_result_r: {small_result_r}")
-        st.write(f"LEVEL 3A_R0C0 small_result_c: {small_result_c}")
-
-        if small_result_r == 0:
-            st.write("tady?")
-            price = small_result_c * price_square
-            st.write(f"LEVEL 3A small_result_c price *50: {price}")
-            distance = small_result_c * 31.86
-            return price, distance
-        
-        if small_result_c == 0:
-            st.write("nebo tady?")
-            st.write(small_result_r)
-            st.write(price_square)
-            price = small_result_r * price_square
-            st.write("co tady")
-            st.write(f"LEVEL 3A small_result_r price square: {price_square}")
-            st.write(f"LEVEL 3A small_result_r: {small_result_r}")
-            st.write(f"LEVEL 3A small_result_r price *50: {price}")
-            distance = small_result_r * 31.86
-            return price, distance
-
-
-    # if different big region 
-    def calculation_L2(from_small_r, to_small_r, from_small_c, to_small_c):
-        st.write("LEVEL 2 inside detail calculation")
-        small_result_r = abs(from_small_r - to_small_r)
-        small_result_c = abs(from_small_c - to_small_c)
-
-        st.write(f"LEVEL 2: small r : {small_result_r}")
-        st.write(f"LEVEL 2: small c : {small_result_c}")
-
-        if small_result_r <= 1 and small_result_c <= 1:
-            price = price_square
-            return price, distance
-        
-        elif small_result_r == 0 or small_result_c == 0:
-            price, distance = calculation_L3A_R0C0(small_result_r, small_result_c)
-            return price, distance
-        
-        else:
-            price, distance = calculation_L3B(small_result_r,small_result_c)
-            return price, distance
-
-
-
-    # if big R = C -> same price
-    def calculation_L1(from_big_r, to_big_r,from_big_c, to_big_c, from_small_r,to_small_r, from_small_c, to_small_c):
-        
-        big_result_r = abs(from_big_r - to_big_r)
-        big_result_c = abs(from_big_c - to_big_c)
-        small_result_r = abs(from_small_r - to_small_r)
-        small_result_c = abs(from_small_c - to_small_c)
-        st.write(f" LEVEL 1: big_result_r: {big_result_r}")
-        st.write(f" LEVEL 1: big_result_c: {big_result_c}")
-
-        if (big_result_r == 0 and big_result_c == 0) and (small_result_r <= 1 and small_result_c <= 1):
-            price = price_square
-            distance = 24.15
-            return price, distance
-
-        else:
-            st.write("LEVEL 1: Else happened")
-            price, distance = calculation_L2(from_small_r, to_small_r, from_small_c, to_small_c)
-            return price, distance
-
-
-    price, distance = calculation_L1(from_big_r, to_big_r, from_big_c, to_big_c,from_small_r, to_small_r,from_small_c, to_small_c)
-
-    st.write(f"po def returnu price {price}")
-    st.write(f"po def returnu distance {distance}")
-
-
-    # # extra time for load unload and other admin stuff (in hours -> day)
-    # #STANDAR - DELIVERY SERVICE
-    # extra_time_truck_h = 6
-    # extra_time_train_h = 10
-    # extra_time_air_h = 20
-
-
-    def calcul_delivery_time(distance,selected_transport):
-
-        if selected_transport == 'Truck':
-            time_journey = distance / 70
-            # extra_time_h = extra_time_truck_h
-            # return extra_time_h, time_journey 
-            return time_journey 
-
-        if selected_transport == 'Train':
-            time_journey = distance / 80
-            # extra_time_h = extra_time_train_h
-            # return extra_time_h, time_journey 
-            return time_journey 
-        
-        if selected_transport == 'Airplane':
-            time_journey = distance / 700
-            # extra_time_h = extra_time_air_h
-            # return extra_time_h, time_journey 
-            return time_journey 
-
-    time_journey  = calcul_delivery_time(distance,selected_transport)
-
-    # mandatory breaks for truck 
-
-    def one_shift(time_journey):
-
-        num_break = time_journey / 4.5    #mandatory break 
-        
-        if num_break <= 1:
-            # 0 breaks needed -> 0.0 hour of break time
-            result = 0
-            return result
-            
-        elif 1 <= num_break <= 2:
-            # 1 break needed -> 0.75 hour (45 minutues break after 4.5 hour of driving)
-            result = 0.75
-            return result
-
-    def calcul_time_break(time_journey):
-
-        # max 9 hours of driving a day 
-        if time_journey <= 9:
-            break_n = one_shift(time_journey)
-            return break_n
-
-        # Law alows to drive 10 hours and no longer (for journey between 9-10 hours)
-        # 2 x 45 minutes break -> 0.75 hour
-        if 9 < time_journey <= 10:
-            break_n = 0.75
-            return break_n
-            
-        elif time_journey > 10:
-
-            shift_full = time_journey / 9
-
-            # split of the number for calculation 
-            y = math.modf(shift_full)
-            decimal_shift = y[0]
-            number_of_shifts = y[1]
-
-            # cas v HODINACH kolik mi zaberou pauzy Z CELÝCH  9 smen
-            time_breaks_h = (number_of_shifts * 45)/60  # 45 min (mandatory break)/60 => HOURS
-
-            # Number of mandatory breaks after every 9 hours (10 hours sleep/break)
-            # Example 18 hour journy -> 2x 9hour shift -> 1x 10 hour break in between
-            # Example 27 hour journy -> 3x 9hour shift -> 2x 10 hour break in between
-            if decimal_shift > 0.00:
-                time_spent_sleep_breaks_h = (number_of_shifts) * 10
-
-            if decimal_shift == 0.00:
-                time_spent_sleep_breaks_h = (number_of_shifts - 1) * 10
-                
-            # All the other hours in between the "full number of 9 hours" is covered here by "decimals" of hours indicating mandatory 45 minut break aftre 4.5 hours of driving (9 hours = 1.0 -> 4.5 hours = 0.5)
-            if decimal_shift < 0.5:
-                decimal_break = 0
-            
-            if 0.5 <= decimal_shift < 1:
-                decimal_break = 1
-            
-            if decimal_shift > 1:
-                st.write("error in calculation")
-
-            # cas v HODINACH kolik mi zaberou pauzy v rámci decimalni hodnoty (45 minut/60) = hodiny
-            decimal_time_h = (decimal_break * 45)/60
-
-            final_time_breaks = time_breaks_h + time_spent_sleep_breaks_h + decimal_time_h
-            return final_time_breaks
-
-
-    if selected_transport == 'Truck':
-        time_break = calcul_time_break(time_journey)
-
-
-
-    # Troubleshoot
-    st.write("------- Troubleshoot-----------")
-    st.write(f"Price: {price:,.2f} {selected_currency} na tu distanci/vzdálenost")
-    st.write(f"Distance: {distance}km.")
-    st.write(f"Time to cover the distance: time_journey {time_journey} HODIN")
-
-    if selected_transport == 'Truck':
-        st.write(f"Truck potřebuje tento extra čas v HODINÁCH povinné přestávky {time_break}, a čas na administrativua  naložení {extra_time} for {urgency} HODINY ." )
-        st.write(f"Takže celkový čas, aby Truck dorazil na místo určení je {time_journey + time_break + extra_time} HODIN" )
-
-    elif selected_transport == 'Train' or 'Airplane':
-        st.write(f"{selected_transport} potřebuje tento extra čas v HODINÁCH na administrativua  naložení {extra_time} for {urgency} HODINY ." )
-        st.write(f"Takže celkový čas, aby {selected_transport} dorazil na místo určení je {time_journey + extra_time} HODIN" )
-
-    
-
-
+st.write("""
+    - **Train** and **Airplane**, due to Stations/Hubs/Airports commonly not in the cities (so for "first/last mile" Truck needed), the offer is:
+         - **No** - just Train/Airplane transfare A to B
+         - **10 km** area of pick up/delivery
+         - **20 km** area of pick up/delivery
+    """)
+
+
+# ===== Page navigation at the bottom ======
+''
+''
+''
+''
+st.write("-------")
+
+st.page_link(
+	label = "Function 7",
+	page="Subpages/F7_FUNCTION_transport.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+	icon=":material/play_circle:"
+	) 
+
+st.page_link(
+    label = "Previous page",
+	page="Subpages/F7_description.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+    icon=":material/west:",
+	) 

@@ -701,6 +701,7 @@ with st.expander("Transport type comparison", icon=":material/info:"):
 with st.expander("Truck / Road", icon=":material/local_shipping:"):
 
     ''
+    st.write("""- Average speed: **70 km/h**""")
     st.write("""- Every city is available -> no restrictions""")
     st.write("""- But the driver needs mandatory breaks which can prolong the journey/delivery time""")
 
@@ -739,10 +740,11 @@ with st.expander("Truck / Road", icon=":material/local_shipping:"):
 with st.expander("Train / Rails", icon=":material/train:"):
 
     ''
+    st.write("""- Average speed: **80 km/h**""")
     st.write("""
     -   Train does **not need breaks** for the driver (in comparison with Truck)
         - The transport planning includes also **change of the drivers**, if it is that long
-        - Train jurney is **not** inturupted by mandtory breaks  
+        - Train jurney is **not** interrupted by mandatory breaks  
     """)
 
     st.write("""- But is **less flexible** - Only some cities connected by rails""")
@@ -768,6 +770,7 @@ with st.expander("Train / Rails", icon=":material/train:"):
 
 with st.expander("Airplane", icon=":material/travel:"):
     ''
+    st.write("""- Average speed: **700 km/h**""")
     st.write("""- Very expensive but fast -> Benficial for time critical goods/transports""")
     st.write("""- Only some cities connected""")
     ''
