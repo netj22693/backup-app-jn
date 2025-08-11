@@ -43,6 +43,10 @@ st.write("""
 """
 )
 
+''
+st.image("Pictures/Function_7/F7_desc_bpmn_customer process.svg")
+''
+
 
 ''
 ''
