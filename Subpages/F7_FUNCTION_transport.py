@@ -703,7 +703,7 @@ with st.expander("Truck / Road", icon=":material/local_shipping:"):
     ''
     st.write("""- Average speed: **70 km/h**""")
     st.write("""- Every city is available -> no restrictions""")
-    st.write("""- But the driver needs mandatory breaks which can prolong the journey/delivery time""")
+    st.write("""- But the **driver needs mandatory breaks** which can prolong the journey/delivery time""")
 
 
     ''
