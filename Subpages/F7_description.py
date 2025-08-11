@@ -60,7 +60,7 @@ st.image("Pictures/Function_7/F7_map_R1C1.png")
 
 st.write("""
 - Thus when **city onboarded**, each gets **'big'** and **'small'** R1C1 coordinates
-- And information about **availability of infrastructure** -> transport type y/n
+- And information about **availability of infrastructure** -> transport type y/n (* 'Truck' has 'y' as a default for every city -> thus not in the dataset)
 """
 )
 
@@ -88,7 +88,7 @@ st.write("""
     - Selected transport type (Truck, Train, Airplane)
     - Type of service (delivery: Express, Standard, Slow)
     - Selected currency (koruna, euro)
-    - **Daily currency exchange rate - :blue[API based info]**
+    - **Daily currency exchange rate - :green[API based info]**
 """
 )
 st.write("""
@@ -100,6 +100,26 @@ st.write("""
 
 ''
 ''
+st.image("Pictures/Function_7/F7_desc_uml_inputs.svg")
+
+''
+with st.expander("UML diagram - more details", icon= ":material/help:"):
+
+	st.write("""
+	- What user selects **influences** what the **application offers** in the other levels - types of **business scenarios & real case logic**
+	""")
+	
+	st.write("""
+	- **L1** - API/Currency -> Influences **L4** price for Delivery service
+	- **L2** - Selection fo From/To cities -> influences options of Currency in **L3**
+	- **L2** - Selection fo From/To cities -> influences options of Transport type **L4** (not every city has all transport types possible) 
+	- **L4** - Transport type -> influences options for Door-to-Door delivery in **L5**
+	- **L4** - Transport type -> influences options for Extra service (Airplane cannot transfer Danger goods)  in **L5**
+	""")
+
+
+''
+''
 st.write("##### API - Exchange rate:") 
 st.write("""
 - **Dynamic element** in the function
@@ -108,6 +128,7 @@ st.write("""
 """
 )
 
+''
 with st.expander("API info", icon= ":material/help:"):
 
 	st.write("""
