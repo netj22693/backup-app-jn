@@ -145,7 +145,10 @@ with st.expander("API info", icon= ":material/help:"):
 	st.write("""
 	- Limit: **5k** requests per month
 	""")
-	
+
+''
+''
+st.image("Pictures/Function_7/F7_desc_bpmn_api_unit.svg")   
 
 
 # ===== Page navigation at the bottom ======
