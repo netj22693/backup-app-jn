@@ -49,7 +49,7 @@ with tab1:
 	st.write("###### ArchiMate - Overview of the functions:")
 	''
 	# st.image("Pictures/Archimate_functions_overview.svg")
-	st.image("Pictures/Archimate_functions_overview_4.svg")
+	st.image("Pictures/Archimate_functions_overview_5.svg")
 	
 with tab2:
 	st.write("###### UML - Overview of the functions:")
