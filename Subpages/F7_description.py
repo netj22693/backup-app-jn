@@ -115,8 +115,8 @@ with st.expander("UML diagram - more details", icon= ":material/help:"):
 	
 	st.write("""
 	- **L1** - API/Currency -> Influences **L4** price for Delivery service
-	- **L2** - Selection fo From/To cities -> influences options of Currency in **L3**
-	- **L2** - Selection fo From/To cities -> influences options of Transport type **L4** (not every city has all transport types possible) 
+	- **L2** - Selection of From/To cities -> influences options of Currency in **L3**
+	- **L2** - Selection of From/To cities -> influences options of Transport type **L4** (not every city has all transport types possible) 
 	- **L4** - Transport type -> influences options for Door-to-Door delivery in **L5**
 	- **L4** - Transport type -> influences options for Extra service (Airplane cannot transfer Danger goods)  in **L5**
 	""")
