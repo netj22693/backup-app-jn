@@ -1290,6 +1290,9 @@ if st.button("Submit", use_container_width=True):
         money_danger = 0
 
 
+    # Bug fix 13-Aug-25 - this line prevents case when Truck/Train selected first -> danger goods checked -> change to 'Airplane' so the checked stays (even if the check box is locked) -> app used to calculate the danger value also for Airplane. Fix to make variable always 0
+    if selected_transport == 'Airplane':
+        money_danger = 0
 
 
     # Parsing fo calculation
@@ -1710,3 +1713,5 @@ if st.button("Submit", use_container_width=True):
 
 
     
+
+
