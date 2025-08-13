@@ -48,15 +48,28 @@ st.write("""
 st.image("Pictures/Function_7/F7_desc_bpmn_customer process.svg")
 ''
 ''
-st.image("Pictures/Function_7/F7_dtd_bpmn_process.svg")
+
+tab1, tab2 = st.tabs([
+	"Invoice & Payment",
+    "Book the transport",
+])
+
+tab1.image("Pictures/Function_7/F7_payment_bpmn_process.svg")
 ''
 ''
-st.image("Pictures/Function_7/F7_dtd_bpmn_legend.svg")
-''
+tab1.image("Pictures/Function_7/F7_payment_bpmn_legend.svg")
 
 
+tab2.image("Pictures/Function_7/F7_dtd_bpmn_process.svg")
 ''
 ''
+tab2.image("Pictures/Function_7/F7_dtd_bpmn_legend.svg")
+
+
+
+
+
+
 st.write("##### Distance calculation:") 
 
 st.write("""
