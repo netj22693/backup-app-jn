@@ -361,11 +361,11 @@
 			<text x="4" y="147.58" class="st6" v:langID="1029"><v:paragraph/><v:tabList/>Express</text>		</g>
 		<g id="shape1073-76" v:mID="1073" v:groupContext="shape" transform="translate(130.386,-83.4247)">
 			<title>Sheet.1073</title>
-			<desc>Immediatelly*</desc>
+			<desc>Immediately*</desc>
 			<v:textBlock v:margins="rect(4,4,4,4)"/>
 			<v:textRect cx="62.9431" cy="143.982" width="125.89" height="18.0366"/>
 			<rect x="0" y="134.963" width="125.886" height="18.0366" class="st11"/>
-			<text x="28" y="147.58" class="st6" v:langID="1029"><v:paragraph v:horizAlign="1"/><v:tabList/>Immediatelly*</text>		</g>
+			<text x="29.38" y="147.58" class="st6" v:langID="1029"><v:paragraph v:horizAlign="1"/><v:tabList/>Immediately*</text>		</g>
 		<g id="shape1075-79" v:mID="1075" v:groupContext="shape" transform="translate(4.5,-65.3881)">
 			<title>Sheet.1075</title>
 			<desc>Standard</desc>
@@ -396,11 +396,11 @@
 			<text x="29.98" y="147.58" class="st6" v:langID="1029"><v:paragraph v:horizAlign="1"/><v:tabList/>48 hours max</text>		</g>
 		<g id="shape1107-91" v:mID="1107" v:groupContext="shape" transform="translate(0.22751,4.5)">
 			<title>Sheet.1107</title>
-			<desc>*Express – customer is expected to send money immediatelly as...</desc>
+			<desc>*Express – customer is expected to send money immediately as ...</desc>
 			<v:textBlock v:margins="rect(4,4,4,4)"/>
-			<v:textRect cx="152.886" cy="134.934" width="305.78" height="36.131"/>
-			<rect x="0" y="116.869" width="305.772" height="36.131" class="st12"/>
+			<v:textRect cx="148.386" cy="134.934" width="296.78" height="36.131"/>
+			<rect x="0" y="116.869" width="296.772" height="36.131" class="st12"/>
 			<text x="4" y="131.33" class="st6" v:langID="1029"><v:paragraph/><v:tabList/>*Express – customer is expected to send money <tspan
-						x="4" dy="1.2em" class="st13">immediatelly as part of the transport order process</tspan></text>		</g>
+						x="4" dy="1.2em" class="st13">immediately as part of the transport order process</tspan></text>		</g>
 	</g>
 </svg>
