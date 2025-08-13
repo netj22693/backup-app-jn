@@ -38,13 +38,20 @@ st.write("""
          - Train 
          - Airplane 
     - Distance of journey
-	- Door-to-Door delivery or not
+    - Delivery service (Express, Standard, Slow)
+	- **Door-to-Door delivery** or not - more details about **DTD** on the next page
 	- Shipment specifications (Insurance extra, Danger or Fragile goods)	 
 """
 )
 
 ''
 st.image("Pictures/Function_7/F7_desc_bpmn_customer process.svg")
+''
+''
+st.image("Pictures/Function_7/F7_dtd_bpmn_process.svg")
+''
+''
+st.image("Pictures/Function_7/F7_dtd_bpmn_legend.svg")
 ''
 
 
