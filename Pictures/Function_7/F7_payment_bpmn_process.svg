@@ -293,7 +293,7 @@
 						v:format="Message;Timer;Conditional;Signal;Multiple;Escalation;Parallel Multiple" v:sortKey="B"
 						v:invis="true" v:ask="false" v:langID="1033" v:cal="0" v:val="VT4(None)"/>
 				<v:cp v:nameU="BpmnName" v:lbl="" v:prompt="" v:type="0" v:format="" v:sortKey="" v:invis="false" v:ask="false"
-						v:langID="0" v:cal="0" v:val="VT4(Invoice sent&#10;to customer)"/>
+						v:langID="0" v:cal="0" v:val="VT4(Offer accepted&#10;by customer)"/>
 			</v:custProps>
 			<v:userDefs>
 				<v:ud v:nameU="BPMNFillPattern" v:prompt="" v:val="VT0(1):26"/>
@@ -301,7 +301,7 @@
 				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
 			</v:userDefs>
 			<title>Start Event.1000</title>
-			<desc>Invoice sent to customer</desc>
+			<desc>Offer accepted by customer</desc>
 			<g id="shape1001-37" v:mID="1001" v:groupContext="shape" v:layerMember="0">
 				<title>Sheet.1001</title>
 				<v:userDefs>
@@ -348,9 +348,9 @@
 			</g>
 			<g id="shape1000-61" v:mID="1000" v:groupContext="groupContent" v:layerMember="0">
 				<v:textBlock v:margins="rect(2,2,2,2)"/>
-				<v:textRect cx="11.25" cy="440.302" width="50.46" height="25.6036"/>
-				<text x="-10.72" y="437.6" class="st12" v:langID="1029"><v:paragraph v:horizAlign="1"/><v:tabList/>Invoice sent<v:newlineChar/><tspan
-							x="-10.96" dy="1.2em" class="st7">to customer</tspan></text>			</g>
+				<v:textRect cx="11.25" cy="440.302" width="60.5" height="25.6036"/>
+				<text x="-15.98" y="437.6" class="st12" v:langID="1029"><v:paragraph v:horizAlign="1"/><v:tabList/>Offer accepted<v:newlineChar/><tspan
+							x="-11.48" dy="1.2em" class="st7">by customer</tspan></text>			</g>
 		</g>
 		<g id="group1013-65" transform="translate(110.008,-189)" v:mID="1013" v:groupContext="group" v:layerMember="0">
 			<v:custProps>
