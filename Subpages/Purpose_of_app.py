@@ -265,6 +265,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v21.2** - Better data visualization in expanders + Dashboard expander added - 15-Aug-2025
 		- **v20.0** - F7 released - 09-Aug-2025
 	""")
 

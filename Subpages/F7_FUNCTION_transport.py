@@ -4,6 +4,8 @@ import math
 import datetime
 import requests
 import json
+import plotly.express as px
+import plotly.graph_objects as go
 
 
 
@@ -93,6 +95,10 @@ dataset_test = ({
     "Ceska Trebova" : {"big" : ["3","5"], "small" : ["7","13"], "train":"y", "air":"n"},
     "Jihlava" : {"big" : ["3","4"], "small" : ["9","10"], "train":"n", "air":"n"},
     "Pisek" : {"big" : ["3","2"], "small" : ["9","7"], "train":"y", "air":"n"},
+    # "TEST1" : {"big" : ["3","2"], "small" : ["9","7"], "train":"y", "air":"n"},
+    # "TEST2" : {"big" : ["3","2"], "small" : ["9","7"], "train":"y", "air":"n"},
+    # "TEST3" : {"big" : ["3","2"], "small" : ["9","7"], "train":"y", "air":"y"},
+    # "TEST4" : {"big" : ["3","2"], "small" : ["9","7"], "train":"y", "air":"n"},
 },
 "sk" : {
 	"Bratislava" : {"big" : ["5","5"], "small" : ["14","14"], "train":"y", "air":"y"},
@@ -103,7 +109,12 @@ dataset_test = ({
     "Trnava" : {"big" : ["5","6"], "small" : ["14","17"], "train":"y", "air":"n"},	
     "Trencin" : {"big" : ["4","6"], "small" : ["11","17"], "train":"n", "air":"n"},	
     "Poprad" : {"big" : ["4","8"], "small" : ["10","24"], "train":"y", "air":"n"},	
-    "Banska Stiavnica" : {"big" : ["5","7"], "small" : ["13","20"], "train":"n", "air":"n"},		
+    "Banska Stiavnica" : {"big" : ["5","7"], "small" : ["13","20"], "train":"n", "air":"n"},
+    # "TEST_S1" : {"big" : ["5","7"], "small" : ["13","20"], "train":"n", "air":"n"},	
+    # "TEST_S2" : {"big" : ["5","7"], "small" : ["13","20"], "train":"y", "air":"n"},	
+    # "TEST_S3" : {"big" : ["5","7"], "small" : ["13","20"], "train":"y", "air":"n"},	
+    # "TEST_S4" : {"big" : ["5","7"], "small" : ["13","20"], "train":"y", "air":"y"},	
+    # "TEST_S5" : {"big" : ["5","7"], "small" : ["13","20"], "train":"n", "air":"y"},		
 }
 })
 
@@ -427,6 +438,77 @@ table_overview_full_sk = pd.DataFrame({
 
 table_overview_full_sk.index +=1
 
+
+# Dataset/variables for statistics
+count_list_cz = len(list_cz)
+count_list_sk = len(list_sk)
+count_train_cz = len(train_cz)
+count_train_sk = len(train_sk)
+count_air_cz = len(air_cz)
+count_air_sk = len(air_sk)
+count_truck_cz = count_list_cz
+count_truck_sk = count_list_sk
+
+diff_truck_cz = count_list_cz - count_truck_cz
+diff_train_cz = count_list_cz - count_train_cz
+diff_air_cz = count_list_cz - count_air_cz
+
+diff_truck_sk = count_list_sk - count_truck_sk
+diff_train_sk = count_list_sk - count_train_sk
+diff_air_sk = count_list_sk - count_air_sk
+
+
+data_pie_truck_cz = pd.DataFrame({
+                "Number" : [count_truck_cz , diff_truck_cz],
+                "Result" : ["Available", "Not available",]
+                })
+
+data_pie_train_cz = pd.DataFrame({
+                "Number" : [count_train_cz , diff_train_cz],
+                "Result" : ["Available", "Not available",]
+                })
+
+
+data_pie_air_cz = pd.DataFrame({
+                "Number" : [count_air_cz , diff_air_cz],
+                "Result" : ["Available", "Not available",]
+                })
+
+
+data_pie_truck_sk = pd.DataFrame({
+                "Number" : [count_truck_sk , diff_truck_sk],
+                "Result" : ["Available", "Not available",]
+                })
+
+data_pie_train_sk = pd.DataFrame({
+                "Number" : [count_train_sk , diff_train_sk],
+                "Result" : ["Available", "Not available",]
+                })
+
+
+data_pie_air_sk = pd.DataFrame({
+                "Number" : [count_air_sk , diff_air_sk],
+                "Result" : ["Available", "Not available",]
+                })
+
+
+data_pie_truck_overall = pd.DataFrame({
+                "Number" : [(count_truck_cz + count_truck_sk), (diff_truck_cz + diff_truck_sk)],
+                "Result" : ["Available", "Not available",]
+                })
+
+data_pie_train_overall = pd.DataFrame({
+                "Number" : [(count_train_cz + count_train_sk), (diff_train_cz + diff_train_sk)],
+                "Result" : ["Available", "Not available",]
+                })
+
+
+data_pie_air_overall = pd.DataFrame({
+                "Number" : [(count_air_cz + count_air_sk), (diff_air_cz + diff_air_sk)],
+                "Result" : ["Available", "Not available",]
+                })
+
+
 # //////////////////// Frontend screen - top part ////////////////////////
 
 st.write("# Transport calculation")
@@ -444,13 +526,151 @@ with st.expander("City overview", icon = ":material/pin_drop:"):
     ''
     st.image("Pictures/Function_7/F7_map_cities.png")
     ''
-    st.write("- **Czech Republic:**")
-    st.dataframe(table_overview_full_cz)
-    ''
-    st.write("- **Slovakia:**")
-    st.dataframe(table_overview_full_sk)
 
-with st.expander("Currency and rate", icon = ":material/payments:"):
+    tab_co1, tab_co2 = st.tabs([
+        "CZ",
+        "SK"
+    ])
+
+    with tab_co1:
+        st.write("- **Czech Republic:**")
+        st.dataframe(table_overview_full_cz)
+    
+    with tab_co2:
+        st.write("- **Slovakia:**")
+        st.dataframe(table_overview_full_sk)
+
+
+with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
+
+    st.write(f"""
+             - Number of cities: **{count_list_cz + count_list_sk}**
+                - **CZ** - Czech Republic: **{count_list_cz}**
+                - **SK** - Slovakia: **{count_list_sk}**
+             """)
+    
+    ''
+    st.write("Charts show figures/ratio of **how many cities is available** (:green[**GREEN**]) or not available **based on Transport type**.")
+    ''
+
+    def pie_chart(df, title_input):
+        
+        fig_pie = px.pie(
+            df, 
+            names = "Result",
+            values = "Number",
+            title = title_input,
+            color = "Result",
+            color_discrete_map={'Available':'rgba(0, 105, 0, 0.8','Not available':'rgba(175, 175, 175, 0.66)',}
+            )
+        
+        fig_pie.update_traces(texttemplate="%{percent:.2%}")
+        fig_pie.update_layout(showlegend = False)
+
+        return fig_pie
+
+    fig_pie_truck_cz = pie_chart(data_pie_truck_cz, "CZ Truck")
+    fig_pie_train_cz = pie_chart(data_pie_train_cz, "CZ Train")
+    fig_pie_air_cz = pie_chart(data_pie_air_cz, "CZ Airplane")
+
+    fig_pie_truck_sk = pie_chart(data_pie_truck_sk, "SK Truck")
+    fig_pie_train_sk = pie_chart(data_pie_train_sk, "SK Train")
+    fig_pie_air_sk = pie_chart(data_pie_air_sk, "SK Airplane")
+
+    fig_pie_truck_overall = pie_chart(data_pie_truck_overall, "Truck")
+    fig_pie_train_overall = pie_chart(data_pie_train_overall, "Train")
+    fig_pie_air_overall = pie_chart(data_pie_air_overall, "Airplane")
+
+
+
+
+    # https://plotly.streamlit.app/Bar_Charts
+
+    # -----  Chart ---- CZ and SK ---- 
+    x_cz_sk = [
+        ["CZ", "CZ", "CZ", "SK", "SK", "SK"],
+        ['Truck','Train', 'Airplane', 'Truck','Train', 'Airplane']
+    ]
+
+    y_available = [count_truck_cz,count_train_cz,count_air_cz,count_truck_sk,count_train_sk,count_air_sk]
+    y_not_available = [diff_truck_cz,diff_train_cz,diff_air_cz,diff_truck_sk,diff_train_sk,diff_air_sk]
+
+
+    fig_cz_sk = go.Figure()
+    fig_cz_sk.add_bar(x=x_cz_sk,y=y_available, name= "Available", text = y_available,
+        marker=dict(
+            color='rgba(0, 105, 0, 0.8)',
+            # line=dict(color='rgba(7, 7, 7, 1)', width=1)
+        )
+    )
+    
+    fig_cz_sk.add_bar(x=x_cz_sk,y=y_not_available, name= "Not available", text = y_not_available,
+        marker=dict(
+            color='rgba(175, 175, 175, 0.66)',
+            # line=dict(color='rgba(7, 7, 7, 1)', width=1)
+        )
+    )
+
+    fig_cz_sk.update_layout(barmode="relative")
+    fig_cz_sk.update_layout(title = "Transport type availability - CZ & SK split")
+
+
+    # -----  Chart ----  Overall ---- 
+    x_overall = ['Truck','Train', 'Airplane']
+
+    y_available_overall = [(count_truck_cz + count_truck_sk), (count_train_cz + count_train_sk),(count_air_cz + count_air_sk)]
+    y_not_availab_overall = [(diff_truck_cz + diff_truck_sk),(diff_train_cz + diff_train_sk), (diff_air_cz + diff_air_sk)]
+
+    fig_overall = go.Figure()
+    fig_overall.add_bar(x=x_overall,y=y_available_overall, name= "Available", text = y_available_overall,
+        marker=dict(
+            color='rgba(0, 105, 0, 0.8)',
+            # line=dict(color='rgba(7, 7, 7, 1)', width=1)
+        )
+    )
+    fig_overall.add_bar(x=x_overall,y=y_not_availab_overall, name= "Not available", text = y_not_availab_overall,
+        marker=dict(
+            color='rgba(175, 175, 175, 0.66)',
+            # line=dict(color='rgba(7, 7, 7, 1)', width=1)
+        )
+    )
+
+    fig_overall.update_layout(barmode="relative")
+    fig_overall.update_layout(title = "Transport type availability")
+
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(["CZ & SK split", "Overall", "% CZ", "% SK", "% Overall"])
+
+    with tab1:
+        with st.container(border=True):
+            st.plotly_chart(fig_cz_sk, theme="streamlit")   
+    with tab2:
+        with st.container(border=True):
+            st.plotly_chart(fig_overall, theme="streamlit")
+
+    with tab3:
+        with st.container(border=True):
+            col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
+            col_stat_1.plotly_chart(fig_pie_truck_cz, use_container_width=False, height = 3000)
+            col_stat_2.plotly_chart(fig_pie_train_cz, use_container_width=False)
+            col_stat_3.plotly_chart(fig_pie_air_cz, use_container_width=False)
+
+    with tab4:
+        with st.container(border=True):
+            col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
+            col_stat_1.plotly_chart(fig_pie_truck_sk, use_container_width=False, height = 3000)
+            col_stat_2.plotly_chart(fig_pie_train_sk, use_container_width=False)
+            col_stat_3.plotly_chart(fig_pie_air_sk, use_container_width=False)
+
+    with tab5:
+        with st.container(border=True):
+            col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
+            col_stat_1.plotly_chart(fig_pie_truck_overall, use_container_width=False, height = 3000)
+            col_stat_2.plotly_chart(fig_pie_train_overall, use_container_width=False)
+            col_stat_3.plotly_chart(fig_pie_air_overall, use_container_width=False)
+
+
+
+with st.expander("Currency and rate - API", icon = ":material/payments:"):
 
     ''
     ''
@@ -464,41 +684,49 @@ with st.expander("Currency and rate", icon = ":material/payments:"):
     st.write("- This is a **dynamic part** - API based")
     st.write("- **Exchange rate of the day** influences the costs/price within calculations")
 
-    ''
-    ''
-    st.write("###### CZ - Czech Republic:")
-    st.dataframe(crit_dataset_kc, hide_index=True)
-    ''
-
-    st.write("Overview:")
-    st.write("""
-             - The 0% change / default values (Rate: 21 <= x < 22 ) 
-                - For 1 calculation/distance unit 
-                - For **Standard** delivery
-             - These values are also used for the calculation:
-                - of % difference in case of rate in differnet range
-                - for different speed of delivery (Express, Slow)
-             """)
-    col_r3,col_r4 = st.columns(2)
-    col_r3.dataframe(standard_def_kc_df, hide_index=True, use_container_width=True)
-
 
     ''
-    st.write("###### SK - Slovakia:")
-    st.dataframe(crit_dataset_eur, hide_index=True)
-    ''
+    tab_c1, tab_c2 = st.tabs([
+        "CZ",
+        "SK"
+    ])
 
-    st.write("Overview:")
-    st.write("""
-             - The 0% change / default values (Rate:  0.82 <= x < 0.87 ) 
-                - For 1 calculation/distance unit 
-                - For **Standard** delivery
-             - These values are also used for the calculation:
-                - of % difference in case of rate in differnet range
-                - for different speed of delivery (Express, Slow)
-             """)
-    col_r3,col_r4 = st.columns(2)
-    col_r3.dataframe(standard_def_eur_df, hide_index=True, use_container_width=True)
+    with tab_c1:
+        st.write("###### CZ - Czech Republic:")
+        st.dataframe(crit_dataset_kc, hide_index=True)
+        ''
+
+        st.write("Overview:")
+        st.write("""
+                - These 1-unit costs per transport type have been set for **default** rate ( 21 <= x < 22 ) for **Standard** delivery service
+                """)
+
+        col_r3,col_r4 = st.columns(2)
+        col_r3.dataframe(standard_def_kc_df, hide_index=True, use_container_width=True)
+
+        st.write("""
+                - In case that the **rate is in** this range the application calculates with these **default** values
+                - In case that the **rate is different** the relevant % increas/decrease is calculated **from the default values**
+                """)
+
+
+    with tab_c2:
+        st.write("###### SK - Slovakia:")
+        st.dataframe(crit_dataset_eur, hide_index=True)
+        ''
+
+        st.write("Overview:")
+        st.write("""
+                - These 1-unit costs per transport type have been set for **default** rate ( 0.82 <= x < 0.87 ) for **Standard** delivery service
+                """)
+
+        col_r3,col_r4 = st.columns(2)
+        col_r3.dataframe(standard_def_eur_df, hide_index=True, use_container_width=True)
+
+        st.write("""
+                - In case that the **rate is in** this range the application calculates with these **default** values
+                - In case that the **rate is different** the relevant % increas/decrease is calculated **from the default values**
+                """)
 
 # /////////////////////////////////////////////////////////////////////////
 def price_decision(selected_currency, selected_transport):
@@ -763,10 +991,18 @@ with st.expander("Train / Rails", icon=":material/train:"):
     data_table_train_cz.index += 1
     data_table_train_sk.index += 1
 
-    ''
-    st.dataframe(data_table_train_cz)
-    ''
-    st.dataframe(data_table_train_sk)
+    tab_t1, tab_t2 = st.tabs([
+        "CZ",
+        "SK"
+    ])
+
+    with tab_t1:
+        ''
+        st.dataframe(data_table_train_cz)
+
+    with tab_t2:
+        ''
+        st.dataframe(data_table_train_sk)
 
 with st.expander("Airplane", icon=":material/travel:"):
     ''
@@ -788,10 +1024,19 @@ with st.expander("Airplane", icon=":material/travel:"):
     data_table_air_cz.index += 1
     data_table_air_sk.index += 1
 
-    ''
-    st.dataframe(data_table_air_cz)
-    ''
-    st.dataframe(data_table_air_sk)
+
+    tab_a1, tab_a2 = st.tabs([
+        "CZ",
+        "SK"
+    ])
+
+    with tab_a1:
+        ''
+        st.dataframe(data_table_air_cz)
+
+    with tab_a2:
+        ''
+        st.dataframe(data_table_air_sk)
 
 
 # Radio - urgency input
@@ -992,10 +1237,42 @@ if check_isurance or check_fragile or check_danger is True:
     if shipment_value == None:
         st.warning("Please insert shipment value")
 
+
+    # Function helping to see number insterted with with split 1_000_000 
+    # input comes as int -> change to str -> value as a list -> reverse -> for loop: after every 3rd item add ' '  & 'index != b_len' this prevents to add ' ' space in case that number has 3, 6, 9... numbers. If the condition not there, outcome: ' 100 000', if there '100 000'. -> again reverse of the list -> list back to string -> visualization on user screen
+    if shipment_value is not None:
+
+        def formating(shipment_value):
+            
+            a = str(shipment_value)
+            b = list(a)
+            b.reverse()
+            b_len = len(b)
+
+            index = 0
+            list_space = []
+
+            for item in b:
+                list_space.append(item)
+                index += 1
+
+                if index % 3 == 0 and index != b_len:
+                    list_space.append(' ')
+
+
+            list_space.reverse()
+            final_str = ''.join(list_space)
+            return final_str
+
+
+        formated_shipment_value_str = formating(shipment_value)
+        st.write(f"- Inserted value: **{formated_shipment_value_str}** {selected_currency}.")
+
 else:
     shipment_value = None
 
 
+''
 ''
 with st.expander("Extra services - Overview", icon= ":material/info:"):
 
@@ -1713,5 +1990,3 @@ if st.button("Submit", use_container_width=True):
 
 
     
-
-
