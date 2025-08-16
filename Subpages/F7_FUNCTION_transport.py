@@ -1726,6 +1726,7 @@ if st.button("Submit", use_container_width=True):
 
         if small_result_r <= 1 and small_result_c <= 1:
             price = price_square
+            distance = 2 * 24.15     # bug fix 16-Aug-2024 (this 'distance' variable was missing here / UnboundLocalError: cannot access local variable 'distance' where it is not associated with a value)
             return price, distance
         
         elif small_result_r == 0 or small_result_c == 0:
