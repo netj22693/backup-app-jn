@@ -76,45 +76,75 @@ coef_air = 0.1
 
 dataset_test = ({
 "cz" : {
-    "Prague" : {"big" : ["2","3"], "small" : ["6","7"], "train":"y", "air":"y"},
-    "Brno" : {"big" : ["4","5"], "small" : ["10","13"], "train":"y", "air":"y"},
-    "Olomouc" : {"big" : ["3","5"], "small" : ["8","15"], "train":"n", "air":"n"},
-    "Plzen" : {"big" : ["3","2"], "small" : ["7","4"], "train":"n", "air":"n"},
-    "Tabor" : {"big" : ["3","3"], "small" : ["9","8"], "train":"n", "air":"n"},
-    "Ostrava" : {"big" : ["3","6"], "small" : ["7","18"], "train":"y", "air":"n"},
-    "Liberec" : {"big" : ["1","3"], "small" : ["3","9"], "train":"n", "air":"n"},
-    "Hradec Kralove" : {"big" : ["2","4"], "small" : ["5","11"], "train":"n", "air":"n"},
-    "Pardubice" : {"big" : ["2","4"], "small" : ["6","11"], "train":"y", "air":"y"},
-    "Zlin" : {"big" : ["3","6"], "small" : ["9","16"], "train":"n", "air":"n"},
-    "Chomutov" : {"big" : ["2","2"], "small" : ["4","4"], "train":"n", "air":"n"},
-    "Ceske Budejovice" : {"big" : ["4","3"], "small" : ["10","7"], "train":"n", "air":"n"},
-    "Teplice" : {"big" : ["2","2"], "small" : ["4","6"], "train":"n", "air":"n"},
-    "Most" : {"big" : ["2","2"], "small" : ["4","5"], "train":"y", "air":"n"},
-    "Karlovy Vary" : {"big" : ["2","1"], "small" : ["5","3"], "train":"n", "air":"n"},
-    "Kolin" : {"big" : ["2","3"], "small" : ["6","9"], "train":"y", "air":"n"},
-    "Ceska Trebova" : {"big" : ["3","5"], "small" : ["7","13"], "train":"y", "air":"n"},
-    "Jihlava" : {"big" : ["3","4"], "small" : ["9","10"], "train":"n", "air":"n"},
-    "Pisek" : {"big" : ["3","2"], "small" : ["9","7"], "train":"y", "air":"n"},
+    "Prague" : {"big" : ["4","10"], "small" : ["10","29"], "train":"y", "air":"y"},
+    "Brno" : {"big" : ["5","12"], "small" : ["14","35"], "train":"y", "air":"y"},
+    "Olomouc" : {"big" : ["4","13"], "small" : ["12","37"], "train":"n", "air":"n"},
+    "Plzen" : {"big" : ["4","9"], "small" : ["12","26"], "train":"n", "air":"n"},
+    "Tabor" : {"big" : ["5","10"], "small" : ["13","30"], "train":"n", "air":"n"},
+    "Ostrava" : {"big" : ["4","13"], "small" : ["11","39"], "train":"y", "air":"n"},
+    "Liberec" : {"big" : ["3","11"], "small" : ["7","31"], "train":"n", "air":"n"},
+    "Hradec Kralove" : {"big" : ["4","11"], "small" : ["10","33"], "train":"n", "air":"n"},
+    "Pardubice" : {"big" : ["4","11"], "small" : ["10","33"], "train":"y", "air":"y"},
+    "Zlin" : {"big" : ["5","13"], "small" : ["14","38"], "train":"n", "air":"n"},
+    "Chomutov" : {"big" : ["3","9"], "small" : ["9","26"], "train":"n", "air":"n"},
+    "Ceske Budejovice" : {"big" : ["5","10"], "small" : ["15","29"], "train":"n", "air":"n"},
+    "Teplice" : {"big" : ["3","9"], "small" : ["8","27"], "train":"n", "air":"n"},
+    "Most" : {"big" : ["3","9"], "small" : ["8","27"], "train":"y", "air":"n"},
+    "Karlovy Vary" : {"big" : ["3","9"], "small" : ["9","25"], "train":"n", "air":"n"},
+    "Kolin" : {"big" : ["4","11"], "small" : ["10","31"], "train":"y", "air":"n"},
+    "Ceska Trebova" : {"big" : ["4","12"], "small" : ["11","34"], "train":"y", "air":"n"},
+    "Jihlava" : {"big" : ["5","11"], "small" : ["13","31"], "train":"n", "air":"n"},
+    "Pisek" : {"big" : ["5","10"], "small" : ["13","28"], "train":"y", "air":"n"},
     # "TEST1" : {"big" : ["3","2"], "small" : ["9","7"], "train":"y", "air":"n"},
     # "TEST2" : {"big" : ["3","2"], "small" : ["9","7"], "train":"y", "air":"n"},
     # "TEST3" : {"big" : ["3","2"], "small" : ["9","7"], "train":"y", "air":"y"},
     # "TEST4" : {"big" : ["3","2"], "small" : ["9","7"], "train":"y", "air":"n"},
 },
 "sk" : {
-	"Bratislava" : {"big" : ["5","5"], "small" : ["14","14"], "train":"y", "air":"y"},
-    "Kosice" : {"big" : ["4","9"], "small" : ["12","27"], "train":"y", "air":"y"},
-    "Banska Bystrica" : {"big" : ["4","7"], "small" : ["12","21"], "train":"n", "air":"n"},
-    "Zilina" : {"big" : ["3","7"], "small" : ["9","19"], "train":"y", "air":"n"},	
-    "Presov" : {"big" : ["4","9"], "small" : ["10","27"], "train":"n", "air":"n"},	
-    "Trnava" : {"big" : ["5","6"], "small" : ["14","17"], "train":"y", "air":"n"},	
-    "Trencin" : {"big" : ["4","6"], "small" : ["11","17"], "train":"n", "air":"n"},	
-    "Poprad" : {"big" : ["4","8"], "small" : ["10","24"], "train":"y", "air":"n"},	
-    "Banska Stiavnica" : {"big" : ["5","7"], "small" : ["13","20"], "train":"n", "air":"n"},
+	"Bratislava" : {"big" : ["6","12"], "small" : ["18","36"], "train":"y", "air":"y"},
+    "Kosice" : {"big" : ["6","16"], "small" : ["16","47"], "train":"y", "air":"y"},
+    "Banska Bystrica" : {"big" : ["6","14"], "small" : ["16","40"], "train":"n", "air":"n"}, # tady jsem skoncil
+    "Zilina" : {"big" : ["3","7"], "small" : ["14","40"], "train":"y", "air":"n"},	
+    "Presov" : {"big" : ["5","16"], "small" : ["15","47"], "train":"n", "air":"n"},	
+    "Trnava" : {"big" : ["6","13"], "small" : ["17","39"], "train":"y", "air":"n"},	
+    "Trencin" : {"big" : ["5","13"], "small" : ["15","39"], "train":"n", "air":"n"},	
+    "Poprad" : {"big" : ["5","15"], "small" : ["14","44"], "train":"y", "air":"n"},	
+    "Banska Stiavnica" : {"big" : ["6","14"], "small" : ["17","41"], "train":"n", "air":"n"},
     # "TEST_S1" : {"big" : ["5","7"], "small" : ["13","20"], "train":"n", "air":"n"},	
     # "TEST_S2" : {"big" : ["5","7"], "small" : ["13","20"], "train":"y", "air":"n"},	
     # "TEST_S3" : {"big" : ["5","7"], "small" : ["13","20"], "train":"y", "air":"n"},	
     # "TEST_S4" : {"big" : ["5","7"], "small" : ["13","20"], "train":"y", "air":"y"},	
     # "TEST_S5" : {"big" : ["5","7"], "small" : ["13","20"], "train":"n", "air":"y"},		
+},
+"at" : {
+    "Vienna" : {"big" : ["6","12"], "small" : ["18","34"], "train":"y", "air":"y"},	
+    "Innsbruck" : {"big" : ["8","7"], "small" : ["22","21"], "train":"y", "air":"n"},	
+    "Linz" : {"big" : ["5","10"], "small" : ["18","28"], "train":"y", "air":"y"},	
+    "Salzburg" : {"big" : ["7","9"], "small" : ["20","25"], "train":"y", "air":"y"},	
+    "Graz" : {"big" : ["8","11"], "small" : ["22","32"], "train":"y", "air":"y"},	
+    "Klagenfurt" : {"big" : ["8","10"], "small" : ["24","29"], "train":"y", "air":"n"},	
+    "Villach" : {"big" : ["8","9"], "small" : ["24","27"], "train":"y", "air":"n"},		
+},
+"de" : {
+    "Munich" : {"big" : ["5","7"], "small" : ["18","21"], "train":"y", "air":"y"},	
+    "Sonthofen" : {"big" : ["7","6"], "small" : ["17","19"], "train":"y", "air":"n"},	
+    "Nuremberg" : {"big" : ["5","7"], "small" : ["13","20"], "train":"y", "air":"y"},	
+    "Dresden" : {"big" : ["2","9"], "small" : ["6","27"], "train":"y", "air":"y"},	
+    "Chemnitz" : {"big" : ["3","9"], "small" : ["7","25"], "train":"n", "air":"n"},	
+    "Bamberg" : {"big" : ["4","7"], "small" : ["11","19"], "train":"y", "air":"n"},	
+    "Augsburg" : {"big" : ["6","7"], "small" : ["17","19"], "train":"y", "air":"n"},
+    "Würzburg" : {"big" : ["4","5"], "small" : ["11","17"], "train":"y", "air":"n"},		
+},
+"pl" : {
+    "Krakow" : {"big" : ["4","15"], "small" : ["10","43"], "train":"y", "air":"y"},	
+    "Novy Sacz" : {"big" : ["4","15"], "small" : ["12","45"], "train":"n", "air":"n"},	
+    "Czestochowa" : {"big" : ["3","14"], "small" : ["7","41"], "train":"y", "air":"n"},	
+    "Bielsko-Biala" : {"big" : ["4","14"], "small" : ["11","41"], "train":"n", "air":"n"},	
+    "Wroclav" : {"big" : ["2","12"], "small" : ["6","36"], "train":"y", "air":"y"},	
+    "Katowice" : {"big" : ["3","14"], "small" : ["9","41"], "train":"y", "air":"y"},	
+    "Walbrzych" : {"big" : ["3","12"], "small" : ["7","34"], "train":"n", "air":"n"},	
+    "Opole" : {"big" : ["3","13"], "small" : ["8","38"], "train":"y", "air":"n"},	
+    "Rzeszow" : {"big" : ["4","17"], "small" : ["10","49"], "train":"y", "air":"y"},		
 }
 })
 
@@ -331,6 +361,22 @@ for item in dataset_test['sk']:
     if l3 == 'y':
         train_sk.append(item)
 
+def train_yes(country):
+
+    list_result = []
+    for item in dataset_test[country]:
+        l2 = dataset_test[country][item]
+        l3 = dataset_test[country][item]['train']
+        if l3 == 'y':
+            list_result.append(item)
+    
+    return list_result
+        
+
+train_at = train_yes('at')
+train_de = train_yes('de')
+train_pl = train_yes('pl')
+
 
 # Airplanes - overview (including no) - FULL LIST
 train_cz_yn = []
@@ -344,6 +390,23 @@ for item in dataset_test['sk']:
     l2 = dataset_test['sk'][item]
     l3 = dataset_test['sk'][item]['train']
     train_sk_yn.append(l3)
+
+
+
+def train_yes_no(country):
+
+    list_result = []
+    for item in dataset_test[country]:
+        l3 = dataset_test[country][item]['train']
+        list_result.append(l3)
+    
+    return list_result
+        
+
+train_at_yn = train_yes_no('at')
+train_de_yn = train_yes_no('de')
+train_pl_yn = train_yes_no('pl')
+
 
 # Airplanes YES - ONLY YES
 
@@ -361,6 +424,24 @@ for item in dataset_test['sk']:
     if l3 == 'y':
         air_sk.append(item)
 
+
+
+def air_yes(country):
+
+    list_result = []
+    for item in dataset_test[country]:
+        l3 = dataset_test[country][item]['air']
+        if l3 == 'y':
+            list_result.append(item)
+    
+    return list_result
+
+air_at = air_yes('at')
+air_de = air_yes('de')
+air_pl = air_yes('pl')
+
+
+
 # Airplanes - overview (including no) - FULL LIST
 air_cz_yn = []
 for item in dataset_test['cz']:
@@ -373,6 +454,23 @@ for item in dataset_test['sk']:
     l2 = dataset_test['sk'][item]
     l3 = dataset_test['sk'][item]['air']
     air_sk_yn.append(l3)
+
+
+def air_yes_no(country):
+
+    list_result = []
+    for item in dataset_test[country]:
+        l3 = dataset_test[country][item]['air']
+        list_result.append(l3)
+    
+    return list_result
+
+
+air_at_yn = air_yes_no('at')
+air_de_yn = air_yes_no('de')
+air_pl_yn = air_yes_no('pl')
+
+
 
 
 # Function for change of data from original data object to have a meaning for visualization 
@@ -390,8 +488,17 @@ def text_output(list_input):
 
 train_cz_yn_text = text_output(train_cz_yn)
 train_sk_yn_text = text_output(train_sk_yn)
+train_at_yn_text = text_output(train_at_yn)
+train_de_yn_text = text_output(train_de_yn)
+train_pl_yn_text = text_output(train_pl_yn)
+
 air_cz_yn_text = text_output(air_cz_yn)
 air_sk_yn_text = text_output(air_sk_yn)
+air_at_yn_text = text_output(air_at_yn)
+air_de_yn_text = text_output(air_de_yn)
+air_pl_yn_text = text_output(air_pl_yn)
+
+
 
 
 # Names of cities 
@@ -401,7 +508,7 @@ for item in dataset_test['cz']:
     list_cz.append(item)
     list_cz_az.append(item)
 
-# st.write(list_cz)
+
 
 list_sk_az = []
 list_sk = []
@@ -410,7 +517,22 @@ for item in dataset_test['sk']:
     list_sk_az.append(item)
 
 
-# st.write(list_sk)
+def list_city_az(country):
+
+    list_country_az = []
+    list_country = []
+    for item in dataset_test[country]:
+        list_country.append(item)
+        list_country_az.append(item)
+    
+    list_country_az.sort()
+
+    return list_country_az, list_country
+
+list_at_az, list_at = list_city_az('at')
+list_de_az, list_de = list_city_az('de')
+list_pl_az, list_pl = list_city_az('pl')
+
 
 # Sorting A-Z for select 
 
@@ -439,15 +561,62 @@ table_overview_full_sk = pd.DataFrame({
 table_overview_full_sk.index +=1
 
 
+
+table_overview_full_at = pd.DataFrame({
+    "City" : list_at,
+    "Road" : 'Available',
+    "Train" : train_at_yn_text,
+    "Airplane" : air_at_yn_text
+})
+
+table_overview_full_at.index +=1
+
+
+table_overview_full_de = pd.DataFrame({
+    "City" : list_de,
+    "Road" : 'Available',
+    "Train" : train_de_yn_text,
+    "Airplane" : air_de_yn_text
+})
+
+table_overview_full_de.index +=1
+
+
+table_overview_full_pl = pd.DataFrame({
+    "City" : list_pl,
+    "Road" : 'Available',
+    "Train" : train_pl_yn_text,
+    "Airplane" : air_pl_yn_text
+})
+
+table_overview_full_pl.index +=1
+
 # Dataset/variables for statistics
 count_list_cz = len(list_cz)
 count_list_sk = len(list_sk)
+count_list_at = len(list_at)
+count_list_de = len(list_de)
+count_list_pl = len(list_pl)
+
 count_train_cz = len(train_cz)
 count_train_sk = len(train_sk)
+count_train_at = len(train_at)
+count_train_de = len(train_de)
+count_train_pl = len(train_pl)
+
 count_air_cz = len(air_cz)
 count_air_sk = len(air_sk)
+count_air_at = len(air_at)
+count_air_de = len(air_de)
+count_air_pl = len(air_pl)
+
+
 count_truck_cz = count_list_cz
 count_truck_sk = count_list_sk
+count_truck_at = count_list_at
+count_truck_de = count_list_de
+count_truck_pl = count_list_pl
+
 
 diff_truck_cz = count_list_cz - count_truck_cz
 diff_train_cz = count_list_cz - count_train_cz
@@ -456,6 +625,18 @@ diff_air_cz = count_list_cz - count_air_cz
 diff_truck_sk = count_list_sk - count_truck_sk
 diff_train_sk = count_list_sk - count_train_sk
 diff_air_sk = count_list_sk - count_air_sk
+
+diff_truck_at = count_list_at - count_truck_at
+diff_train_at = count_list_at - count_train_at
+diff_air_at = count_list_at - count_air_at
+
+diff_truck_de = count_list_de - count_truck_de
+diff_train_de = count_list_de - count_train_de
+diff_air_de = count_list_de - count_air_de
+
+diff_truck_pl = count_list_pl - count_truck_pl
+diff_train_pl = count_list_pl - count_train_pl
+diff_air_pl = count_list_pl - count_air_pl
 
 
 data_pie_truck_cz = pd.DataFrame({
@@ -492,19 +673,82 @@ data_pie_air_sk = pd.DataFrame({
                 })
 
 
+
+data_pie_truck_at = pd.DataFrame({
+                "Number" : [count_truck_at , diff_truck_at],
+                "Result" : ["Available", "Not available",]
+                })
+
+data_pie_train_at = pd.DataFrame({
+                "Number" : [count_train_at , diff_train_at],
+                "Result" : ["Available", "Not available",]
+                })
+
+
+data_pie_air_at = pd.DataFrame({
+                "Number" : [count_air_at , diff_air_at],
+                "Result" : ["Available", "Not available",]
+                })
+
+
+
+data_pie_truck_de = pd.DataFrame({
+                "Number" : [count_truck_de , diff_truck_de],
+                "Result" : ["Available", "Not available",]
+                })
+
+data_pie_train_de = pd.DataFrame({
+                "Number" : [count_train_de , diff_train_de],
+                "Result" : ["Available", "Not available",]
+                })
+
+
+data_pie_air_de = pd.DataFrame({
+                "Number" : [count_air_de , diff_air_de],
+                "Result" : ["Available", "Not available",]
+                })
+
+
+data_pie_truck_pl = pd.DataFrame({
+                "Number" : [count_truck_pl , diff_truck_pl],
+                "Result" : ["Available", "Not available",]
+                })
+
+data_pie_train_pl = pd.DataFrame({
+                "Number" : [count_train_pl , diff_train_pl],
+                "Result" : ["Available", "Not available",]
+                })
+
+
+data_pie_air_pl = pd.DataFrame({
+                "Number" : [count_air_pl , diff_air_pl],
+                "Result" : ["Available", "Not available",]
+                })
+
+
+
+
+
+
 data_pie_truck_overall = pd.DataFrame({
-                "Number" : [(count_truck_cz + count_truck_sk), (diff_truck_cz + diff_truck_sk)],
+                "Number" : [
+                    (count_truck_cz + count_truck_sk + count_truck_at + count_truck_de + count_truck_pl),
+                    (diff_truck_cz + diff_truck_sk + diff_truck_at + diff_truck_de + diff_truck_pl )],
                 "Result" : ["Available", "Not available",]
                 })
 
 data_pie_train_overall = pd.DataFrame({
-                "Number" : [(count_train_cz + count_train_sk), (diff_train_cz + diff_train_sk)],
+                "Number" : [
+                    (count_train_cz + count_train_sk + count_train_at + count_train_de + count_train_pl),
+                    (diff_train_cz + diff_train_sk + diff_train_at + diff_train_de + diff_train_pl)],
                 "Result" : ["Available", "Not available",]
                 })
 
 
 data_pie_air_overall = pd.DataFrame({
-                "Number" : [(count_air_cz + count_air_sk), (diff_air_cz + diff_air_sk)],
+                "Number" : [
+                    (count_air_cz + count_air_sk + count_air_at + count_air_de + count_air_pl),
+                    (diff_air_cz + diff_air_sk + diff_air_at + diff_air_de + diff_air_pl)],
                 "Result" : ["Available", "Not available",]
                 })
 
@@ -517,36 +761,67 @@ st.write("# Transport calculation")
 ''
 ''
 ''
-st.image("Pictures/Function_7/F7_map_3.png")
-
+# st.image("Pictures/Function_7/F7_map_3.png")
+st.image("Pictures/Function_7/F7_map_V2_v3.svg")
 ''
 ''
 with st.expander("City overview", icon = ":material/pin_drop:"):
 
     ''
-    st.image("Pictures/Function_7/F7_map_cities.png")
-    ''
-
-    tab_co1, tab_co2 = st.tabs([
+    tab_co1, tab_co2, tab_co3, tab_co4, tab_co5 = st.tabs([
         "CZ",
-        "SK"
+        "SK",
+        "AT",
+        "DE",
+        "PL"
     ])
 
     with tab_co1:
         st.write("- **Czech Republic:**")
+        ''
+        st.image("Pictures/Function_7/F7_cities_cz.svg")
+        ''
         st.dataframe(table_overview_full_cz)
     
     with tab_co2:
         st.write("- **Slovakia:**")
+        ''
+        st.image("Pictures/Function_7/F7_cities_sk.svg", width= 520)
+        ''        
         st.dataframe(table_overview_full_sk)
+
+    with tab_co3:
+        st.write("- **Austria:**")
+        ''
+        st.image("Pictures/Function_7/F7_cities_at.svg", width= 520)
+        ''
+        st.dataframe(table_overview_full_at)
+
+    with tab_co4:
+        st.write("- **Germany:**")
+        ''
+        st.image("Pictures/Function_7/F7_cities_de.svg", width= 420)
+        ''
+        st.dataframe(table_overview_full_de)
+
+    with tab_co5:
+        st.write("- **Poland:**")
+        ''
+        st.image("Pictures/Function_7/F7_cities_pl.svg", width= 420)
+        ''
+        st.dataframe(table_overview_full_pl)
+
 
 
 with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
 
     st.write(f"""
-             - Number of cities: **{count_list_cz + count_list_sk}**
+             - Number of cities: **{count_list_cz + count_list_sk + count_list_at + count_list_de + count_list_pl}**
                 - **CZ** - Czech Republic: **{count_list_cz}**
                 - **SK** - Slovakia: **{count_list_sk}**
+                - **AT** - Austira: **{count_list_at}**
+                - **DE** - Germany: **{count_list_de}**
+                - **PL** - Poland: **{count_list_pl}**
              """)
     
     ''
@@ -577,6 +852,18 @@ with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
     fig_pie_train_sk = pie_chart(data_pie_train_sk, "SK Train")
     fig_pie_air_sk = pie_chart(data_pie_air_sk, "SK Airplane")
 
+    fig_pie_truck_at = pie_chart(data_pie_truck_at, "AT Truck")
+    fig_pie_train_at = pie_chart(data_pie_train_at, "AT Train")
+    fig_pie_air_at = pie_chart(data_pie_air_at, "AT Airplane")
+
+    fig_pie_truck_de = pie_chart(data_pie_truck_de, "DE Truck")
+    fig_pie_train_de = pie_chart(data_pie_train_de, "DE Train")
+    fig_pie_air_de = pie_chart(data_pie_air_de, "DE Airplane")
+
+    fig_pie_truck_pl = pie_chart(data_pie_truck_pl, "PL Truck")
+    fig_pie_train_pl = pie_chart(data_pie_train_pl, "PL Train")
+    fig_pie_air_pl = pie_chart(data_pie_air_pl, "PL Airplane")
+
     fig_pie_truck_overall = pie_chart(data_pie_truck_overall, "Truck")
     fig_pie_train_overall = pie_chart(data_pie_train_overall, "Train")
     fig_pie_air_overall = pie_chart(data_pie_air_overall, "Airplane")
@@ -588,12 +875,12 @@ with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
 
     # -----  Chart ---- CZ and SK ---- 
     x_cz_sk = [
-        ["CZ", "CZ", "CZ", "SK", "SK", "SK"],
-        ['Truck','Train', 'Airplane', 'Truck','Train', 'Airplane']
+        ["CZ", "CZ", "CZ", "SK", "SK", "SK", "AT", "AT", "AT", "DE", "DE", "DE", "PL", "PL", "PL"],
+        ['Truck','Train', 'Air', 'Truck','Train', 'Air', 'Truck','Train', 'Air', 'Truck','Train', 'Air', 'Truck','Train', 'Air']
     ]
 
-    y_available = [count_truck_cz,count_train_cz,count_air_cz,count_truck_sk,count_train_sk,count_air_sk]
-    y_not_available = [diff_truck_cz,diff_train_cz,diff_air_cz,diff_truck_sk,diff_train_sk,diff_air_sk]
+    y_available = [count_truck_cz,count_train_cz,count_air_cz,count_truck_sk,count_train_sk,count_air_sk, count_truck_at,count_train_at,count_air_at, count_truck_de,count_train_de,count_air_de, count_truck_pl,count_train_pl,count_air_pl ]
+    y_not_available = [diff_truck_cz,diff_train_cz,diff_air_cz,diff_truck_sk,diff_train_sk,diff_air_sk, diff_truck_at,diff_train_at,diff_air_at, diff_truck_de,diff_train_de,diff_air_de, diff_truck_pl,diff_train_pl,diff_air_pl]
 
 
     fig_cz_sk = go.Figure()
@@ -618,8 +905,8 @@ with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
     # -----  Chart ----  Overall ---- 
     x_overall = ['Truck','Train', 'Airplane']
 
-    y_available_overall = [(count_truck_cz + count_truck_sk), (count_train_cz + count_train_sk),(count_air_cz + count_air_sk)]
-    y_not_availab_overall = [(diff_truck_cz + diff_truck_sk),(diff_train_cz + diff_train_sk), (diff_air_cz + diff_air_sk)]
+    y_available_overall = [(count_truck_cz + count_truck_sk + count_truck_at + count_truck_de + count_truck_pl), (count_train_cz + count_train_sk + count_train_at + count_train_de + count_train_pl),(count_air_cz + count_air_sk + count_air_at + count_air_de + count_air_pl)]
+    y_not_availab_overall = [(diff_truck_cz + diff_truck_sk + diff_truck_at + diff_truck_de + diff_truck_pl),(diff_train_cz + diff_train_sk + diff_train_at + diff_train_de + diff_train_pl), (diff_air_cz + diff_air_sk + diff_air_at + diff_air_de + diff_air_pl)]
 
     fig_overall = go.Figure()
     fig_overall.add_bar(x=x_overall,y=y_available_overall, name= "Available", text = y_available_overall,
@@ -638,11 +925,21 @@ with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
     fig_overall.update_layout(barmode="relative")
     fig_overall.update_layout(title = "Transport type availability")
 
-    tab1, tab2, tab3, tab4, tab5 = st.tabs(["CZ & SK split", "Overall", "% CZ", "% SK", "% Overall"])
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
+        "Bar - Split",
+        "Bar - Overall",
+        "% Overall",
+        "% CZ",
+        "% SK",
+        "% AT",
+        "% DE",
+        "% PL"
+        ])
 
     with tab1:
         with st.container(border=True):
-            st.plotly_chart(fig_cz_sk, theme="streamlit")   
+            st.plotly_chart(fig_cz_sk, theme="streamlit")  
+             
     with tab2:
         with st.container(border=True):
             st.plotly_chart(fig_overall, theme="streamlit")
@@ -650,26 +947,53 @@ with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
     with tab3:
         with st.container(border=True):
             col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
+            col_stat_1.plotly_chart(fig_pie_truck_overall, use_container_width=False, height = 3000)
+            col_stat_2.plotly_chart(fig_pie_train_overall, use_container_width=False)
+            col_stat_3.plotly_chart(fig_pie_air_overall, use_container_width=False)
+
+    # CZ
+    with tab4:
+        with st.container(border=True):
+            col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
             col_stat_1.plotly_chart(fig_pie_truck_cz, use_container_width=False, height = 3000)
             col_stat_2.plotly_chart(fig_pie_train_cz, use_container_width=False)
             col_stat_3.plotly_chart(fig_pie_air_cz, use_container_width=False)
 
-    with tab4:
+    # SK
+    with tab5:
         with st.container(border=True):
             col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
             col_stat_1.plotly_chart(fig_pie_truck_sk, use_container_width=False, height = 3000)
             col_stat_2.plotly_chart(fig_pie_train_sk, use_container_width=False)
             col_stat_3.plotly_chart(fig_pie_air_sk, use_container_width=False)
 
-    with tab5:
+    # AT
+    with tab6:
         with st.container(border=True):
             col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
-            col_stat_1.plotly_chart(fig_pie_truck_overall, use_container_width=False, height = 3000)
-            col_stat_2.plotly_chart(fig_pie_train_overall, use_container_width=False)
-            col_stat_3.plotly_chart(fig_pie_air_overall, use_container_width=False)
+            col_stat_1.plotly_chart(fig_pie_truck_at, use_container_width=False, height = 3000)
+            col_stat_2.plotly_chart(fig_pie_train_at, use_container_width=False)
+            col_stat_3.plotly_chart(fig_pie_air_at, use_container_width=False)
+
+    # DE
+    with tab7:
+        with st.container(border=True):
+            col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
+            col_stat_1.plotly_chart(fig_pie_truck_de, use_container_width=False, height = 3000)
+            col_stat_2.plotly_chart(fig_pie_train_de, use_container_width=False)
+            col_stat_3.plotly_chart(fig_pie_air_de, use_container_width=False)
+
+    # PL
+    with tab8:
+        with st.container(border=True):
+            col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
+            col_stat_1.plotly_chart(fig_pie_truck_pl, use_container_width=False, height = 3000)
+            col_stat_2.plotly_chart(fig_pie_train_pl, use_container_width=False)
+            col_stat_3.plotly_chart(fig_pie_air_pl, use_container_width=False)
 
 
 
+            
 with st.expander("Currency and rate - API", icon = ":material/payments:"):
 
     ''
@@ -687,12 +1011,12 @@ with st.expander("Currency and rate - API", icon = ":material/payments:"):
 
     ''
     tab_c1, tab_c2 = st.tabs([
-        "CZ",
-        "SK"
+        "Koruna",
+        "Euro"
     ])
 
     with tab_c1:
-        st.write("###### CZ - Czech Republic:")
+        st.write("###### CZ - koruna:")
         st.dataframe(crit_dataset_kc, hide_index=True)
         ''
 
@@ -711,7 +1035,7 @@ with st.expander("Currency and rate - API", icon = ":material/payments:"):
 
 
     with tab_c2:
-        st.write("###### SK - Slovakia:")
+        st.write("###### SK, AT, DE, PL - euro:")
         st.dataframe(crit_dataset_eur, hide_index=True)
         ''
 
@@ -761,20 +1085,6 @@ def price_decision(selected_currency, selected_transport):
 
 
 
-# list_cz = []
-# for item in dataset_test['cz']:
-#     list_cz.append(item)
-
-# # st.write(list_cz)
-
-
-# list_sk = []
-# for item in dataset_test['sk']:
-#     list_sk.append(item)
-
-
-# # st.write(list_sk)
-
 
 
 # Filters 
@@ -788,7 +1098,7 @@ col1,col2 = st.columns(2, gap="large")
 
 radio_from_country = col1.radio(
     "Country from:",
-    options=["CZ","SK"],
+    options=["AT","CZ","DE","PL","SK"],
 )
 
 radio_from_country = radio_from_country.lower()
@@ -801,13 +1111,23 @@ if radio_from_country == "sk":
 
     from_city = col1.selectbox("City from:", list_sk_az)
 
+if radio_from_country == "at":
+    
+    from_city = col1.selectbox("City from:", list_at_az)
 
+if radio_from_country == "de":
+
+    from_city = col1.selectbox("City from:", list_de_az)
+
+if radio_from_country == "pl":
+
+    from_city = col1.selectbox("City from:", list_pl_az)
 
 
 
 radio_to_country = col2.radio(
     "Country to:",
-    options=["CZ","SK"]
+    options=["AT","CZ","DE","PL","SK"]
 )
 
 radio_to_country = radio_to_country.lower()
@@ -820,22 +1140,62 @@ if radio_to_country == "sk":
 
     to_city = col2.selectbox("City to:", list_sk_az)
 
+if radio_to_country == "at":
+    
+    to_city = col2.selectbox("City to:", list_at_az)
 
+if radio_to_country == "de":
+
+    to_city = col2.selectbox("City to:", list_de_az)
+
+if radio_to_country == "pl":
+
+    to_city = col2.selectbox("City to:", list_pl_az)
 
 
 # function for offering relevant currency to choose from in case that international transport CZ <-> SK
+
+def number_determination(country):
+    
+    if country == 'at' or country == 'de' or country == 'pl' or country == 'sk':
+        num = 0
+    
+    if country == 'cz':
+        num = 1
+
+    return num
+    
+
 def offer_currency(radio_from_country,radio_to_country):
 
-    if radio_from_country == 'sk' and radio_to_country == 'sk':
+
+    # if radio_from_country == 'sk' and radio_to_country == 'sk':
+    #     currency = 'euro'
+    #     return currency
+    
+    # elif radio_from_country == 'cz' and radio_to_country == 'cz':
+    #     currency = 'koruna'
+    #     return currency
+    
+    # else:
+    #     currency = ['koruna', 'euro']
+    #     return currency
+    
+    num_from = number_determination(radio_from_country)
+    num_to = number_determination(radio_to_country)
+
+    result = num_from + num_to
+
+    if result == 0:
         currency = 'euro'
         return currency
     
-    elif radio_from_country == 'cz' and radio_to_country == 'cz':
-        currency = 'koruna'
+    if result == 1:
+        currency = ['koruna', 'euro']
         return currency
     
-    else:
-        currency = ['koruna', 'euro']
+    if result == 2:
+        currency = 'koruna'
         return currency
 
 currency = offer_currency(radio_from_country,radio_to_country)
@@ -976,8 +1336,7 @@ with st.expander("Train / Rails", icon=":material/train:"):
     """)
 
     st.write("""- But is **less flexible** - Only some cities connected by rails""")
-    ''
-    st.image("Pictures/Function_7/F7_map_trains.png")
+
 
     data_table_train_cz = pd.DataFrame({
         "City CZ" : train_cz
@@ -987,22 +1346,66 @@ with st.expander("Train / Rails", icon=":material/train:"):
     data_table_train_sk = pd.DataFrame({
         "City SK" : train_sk
         })
+
+    data_table_train_at = pd.DataFrame({
+        "City AT" : train_at
+        })
+
+    data_table_train_de = pd.DataFrame({
+        "City DE" : train_de
+        })
+
+    data_table_train_pl = pd.DataFrame({
+        "City PL" : train_pl
+        })
     
     data_table_train_cz.index += 1
     data_table_train_sk.index += 1
+    data_table_train_at.index += 1
+    data_table_train_de.index += 1
+    data_table_train_pl.index += 1
 
-    tab_t1, tab_t2 = st.tabs([
+
+    tab_t1, tab_t2, tab_t3, tab_t4, tab_t5 = st.tabs([
         "CZ",
-        "SK"
+        "SK", 
+        "AT",
+        "DE",
+        "PL"
     ])
 
     with tab_t1:
+        ''
+        st.image("Pictures/Function_7/F7_train_cz.svg", width = 400)
         ''
         st.dataframe(data_table_train_cz)
 
     with tab_t2:
         ''
+        st.image("Pictures/Function_7/F7_train_sk.svg", width = 380)
+        ''
         st.dataframe(data_table_train_sk)
+
+    with tab_t3:
+        ''
+        st.image("Pictures/Function_7/F7_train_at.svg", width = 400)
+        ''
+        st.dataframe(data_table_train_at)
+
+    with tab_t4:
+        ''
+        st.image("Pictures/Function_7/F7_train_de.svg", width = 350)
+        ''
+        st.dataframe(data_table_train_de)
+
+    with tab_t5:
+        ''
+        st.image("Pictures/Function_7/F7_train_pl.svg", width = 350)
+        ''
+        st.dataframe(data_table_train_pl)
+
+
+
 
 with st.expander("Airplane", icon=":material/travel:"):
     ''
@@ -1010,7 +1413,6 @@ with st.expander("Airplane", icon=":material/travel:"):
     st.write("""- Very expensive but fast -> Benficial for time critical goods/transports""")
     st.write("""- Only some cities connected""")
     ''
-    st.image("Pictures/Function_7/F7_map_air.png")
 
     data_table_air_cz = pd.DataFrame({
         "City CZ" : air_cz
@@ -1020,23 +1422,66 @@ with st.expander("Airplane", icon=":material/travel:"):
     data_table_air_sk = pd.DataFrame({
         "City SK" : air_sk
         })
+
+    data_table_air_at = pd.DataFrame({
+        "City AT" : air_at
+        })
     
+
+    data_table_air_de = pd.DataFrame({
+        "City DE" : air_de
+        })
+
+    data_table_air_pl = pd.DataFrame({
+        "City PL" : air_pl
+        })
+    
+
     data_table_air_cz.index += 1
     data_table_air_sk.index += 1
+    data_table_air_at.index += 1
+    data_table_air_de.index += 1
+    data_table_air_pl.index += 1
 
 
-    tab_a1, tab_a2 = st.tabs([
+
+    tab_a1, tab_a2, tab_a3, tab_a4, tab_a5 = st.tabs([
         "CZ",
-        "SK"
+        "SK",
+        "AT",
+        "DE",
+        "PL"        
     ])
 
     with tab_a1:
+        ''
+        st.image("Pictures/Function_7/F7_air_cz.svg", width = 400)
         ''
         st.dataframe(data_table_air_cz)
 
     with tab_a2:
         ''
+        st.image("Pictures/Function_7/F7_air_sk.svg", width = 380)
+        ''
         st.dataframe(data_table_air_sk)
+
+    with tab_a3:
+        ''
+        st.image("Pictures/Function_7/F7_air_at.svg", width = 400)
+        ''
+        st.dataframe(data_table_air_at)
+
+    with tab_a4:
+        ''
+        st.image("Pictures/Function_7/F7_air_de.svg", width = 350)
+        ''
+        st.dataframe(data_table_air_de)
+
+    with tab_a5:
+        ''
+        st.image("Pictures/Function_7/F7_air_pl.svg", width = 350)
+        ''
+        st.dataframe(data_table_air_pl)
 
 
 # Radio - urgency input
@@ -1646,6 +2091,7 @@ if st.button("Submit", use_container_width=True):
         # st.write(f"LEVEL 3B small result_r: {small_result_r}")
         # st.write(f"LEVEL 3B small result_c: {small_result_c}")
 
+
         #long diagonal distance compensation
         comp = small_result_r + small_result_c
 
@@ -1680,15 +2126,37 @@ if st.button("Submit", use_container_width=True):
             price = calcul * price_square
             # st.write(f"LEVEL 3 if 4 -před navratem price: {price}")
 
-            distance = calcul * 35.68
+            # distance = calcul * 35.68
+
+            # ----------------- 
+            pythagoras = math.sqrt(small_result_r ** 2 + small_result_c ** 2)
+            #st.write(f"small result r: {small_result_r}")
+            #st.write(f"small result c: {small_result_c}")
+            #st.write(f"Pythagoras: {pythagoras}")
+            distance = 35.68 * pythagoras
+            #st.write(f"Distance after Pythagoras: {distance}")
+            # ----------------- 
+
             return price, distance
         
+        # 5 a 6 zkusím pythagorovu větu 
         elif 16 <= comp < 18:
             calcul = (small_result_r + small_result_c - 5)
+
             price = calcul * price_square
             # st.write(f"LEVEL 3 if 5 -před navratem price: {price}")
 
-            distance = calcul * 34.24
+            # distance = calcul * 34.24
+
+            # ----------------- 
+            pythagoras = math.sqrt(small_result_r ** 2 + small_result_c ** 2)
+            #st.write(f"small result r: {small_result_r}")
+            #st.write(f"small result c: {small_result_c}")
+            #st.write(f"Pythagoras: {pythagoras}")
+            distance = 34.24 * pythagoras
+            #st.write(f"Distance after Pythagoras: {distance}")
+            # ----------------- 
+
             return price, distance
         
         elif 18 <= comp:
@@ -1696,7 +2164,18 @@ if st.button("Submit", use_container_width=True):
             price = calcul * price_square
             # st.write(f"LEVEL 3 if 6 -před navratem price: {price}")
 
-            distance = calcul * 36.75
+            # distance = calcul * 36.75
+
+            # ----------------- 
+            pythagoras = math.sqrt(small_result_r ** 2 + small_result_c ** 2)
+            #st.write(f"small result r: {small_result_r}")
+            #st.write(f"small result c: {small_result_c}")
+            #st.write(f"Pythagoras: {pythagoras}")
+            distance = 36.75 * pythagoras
+            #st.write(f"Distance after Pythagoras: {distance}")
+            # ----------------- 
+
+
             return price, distance
 
 

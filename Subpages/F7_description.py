@@ -3,7 +3,7 @@ import streamlit as st
 # dictionary:
 
 dataset_test = ({
-    "Prague" : {"big" : ["2","3"], "small" : ["6","7"], "train":"y", "air":"y"},
+    "Prague" : {"big" : ["4","10"], "small" : ["10","29"], "train":"y", "air":"y"},
 })   
 
 
@@ -78,9 +78,30 @@ st.write("""
 """
 )
 
-''
-st.image("Pictures/Function_7/F7_map_R1C1.png")
-''
+tab_g1, tab_g2 = st.tabs([
+	"V2",
+	"V1"
+])
+
+with tab_g1:
+    ''
+    st.write("""
+    - **Current version** - including extra space for onboarding of more cities in the future
+    """)
+
+    ''
+    st.image("Pictures/Function_7/F7_map_R1C1_V2.png")
+    ''
+
+with tab_g2:
+    ''
+    st.write("""
+    - First version - **not used anymore**
+    """)
+
+    ''
+    st.image("Pictures/Function_7/F7_map_R1C1.png")
+    ''
 
 st.write("""
 - Thus when **city onboarded**, each gets **'big'** and **'small'** R1C1 coordinates
