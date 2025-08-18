@@ -765,6 +765,10 @@ st.write("# Transport calculation")
 st.image("Pictures/Function_7/F7_map_V2_v3.svg")
 ''
 ''
+with st.expander("Delivery area - Central Europe", icon = ":material/pin_drop:"):
+    st.image("Pictures/Function_7/F7_map_central_europe.svg")
+
+
 with st.expander("City overview", icon = ":material/pin_drop:"):
 
     ''
