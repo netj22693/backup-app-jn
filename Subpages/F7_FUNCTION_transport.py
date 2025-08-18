@@ -823,7 +823,7 @@ with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
              - Number of cities: **{count_list_cz + count_list_sk + count_list_at + count_list_de + count_list_pl}**
                 - **CZ** - Czech Republic: **{count_list_cz}**
                 - **SK** - Slovakia: **{count_list_sk}**
-                - **AT** - Austira: **{count_list_at}**
+                - **AT** - Austria: **{count_list_at}**
                 - **DE** - Germany: **{count_list_de}**
                 - **PL** - Poland: **{count_list_pl}**
              """)
