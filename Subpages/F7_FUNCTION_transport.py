@@ -1630,7 +1630,7 @@ st.write(f" - **{selected_transport}** - **{urgency}** -> the cargo can be on it
 
 if selected_transport == 'Airplane':
     st.write(f" - Unit price for distance calculation: **{(price_square * 30):,.2f}** {selected_currency}")
-    st.write(price_square)
+
 
 else:
     st.write(f" - Unit price for distance calculation: **{price_square:,.2f} {selected_currency}**")
