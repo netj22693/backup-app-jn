@@ -129,7 +129,7 @@ st.write("""
 st.write("""
 - **Airplane**:
     -  Uses pythagorean theorem to get mathematically **the shortest distance** between cities
-    - When calculated, Airplane has **shorter distance** between cities than Truck or Train
+    - When calculated in the **Function 7**, Airplane has **shorter distance** between cities than Truck or Train
 """
 )
 ''
