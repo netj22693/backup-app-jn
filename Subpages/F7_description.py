@@ -113,15 +113,26 @@ st.code(dataset_test, language="python", wrap_lines=True, height=80)
 
 st.write("""
 - The **calculation happens based on the 'big' and 'small' units**
-- **When Submit button used** - There is a logic of distributing the selected cities/their coordinates (From and To) **between 3 levels/functions** -> to get reasonable distance calculation
-    - move within 1 unit 
-    - move which is only horizontal or vertical
-    - move which is diagonal
-- **Each has slightly different logic for calculation** (specifically there is a correction coeficient when it comes to diagonal move)
+"""
+)
+
+st.write("""
+- **Truck & Train**:
+    -   Use a logic of distributing **between 3 levels/functions** -> to get reasonable distance calculation
+        - move within 1 unit 
+        - move only horizontal or vertical
+        - move diagonal
+    - **Each has slightly different logic for calculation** (specifically, correction coeficient when it comes to diagonal move)
+"""
+)
+
+st.write("""
+- **Airplane**:
+    -  Uses pythagorean theorem to get basically the shortest distance between cities (that's what Airplanes usually do)
 """
 )
 ''
-st.image("Pictures/Function_7/F7_desc_bpmn.svg")
+st.image("Pictures/Function_7/F7_desc_bpmn_calculation.svg")
 ''
 
 
@@ -191,6 +202,31 @@ with st.expander("API info", icon= ":material/help:"):
 ''
 st.image("Pictures/Function_7/F7_desc_bpmn_api_unit.svg")   
 
+
+''
+''
+st.write("##### Currency offer:") 
+st.write("""
+- Countries: 
+    - CZ - **koruna**
+    - SK, AT, DE, PL - **euro**
+"""
+)
+
+st.write("""
+- Transport **inside** a country -> **currency of the country** 
+"""
+)
+
+st.write("""
+- Transport to **different** country:
+    - **any of**: SK, AT, DE, PL -> **euro** 
+    - **CZ** and **any of**: SK, AT, DE, PL -> Customer can choose: **koruna** or **euro**
+"""
+)
+
+''
+st.image("Pictures/Function_7/F7_desc_bpmn_currency.svg")
 
 # ===== Page navigation at the bottom ======
 ''
