@@ -14,13 +14,13 @@ tranport_types_list = ['Truck','Train','Airplane']
 # Price per 1t/per approx 30km (one square on map)
 
 #STANDAR - DELIVERY SERVICE
-truck_kc = 689
-train_kc = 230
-plane_kc = 150_000
+truck_kc = 1_500
+train_kc = 1_200
+plane_kc = 15_000
 
-truck_eur = 27
-train_eur = 10
-plane_eur = 6250
+truck_eur = 60
+train_eur = 48
+plane_eur = 600
 
 list_kc_standard_default = [truck_kc, train_kc, plane_kc]
 list_eur_standard_default = [truck_eur, train_eur, plane_eur]
@@ -182,7 +182,7 @@ def api_get_rate():
         """
     )
 
-        usd_to_czk_rate = 24.89
+        usd_to_czk_rate = 21.94
         usd_to_eur_rate = 0.87
         
         return usd_to_czk_rate, usd_to_eur_rate 
@@ -761,11 +761,13 @@ st.write("# Transport calculation")
 ''
 ''
 ''
-# st.image("Pictures/Function_7/F7_map_3.png")
-st.image("Pictures/Function_7/F7_map_V2_v3.svg")
+
+# st.image("Pictures/Function_7/F7_map_V2_v3.svg")
+st.image("Pictures/Function_7/F7_map_V2_v4.svg")
 ''
 ''
 with st.expander("Delivery area - Central Europe", icon = ":material/pin_drop:"):
+
     st.image("Pictures/Function_7/F7_map_central_europe.svg")
 
 
@@ -1026,8 +1028,9 @@ with st.expander("Currency and rate - API", icon = ":material/payments:"):
 
         st.write("Overview:")
         st.write("""
-                - These 1-unit costs per transport type have been set for **default** rate ( 21 <= x < 22 ) for **Standard** delivery service
+                - These **1-unit** costs per transport type have been set for **default** rate ( 21 <= x < 22 ) for **Standard** delivery service
                 """)
+        st.caption("**1 unit is approximatelly ~ 30 km** (but not always - there are some variables/coeficients making calculation corrections, depending on case City A to City B)")
 
         col_r3,col_r4 = st.columns(2)
         col_r3.dataframe(standard_def_kc_df, hide_index=True, use_container_width=True)
@@ -1045,8 +1048,10 @@ with st.expander("Currency and rate - API", icon = ":material/payments:"):
 
         st.write("Overview:")
         st.write("""
-                - These 1-unit costs per transport type have been set for **default** rate ( 0.82 <= x < 0.87 ) for **Standard** delivery service
+                - These **1-unit** costs per transport type have been set for **default** rate ( 0.82 <= x < 0.87 ) for **Standard** delivery service
                 """)
+        st.caption("**1 unit is approximatelly ~ 30 km** (but not always - there are some variables/coeficients making calculation corrections, depending on case City A to City B)")
+
 
         col_r3,col_r4 = st.columns(2)
         col_r3.dataframe(standard_def_eur_df, hide_index=True, use_container_width=True)
@@ -1380,31 +1385,31 @@ with st.expander("Train / Rails", icon=":material/train:"):
 
     with tab_t1:
         ''
-        st.image("Pictures/Function_7/F7_train_cz.svg", width = 400)
+        st.image("Pictures/Function_7/F7_train_cityname_cz.svg", width = 580)
         ''
         st.dataframe(data_table_train_cz)
 
     with tab_t2:
         ''
-        st.image("Pictures/Function_7/F7_train_sk.svg", width = 380)
+        st.image("Pictures/Function_7/F7_train_cityname_sk.svg", width = 460)
         ''
         st.dataframe(data_table_train_sk)
 
     with tab_t3:
         ''
-        st.image("Pictures/Function_7/F7_train_at.svg", width = 400)
+        st.image("Pictures/Function_7/F7_train_cityname_at.svg", width = 430)
         ''
         st.dataframe(data_table_train_at)
 
     with tab_t4:
         ''
-        st.image("Pictures/Function_7/F7_train_de.svg", width = 350)
+        st.image("Pictures/Function_7/F7_train_cityname_de.svg", width = 360)
         ''
         st.dataframe(data_table_train_de)
 
     with tab_t5:
         ''
-        st.image("Pictures/Function_7/F7_train_pl.svg", width = 350)
+        st.image("Pictures/Function_7/F7_train_cityname_pl.svg", width = 410)
         ''
         st.dataframe(data_table_train_pl)
 
@@ -1459,31 +1464,31 @@ with st.expander("Airplane", icon=":material/travel:"):
 
     with tab_a1:
         ''
-        st.image("Pictures/Function_7/F7_air_cz.svg", width = 400)
+        st.image("Pictures/Function_7/F7_air_cityname_cz.svg", width = 580)
         ''
         st.dataframe(data_table_air_cz)
 
     with tab_a2:
         ''
-        st.image("Pictures/Function_7/F7_air_sk.svg", width = 380)
+        st.image("Pictures/Function_7/F7_air_cityname_sk.svg", width = 460)
         ''
         st.dataframe(data_table_air_sk)
 
     with tab_a3:
         ''
-        st.image("Pictures/Function_7/F7_air_at.svg", width = 400)
+        st.image("Pictures/Function_7/F7_air_cityname_at.svg", width = 430)
         ''
         st.dataframe(data_table_air_at)
 
     with tab_a4:
         ''
-        st.image("Pictures/Function_7/F7_air_de.svg", width = 350)
+        st.image("Pictures/Function_7/F7_air_cityname_de.svg", width = 360)
         ''
         st.dataframe(data_table_air_de)
 
     with tab_a5:
         ''
-        st.image("Pictures/Function_7/F7_air_pl.svg", width = 350)
+        st.image("Pictures/Function_7/F7_air_cityname_pl.svg", width = 410)
         ''
         st.dataframe(data_table_air_pl)
 
@@ -1547,6 +1552,14 @@ if urgency  == 'Express':
 if urgency  == 'Slow':
     price_square = change_slow(price_square, selected_transport)
 
+
+
+# 19-Aug-2025: This steps calculates price per kilometr (Airplane has a different method of calculation than Truck and Train)
+if selected_transport == 'Airplane':
+    price_square = price_square / 30
+    st.write(f"if air: {price_square}")
+
+st.write(f"else - Train truck: {price_square}")
 
 
 def extra_time_decision(urgency, selected_transport, extra_time_truck_h, extra_time_train_h, extra_time_air_h):
@@ -1614,8 +1627,12 @@ if urgency == 'Slow':
 ''
 st.write(f" - **{selected_transport}** - **{urgency}** -> the cargo can be on its way in **{extra_time_vizualization}**.")
 
-st.write(f" - Unit price for distance calculation: **{price_square:,.2f} {selected_currency}**")
+if selected_transport == 'Airplane':
+    st.write(f" - Unit price for distance calculation: **{(price_square * 30):,.2f}** {selected_currency}")
+    st.write(price_square)
 
+else:
+    st.write(f" - Unit price for distance calculation: **{price_square:,.2f} {selected_currency}**")
 
 
 # Expanders
@@ -1627,7 +1644,7 @@ with st.expander("Unit price", icon= ":material/info:"):
     st.write("- The function/calculation works based on **coordinate system**")
     st.write("- Unit means specific field in this coordinate system")
     st.write("- **Based on the units, distance and price is calculated**")
-    st.write("- **1 unit is approximatelly ~ 30 km** (but not always - there are some variables/coeficients making calculation corrections, dependings on case City A to City B )")
+    st.write("- **1 unit is approximatelly ~ 30 km** (but not always - there are some variables/coeficients making calculation corrections, depending on case City A to City B)")
     st.write("- If the distance is **less than** ~ 30 km (You travel within 1 unit), the final price is calculated as 1 unit. This also helps to keep profit for the business.  Example: Teplice <-> Most")
 
 ''
@@ -2243,9 +2260,34 @@ if st.button("Submit", use_container_width=True):
             return price, distance
 
 
-    price, distance = calculation_L1(from_big_r, to_big_r, from_big_c, to_big_c,from_small_r, to_small_r,from_small_c, to_small_c)
+    def calculation_air_L1(from_small_r, to_small_r,from_small_c, to_small_c):
+        # st.write(f"L1 air inside")
+        small_r = abs(from_small_r - to_small_r)
+        small_c = abs(from_small_c - to_small_c)
 
- 
+        pythagoras = math.sqrt(small_r ** 2 + small_c ** 2)
+        distance = pythagoras * 26.996  # 26.996 is average measuring of distance
+        price = distance * price_square # note: the price_square is price per kilometr for airplane (was adjusted upper in the code)
+
+        # st.write(f"L1 distance = pythagoras {pythagoras}")
+        # st.write(f"L1 distance = distance s coeficientem  26.996:::: {distance}")
+        # st.write(f"Price square {price_square}")
+        # st.write(f"Calculated price----  distnace {distance} *  price square {price_square} ==== {price:,.2f}")
+
+        return price, distance
+
+
+    # 19-Aug: here the split which function(s) for calculation to use based on Truck/Train and Airplane 
+
+    if selected_transport == 'Truck' or selected_transport == 'Train':
+
+        price, distance = calculation_L1(from_big_r, to_big_r, from_big_c, to_big_c,from_small_r, to_small_r,from_small_c, to_small_c)
+
+    if selected_transport == 'Airplane':
+
+        # only small coordinates R1C1 
+        price, distance = calculation_air_L1(from_small_r, to_small_r,from_small_c, to_small_c)
+
 
     def calcul_delivery_time(distance,selected_transport):
 

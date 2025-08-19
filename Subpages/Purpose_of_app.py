@@ -265,6 +265,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v22.3** - Better calculation method for Airplane - 19-Aug-2025	
 		- **v22.0** - V2 of R1C1 map & adjustment of distance calculation & AT, DE, PL onboarded - 18-Aug-2025		  
 		- **v21.2** - Better data visualization in expanders + Dashboard expander added - 15-Aug-2025
 		- **v20.0** - F7 released - 09-Aug-2025
