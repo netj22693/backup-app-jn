@@ -1558,9 +1558,9 @@ if urgency  == 'Slow':
 # 19-Aug-2025: This steps calculates price per kilometr (Airplane has a different method of calculation than Truck and Train)
 if selected_transport == 'Airplane':
     price_square = price_square / 30
-    st.write(f"if air: {price_square}")
 
-st.write(f"else - Train truck: {price_square}")
+
+
 
 
 def extra_time_decision(urgency, selected_transport, extra_time_truck_h, extra_time_train_h, extra_time_air_h):
