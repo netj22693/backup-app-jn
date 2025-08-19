@@ -9,6 +9,7 @@ import plotly.graph_objects as go
 
 
 
+
 tranport_types_list = ['Truck','Train','Airplane']
 
 # Price per 1t/per approx 30km (one square on map)
