@@ -136,7 +136,37 @@ st.write("""
 st.image("Pictures/Function_7/F7_desc_bpmn_calculation.svg")
 ''
 
+''
+''
+st.write("##### Time calculation:") 
 
+st.write("""
+         - It is a combination of inputs/variables dependent on user case/business scenario
+         - Based on the inputs/variables the overall time for delivery is calculated
+         - DTD - Door-To-Door delivery
+         """)
+
+''
+st.image("Pictures/Function_7/F7_desc_bpmn_time_process.svg")
+
+
+''
+''
+tab_time1, tab_time2 = st.tabs([
+      "Driver's breaks - expanded",
+      "Table - Time for administration & load, etc."
+])
+
+with tab_time1:
+    st.image("Pictures/Function_7/F7_desc_bpmn_time_driver_breaks.svg")
+
+with tab_time2:
+    st.image("Pictures/Function_7/F7_desc_bpmn_time_table.svg")
+
+
+
+''
+''
 ''
 st.write("##### Price calculation:") 
 
