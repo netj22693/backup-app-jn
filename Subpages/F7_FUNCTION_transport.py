@@ -1922,10 +1922,10 @@ with st.expander("Door-to-Door", icon= ":material/info:"):
     st.write(""" 
     - **Train and Airplane:**
         - Measured from Train Station or Airport
-        - **Higher price** due to need of **truck** and **Shipmant transfer**
-        - **No** - pick up/delivery just from/to Train Station/Airport by Train/Airplane
-        - **10 km** radius - **1 000 koruna** ; **40 euro**
-        - **20 km** radius - **1 500 koruna** ; **60 euro**
+        - **Higher price** due to need of **Truck** and **Shipment transfer**
+            - **No** - pick up/delivery just from/to Train Station/Airport by Train/Airplane
+            - **10 km** radius - **1 000 koruna** ; **40 euro** (Truck needed)
+            - **20 km** radius - **1 500 koruna** ; **60 euro** (Truck needed)
     """)
 
 
@@ -1960,7 +1960,7 @@ with st.expander("Door-to-Door", icon= ":material/info:"):
     - Result:
         -  Customer will deliver the Shipment to point **A** (Airport) **on his own**
         - **A** to **B** distance (Airport to Airport) will be provided by our company (Airplane)
-        - Customer pays for delivery to **B - 20km** -> our company will make a shipament transfer from **Airplane to Truck** for the last **20 km**     
+        - Customer pays for delivery to **B - 20km** -> our company will make a shipment transfer from **Airplane to Truck** for the last **20 km**     
     """)
 
 
