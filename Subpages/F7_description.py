@@ -152,9 +152,10 @@ st.image("Pictures/Function_7/F7_desc_bpmn_time_process.svg")
 
 ''
 ''
-tab_time1, tab_time2 = st.tabs([
+tab_time1, tab_time2, tab_time3 = st.tabs([
       "Driver's breaks - expanded",
-      "Table - Time for administration & load, etc."
+      "Table - Time for administration & load, etc.",
+      "Table - DTD variables"
 ])
 
 with tab_time1:
@@ -163,6 +164,8 @@ with tab_time1:
 with tab_time2:
     st.image("Pictures/Function_7/F7_desc_bpmn_time_table.svg")
 
+with tab_time3:
+    st.image("Pictures/Function_7/F7_desc_bpmn_time_addTime_table.svg")
 
 
 ''
