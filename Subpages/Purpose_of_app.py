@@ -265,6 +265,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v30.1** - DTD also extends time for delivery; Airplane & Train if DTD, includes time for shipment transfer to Truck - 21-Aug-2025	
 		- **v22.3** - Better calculation method for Airplane - 19-Aug-2025	
 		- **v22.0** - V2 of R1C1 map & adjustment of distance calculation & AT, DE, PL onboarded - 18-Aug-2025		  
 		- **v21.2** - Better data visualization in expanders + Dashboard expander added - 15-Aug-2025

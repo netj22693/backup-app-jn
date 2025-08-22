@@ -763,13 +763,13 @@ st.write("# Transport calculation")
 ''
 ''
 
-# st.image("Pictures/Function_7/F7_map_V2_v3.svg")
 st.image("Pictures/Function_7/F7_map_V2_v4.svg")
 ''
 ''
 with st.expander("Delivery area - Central Europe", icon = ":material/pin_drop:"):
 
     st.image("Pictures/Function_7/F7_map_central_europe.svg")
+
 
 
 with st.expander("City overview", icon = ":material/pin_drop:"):
@@ -1116,22 +1116,27 @@ radio_from_country = radio_from_country.lower()
 if radio_from_country == "cz":
     
     from_city = col1.selectbox("City from:", list_cz_az)
+    country_code_from = "CZ"
 
 if radio_from_country == "sk":
 
     from_city = col1.selectbox("City from:", list_sk_az)
+    country_code_from = "SK"
 
 if radio_from_country == "at":
     
     from_city = col1.selectbox("City from:", list_at_az)
+    country_code_from = "AT"
 
 if radio_from_country == "de":
 
     from_city = col1.selectbox("City from:", list_de_az)
+    country_code_from = "DE"
 
 if radio_from_country == "pl":
 
     from_city = col1.selectbox("City from:", list_pl_az)
+    country_code_from = "PL"
 
 
 
@@ -1145,22 +1150,27 @@ radio_to_country = radio_to_country.lower()
 if radio_to_country == "cz":
     
     to_city = col2.selectbox("City to:", list_cz_az)
+    country_code_to = "CZ"
 
 if radio_to_country == "sk":
 
     to_city = col2.selectbox("City to:", list_sk_az)
+    country_code_to = "SK"
 
 if radio_to_country == "at":
     
     to_city = col2.selectbox("City to:", list_at_az)
+    country_code_to = "AT"
 
 if radio_to_country == "de":
 
     to_city = col2.selectbox("City to:", list_de_az)
+    country_code_to = "DE"
 
 if radio_to_country == "pl":
 
     to_city = col2.selectbox("City to:", list_pl_az)
+    country_code_to = "PL"
 
 
 # function for offering relevant currency to choose from in case that international transport CZ <-> SK
@@ -1329,7 +1339,7 @@ with st.expander("Truck / Road", icon=":material/local_shipping:"):
     
     ''
     st.caption("""
-               * Example of journey between 9 - 10 hours -> the exception: Karlovy Vary (CZ) - Poprad (SK)
+               * Example of journey between 9 - 10 hours -> the exception: Most (CZ) - Poprad (SK)
                * Example of journey longer than 9 or 10 hours with 10 hours sleep break: Teplice (CZ) - Kosice (SK) or Karlovy Vary (CZ) - Kosice (SK)
                 """)
 
@@ -1784,7 +1794,7 @@ with st.expander("Danger goods", icon= ":material/warning:"):
 ''
 ''
 st.write("**Delivery specification - Door-to-Door:**")
-st.write(f"From city ({from_city}):")
+st.write(f"From city ({from_city} - {country_code_from}):")
 
 # input validati / warning
 def more_true(list_bool):
@@ -1847,7 +1857,7 @@ if selected_transport == 'Airplane' or selected_transport == 'Train':
 
 ''
 
-st.write(f"To city: ({to_city}):")
+st.write(f"To city ({to_city} - {country_code_to}):")
 
 col_ch3_1, col_ch3_2, col_ch3_3 = st.columns(3)
 
@@ -2381,8 +2391,68 @@ if st.button("Submit", use_container_width=True):
             return final_time_breaks
 
 
+    def door_to_door_time_truck(list_bool):
+
+        if list_bool[0] == True:
+            result = 0
+            return result
+
+        if list_bool[1] == True:
+            result = 0.42       # 10 km ; 25 min -> approx. 0.42 h
+            return result
+        
+        if list_bool[2] == True:
+            result = 0.75       # 20 km ; 45 min -> 0.75 h
+            return result
+
+
+    def door_to_door_time_train_air(list_bool):
+
+        transfer_time = 1       # 1 hour ; Transfer between Train/Air <-> Truck 
+
+        if list_bool[0] == True:
+            transfer_time = 0       # no DTD no transfer -> 0
+            truck_time = 0          # no DTD no transfer -> 0
+            result = 0
+            return result, transfer_time, truck_time
+
+        if list_bool[1] == True:
+            truck_time = 0.42       # 10 km ; 25 min -> approx. 0.42 h
+            result = transfer_time + truck_time
+            return result, transfer_time, truck_time
+        
+        if list_bool[2] == True:
+            truck_time = 0.75       # 20 km ; 45 min -> 0.75 h
+            result = transfer_time + truck_time
+            return result, transfer_time, truck_time
+            
+
     if selected_transport == 'Truck':
-        time_break = calcul_time_break(time_journey)
+
+
+        time_dtd_from = door_to_door_time_truck(checkbox_list_from)
+        time_dtd_to = door_to_door_time_truck(checkbox_list_to)
+        
+        
+        time_dtd = time_dtd_from + time_dtd_to
+
+        time_journy_incl_dtd = time_journey + time_dtd_from + time_dtd_to
+
+        time_break = calcul_time_break(time_journy_incl_dtd)
+
+
+    
+
+    if selected_transport == 'Train' or selected_transport == 'Airplane':
+
+        time_dtd_from, transfer_time_from, truck_time_dtd_air_train_from = door_to_door_time_train_air(checkbox_list_from)
+        time_dtd_to, transfer_time_to, truck_time_dtd_air_train_to  = door_to_door_time_train_air(checkbox_list_to)
+
+
+        time_dtd = time_dtd_from + time_dtd_to
+    
+        time_journy_incl_dtd = time_journey + time_dtd_from + time_dtd_to
+
 
 
     # Door-to-Door inputs -> transformation to costs
@@ -2485,33 +2555,109 @@ if st.button("Submit", use_container_width=True):
     ''
     st.write("##### Calculated values:")
     '' 
-    st.write(f"- The distance costs: **{price:,.2f} {selected_currency}**.")
-    st.write(f"- The distance: **{distance:,.2f} km**.")
-    st.write(f"- Time to cover the distance: **{time_journey:.2f} hour(s)**.")
 
     if selected_transport == 'Truck':
-        st.write(f"- **{selected_transport}** needs this extra time (adminitsration, load etc.):  **{extra_time:.2f} hours(s)** for selected **{urgency}** service - **the SLA** ." )
-        st.write(f"- If the distance is longer, there is a need of breaks for driver: **{time_break} hours**.")
-        st.write(f"- The **overall time needed** to get to the 'To' city ({to_city}) is **{(time_journey + time_break + extra_time):.2f} hour(s)**." )
+        st.write(f"""
+            - Delivery from **{from_city} ({country_code_from})** to **{to_city} ({country_code_to}):**
+                - Costs: **{price:,.2f} {selected_currency}**
+                - Distance: **{distance:,.2f} km**
+                - Time to cover the distance: **{time_journey:.2f} hour(s)**
+                - Transport type: **{selected_transport}**
+        """)
+
+        ''
+        st.write(f"""
+            - **Door-to-Door**:
+                - Additional: **{from_city_extra_doortdoor + to_city_extra_doortdoor} km** to the distance
+                    - {from_city}: {from_city_extra_doortdoor} km
+                    - {to_city}: {to_city_extra_doortdoor} km
+                - Time to cover the Door-to-Door: **{time_dtd:.2f} hours(s)**
+        """)
+
+        ''
+        st.write(f"""
+            - **{selected_transport}**:
+                - Selected service **{urgency}** requires **{extra_time:.2f} hours** for administration, load, etc. - **the SLA**  
+                - If longer distance (including Door-to-Door time), **mandatory breaks** for driver: **{time_break} hour(s)**
+        """)
+
+        ''
+        st.write("- **Overall time end-to-end delivery:**")
+
+        # (round(time_journey, 2) here rounding allowed, because upper |f"- Time to cover the distance {from_city} - {to_city} is: **{time_journey:.2f} hour(s)**."| there is already rounding rounding as part of visualiztion of :.2f
+        overall_time_truck = (round(time_journey, 2) + time_break + extra_time + time_dtd)
+
+        if overall_time_truck >= 2:
+            hour_s_text_truck = 'hours'
+
+        else:
+            hour_s_text_truck = 'hour'
+
+        with st.container(border=True):
+            st.write(f"**{overall_time_truck:.2f} {hour_s_text_truck}**")
+
+
 
     elif selected_transport == 'Train' or 'Airplane':
-        st.write(f"- **{selected_transport}** needs this extra time (adminitsration, load etc.):  **{extra_time:.2f} hours(s)** for selected **{urgency}** service - **the SLA** ." )
-        st.write(f"- The **overall time needed** to get to the 'To' city ({to_city}) is **{(time_journey + extra_time):.2f} hour(s)**." )
+        st.write(f"""
+            - Delivery from **{from_city} ({country_code_from})** to **{to_city} ({country_code_to}):**
+                - Costs: **{price:,.2f} {selected_currency}**
+                - Distance: **{distance:,.2f} km**
+                - Time to cover the distance: **{time_journey:.2f} hour(s)**
+                - Transport type: **{selected_transport}**
+        """)
+
+        ''
+        st.write(f"""
+            - **Door-to-Door**:
+                - Additional: **{from_city_extra_doortdoor + to_city_extra_doortdoor} km** to the distance for which **Truck is needed**
+                    - {from_city}: {from_city_extra_doortdoor} km
+                    - {to_city}: {to_city_extra_doortdoor} km
+                - Time to cover the Door-to-Door: **{time_dtd:.2f} hours(s)**
+                    - Transfer {selected_transport} <-> Truck: {transfer_time_from + transfer_time_to} hour(s)
+                    - Time for Truck ride: {truck_time_dtd_air_train_from + truck_time_dtd_air_train_to} hour(s)
+        """)
+
+        ''
+        st.write(f"""
+            - **{selected_transport}**:
+                - Selected service **{urgency}** requires **{extra_time:.2f} hours** for administration, load, etc. - **the SLA**  
+        """)
+
+        ''
+        st.write("- **Overall time end-to-end delivery:**")
+
+        # (round(time_journey, 2) here rounding allowed, because upper |f"- Time to cover the distance {from_city} - {to_city} is: **{time_journey:.2f} hour(s)**."| there is already rounding rounding as part of visualiztion of :.2f
+        overall_time_train_air = (round(time_journey,2) + extra_time + time_dtd)
+
+        if overall_time_train_air >= 2:
+            hour_s_text_train_air = 'hours'
+
+        else:
+            hour_s_text_train_air = 'hour'
+
+        with st.container(border=True):
+            st.write(f"**{overall_time_train_air:.2f} {hour_s_text_train_air}**")
     
+
+
     ''
-    
-    st.write("###### Additional services:")
-    st.write(f"- Insurance extra costs: **{money_insurance:,.2f} {selected_currency}**.")
-    st.write(f"- Fregile goods costs: **{money_fragile:,.2f} {selected_currency}**.")
-    st.write(f"- Danger goods costs: **{money_danger:,.2f} {selected_currency}**.")
-    st.write(f"- Door-To-Door - 'From' city ({from_city}):  **{door_from_result:,.2f} {selected_currency}** - ({from_city_extra_doortdoor} km).")
-    st.write(f"- Door-To-Door - 'To' city ({to_city}):  **{door_to_result:,.2f} {selected_currency}** - ({to_city_extra_doortdoor} km).")
-    
     ''
-    st.write("###### Final price:")
+    st.write(f"""
+    - **Additional services - costs**:
+        - Insurance extra costs: **{money_insurance:,.2f} {selected_currency}**
+        - Fregile goods costs: **{money_fragile:,.2f} {selected_currency}**
+        - Danger goods costs: **{money_danger:,.2f} {selected_currency}**
+        - Door-To-Door - {from_city} ({country_code_from}):  **{door_from_result:,.2f} {selected_currency}** - ({from_city_extra_doortdoor} km)
+        - Door-To-Door - {to_city} ({country_code_to}):  **{door_to_result:,.2f} {selected_currency}** - ({to_city_extra_doortdoor} km)
+    """)
+
+
+    ''
+    ''
+    st.write("- **Final price:**")
     with st.container(border=True):
         st.write(f"**{(price + money_insurance + money_fragile + money_danger + door_to_result + door_from_result):,.2f} {selected_currency}**")
-        # st.write(f"**Final price: {(price + money_insurance + money_fragile + money_danger + door_to_result + door_from_result):,.2f} {selected_currency}**.")
 
 
 
