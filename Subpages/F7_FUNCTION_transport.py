@@ -769,6 +769,7 @@ st.image("Pictures/Function_7/F7_map_V2_v4.svg")
 with st.expander("Delivery area - Central Europe", icon = ":material/pin_drop:"):
 
     st.image("Pictures/Function_7/F7_map_central_europe.svg")
+    pass
 
 
 
@@ -1794,111 +1795,136 @@ with st.expander("Danger goods", icon= ":material/warning:"):
 ''
 ''
 st.write("**Delivery specification - Door-to-Door:**")
-st.write(f"From city ({from_city} - {country_code_from}):")
 
-# input validati / warning
-def more_true(list_bool):
+
+def radio_button_return_truck(input):
+
+    if input == 'Within city':
+        return [True, False, False]
+
+    if input == '10 km':
+        return [False, True, False]
+    
+    if input == '20 km':
+        return [False, False, True]
+    
+
+def radio_button_return_train_air(input):
+
+    if input == 'No':
+        return [True, False, False]
+
+    if input == '10 km':
+        return [False, True, False]
+    
+    if input == '20 km':
+        return [False, False, True]
+
+
+
+
+if selected_transport == 'Truck':
+
+    st.write(f"From city ({from_city} - {country_code_from}):")
+
+    radio_dtd_delivery_from_truck = st.radio("radio_from_truck", [
+        "Within city",
+        "10 km",
+        "20 km"
+    ],
+    index=0,
+    horizontal=True,
+    label_visibility= "collapsed"
+    )
+    
+
+    ''
+    st.write(f"To city ({to_city} - {country_code_to}):")
+  
+    radio_dtd_delivery_to_truck = st.radio("radio_to_truck", [
+        "Within city",
+        "10 km",
+        "20 km"
+    ],
+    index=0,
+    horizontal=True,
+    label_visibility="collapsed"
+    )
+    
+    checkbox_list_from = radio_button_return_truck(radio_dtd_delivery_from_truck)
+    checkbox_list_to = radio_button_return_truck(radio_dtd_delivery_to_truck)
+    
+
+
+if selected_transport == 'Train':
+
+
+    st.write(f"From city ({from_city} - {country_code_from}):")
+
+    radio_dtd_delivery_from_train = st.radio("radio_from_train", [
+        "No",
+        "10 km",
+        "20 km"
+    ],
+    index=0,
+    horizontal=True,
+    key='radio_from_train',
+    label_visibility="collapsed"
+    )
+    
+
    
-    list_bool_result=[]
 
-    for item in list_bool:
-        if item == True:
-            item = 1
-            list_bool_result.append(item)
-        
+    ''
+    st.write(f"To city ({to_city} - {country_code_to}):")
 
-        if item == False:
-            item = 0
-            list_bool_result.append(item)
+    radio_dtd_delivery_to_train = st.radio("radio_to_train", [
+        "No",
+        "10 km",
+        "20 km"
+    ],
+    index=0,
+    horizontal=True,
+    key='radio_to_train',
+    label_visibility="collapsed"
+    )
     
-    sumary = sum(list_bool_result)
-    return sumary
+    checkbox_list_from = radio_button_return_train_air(radio_dtd_delivery_from_train)
+    checkbox_list_to = radio_button_return_train_air(radio_dtd_delivery_to_train)
+    
+# Note(!) even if 'Airplane has the same radio button, I use separate 'if' for Train and Air + each has its own radio button with specific 'key' - reason: To have exactly the same behavior of "reseting to index 0 in option, in case that transport type is changed". Radio button is reset to 0 index if: 1) change of transport type
+if selected_transport == 'Airplane':
 
+    st.write(f"From city ({from_city} - {country_code_from}):")
 
-col_ch2_1, col_ch2_2, col_ch2_3 = st.columns(3)
-
-if selected_transport == 'Truck':
-    check_delivery_not_f = col_ch2_1.checkbox("Within city", key='city_1', value = True)
-
-    check_delivery_10_f = col_ch2_2.checkbox("10 km", key='10km_1')
-
-    check_delivery_20_f = col_ch2_3.checkbox("20 km", key='20km_1')
-
-
-    checkbox_list_from = [check_delivery_not_f, check_delivery_10_f, check_delivery_20_f]
-
-    sumary_from = more_true(checkbox_list_from)
-
-    if sumary_from == 0:
-        st.warning("Select one option")
-
-    if sumary_from > 1:
-        st.warning("Only one option can be selected")
+    radio_dtd_delivery_from_air = st.radio("radio_from_air", [
+        "No",
+        "10 km",
+        "20 km"
+    ],
+    index=0,
+    horizontal=True,
+    key='radio_from_airplane',
+    label_visibility="collapsed"
+    )
     
 
+    ''
+    st.write(f"To city ({to_city} - {country_code_to}):")
 
-if selected_transport == 'Airplane' or selected_transport == 'Train':
-    check_delivery_not_at_f = col_ch2_1.checkbox("No", key='city_2', value = True)
-
-    check_delivery_10_at_f  = col_ch2_2.checkbox("10 km", key='10km_2')
-
-    check_delivery_20_at_f  = col_ch2_3.checkbox("20 km", key='20km_2')
-
-
-    checkbox_list_from = [check_delivery_not_at_f, check_delivery_10_at_f, check_delivery_20_at_f]
-
-    sumary_from = more_true(checkbox_list_from)
-
-    if sumary_from == 0:
-        st.warning("Select one option")
-
-    if sumary_from > 1:
-        st.warning("Only one option can be selected")
-
-''
-
-st.write(f"To city ({to_city} - {country_code_to}):")
-
-col_ch3_1, col_ch3_2, col_ch3_3 = st.columns(3)
-
-if selected_transport == 'Truck':
-    check_delivery_not_t = col_ch3_1.checkbox("Within city",key='city_3', value = True)
-
-    check_delivery_10_t = col_ch3_2.checkbox("10 km", key='10km_3')
-
-    check_delivery_20_t = col_ch3_3.checkbox("20 km", key='20km_3')
-
-    checkbox_list_to = [check_delivery_not_t, check_delivery_10_t, check_delivery_20_t]
-
-    sumary_to = more_true(checkbox_list_to)
-
-    if sumary_to == 0:
-        st.warning("Select one option")
-
-    if sumary_to > 1:
-        st.warning("Only one option can be selected")
-
-
-
-if selected_transport == 'Airplane' or selected_transport == 'Train':
-
-    check_delivery_not_at_t = col_ch3_1.checkbox("No",key='city_4', value = True)
-
-    check_delivery_10_at_t = col_ch3_2.checkbox("10 km", key='10km_4')
-
-    check_delivery_20_at_t  = col_ch3_3.checkbox("20 km", key='20km_4')
-
-    checkbox_list_to = [check_delivery_not_at_t , check_delivery_10_at_t , check_delivery_20_at_t]
-
-
-    sumary_to = more_true(checkbox_list_to)
-
-    if sumary_to == 0:
-        st.warning("Select one option")
-
-    if sumary_to > 1:
-        st.warning("Only one option can be selected")
-
+    radio_dtd_delivery_to_air = st.radio("radio_to_airplane", [
+        "No",
+        "10 km",
+        "20 km"
+    ],
+    index=0,
+    horizontal=True,
+    key='radio_to_airplane',
+    label_visibility="collapsed"
+    )
+    
+    checkbox_list_from = radio_button_return_train_air(radio_dtd_delivery_from_air)
+    checkbox_list_to = radio_button_return_train_air(radio_dtd_delivery_to_air)
 
 ''
 with st.expander("Door-to-Door", icon= ":material/info:"):
@@ -2023,14 +2049,7 @@ if st.button("Submit", use_container_width=True):
     input_validation(from_city,to_city)
 
 
-    if sumary_from > 1 or sumary_to > 1:
-        st.warning("More than 1 option has been selected in Door-to-Door section. Please select just one.")
-        st.stop()
-
-    if sumary_from == 0 or sumary_to == 0:
-        st.warning("Missing select in Door-to-Door section. Please select one.")
-        st.stop()
-    
+ 
     if (check_isurance or check_fragile or check_danger is True) and shipment_value == None:
         st.warning("You didn't provide Shipment value. Please go up and provide.")
         st.stop()  
