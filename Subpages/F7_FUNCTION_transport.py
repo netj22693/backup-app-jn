@@ -2652,4 +2652,5 @@ if st.button("Submit", use_container_width=True):
     with st.container(border=True):
         st.write(f"**{(price + money_insurance + money_fragile + money_danger + door_to_result + door_from_result):,.2f} {selected_currency}**")
 
+# 
     
