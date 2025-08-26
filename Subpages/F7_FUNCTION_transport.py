@@ -9,8 +9,8 @@ import plotly.graph_objects as go
 
 
 
-
 tranport_types_list = ['Truck','Train','Airplane']
+
 
 # Price per 1t/per approx 30km (one square on map)
 
@@ -184,7 +184,7 @@ def api_get_rate():
     )
 
         usd_to_czk_rate = 21.94
-        usd_to_eur_rate = 0.87
+        usd_to_eur_rate = 0.86
         
         return usd_to_czk_rate, usd_to_eur_rate 
 
@@ -2129,13 +2129,6 @@ if st.button("Submit", use_container_width=True):
     to_small_c = int(to_small_c)
 
 
-    # st.write(f"after function from_big R: {from_big_r}, C: {from_big_c}")
-    # st.write(f"after function from_small R: {from_small_r}, C: {from_small_c}")
-
-    # st.write(f"after function to_big R: {to_big_r}, C: {to_big_c}")
-    # st.write(f"after function to_small R: {to_small_r}, C: {to_small_c}")
-
-
 
     def calculation_L3B(small_result_r,small_result_c):
         # st.write("LEVEL 3B inside detail calculation - ELSE")
@@ -2145,106 +2138,93 @@ if st.button("Submit", use_container_width=True):
 
         #long diagonal distance compensation
         comp = small_result_r + small_result_c
-
+        
+        km1 = 30
 
         if comp < 8:
             calcul = (small_result_r + small_result_c - 1)
-            price = calcul * price_square
-            # st.write(f"LEVEL 3 if 1 - před navratem price: {price}")
-
+            
             distance = calcul * 31.57
+
+            price = (distance/km1) * price_square
+            # st.write(f"LEVEL 3 if 1 - new price: {price}")
+
             return price, distance
         
         elif 8 <= comp < 10:
+            
             calcul = (small_result_r + small_result_c - 2)
-            price = calcul * price_square
-            # st.write(f"LEVEL 3 if 2 - před navratem price: {price}")
 
             distance = calcul * 33.08 #musim upravit nemam testovaci vzorky
+
+            price = (distance/km1) * price_square
+            # st.write(f"LEVEL 3 if 2 - new price: {price}")
+
             return price, distance
 
 
         elif 10 <= comp < 13:
             calcul = (small_result_r + small_result_c - 2.5)
-            price = calcul * price_square
-            # st.write(f"LEVEL 3 if 3 -před navratem price: {price}")
 
             distance = calcul * 33.08   #musim upravit nemam testovaci vzorky
+
+            price = (distance/km1) * price_square
+            # st.write(f"LEVEL 3 if 3 - new price: {price}")
+
             return price, distance
         
         elif 13 <= comp < 16:
-            calcul = (small_result_r + small_result_c - 4)
-            price = calcul * price_square
-            # st.write(f"LEVEL 3 if 4 -před navratem price: {price}")
 
-            # distance = calcul * 35.68
-
-            # ----------------- 
             pythagoras = math.sqrt(small_result_r ** 2 + small_result_c ** 2)
-            #st.write(f"small result r: {small_result_r}")
-            #st.write(f"small result c: {small_result_c}")
-            #st.write(f"Pythagoras: {pythagoras}")
+
             distance = 35.68 * pythagoras
-            #st.write(f"Distance after Pythagoras: {distance}")
-            # ----------------- 
+
+            price = (distance/km1) * price_square
+            # st.write(f"LEVEL 3 if 4 - new price: {price}")
 
             return price, distance
         
         # 5 a 6 zkusím pythagorovu větu 
         elif 16 <= comp < 18:
-            calcul = (small_result_r + small_result_c - 5)
 
-            price = calcul * price_square
-            # st.write(f"LEVEL 3 if 5 -před navratem price: {price}")
-
-            # distance = calcul * 34.24
-
-            # ----------------- 
             pythagoras = math.sqrt(small_result_r ** 2 + small_result_c ** 2)
-            #st.write(f"small result r: {small_result_r}")
-            #st.write(f"small result c: {small_result_c}")
-            #st.write(f"Pythagoras: {pythagoras}")
+
             distance = 34.24 * pythagoras
-            #st.write(f"Distance after Pythagoras: {distance}")
-            # ----------------- 
+
+            price = (distance/km1) * price_square
+            # st.write(f"LEVEL 3 if 5 - new price: {price}")
 
             return price, distance
         
+
         elif 18 <= comp:
-            calcul = (small_result_r + small_result_c - 8)
-            price = calcul * price_square
-            # st.write(f"LEVEL 3 if 6 -před navratem price: {price}")
 
-            # distance = calcul * 36.75
-
-            # ----------------- 
             pythagoras = math.sqrt(small_result_r ** 2 + small_result_c ** 2)
-            #st.write(f"small result r: {small_result_r}")
-            #st.write(f"small result c: {small_result_c}")
-            #st.write(f"Pythagoras: {pythagoras}")
             distance = 36.75 * pythagoras
-            #st.write(f"Distance after Pythagoras: {distance}")
-            # ----------------- 
-
-
+            price = (distance/km1) * price_square
+            # st.write(f"LEVEL 3 if 6- new price: {price}")
             return price, distance
 
 
 
     #Calculation in case that move is on horizontal r=0 or vertical level c=0
     def calculation_L3A_R0C0(small_result_r, small_result_c):
+
+        km1 = 30
+
         # st.write("LEVEL 3A_R0C0 inside detail calculation")
         # st.write(f"LEVEL 3A_R0C0 small_result_r: {small_result_r}")
         # st.write(f"LEVEL 3A_R0C0 small_result_c: {small_result_c}")
 
         if small_result_r == 0:
-            price = small_result_c * price_square
             distance = small_result_c * 31.86
+            price = (distance/km1) * price_square
             return price, distance
         
+
         if small_result_c == 0:
-            price = small_result_r * price_square
             distance = small_result_r * 31.86
+            price = (distance/km1) * price_square
             return price, distance
 
 
@@ -2298,11 +2278,6 @@ if st.button("Submit", use_container_width=True):
         pythagoras = math.sqrt(small_r ** 2 + small_c ** 2)
         distance = pythagoras * 26.996  # 26.996 is average measuring of distance
         price = distance * price_square # note: the price_square is price per kilometr for airplane (was adjusted upper in the code)
-
-        # st.write(f"L1 distance = pythagoras {pythagoras}")
-        # st.write(f"L1 distance = distance s coeficientem  26.996:::: {distance}")
-        # st.write(f"Price square {price_square}")
-        # st.write(f"Calculated price----  distnace {distance} *  price square {price_square} ==== {price:,.2f}")
 
         return price, distance
 
