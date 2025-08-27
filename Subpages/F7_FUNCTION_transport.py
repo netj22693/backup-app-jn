@@ -2141,15 +2141,15 @@ if st.button("Submit", use_container_width=True):
         km1 = 30
 
         if comp < 8:
-            calcul = (small_result_r + small_result_c - 1)
-            
-            distance = calcul * 31.57
+            # st.write(f"LEVEL 3 if 1")
 
+            pythagoras = math.sqrt(small_result_r ** 2 + small_result_c ** 2)
+            distance = 35.5 * pythagoras
             price = (distance/km1) * price_square
-            # st.write(f"LEVEL 3 if 1 - new price: {price}")
 
             return price, distance
-        
+
+
         elif 8 <= comp < 10:
             
             calcul = (small_result_r + small_result_c - 2)
@@ -2157,7 +2157,7 @@ if st.button("Submit", use_container_width=True):
             distance = calcul * 33.08 #musim upravit nemam testovaci vzorky
 
             price = (distance/km1) * price_square
-            # st.write(f"LEVEL 3 if 2 - new price: {price}")
+            # st.write(f"LEVEL 3 if 2")
 
             return price, distance
 
@@ -2165,12 +2165,15 @@ if st.button("Submit", use_container_width=True):
         elif 10 <= comp < 13:
             calcul = (small_result_r + small_result_c - 2.5)
 
-            distance = calcul * 33.08   #musim upravit nemam testovaci vzorky
+
+            pythagoras = math.sqrt(small_result_r ** 2 + small_result_c ** 2)
+            distance = 33.2 * pythagoras
 
             price = (distance/km1) * price_square
-            # st.write(f"LEVEL 3 if 3 - new price: {price}")
+            # st.write(f"LEVEL 3 if 3")
 
             return price, distance
+        
         
         elif 13 <= comp < 16:
 
@@ -2179,7 +2182,7 @@ if st.button("Submit", use_container_width=True):
             distance = 35.68 * pythagoras
 
             price = (distance/km1) * price_square
-            # st.write(f"LEVEL 3 if 4 - new price: {price}")
+            # st.write(f"LEVEL 3 if 4")
 
             return price, distance
         
@@ -2191,7 +2194,7 @@ if st.button("Submit", use_container_width=True):
             distance = 34.24 * pythagoras
 
             price = (distance/km1) * price_square
-            # st.write(f"LEVEL 3 if 5 - new price: {price}")
+            # st.write(f"LEVEL 3 if 5")
 
             return price, distance
         
@@ -2201,7 +2204,7 @@ if st.button("Submit", use_container_width=True):
             pythagoras = math.sqrt(small_result_r ** 2 + small_result_c ** 2)
             distance = 36.75 * pythagoras
             price = (distance/km1) * price_square
-            # st.write(f"LEVEL 3 if 6- new price: {price}")
+            # st.write(f"LEVEL 3 if 6")
             return price, distance
 
 
@@ -2236,6 +2239,7 @@ if st.button("Submit", use_container_width=True):
         if small_result_r <= 1 and small_result_c <= 1:
             price = price_square
             distance = 2 * 24.15     # bug fix 16-Aug-2024 (this 'distance' variable was missing here / UnboundLocalError: cannot access local variable 'distance' where it is not associated with a value)
+            # st.write("L2 - 1")
             return price, distance
         
         elif small_result_r == 0 or small_result_c == 0:
@@ -2259,8 +2263,9 @@ if st.button("Submit", use_container_width=True):
         # st.write(f" LEVEL 1: big_result_c: {big_result_c}")
 
         if (big_result_r == 0 and big_result_c == 0) and (small_result_r <= 1 and small_result_c <= 1):
+            st.write("L1")
             price = price_square
-            distance = 24.15
+            distance = 30
             return price, distance
 
         else:
@@ -2652,5 +2657,7 @@ if st.button("Submit", use_container_width=True):
     with st.container(border=True):
         st.write(f"**{(price + money_insurance + money_fragile + money_danger + door_to_result + door_from_result):,.2f} {selected_currency}**")
 
-# 
+
+
+
     
