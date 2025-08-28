@@ -62,13 +62,13 @@ tab1, tab2 = st.tabs([
 tab1.image("Pictures/Function_7/F7_payment_bpmn_process.svg")
 ''
 ''
-tab1.image("Pictures/Function_7/F7_payment_bpmn_legend.svg")
+tab1.image("Pictures/Function_7/F7_payment_bpmn_legend.svg", width=320)
 
 
 tab2.image("Pictures/Function_7/F7_dtd_bpmn_process.svg")
 ''
 ''
-tab2.image("Pictures/Function_7/F7_dtd_bpmn_legend.svg")
+tab2.image("Pictures/Function_7/F7_dtd_bpmn_legend.svg", width=520)
 
 
 
@@ -185,13 +185,136 @@ tab_time1, tab_time2, tab_time3 = st.tabs([
 ])
 
 with tab_time1:
-    st.image("Pictures/Function_7/F7_desc_bpmn_time_driver_breaks.svg")
+    st.image("Pictures/Function_7/F7_desc_bpmn_time_driver_breaks.svg", width=600)
 
 with tab_time2:
-    st.image("Pictures/Function_7/F7_desc_bpmn_time_table.svg")
+    st.image("Pictures/Function_7/F7_desc_bpmn_time_table.svg", width=550)
 
 with tab_time3:
-    st.image("Pictures/Function_7/F7_desc_bpmn_time_addTime_table.svg")
+    st.image("Pictures/Function_7/F7_desc_bpmn_time_addTime_table.svg", width=550)
+
+
+''
+with st.expander("Use Cases/Examples", icon= ":material/help:"):
+
+
+    st.write("""
+    - **Use Case 1**: 
+        - Delivery A to B - **Train** or **Airplane**
+        - Door-to-Door: **No**     
+    """)
+
+    tab_uc_1_1, tab_uc_1_2 = st.tabs([
+         "Diagram",
+         "Calculation"
+    ])
+    ''
+    tab_uc_1_1.image("Pictures/Function_7/F7_desc_bpmn_time_example_1.svg")
+
+
+    tab_uc_1_2.write("""
+    **Innsbruck (AT)** -> **Prague (CZ)** - **Train**
+       """)
+    
+    tab_uc_1_2.write("""
+    - Service - **Standard**: **48 hours** (Train)
+    - Time to cover Innsbruck to Prague (A to B): **6.63 hours**
+    - Door-to-Door: No
+    - **Total time: 54.63 hours**
+       """)
+
+
+
+    ''
+    ''
+    st.write("""
+    - **Use Case 2**: 
+        - Delivery A to B - **Truck**
+        - Door-to-Door: **Yes - B destination**     
+    """)
+
+    tab_uc_2_1, tab_uc_2_2 = st.tabs([
+         "Diagram",
+         "Calculation"
+    ])
+
+    ''
+    tab_uc_2_1.image("Pictures/Function_7/F7_desc_bpmn_time_example_2.svg")
+
+    tab_uc_2_2.write("""
+    **Innsbruck (AT)** -> **Prague (CZ)** - **Truck**
+       """)
+
+    tab_uc_2_2.write("""
+    - Service - **Standard**: **32 hours** (Truck)
+    - Time to cover Innsbruck to Prague (A to B): **7.57 hours** + **0.75 hour** mandatory break
+    - Door-to-Door: dtd B 10 km: **0.42 hour**
+    - **Total time: 40.74 hours**
+       """)
+
+
+
+    ''
+    ''
+    st.write("""
+    - **Use Case 3**: 
+        - Delivery A to B - **Train** or **Airplane**
+        - Door-to-Door: **Yes - B destination + need of shipment transfer to Truck**     
+    """)
+
+
+    tab_uc_3_1, tab_uc_3_2 = st.tabs([
+         "Diagram",
+         "Calculation"
+    ])
+
+    ''
+    tab_uc_3_1.image("Pictures/Function_7/F7_desc_bpmn_time_example_3.svg")
+
+
+    tab_uc_3_2.write("""
+    **Innsbruck (AT)** -> **Prague (CZ)** - **Train**
+       """)
+
+    tab_uc_3_2.write("""
+    - Service - **Standard**: **48 hours** (Train)
+    - Time to cover Innsbruck to Prague (A to B): **6.63 hours**
+    - Door-to-Door: dtd B 10 km - Transfer to Truck: **1 hour** + Truck to cover the distance: **0.42 hour**
+    - **Total time: 56.05 hours**
+       """)
+
+
+
+    ''
+    ''
+    st.write("""
+    - **Use Case 4**: 
+        - Delivery A to B - **Truck**
+        - Door-to-Door: **Yes - A and B destinations**  
+    """)
+
+    tab_uc_4_1, tab_uc_4_2 = st.tabs([
+         "Diagram",
+         "Calculation"
+    ])
+
+
+    ''
+    tab_uc_4_1.image("Pictures/Function_7/F7_desc_bpmn_time_example_4.svg")
+
+    tab_uc_4_2.write("""
+    **Innsbruck (AT)** -> **Prague (CZ)** - **Truck**
+       """)
+
+    tab_uc_4_2.write("""
+    - Service - **Standard**: **32 hours** (Truck)
+    - Time to cover Innsbruck to Prague (A to B): **7.57 hours** + **1.5 hour** mandatory breaks
+    - Door-to-Door: dtd A 20 km & dtd B 20 km: **1.50 hour**
+    - **Total time: 42.57 hours**
+       """)
+
+
+
 
 
 ''
