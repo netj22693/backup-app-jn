@@ -121,7 +121,7 @@ dataset_test = ({
     "Innsbruck" : {"big" : ["8","7"], "small" : ["22","21"], "train":"y", "air":"n"},	
     "Linz" : {"big" : ["5","10"], "small" : ["18","28"], "train":"y", "air":"y"},	
     "Salzburg" : {"big" : ["7","9"], "small" : ["20","25"], "train":"y", "air":"y"},	
-    "Graz" : {"big" : ["8","11"], "small" : ["22","32"], "train":"y", "air":"y"},	
+    "Graz" : {"big" : ["8","11"], "small" : ["23","32"], "train":"y", "air":"y"},	# in the map "22","32" - but it is on the edge and with the '23' it gets much better results
     "Klagenfurt" : {"big" : ["8","10"], "small" : ["24","29"], "train":"y", "air":"n"},	
     "Villach" : {"big" : ["8","9"], "small" : ["24","27"], "train":"y", "air":"n"},		
 },
@@ -147,6 +147,38 @@ dataset_test = ({
     "Rzeszow" : {"big" : ["4","17"], "small" : ["10","49"], "train":"y", "air":"y"},		
 }
 })
+
+
+
+correction_list_data = [
+    {"city1" : "Krakow" , "city2" : "Prague", "distance": 509},
+    {"city1" : "Liberec" , "city2" : "Linz", "distance": 342},
+    {"city1" : "Dresden" , "city2" : "Bratislava", "distance": 479},
+    {"city1" : "Dresden" , "city2" : "Nuremberg", "distance": 316},
+    {"city1" : "Krakow" , "city2" : "Pardubice", "distance": 395},
+    {"city1" : "Karlovy Vary" , "city2" : "Zlin", "distance": 427},
+    {"city1" : "Opole" , "city2" : "Klagenfurt", "distance": 765},
+    {"city1" : "Opole" , "city2" : "Salzburg", "distance": 748},
+    {"city1" : "Opole" , "city2" : "Linz", "distance": 623},
+    {"city1" : "Opole" , "city2" : "Innsbruck", "distance": 857},
+    {"city1" : "Chemnitz" , "city2" : "Sonthofen", "distance": 526},
+    {"city1" : "Rzeszow" , "city2" : "Dresden", "distance": 689},
+    {"city1" : "Banska Bystrica" , "city2" : "Bratislava", "distance": 211},
+    {"city1" : "Prague" , "city2" : "Zlin", "distance": 298},
+    {"city1" : "Prague" , "city2" : "Brno", "distance": 205},
+    {"city1" : "Prague" , "city2" : "Salzburg", "distance": 341},
+    {"city1" : "Zilina" , "city2" : "Brno", "distance": 207},
+    {"city1" : "Klagenfurt" , "city2" : "Plzen", "distance": 481},
+    {"city1" : "Krakow" , "city2" : "Vienna", "distance": 451},
+    {"city1" : "Graz" , "city2" : "Bamberg", "distance": 550},
+    {"city1" : "Graz" , "city2" : "Banska Bystrica", "distance": 440},
+    {"city1" : "Graz" , "city2" : "Zilina", "distance": 463},
+    {"city1" : "Klagenfurt" , "city2" : "Sonthofen", "distance": 476},
+    {"city1" : "Klagenfurt" , "city2" : "Hradec Kralove", "distance": 593},
+    {"city1" : "Klagenfurt" , "city2" : "Bratislava", "distance": 367},
+]
+
+
 
 # //////////////////// API ///////////////////////
 
@@ -2285,12 +2317,61 @@ if st.button("Submit", use_container_width=True):
 
         return price, distance
 
+    # Functions which check for cities in correction list
+
+    def correction_list_L0_loop(from_city, to_city, correction_list_data): 
+           
+        for item in correction_list_data:
+
+            item1 = item['city1']
+            item2 = item['city2']
+
+            if (item1 == from_city and item2 == to_city) or (item1 == to_city and item2 == from_city):
+                distance = item['distance']
+                return distance
+            
+            else:
+                pass
+
+
+
+    def correction_list_L0(from_city, to_city, correction_list_data, price_square):
+
+        get_match = correction_list_L0_loop(from_city, to_city, correction_list_data)
+        
+
+        if get_match == None:
+            result = False
+            distance = 0
+            price = 0
+            return result, distance, price
+        
+        if get_match is not None:
+            result = True
+            distance = get_match
+            price = ((price_square/30) * distance)
+            return result, distance, price
+
+
+
 
     # 19-Aug: here the split which function(s) for calculation to use based on Truck/Train and Airplane 
 
     if selected_transport == 'Truck' or selected_transport == 'Train':
 
-        price, distance = calculation_L1(from_big_r, to_big_r, from_big_c, to_big_c,from_small_r, to_small_r,from_small_c, to_small_c)
+
+
+        # Firstly the app checks, if the From and To combintaion of cities is not in correction list
+        result_correction_list, distance, price = correction_list_L0(from_city, to_city, correction_list_data, price_square)
+        
+
+        # Secondly, if not in correction list -> calls function for calculating
+        if result_correction_list == False:
+
+            price, distance = calculation_L1(from_big_r, to_big_r, from_big_c, to_big_c,from_small_r, to_small_r,from_small_c, to_small_c)
+
+
+
 
     if selected_transport == 'Airplane':
 

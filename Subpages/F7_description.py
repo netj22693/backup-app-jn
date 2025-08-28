@@ -133,7 +133,7 @@ st.write("""
 """
 )
 ''
-st.image("Pictures/Function_7/F7_desc_bpmn_calculation.svg")
+st.image("Pictures/Function_7/F7_desc_bpmn_calculation_2.svg")
 ''
 
 ''
