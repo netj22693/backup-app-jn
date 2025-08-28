@@ -15,6 +15,11 @@ json_api = {
   }
 }
 
+
+correction_list_data = [
+    {"city1" : "Opole" , "city2" : "Linz", "distance": 623},
+]
+
 #//////////
 
 
@@ -135,7 +140,23 @@ st.write("""
 ''
 st.image("Pictures/Function_7/F7_desc_bpmn_calculation_2.svg")
 ''
+with st.expander("Correction list", icon=":material/help:"):
 
+    st.image("Pictures/Function_7/F7_desc_bpmn_correction_list_L0.svg")
+    st.write("""
+    - The **Correction list Function** is used for cases when there is **not possible to calculate the distance mathematically**
+    - Case when the **road is having some detours** or going through some specific cities because of **infrustructure is built like that**
+    - In such cases the Coordinate system using mainly principle of looking for short distance between cities is not enough -> **this helps to get reasonable result close to the reality**
+    """) 
+
+    ''
+    st.write("- Example Opole (PL) - Linz (AT):")
+    
+    st.image("Pictures/Function_7/F7_desc_correction_list_opole_linz.png")
+
+    st.code(correction_list_data, language="python")
+
+''
 ''
 ''
 st.write("##### Time calculation:") 
@@ -168,6 +189,8 @@ with tab_time3:
     st.image("Pictures/Function_7/F7_desc_bpmn_time_addTime_table.svg")
 
 
+''
+''
 ''
 ''
 ''
@@ -208,6 +231,7 @@ with st.expander("UML diagram - more details", icon= ":material/help:"):
 	""")
 
 
+''
 ''
 ''
 st.write("##### API - Exchange rate:") 
