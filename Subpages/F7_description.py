@@ -189,10 +189,15 @@ with tab_time1:
 
 with tab_time2:
     st.image("Pictures/Function_7/F7_desc_bpmn_time_table.svg", width=550)
+    ''
+    ''
+    ''
+    ''
+    ''
 
 with tab_time3:
     st.image("Pictures/Function_7/F7_desc_bpmn_time_addTime_table.svg", width=550)
-
+    ''
 
 ''
 with st.expander("Use Cases/Examples", icon= ":material/help:"):
@@ -219,7 +224,6 @@ with st.expander("Use Cases/Examples", icon= ":material/help:"):
     tab_uc_1_2.write("""
     - Service - **Standard**: **48 hours** (Train)
     - Time to cover Innsbruck to Prague (A to B): **6.63 hours**
-    - Door-to-Door: No
     - **Total time: 54.63 hours**
        """)
 
@@ -247,8 +251,9 @@ with st.expander("Use Cases/Examples", icon= ":material/help:"):
 
     tab_uc_2_2.write("""
     - Service - **Standard**: **32 hours** (Truck)
-    - Time to cover Innsbruck to Prague (A to B): **7.57 hours** + **0.75 hour** mandatory break
+    - Time to cover Innsbruck to Prague (A to B): **7.57 hours**
     - Door-to-Door: dtd B 10 km: **0.42 hour**
+    - Mandatory breaks: **0.75 hour**
     - **Total time: 40.74 hours**
        """)
 
@@ -279,7 +284,8 @@ with st.expander("Use Cases/Examples", icon= ":material/help:"):
     tab_uc_3_2.write("""
     - Service - **Standard**: **48 hours** (Train)
     - Time to cover Innsbruck to Prague (A to B): **6.63 hours**
-    - Door-to-Door: dtd B 10 km - Transfer to Truck: **1 hour** + Truck to cover the distance: **0.42 hour**
+    - Door-to-Door: dtd B 10 km
+    - Transfer to Truck: **1 hour** + Truck to cover the distance: **0.42 hour**
     - **Total time: 56.05 hours**
        """)
 
@@ -308,8 +314,9 @@ with st.expander("Use Cases/Examples", icon= ":material/help:"):
 
     tab_uc_4_2.write("""
     - Service - **Standard**: **32 hours** (Truck)
-    - Time to cover Innsbruck to Prague (A to B): **7.57 hours** + **1.5 hour** mandatory breaks
+    - Time to cover Innsbruck to Prague (A to B): **7.57 hours**
     - Door-to-Door: dtd A 20 km & dtd B 20 km: **1.50 hour**
+    - Mandatory breaks: **1.5 hour**
     - **Total time: 42.57 hours**
        """)
 
