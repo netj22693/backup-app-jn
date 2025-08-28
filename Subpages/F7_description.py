@@ -156,6 +156,11 @@ with st.expander("Correction list", icon=":material/help:"):
 
     st.code(correction_list_data, language="python")
 
+    ''
+    st.write("""
+    - It is of course **bi-directional**
+    - This **one record** covers **both directions** Opole (PL) -> Linz (AT), the same as Linz (AT) -> Opole (PL)""")
+
 ''
 ''
 ''
