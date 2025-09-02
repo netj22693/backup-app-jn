@@ -221,11 +221,11 @@ st.write("""
 st.write("-------")
 
 st.page_link(
-	label = "Function 7",
-	page="Subpages/F7_FUNCTION_transport.py",
+	label = "Next page",
+	page="Subpages/F7_description_metrics.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
-	icon=":material/play_circle:"
+	icon=":material/east:"
 	) 
 
 st.page_link(
