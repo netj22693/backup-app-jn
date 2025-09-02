@@ -176,6 +176,7 @@ correction_list_data = [
     {"city1" : "Klagenfurt" , "city2" : "Sonthofen", "distance": 476},
     {"city1" : "Klagenfurt" , "city2" : "Hradec Kralove", "distance": 593},
     {"city1" : "Klagenfurt" , "city2" : "Bratislava", "distance": 367},
+    {"city1" : "Munich" , "city2" : "Jihlava", "distance": 458},
 ]
 
 
