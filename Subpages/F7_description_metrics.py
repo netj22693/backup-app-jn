@@ -46,7 +46,7 @@ with tab_1.container(border=True):
    with st.expander("Detail", icon= ":material/info:"):
       st.write("- **30** combinations tested")
 
-      st.image("Pictures/Function_7/F7_Metrics/F7_metrics_legend_air.png")
+      st.image("Pictures/Function_7/F7_Metrics/F7_metrics_legend_air.svg")
       ''
       st.image("Pictures/Function_7/F7_Metrics/F7_metrics_air.png")
 
@@ -124,15 +124,17 @@ with tab_1.container(border=True):
    with st.expander("Detail - Distance **till** 450 km", icon= ":material/info:"):
       st.write("- **73** combinations tested")
 
-      st.image("Pictures/Function_7/F7_Metrics/F7_metrics_legend_lessthan450_2.png")
+      st.image("Pictures/Function_7/F7_Metrics/F7_metrics_legend_lessthan450_2.svg")
 
       ''
       st.image("Pictures/Function_7/F7_Metrics/F7_metrics_lessthan450.png")
    
+
+
    with st.expander("Detail - Distance **above** 450 km", icon= ":material/info:"):
       st.write("- **50** combinations tested")
 
-      st.image("Pictures/Function_7/F7_Metrics/F7_metrics_legend_morethan450_2.png")
+      st.image("Pictures/Function_7/F7_Metrics/F7_metrics_legend_morethan450_2.svg")
 
       ''
       st.image("Pictures/Function_7/F7_Metrics/F7_metrics_morethan450.png")
