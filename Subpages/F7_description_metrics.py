@@ -32,7 +32,7 @@ with tab_1.container(border=True):
    col_m_3.metric(label="20+ km", value="3.3 %", delta="Acceptable", delta_color="off")
 
 
-   with st.expander("Measurment", icon= ":material/architecture:"):
+   with st.expander("Measurement", icon= ":material/architecture:"):
       
 
     st.image("Pictures/Function_7/F7_Metrics/Logo_Google_maps.svg", width=120)
@@ -99,7 +99,7 @@ with tab_1.container(border=True):
 
 
 
-   with st.expander("Measurment", icon= ":material/architecture:"):
+   with st.expander("Measurement", icon= ":material/architecture:"):
       
       st.image("Pictures/Function_7/F7_Metrics/Logo_Google_maps.svg", width=120)
 
