@@ -48,6 +48,7 @@ with tab_1.container(border=True):
 
       st.image("Pictures/Function_7/F7_Metrics/F7_metrics_legend_air_5.svg")
       
+      ''
       st.image("Pictures/Function_7/F7_Metrics/F7_metrics_table_air_dr.svg")
 
 
@@ -135,7 +136,7 @@ with tab_1.container(border=True):
       st.image("Pictures/Function_7/F7_Metrics/F7_metrics_legend_morethan450_3.svg")
 
       ''
-      st.image("Pictures/Function_7/F7_Metrics/F7_metrics_morethan450.png")
+      st.image("Pictures/Function_7/F7_Metrics/F7_metrics_table_morethan450_dr.svg")
 
 
 
