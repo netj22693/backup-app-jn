@@ -27,7 +27,7 @@ st.write("""
     )
 ''
 st.write("""
-    - **Function 7:** Transport calculation - **API** provides input
+    - **Function 7:** Transport calculation - **API** provides input (:green[**my favorit function**])
     """
     )
 ''
