@@ -143,7 +143,7 @@ with tab_1.container(border=True):
 
 tab_2.write("""""")
 tab_2.write("""
-- Few **examples** of what is the **Transport difference**
+- **Few examples** of what is the **Transport difference**
 - What results **can be achieved** using the Function 7
 - Use Case - UC 
 """)
@@ -254,10 +254,14 @@ tab_2_1_2.write("###### UC2 - Cost save -> Slow delivery")
 tab_2_1_2.write("""""")
 with tab_2_1_2.container(border= True):
 
+   ''
    st.write("""
-   - Price can be significantly reduced in case of **Slow** delivery selected
-   - If it is not time sensitive delivery and can be planned in advance -> **significant cost amount can be saved**
+   - **Price can be significantly reduced** in case of **Slow** delivery selected
+   - If it is **not time sensitive delivery** and can be planned in advance -> **significant cost amount can be saved**
    """)
+
+   ''
+   st.image("Pictures/Function_7/F7_Use_Case/F7_metrics_UC1_legend.svg", width=400)
 
    ''
    st.write("**Medium distance** - Prague (CZ) - Linz (AT)")
@@ -345,7 +349,7 @@ with tab_2_1_4.container(border= True):
    ''
    st.write("""
    - Case when **DTD can have a significant impact on delivery**
-   - Why? Because the distance **Most (CZ) - Poprad (SK) itself** takes **9.46 hours of driving** (which applies an driving exception for distances till 10 hours - can be covered with 2x 45 minutes break). But in case of **DTD 20 km**, it extends the driving time to more than 10 hours -> **the driver needs to take 10 hours break after 9 hours of driving**
+   - **Why?** Because the distance **Most (CZ) - Poprad (SK) itself** takes **9.46 hours of driving** (which applies an driving exception for distances till 10 hours - can be covered with 2x 45 minutes break). But in case of **DTD 20 km**, it extends the driving time to more than 10 hours -> **the driver needs to take 10 hours break after 9 hours of driving**
    """)
 
 
