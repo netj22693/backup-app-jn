@@ -348,23 +348,32 @@ st.write("""
 
 ''
 ''
-st.image("Pictures/Function_7/F7_desc_uml_inputs.svg")
+tab_p_1, tab_p_2 = st.tabs([
+     "User inputs",
+     "App calculation"
 
-''
-with st.expander("UML diagram - more details", icon= ":material/help:"):
+])
 
-	st.write("""
-	- What user selects **influences** what the **application offers** in the other levels - types of **business scenarios & real case logic**
-	""")
-	
-	st.write("""
-	- **L1** - API/Currency -> Influences **L4** price for Delivery service
-	- **L2** - Selection of From/To cities -> influences options of Currency in **L3**
-	- **L2** - Selection of From/To cities -> influences options of Transport type **L4** (not every city has all transport types possible) 
-	- **L4** - Transport type -> influences options for Door-to-Door delivery in **L5**
-	- **L4** - Transport type -> influences options for Extra service (Airplane cannot transfer Danger goods)  in **L5**
-	""")
+with tab_p_1:
+    st.image("Pictures/Function_7/F7_desc_uml_inputs.svg")  
 
+    ''
+    with st.expander("UML diagram - more details", icon= ":material/help:"):
+
+        st.write("""
+        - What user selects **influences** what the **application offers** in the other levels - types of **business scenarios & real case logic**
+        """)
+        
+        st.write("""
+        - **L1** - API/Currency -> Influences **L4** price for Delivery service
+        - **L2** - Selection of From/To cities -> influences options of Currency in **L3**
+        - **L2** - Selection of From/To cities -> influences options of Transport type **L4** (not every city has all transport types possible) 
+        - **L4** - Transport type -> influences options for Door-to-Door delivery in **L5**
+        - **L4** - Transport type -> influences options for Extra service (Airplane cannot transfer Danger goods)  in **L5**
+        """)
+
+with tab_p_2:
+    st.image("Pictures/Function_7/F7_desc_uml_tab2.svg", width = 600)
 
 ''
 ''
