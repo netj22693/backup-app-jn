@@ -8,6 +8,7 @@ import plotly.graph_objects as go
 
 
 
+
 tranport_types_list = ['Truck','Train','Airplane']
 
 
@@ -215,8 +216,13 @@ def api_get_rate():
         """
     )
 
+        # MAIN - Testing rate for my documentation is 
         usd_to_czk_rate = 21.94
         usd_to_eur_rate = 0.86
+
+        # For actual alignment with API
+        # usd_to_czk_rate = 20.67
+        # usd_to_eur_rate = 0.85
         
         return usd_to_czk_rate, usd_to_eur_rate 
 
@@ -1322,8 +1328,14 @@ selected_transport = st.radio("Transport type:", transport_options_list)
 # //////////////// Price per square, based on selected transport  ///////
 price_square = price_decision(selected_currency,selected_transport)
 
-''
 
+# 09-Sep-2025 - this is for tab2 - parsing no matter what transport
+price_square_tab2_truck = price_decision(selected_currency, 'Truck')
+price_square_tab2_train = price_decision(selected_currency, 'Train')
+price_square_tab2_air = price_decision(selected_currency, 'Airplane')
+
+
+''
 with st.expander("Transport type comparison", icon=":material/info:"):
 
     ''
@@ -1593,14 +1605,35 @@ if urgency  == 'Express':
     price_square = change_express(price_square, selected_transport)
 
 
+    # 09-Sep-2025 - tab2 final 
+    price_square_tab2_truck = change_express(price_square_tab2_truck, 'Truck')
+    price_square_tab2_train = change_express(price_square_tab2_train, 'Train')
+    price_square_tab2_air = change_express(price_square_tab2_air, 'Airplane')
+
+    st.write(price_square_tab2_truck)
+    st.write(price_square_tab2_train)
+    st.write(price_square_tab2_air)
+
+
 if urgency  == 'Slow':
     price_square = change_slow(price_square, selected_transport)
+
+
+    # 09-Sep-2025 - tab2 final 
+    price_square_tab2_truck = change_slow(price_square_tab2_truck, 'Truck')
+    price_square_tab2_train = change_slow(price_square_tab2_train, 'Train')
+    price_square_tab2_air = change_slow(price_square_tab2_air, 'Airplane')
 
 
 
 # 19-Aug-2025: This steps calculates price per kilometr (Airplane has a different method of calculation than Truck and Train)
 if selected_transport == 'Airplane':
     price_square = price_square / 30
+
+
+# 09-Sep-2025 - tab2 final - the logic upper "if air" here to happen no matter what transport type selected  
+price_square_tab2_air = price_square_tab2_air / 30
+
 
 
 
@@ -1650,6 +1683,14 @@ def extra_time_decision(urgency, selected_transport, extra_time_truck_h, extra_t
 
 
 extra_time = extra_time_decision(urgency, selected_transport, extra_time_truck_h, extra_time_train_h, extra_time_air_h)
+
+
+# 09-Sep-2025 - tab2 final
+extra_time_tab2_truck = extra_time_decision(urgency, 'Truck', extra_time_truck_h, extra_time_train_h, extra_time_air_h)
+
+extra_time_tab2_train = extra_time_decision(urgency, 'Train', extra_time_truck_h, extra_time_train_h, extra_time_air_h)
+
+extra_time_tab2_air = extra_time_decision(urgency, 'Airplane', extra_time_truck_h, extra_time_train_h, extra_time_air_h)
 
 
 
@@ -2162,7 +2203,7 @@ if st.button("Submit", use_container_width=True):
 
 
 
-    def calculation_L3B(small_result_r,small_result_c):
+    def calculation_L3B(small_result_r,small_result_c, price_square):
         # st.write("LEVEL 3B inside detail calculation - ELSE")
         # st.write(f"LEVEL 3B small result_r: {small_result_r}")
         # st.write(f"LEVEL 3B small result_c: {small_result_c}")
@@ -2243,7 +2284,7 @@ if st.button("Submit", use_container_width=True):
 
 
     #Calculation in case that move is on horizontal r=0 or vertical level c=0
-    def calculation_L3A_R0C0(small_result_r, small_result_c):
+    def calculation_L3A_R0C0(small_result_r, small_result_c, price_square):
 
         km1 = 30
 
@@ -2264,7 +2305,7 @@ if st.button("Submit", use_container_width=True):
 
 
     # if different big region 
-    def calculation_L2(from_small_r, to_small_r, from_small_c, to_small_c):
+    def calculation_L2(from_small_r, to_small_r, from_small_c, to_small_c, price_square):
         # st.write("LEVEL 2 inside detail calculation")
         small_result_r = abs(from_small_r - to_small_r)
         small_result_c = abs(from_small_c - to_small_c)
@@ -2276,17 +2317,17 @@ if st.button("Submit", use_container_width=True):
             return price, distance
         
         elif small_result_r == 0 or small_result_c == 0:
-            price, distance = calculation_L3A_R0C0(small_result_r, small_result_c)
+            price, distance = calculation_L3A_R0C0(small_result_r, small_result_c, price_square)
             return price, distance
         
         else:
-            price, distance = calculation_L3B(small_result_r,small_result_c)
+            price, distance = calculation_L3B(small_result_r,small_result_c, price_square)
             return price, distance
 
 
 
     # if big R = C -> same price
-    def calculation_L1(from_big_r, to_big_r,from_big_c, to_big_c, from_small_r,to_small_r, from_small_c, to_small_c):
+    def calculation_L1(from_big_r, to_big_r,from_big_c, to_big_c, from_small_r,to_small_r, from_small_c, to_small_c, price_square):
         
         big_result_r = abs(from_big_r - to_big_r)
         big_result_c = abs(from_big_c - to_big_c)
@@ -2303,11 +2344,11 @@ if st.button("Submit", use_container_width=True):
 
         else:
             # st.write("LEVEL 1: Else happened")
-            price, distance = calculation_L2(from_small_r, to_small_r, from_small_c, to_small_c)
+            price, distance = calculation_L2(from_small_r, to_small_r, from_small_c, to_small_c, price_square)
             return price, distance
 
 
-    def calculation_air_L1(from_small_r, to_small_r,from_small_c, to_small_c):
+    def calculation_air_L1(from_small_r, to_small_r,from_small_c, to_small_c, price_square):
         # st.write(f"L1 air inside")
         small_r = abs(from_small_r - to_small_r)
         small_c = abs(from_small_c - to_small_c)
@@ -2369,7 +2410,7 @@ if st.button("Submit", use_container_width=True):
         # Secondly, if not in correction list -> calls function for calculating
         if result_correction_list == False:
 
-            price, distance = calculation_L1(from_big_r, to_big_r, from_big_c, to_big_c,from_small_r, to_small_r,from_small_c, to_small_c)
+            price, distance = calculation_L1(from_big_r, to_big_r, from_big_c, to_big_c,from_small_r, to_small_r,from_small_c, to_small_c, price_square)
 
 
 
@@ -2377,7 +2418,7 @@ if st.button("Submit", use_container_width=True):
     if selected_transport == 'Airplane':
 
         # only small coordinates R1C1 
-        price, distance = calculation_air_L1(from_small_r, to_small_r,from_small_c, to_small_c)
+        price, distance = calculation_air_L1(from_small_r, to_small_r,from_small_c, to_small_c, price_square)
 
 
     def calcul_delivery_time(distance,selected_transport):
@@ -2629,117 +2670,419 @@ if st.button("Submit", use_container_width=True):
     from_city_extra_doortdoor = dtd_distance(checkbox_list_from)
     to_city_extra_doortdoor = dtd_distance(checkbox_list_to)
 
+    # ////////// making inputs for tab_final_2 for the final screen //////////
 
-    # Final result - SCREEN
+    # 1. calling all the functions with Truck, Train, Air inputs
+
+    result_correction_list_tab2_truck, tab2_distance_truck, tab2_price_truck = correction_list_L0(from_city, to_city, correction_list_data, price_square_tab2_truck)
+
+    result_correction_list_tab2_train, tab2_distance_train, tab2_price_train = correction_list_L0(from_city, to_city, correction_list_data, price_square_tab2_train)
+
+    if result_correction_list_tab2_truck == False:
+
+        tab2_price_truck, tab2_distance_truck = calculation_L1(from_big_r, to_big_r, from_big_c, to_big_c,from_small_r, to_small_r,from_small_c, to_small_c, price_square_tab2_truck)
+
+
+    if result_correction_list_tab2_train == False:
+
+        tab2_price_train, tab2_distance_train = calculation_L1(from_big_r, to_big_r, from_big_c, to_big_c,from_small_r, to_small_r,from_small_c, to_small_c, price_square_tab2_train)
+
+
+
+    tab2_price_air, tab2_distance_air = calculation_air_L1(from_small_r, to_small_r,from_small_c, to_small_c, price_square_tab2_air)
+    
+
+    tab2_time_journey_truck  = calcul_delivery_time(tab2_distance_truck, 'Truck')
+    tab2_time_journey_train  = calcul_delivery_time(tab2_distance_train, 'Train')
+    tab2_time_journey_air  = calcul_delivery_time(tab2_distance_air, 'Airplane')
+
+
+    # Truck DTD  and Time break
+    tab2_time_dtd_from_truck = door_to_door_time_truck(checkbox_list_from)
+    tab2_time_dtd_to_truck = door_to_door_time_truck(checkbox_list_to)
+        
+    tab2_time_dtd_truck = tab2_time_dtd_from_truck + tab2_time_dtd_to_truck
+
+    tab2_time_journy_incl_dtd_truck = tab2_time_journey_truck + tab2_time_dtd_from_truck + tab2_time_dtd_to_truck
+
+    tab2_time_break = calcul_time_break(tab2_time_journy_incl_dtd_truck)
+
+    # Train DTD
+    tab2_time_dtd_from_train, tab2_transfer_time_from_train, tab2_truck_time_dtd_air_train_from_train = door_to_door_time_train_air(checkbox_list_from)
+    tab2_time_dtd_to_train, tab2_transfer_time_to_train, tab2_truck_time_dtd_air_train_to_train  = door_to_door_time_train_air(checkbox_list_to)
+
+
+    tab2_time_dtd_train = tab2_time_dtd_from_train + tab2_time_dtd_to_train
+
+    tab2_time_journy_incl_dtd_train = tab2_time_journey_train + tab2_time_dtd_from_train + tab2_time_dtd_to_train
+
+    # Air DTD
+    tab2_time_dtd_from_air, tab2_transfer_time_from_air, tab2_truck_time_dtd_air_train_from_air = door_to_door_time_train_air(checkbox_list_from)
+    tab2_time_dtd_to_air, tab2_transfer_time_to_air, tab2_truck_time_dtd_air_train_to_air  = door_to_door_time_train_air(checkbox_list_to)
+
+
+    tab2_time_dtd_air = tab2_time_dtd_from_air + tab2_time_dtd_to_air
+
+    tab2_time_journy_incl_dtd_air = tab2_time_journey_air + tab2_time_dtd_from_air + tab2_time_dtd_to_air
+
+
+    def tab2_dtd_costs_to(selected_currency, checkbox_list):
+
+        if selected_currency == 'euro':
+
+            door_result_truck = door_to_door_eur(checkbox_list, 'Truck')
+            door_result_train = door_to_door_eur(checkbox_list, 'Train')
+            door_result_air = door_to_door_eur(checkbox_list, 'Airplane')
+
+        if selected_currency == 'koruna':
+
+            door_result_truck = door_to_door_koruna(checkbox_list, 'Truck')
+            door_result_train = door_to_door_koruna(checkbox_list, 'Train')
+            door_result_air = door_to_door_koruna(checkbox_list, 'Airplane')
+
+        return door_result_truck, door_result_train, door_result_air
+    
+
+
+    tab2_door_to_result_truck, tab2_door_to_result_train, tab2_door_to_result_air = tab2_dtd_costs_to(selected_currency, checkbox_list_to)
+
+    tab2_door_from_result_truck, tab2_door_from_result_train, tab2_door_from_result_air = tab2_dtd_costs_to(selected_currency, checkbox_list_from)
+
+
+
+    # ////////////////////    Final result - SCREEN    ///////////////////////////////////////
     ''
     ''
     st.write("##### Calculated values:")
     '' 
 
-    if selected_transport == 'Truck':
-        st.write(f"""
-            - Delivery from **{from_city} ({country_code_from})** to **{to_city} ({country_code_to}):**
-                - Costs: **{price:,.2f} {selected_currency}**
-                - Distance: **{distance:,.2f} km**
-                - Time to cover the distance: **{time_journey:.2f} hour(s)**
-                - Transport type: **{selected_transport}**
-        """)
+
+    tab_final_1, tab_final_2 = st.tabs([
+        f"Offer - {selected_transport}",
+        "Comparison - other transports"
+    ])
+
+
+    with tab_final_1:
+        if selected_transport == 'Truck':
+
+            ''
+            st.write(f"""
+                - Delivery from **{from_city} ({country_code_from})** to **{to_city} ({country_code_to}):**
+                    - Costs: **{price:,.2f} {selected_currency}**
+                    - Distance: **{distance:,.2f} km**
+                    - Time to cover the distance: **{time_journey:.2f} hour(s)**
+                    - Transport type: **{selected_transport}**
+            """)
+
+            ''
+            st.write(f"""
+                - **Door-to-Door**:
+                    - Additional: **{from_city_extra_doortdoor + to_city_extra_doortdoor} km** to the distance
+                        - {from_city}: {from_city_extra_doortdoor} km
+                        - {to_city}: {to_city_extra_doortdoor} km
+                    - Time to cover the Door-to-Door: **{time_dtd:.2f} hours(s)**
+            """)
+
+            ''
+            st.write(f"""
+                - **{selected_transport}**:
+                    - Selected service **{urgency}** requires **{extra_time:.2f} hours** for administration, load, etc. - **the SLA**  
+                    - If longer distance (including Door-to-Door time), **mandatory breaks** for driver: **{time_break} hour(s)**
+            """)
+
+            ''
+            st.write("- **Overall time end-to-end delivery:**")
+
+            # (round(time_journey, 2) here rounding allowed, because upper |f"- Time to cover the distance {from_city} - {to_city} is: **{time_journey:.2f} hour(s)**."| there is already rounding rounding as part of visualiztion of :.2f
+            overall_time_truck = (round(time_journey, 2) + time_break + extra_time + time_dtd)
+
+            if overall_time_truck >= 2:
+                hour_s_text_truck = 'hours'
+
+            else:
+                hour_s_text_truck = 'hour'
+
+            with st.container(border=True):
+                st.write(f"**{overall_time_truck:.2f} {hour_s_text_truck}**")
+
+
+
+        elif selected_transport == 'Train' or 'Airplane':
+
+            ''
+            st.write(f"""
+                - Delivery from **{from_city} ({country_code_from})** to **{to_city} ({country_code_to}):**
+                    - Costs: **{price:,.2f} {selected_currency}**
+                    - Distance: **{distance:,.2f} km**
+                    - Time to cover the distance: **{time_journey:.2f} hour(s)**
+                    - Transport type: **{selected_transport}**
+            """)
+
+            ''
+            st.write(f"""
+                - **Door-to-Door**:
+                    - Additional: **{from_city_extra_doortdoor + to_city_extra_doortdoor} km** to the distance for which **Truck is needed**
+                        - {from_city}: {from_city_extra_doortdoor} km
+                        - {to_city}: {to_city_extra_doortdoor} km
+                    - Time to cover the Door-to-Door: **{time_dtd:.2f} hours(s)**
+                        - Transfer {selected_transport} <-> Truck: {transfer_time_from + transfer_time_to} hour(s)
+                        - Time for Truck ride: {truck_time_dtd_air_train_from + truck_time_dtd_air_train_to} hour(s)
+            """)
+
+            ''
+            st.write(f"""
+                - **{selected_transport}**:
+                    - Selected service **{urgency}** requires **{extra_time:.2f} hours** for administration, load, etc. - **the SLA**  
+            """)
+
+            ''
+            st.write("- **Overall time end-to-end delivery:**")
+
+            # (round(time_journey, 2) here rounding allowed, because upper |f"- Time to cover the distance {from_city} - {to_city} is: **{time_journey:.2f} hour(s)**."| there is already rounding rounding as part of visualiztion of :.2f
+            overall_time_train_air = (round(time_journey,2) + extra_time + time_dtd)
+
+            if overall_time_train_air >= 2:
+                hour_s_text_train_air = 'hours'
+
+            else:
+                hour_s_text_train_air = 'hour'
+
+            with st.container(border=True):
+                st.write(f"**{overall_time_train_air:.2f} {hour_s_text_train_air}**")
+        
+
 
         ''
-        st.write(f"""
-            - **Door-to-Door**:
-                - Additional: **{from_city_extra_doortdoor + to_city_extra_doortdoor} km** to the distance
-                    - {from_city}: {from_city_extra_doortdoor} km
-                    - {to_city}: {to_city_extra_doortdoor} km
-                - Time to cover the Door-to-Door: **{time_dtd:.2f} hours(s)**
-        """)
-
         ''
         st.write(f"""
-            - **{selected_transport}**:
-                - Selected service **{urgency}** requires **{extra_time:.2f} hours** for administration, load, etc. - **the SLA**  
-                - If longer distance (including Door-to-Door time), **mandatory breaks** for driver: **{time_break} hour(s)**
+        - **Additional services - costs**:
+            - Insurance extra costs: **{money_insurance:,.2f} {selected_currency}**
+            - Fregile goods costs: **{money_fragile:,.2f} {selected_currency}**
+            - Danger goods costs: **{money_danger:,.2f} {selected_currency}**
+            - Door-To-Door - {from_city} ({country_code_from}):  **{door_from_result:,.2f} {selected_currency}** - ({from_city_extra_doortdoor} km)
+            - Door-To-Door - {to_city} ({country_code_to}):  **{door_to_result:,.2f} {selected_currency}** - ({to_city_extra_doortdoor} km)
         """)
 
+
         ''
-        st.write("- **Overall time end-to-end delivery:**")
+        ''
+        st.write("- **Final price:**")
+        with st.container(border=True):
+            st.write(f"**{(price + money_insurance + money_fragile + money_danger + door_to_result + door_from_result):,.2f} {selected_currency}**")
 
-        # (round(time_journey, 2) here rounding allowed, because upper |f"- Time to cover the distance {from_city} - {to_city} is: **{time_journey:.2f} hour(s)**."| there is already rounding rounding as part of visualiztion of :.2f
-        overall_time_truck = (round(time_journey, 2) + time_break + extra_time + time_dtd)
 
-        if overall_time_truck >= 2:
-            hour_s_text_truck = 'hours'
 
-        else:
-            hour_s_text_truck = 'hour'
+
+    # TAB 2
+    with tab_final_2:
+
+        ''
+        transport_options_list_str = ', '.join(transport_options_list)
+        st.write(f" - Available transport options: **{transport_options_list_str}**")
+
+        if len(transport_options_list) == 1:
+            st.warning(f"For {from_city} ({country_code_from}) - {to_city} ({country_code_to}) there is **only {transport_options_list_str}** available -> **no other transport option**")
+
+
+
+
+        def tab2_transport_available_yn_table(transport_options_list, value_train, value_air):
+
+            if 'Train' in transport_options_list:
+                value_train = value_train
+
+            if 'Train' not in transport_options_list:
+                value_train = 'n/a'
+
+            if 'Airplane' in transport_options_list:
+                value_air = value_air
+
+            if 'Airplane' not in transport_options_list:
+                value_air = 'n/a'
+                
+            return value_train, value_air
+
+
+
+        tab2_distance_train_adj, tab2_distance_air_adj = tab2_transport_available_yn_table(transport_options_list, tab2_distance_train, tab2_distance_air)
+
+        tab2_price_train_adj, tab2_price_air_adj = tab2_transport_available_yn_table(transport_options_list, tab2_price_train, tab2_price_air)
+
+        tab2_time_journey_train_adj, tab2_time_journey_air_adj = tab2_transport_available_yn_table(transport_options_list, tab2_time_journey_train, tab2_time_journey_air)
+
+        #Rounding only for visualization
+
+        def tab2_rounding(value):
+
+            if value == 'n/a':
+                return value
+            
+            else:
+                value = round(value, 2)
+                return value
+
+
+        tab2_distance_truck_r2 = tab2_rounding(tab2_distance_truck)
+        tab2_distance_train_r2 = tab2_rounding(tab2_distance_train_adj)
+        tab2_distance_air_r2 = tab2_rounding(tab2_distance_air_adj)
+
+        tab2_price_truck_r2 = tab2_rounding(tab2_price_truck)
+        tab2_price_train_r2 = tab2_rounding(tab2_price_train_adj)
+        tab2_price_air_r2 = tab2_rounding(tab2_price_air_adj)
+
+        tab2_time_journey_truck_r2 = tab2_rounding(tab2_time_journey_truck)
+        tab2_time_journey_train_r2 = tab2_rounding(tab2_time_journey_train_adj)
+        tab2_time_journey_air_r2 = tab2_rounding(tab2_time_journey_air_adj)
+
+
+
+        df_tab2_transport = pd.DataFrame({
+            "Transport type" : tranport_types_list,
+            "Distance (km)" : [tab2_distance_truck_r2, tab2_distance_train_r2, tab2_distance_air_r2],
+            "Time (hours)" : [tab2_time_journey_truck_r2, tab2_time_journey_train_r2, tab2_time_journey_air_r2],
+            f"Price ({selected_currency})" : [tab2_price_truck_r2, tab2_price_train_r2, tab2_price_air_r2],
+        })
+
+        df_tab2_transport.drop(df_tab2_transport.loc[df_tab2_transport['Time (hours)']== 'n/a'].index, inplace=True)
+
+        df_tab2_transport = df_tab2_transport.style.format({
+            "Distance (km)": "{:,.2f}",
+            "Time (hours)" : "{:.2f}",
+            f"Price ({selected_currency})": "{:,.2f}",
+        })
+
+
+
+
+        tab2_time_dtd_train_adj, tab2_time_dtd_air_adj = tab2_transport_available_yn_table(transport_options_list, tab2_time_dtd_train, tab2_time_dtd_air)
+
+
+        tab2_door_result_truck = tab2_door_from_result_truck + tab2_door_to_result_truck
+        tab2_door_result_train = tab2_door_from_result_train + tab2_door_to_result_train
+        tab2_door_result_air = tab2_door_from_result_air + tab2_door_to_result_air
+
+
+        tab2_door_result_train, tab2_door_result_air = tab2_transport_available_yn_table(transport_options_list, tab2_door_result_train, tab2_door_result_air)
+
+
+        df_tab2_dtd = pd.DataFrame({
+            "Transport type" : tranport_types_list,
+            "Time (hours)**" : [tab2_time_dtd_truck, tab2_time_dtd_train_adj, tab2_time_dtd_air_adj],
+            f"Price ({selected_currency})" : [tab2_door_result_truck, tab2_door_result_train, tab2_door_result_air],
+        })
+
+
+        df_tab2_dtd.drop(df_tab2_dtd.loc[df_tab2_dtd['Time (hours)**']== 'n/a'].index, inplace=True)
+
+        df_tab2_dtd = df_tab2_dtd.style.format({
+            "Time (hours)**" : "{:.2f}",
+            f"Price ({selected_currency})": "{:,.2f}",
+        })
+
+        #tab2 time
+
+        tab2_overall_time_truck = tab2_time_journey_truck_r2 + tab2_time_break + extra_time_tab2_truck + tab2_time_dtd_truck
+        tab2_overall_time_train = tab2_time_journey_train + extra_time_tab2_train + tab2_time_dtd_train
+        tab2_overall_time_air = tab2_time_journey_air + extra_time_tab2_air + tab2_time_dtd_air
+
+
+        tab2_overall_time_train, tab2_overall_time_air = tab2_transport_available_yn_table(transport_options_list, tab2_overall_time_train, tab2_overall_time_air) 
+
+        tab2_overall_time_truck_r2 = tab2_rounding(tab2_overall_time_truck)
+        tab2_overall_time_train_r2 = tab2_rounding(tab2_overall_time_train)
+        tab2_overall_time_air_r2 = tab2_rounding(tab2_overall_time_air)
+
+
+        #tab2 price
+        tab2_price_overall_truck = round(tab2_price_truck + money_insurance + money_fragile + money_danger + tab2_door_from_result_truck + tab2_door_to_result_truck, 2)
+        tab2_price_overall_train = round(tab2_price_train + money_insurance + money_fragile + money_danger + tab2_door_from_result_train + tab2_door_to_result_train, 2)
+
+        # 10-Sep-25: Bug fix - air does NOT include '+ money_danger'because it is not allowed to trnasport dnager goods in airplane. Bug detail: this prevents from case when user selects 'danger goods - True' when having Truck or Train and then switch to Airplane (bug was also counting with the variable which is not following business logic)
+        tab2_price_overall_air = round(tab2_price_air + money_insurance + money_fragile + tab2_door_from_result_air + tab2_door_to_result_air, 2)
+
+
+        tab2_price_overall_train, tab2_price_overall_air = tab2_transport_available_yn_table(transport_options_list, tab2_price_overall_train, tab2_price_overall_air) 
+
+        df_tab2_overall_time = pd.DataFrame({
+            "Transport type" : tranport_types_list,
+            "Time (hours)" : [tab2_overall_time_truck_r2, tab2_overall_time_train_r2, tab2_overall_time_air_r2],
+            f"Price ({selected_currency})" : [tab2_price_overall_truck, tab2_price_overall_train, tab2_price_overall_air]
+        })
+
+
+        df_tab2_overall_time.drop(df_tab2_overall_time.loc[df_tab2_overall_time['Time (hours)']== 'n/a'].index, inplace=True)
+
+
+        df_tab2_overall_time = df_tab2_overall_time.style.format({
+            "Time (hours)" : "{:.2f}",
+            f"Price ({selected_currency})": "{:,.2f}",
+        })
+
+
+
+        extra_time_tab2_train_adj, extra_time_tab2_air_adj = tab2_transport_available_yn_table(transport_options_list, extra_time_tab2_train, extra_time_tab2_air)
+
+        df_tab2_service = pd.DataFrame({
+            "Transport type" : tranport_types_list,
+            "Time (hours)" : [extra_time_tab2_truck, extra_time_tab2_train_adj, extra_time_tab2_air_adj]
+        })
+
+        df_tab2_service.drop(df_tab2_service.loc[df_tab2_service['Time (hours)']== 'n/a'].index, inplace=True)
+
+
+        tab2_truck_break_for_df = {
+            "Transport type" : 'Truck',
+            "Mandatory break (hours)" : tab2_time_break    
+        }
+
+        df_tab2_truck_break = pd.DataFrame(tab2_truck_break_for_df, index=[0])
+
+
+        ''
+        ''
+        with st.container(border=True):
+            st.write("###### Overall Time and Price end-to-end delivery:")
+
+            ''
+            
+            st.dataframe(df_tab2_overall_time, hide_index=True)
+
+
 
         with st.container(border=True):
-            st.write(f"**{overall_time_truck:.2f} {hour_s_text_truck}**")
+            st.write("###### Detail:")
+            st.write(f"- {from_city} ({country_code_from}) - {to_city} ({country_code_to})")
 
+            st.dataframe(df_tab2_transport, hide_index=True)
 
+            col_break_1, col_break_2 = st.columns(2)
+            col_break_1.dataframe(df_tab2_truck_break, hide_index=True)
 
-    elif selected_transport == 'Train' or 'Airplane':
-        st.write(f"""
-            - Delivery from **{from_city} ({country_code_from})** to **{to_city} ({country_code_to}):**
-                - Costs: **{price:,.2f} {selected_currency}**
-                - Distance: **{distance:,.2f} km**
-                - Time to cover the distance: **{time_journey:.2f} hour(s)**
-                - Transport type: **{selected_transport}**
-        """)
-
-        ''
-        st.write(f"""
-            - **Door-to-Door**:
-                - Additional: **{from_city_extra_doortdoor + to_city_extra_doortdoor} km** to the distance for which **Truck is needed**
+            ''
+            st.write(f"""
+                - Door-to-Door:
                     - {from_city}: {from_city_extra_doortdoor} km
                     - {to_city}: {to_city_extra_doortdoor} km
-                - Time to cover the Door-to-Door: **{time_dtd:.2f} hours(s)**
-                    - Transfer {selected_transport} <-> Truck: {transfer_time_from + transfer_time_to} hour(s)
-                    - Time for Truck ride: {truck_time_dtd_air_train_from + truck_time_dtd_air_train_to} hour(s)
-        """)
+                """)
 
-        ''
-        st.write(f"""
-            - **{selected_transport}**:
-                - Selected service **{urgency}** requires **{extra_time:.2f} hours** for administration, load, etc. - **the SLA**  
-        """)
+            st.dataframe(df_tab2_dtd, hide_index=True)
 
-        ''
-        st.write("- **Overall time end-to-end delivery:**")
+            st.caption("""
+            ** For **Train** and **Airplane** - includes time for transfer Truck <-> Train/Airplane
+            """)
 
-        # (round(time_journey, 2) here rounding allowed, because upper |f"- Time to cover the distance {from_city} - {to_city} is: **{time_journey:.2f} hour(s)**."| there is already rounding rounding as part of visualiztion of :.2f
-        overall_time_train_air = (round(time_journey,2) + extra_time + time_dtd)
+            ''
+            st.write(f"- Selected service - **{urgency}**")
 
-        if overall_time_train_air >= 2:
-            hour_s_text_train_air = 'hours'
-
-        else:
-            hour_s_text_train_air = 'hour'
-
-        with st.container(border=True):
-            st.write(f"**{overall_time_train_air:.2f} {hour_s_text_train_air}**")
-    
-
-
-    ''
-    ''
-    st.write(f"""
-    - **Additional services - costs**:
-        - Insurance extra costs: **{money_insurance:,.2f} {selected_currency}**
-        - Fregile goods costs: **{money_fragile:,.2f} {selected_currency}**
-        - Danger goods costs: **{money_danger:,.2f} {selected_currency}**
-        - Door-To-Door - {from_city} ({country_code_from}):  **{door_from_result:,.2f} {selected_currency}** - ({from_city_extra_doortdoor} km)
-        - Door-To-Door - {to_city} ({country_code_to}):  **{door_to_result:,.2f} {selected_currency}** - ({to_city_extra_doortdoor} km)
-    """)
-
-
-    ''
-    ''
-    st.write("- **Final price:**")
-    with st.container(border=True):
-        st.write(f"**{(price + money_insurance + money_fragile + money_danger + door_to_result + door_from_result):,.2f} {selected_currency}**")
+            col_urg_1, col_urg_2 = st.columns(2)
+            col_urg_1.dataframe(df_tab2_service, use_container_width=True, hide_index=True)
 
 
 
 
-    
+            
+
+
+
+        
