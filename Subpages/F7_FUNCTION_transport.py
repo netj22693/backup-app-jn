@@ -221,7 +221,7 @@ def api_get_rate():
         usd_to_eur_rate = 0.86
 
         # For actual alignment with API
-        # usd_to_czk_rate = 20.67
+        # usd_to_czk_rate = 20.84
         # usd_to_eur_rate = 0.85
         
         return usd_to_czk_rate, usd_to_eur_rate 
@@ -1610,10 +1610,6 @@ if urgency  == 'Express':
     price_square_tab2_train = change_express(price_square_tab2_train, 'Train')
     price_square_tab2_air = change_express(price_square_tab2_air, 'Airplane')
 
-    st.write(price_square_tab2_truck)
-    st.write(price_square_tab2_train)
-    st.write(price_square_tab2_air)
-
 
 if urgency  == 'Slow':
     price_square = change_slow(price_square, selected_transport)
@@ -2759,7 +2755,7 @@ if st.button("Submit", use_container_width=True):
 
     tab_final_1, tab_final_2 = st.tabs([
         f"Offer - {selected_transport}",
-        "Comparison - other transports"
+        "Analytics & Other transports"
     ])
 
 
@@ -2877,16 +2873,38 @@ if st.button("Submit", use_container_width=True):
     # TAB 2
     with tab_final_2:
 
-        ''
         transport_options_list_str = ', '.join(transport_options_list)
-        st.write(f" - Available transport options: **{transport_options_list_str}**")
+
+        ''
+        st.write(f"""
+            - Transport: **{from_city} ({country_code_from}) - {to_city} ({country_code_to})** 
+            - Available transport options: **{transport_options_list_str}**""")
 
         if len(transport_options_list) == 1:
             st.warning(f"For {from_city} ({country_code_from}) - {to_city} ({country_code_to}) there is **only {transport_options_list_str}** available -> **no other transport option**")
 
+        with st.expander("Color-coding charts", icon= ":material/help:"):
+            st.image("Pictures/Function_7/F7_tab2_colorcoding.svg")
 
 
+        # This one is for Chart purposes
+        def tab2_transport_available_yn_table_return0(transport_options_list, value_train, value_air):
 
+            if 'Train' in transport_options_list:
+                value_train = value_train
+
+            if 'Train' not in transport_options_list:
+                value_train = 0
+
+            if 'Airplane' in transport_options_list:
+                value_air = value_air
+
+            if 'Airplane' not in transport_options_list:
+                value_air = 0
+                
+            return value_train, value_air
+
+        # This one is for table purposes
         def tab2_transport_available_yn_table(transport_options_list, value_train, value_air):
 
             if 'Train' in transport_options_list:
@@ -2987,11 +3005,11 @@ if st.button("Submit", use_container_width=True):
         tab2_overall_time_air = tab2_time_journey_air + extra_time_tab2_air + tab2_time_dtd_air
 
 
-        tab2_overall_time_train, tab2_overall_time_air = tab2_transport_available_yn_table(transport_options_list, tab2_overall_time_train, tab2_overall_time_air) 
+        tab2_overall_time_train_adj, tab2_overall_time_air_adj = tab2_transport_available_yn_table(transport_options_list, tab2_overall_time_train, tab2_overall_time_air) 
 
         tab2_overall_time_truck_r2 = tab2_rounding(tab2_overall_time_truck)
-        tab2_overall_time_train_r2 = tab2_rounding(tab2_overall_time_train)
-        tab2_overall_time_air_r2 = tab2_rounding(tab2_overall_time_air)
+        tab2_overall_time_train_r2 = tab2_rounding(tab2_overall_time_train_adj)
+        tab2_overall_time_air_r2 = tab2_rounding(tab2_overall_time_air_adj)
 
 
         #tab2 price
@@ -3003,6 +3021,61 @@ if st.button("Submit", use_container_width=True):
 
 
         tab2_price_overall_train, tab2_price_overall_air = tab2_transport_available_yn_table(transport_options_list, tab2_price_overall_train, tab2_price_overall_air) 
+
+
+        # Data -> Variables for charts -> in case that transport type not available for combination of cities -> make the variable as 0. 
+
+        # 1. Transfer time - From A   - Train, Air
+        tab2_transfer_time_from_train_adj_r0, tab2_transfer_time_from_air_adj_r0 = tab2_transport_available_yn_table_return0(transport_options_list, tab2_transfer_time_from_train, tab2_transfer_time_from_air)
+
+        # 2. Time - From A  - Train, Air
+        tab2_truck_time_dtd_air_train_from_train_adj_r0, tab2_truck_time_dtd_air_train_from_air_adj_r0 = tab2_transport_available_yn_table_return0(transport_options_list,tab2_truck_time_dtd_air_train_from_train, tab2_truck_time_dtd_air_train_from_air)
+
+        # 3. Transfer time - From B - Train, Air
+        tab2_transfer_time_to_train_adj_r0, tab2_transfer_time_to_air_adj_r0 = tab2_transport_available_yn_table_return0(transport_options_list, tab2_transfer_time_to_train, tab2_transfer_time_to_air)
+
+        
+        # 4. Time - From B  - Train, Air
+        tab2_truck_time_dtd_air_train_to_train_adj_r0, tab2_truck_time_dtd_air_train_to_air_adj_r0 = tab2_transport_available_yn_table_return0(transport_options_list, tab2_truck_time_dtd_air_train_to_train, tab2_truck_time_dtd_air_train_to_air)
+
+
+        # 5. Transfer time sum   (from + to) 
+        tab2_train_transf_sum = tab2_transfer_time_from_train_adj_r0 + tab2_transfer_time_to_train_adj_r0
+
+        tab2_air_transf_sum = tab2_transfer_time_from_air_adj_r0 + tab2_transfer_time_to_air_adj_r0
+
+        # 6. Price - dtd from (A)  - Train, Air
+        tab2_door_from_result_train_adj_r0,tab2_door_from_result_air_adj_r0 = tab2_transport_available_yn_table_return0(transport_options_list, tab2_door_from_result_train,tab2_door_from_result_air)
+
+        # 7. Price - dtd to (B)  - Train, Air
+        tab2_door_to_result_train_adj_r0,tab2_door_to_result_air_adj_r0 = tab2_transport_available_yn_table_return0(transport_options_list, tab2_door_to_result_train,tab2_door_to_result_air)
+
+        # 8. sum of extra services (air has not money_danger as not allowed to transport in Air)
+        sum_extra_services_truck_train = money_fragile + money_insurance + money_danger
+        sum_extra_services_air = money_fragile + money_insurance
+
+        tab2_extra_services_train_r0, tab2_sum_extra_services_air_r0 = tab2_transport_available_yn_table_return0(transport_options_list, sum_extra_services_truck_train, sum_extra_services_air)
+
+        # 9. sum costs distance + dtd 
+        tab2_dist_dtd_truck = tab2_door_result_truck + tab2_price_truck_r2
+        tab2_dist_dtd_train = tab2_door_result_train + tab2_price_train_r2
+        tab2_dist_dtd_air = tab2_door_result_air + tab2_price_air_r2
+
+        tab2_dist_dtd_train_r0, tab2_dist_dtd_air_r0 = tab2_transport_available_yn_table_return0(transport_options_list, tab2_dist_dtd_train, tab2_dist_dtd_air)
+
+        # 10. Overall time (Distance + DTD + Transfer + Breaks) - Service time  -> Time of physical movement of the shipment 
+
+
+        tab2_ov_time_truck = tab2_overall_time_truck - extra_time_tab2_truck
+        tab2_ov_time_train = tab2_overall_time_train - extra_time_tab2_train
+        tab2_ov_time_air = tab2_overall_time_air - extra_time_tab2_air
+
+        tab2_ov_time_train_r0, tab2_ov_time_air_r0 = tab2_transport_available_yn_table_return0(transport_options_list, tab2_ov_time_train, tab2_ov_time_air)
+
+        # additional rounding, 2 -> for charts visualization
+        tab2_ov_time_train_r0 = round(tab2_ov_time_train_r0, 2)
+        tab2_ov_time_air_r0 = round(tab2_ov_time_air_r0, 2)
+
 
         df_tab2_overall_time = pd.DataFrame({
             "Transport type" : tranport_types_list,
@@ -3039,6 +3112,84 @@ if st.button("Submit", use_container_width=True):
         df_tab2_truck_break = pd.DataFrame(tab2_truck_break_for_df, index=[0])
 
 
+
+        df_tab2_extra_s = pd.DataFrame({
+            "Extra service" : ["Insurance extra", "Fragile goods", "Danger goods"],
+            f"Price ({selected_currency})" : [money_insurance, money_fragile, money_danger],
+        })
+
+        df_tab2_extra_s = df_tab2_extra_s.style.format({
+            f"Price ({selected_currency})" : "{:,.2f}",
+        })
+
+        # //////////////////// Container OVERALL TAB2 ///////////////////////////
+        # ------- Chart - Time overall including Admin stuff-----
+        x_transport_time = ['Truck','Train', 'Airplane']
+
+        y_time_overall = [tab2_ov_time_truck, tab2_ov_time_train_r0, tab2_ov_time_air_r0]
+        y_time_service = [extra_time_tab2_truck, extra_time_tab2_train_adj, extra_time_tab2_air_adj] 
+
+        fig_tab2_time_o = go.Figure()
+
+
+        fig_tab2_time_o.add_bar(x=x_transport_time,y=y_time_service, name= f"Administration - Service: {urgency}",
+            marker=dict(
+                color='rgba(187, 188, 191, 0.8)',
+            )
+        )
+        fig_tab2_time_o.add_bar(x=x_transport_time,y=y_time_overall, name= "Transport/Delivery",
+            marker=dict(
+                color='rgba(0, 112, 192, 1)',
+            )
+        )
+
+        fig_tab2_time_o.update_layout(barmode="relative")
+        fig_tab2_time_o.update_layout(title = "Time - Overall (hours)")  
+
+
+        # ------- Chart - Time overall just transports-----
+        x_transport_time = ['Truck','Train', 'Airplane']
+
+        y_time_overall_2 = [tab2_ov_time_truck, tab2_ov_time_train_r0, tab2_ov_time_air_r0]
+
+        fig_tab2_time_o2 = go.Figure()
+
+        fig_tab2_time_o2.add_bar(x=x_transport_time,y=y_time_overall_2, name= "Transport/Delivery",
+            marker=dict(
+                color='rgba(0, 112, 192, 1)',
+            )
+        )
+
+        fig_tab2_time_o2.update_layout(barmode="relative")
+        fig_tab2_time_o2.update_layout(title = "Time - Overall transport (hours)")  
+
+
+        # ------- Chart - Price overall -----
+        x_transport_price_o = ['Truck','Train', 'Airplane']
+
+        y_price_overall = [tab2_dist_dtd_truck, tab2_dist_dtd_train_r0, tab2_dist_dtd_air_r0]
+        y_price_services = [sum_extra_services_truck_train, tab2_extra_services_train_r0, tab2_sum_extra_services_air_r0 ] 
+
+        fig_tab2_price_o = go.Figure()
+
+
+        fig_tab2_price_o.add_bar(x=x_transport_price_o,y=y_price_services, name= f"Extra services",
+            marker=dict(
+                color='rgba(20, 19, 18, 0.8)',
+            )
+        )
+        fig_tab2_price_o.add_bar(x=x_transport_price_o,y=y_price_overall, name= "Transport/Delivery",
+            marker=dict(
+                color='rgba(0, 112, 192, 1)',
+            )
+        )
+
+        fig_tab2_price_o.update_layout(barmode="relative")
+        fig_tab2_price_o.update_layout(title = f"Price - Overall ({selected_currency})")  
+
+
+        # user screen
+        # //////////////////// Container OVERALL TAB2 ///////////////////////////
         ''
         ''
         with st.container(border=True):
@@ -3048,8 +3199,44 @@ if st.button("Submit", use_container_width=True):
             
             st.dataframe(df_tab2_overall_time, hide_index=True)
 
+            with st.expander("Chart - Time", icon= ":material/bar_chart:"):
 
 
+                tab_exp_cht_1, tab_exp_cht_2 = st.tabs([
+                    "Overall",
+                    "Transport without administration"
+                ])
+
+
+                with tab_exp_cht_1:
+                    st.plotly_chart(fig_tab2_time_o, theme="streamlit")
+
+                with tab_exp_cht_2:
+
+                    col_exp_cht_1, col_exp_cht_2 = st.columns(2)
+
+                    col_exp_cht_1.plotly_chart(fig_tab2_time_o2, theme="streamlit")
+
+                    col_exp_cht_2.write("""
+                    - **Time to cover the transport -> physical movement of the shipment**
+                    - **Truck:** Distance + DTD + Breaks
+                    - **Train:** Distance + DTD + Transfer
+                    - **Airplane:** Distance + DTD + Transfer
+                    """)
+
+            with st.expander("Chart - Price", icon= ":material/bar_chart:"):
+                st.plotly_chart(fig_tab2_price_o, theme="streamlit")
+
+                st.write("- Note (!): Danger goods is **not allowed in Airplane** -> not counted")
+                col_exp_pr_1, col_exp_pr_2 = st.columns(2)
+
+                col_exp_pr_1.dataframe(df_tab2_extra_s, hide_index=True)
+
+
+
+
+
+        # //////////////////// Container DETAIL TAB2 ///////////////////////////
         with st.container(border=True):
             st.write("###### Detail:")
             st.write(f"- {from_city} ({country_code_from}) - {to_city} ({country_code_to})")
@@ -3062,8 +3249,8 @@ if st.button("Submit", use_container_width=True):
             ''
             st.write(f"""
                 - Door-to-Door:
-                    - {from_city}: {from_city_extra_doortdoor} km
-                    - {to_city}: {to_city_extra_doortdoor} km
+                    - {from_city} ({country_code_from}): **{from_city_extra_doortdoor} km**
+                    - {to_city} ({country_code_to}): **{to_city_extra_doortdoor} km**
                 """)
 
             st.dataframe(df_tab2_dtd, hide_index=True)
@@ -3072,17 +3259,98 @@ if st.button("Submit", use_container_width=True):
             ** For **Train** and **Airplane** - includes time for transfer Truck <-> Train/Airplane
             """)
 
+        # /////////////////// Charts for DETAIL section TAB2 //////////////////////////
+        # -----  Chart Time ---------------
+            x_transport = ['Truck','Train', 'Airplane']
+
+            y_time_distance = [tab2_time_journey_truck_r2, tab2_time_journey_train_r2, tab2_time_journey_air_r2]
+            y_time_dtd_a = [tab2_time_dtd_from_truck,tab2_truck_time_dtd_air_train_from_train_adj_r0,tab2_truck_time_dtd_air_train_from_air_adj_r0]
+            y_time_dtd_b = [tab2_time_dtd_to_truck,tab2_truck_time_dtd_air_train_to_train_adj_r0,tab2_truck_time_dtd_air_train_to_air_adj_r0]
+            y_time_transfer = [0, tab2_train_transf_sum, tab2_air_transf_sum]
+            y_time_break = [tab2_time_break , 0, 0]
+            # y_time_service = [extra_time_tab2_truck, extra_time_tab2_train_adj, extra_time_tab2_air_adj] 
+
+            fig_tab2_time = go.Figure()
+
+            fig_tab2_time.add_bar(x=x_transport,y=y_time_distance, name= "Distance",
+                marker=dict(
+                    color='rgba(219, 238, 243, 1)',
+                )
+            )
+
+            fig_tab2_time.add_bar(x=x_overall,y=y_time_dtd_a, name= f"DTD {from_city}",
+                marker=dict(
+                    color='rgba(254, 229, 153, 1)',
+                )
+            )
+
+            fig_tab2_time.add_bar(x=x_overall,y=y_time_dtd_b, name= f"DTD {to_city}",
+                marker=dict(
+                    color='rgba(229, 185, 181, 1)',
+                )
+            )
+
+            fig_tab2_time.add_bar(x=x_overall,y=y_time_transfer, name= f"Transfer",
+                marker=dict(
+                    color='rgba(235, 241, 223, 1)',
+                )
+            )
+
+            fig_tab2_time.add_bar(x=x_overall,y=y_time_break, name= f"Break Truck",
+                marker=dict(
+                    color='rgba(248, 241, 235, 1)',
+                )
+            )
+
+            fig_tab2_time.update_layout(barmode="relative")
+            fig_tab2_time.update_layout(title = "Time - Distance & DTD (hours)")            
+
+
+            # -----  Chart Price ---------------
+            x_price_transport = ['Truck','Train', 'Airplane']
+
+            y_price_distance = [tab2_price_truck_r2, tab2_price_train_r2, tab2_price_air_r2]
+
+            y_price_dtd_a = [tab2_door_from_result_truck,
+            tab2_door_from_result_train_adj_r0,tab2_door_from_result_air_adj_r0]
+
+            y_price_dtd_b = [tab2_door_to_result_truck,tab2_door_to_result_train_adj_r0,tab2_door_to_result_air_adj_r0]
+
+            fig_overall_2 = go.Figure()
+
+            fig_overall_2.add_bar(x=x_price_transport,y=y_price_distance, name= "Distance",
+                marker=dict(
+                    color='rgba(219, 238, 243, 1)',
+                )
+            )
+
+
+            fig_overall_2.add_bar(x=x_overall,y=y_price_dtd_a, name= f"DTD {from_city}",
+                marker=dict(
+                    color='rgba(254, 229, 153, 1)',
+                )
+            )
+            fig_overall_2.add_bar(x=x_overall,y=y_price_dtd_b, name= f"DTD {to_city}",
+                marker=dict(
+                    color='rgba(229, 185, 181, 1)',
+                )
+            )
+
+            fig_overall_2.update_layout(barmode="relative")
+            fig_overall_2.update_layout(title = f"Price - Distance & DTD ({selected_currency})")
+
+
+
+
+            with st.expander("Chart - Time - Distance & DTD", icon= ":material/bar_chart:"):
+                st.plotly_chart(fig_tab2_time, theme="streamlit")
+
+            with st.expander("Chart - Price - Distance & DTD", icon= ":material/bar_chart:"):
+                st.plotly_chart(fig_overall_2, theme="streamlit")
+
+
             ''
             st.write(f"- Selected service - **{urgency}**")
 
             col_urg_1, col_urg_2 = st.columns(2)
-            col_urg_1.dataframe(df_tab2_service, use_container_width=True, hide_index=True)
-
-
-
-
-            
-
-
-
-        
+            col_urg_1.dataframe(df_tab2_service, use_container_width=True, hide_index=True)        

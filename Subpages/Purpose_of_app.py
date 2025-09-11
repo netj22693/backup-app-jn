@@ -265,7 +265,8 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
-		- **v32.7** - Comparison of other transport types after Submit button - 10-Sep-2025
+		- **v32.9** - TAB2 Charts added -> better visualization - 11-Sep-2025
+		- **v32.7** - TAB2 Analytics & Other transport types after Submit button - 10-Sep-2025
 		- **v30.8** - Distance correction list introduced (for specific roads not possible to calculate) - 28-Aug-2025
 		- **v30.1** - DTD also extends time for delivery; Airplane & Train if DTD, includes time for shipment transfer to Truck - 21-Aug-2025	
 		- **v22.3** - Better calculation method for Airplane - 19-Aug-2025	
