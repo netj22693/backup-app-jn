@@ -178,8 +178,8 @@ tab_tc1, tab_tc2 = st.tabs([
 with tab_tc1:
     st.write("""
             - **End-to-End delivery time**:
-                - Time to cover **administration once offer approved by customer**
-                - Time to cover **physical move of the shipment**
+                - Time to cover **administration once offer approved by customer** (Administration)
+                - Time to cover **physical move of the shipment** (Transport)
             - It is a combination of inputs/variables dependent on user case/business scenario
             - Based on the inputs/variables the overall time for delivery is calculated
             - *DTD stands for Door-To-Door delivery
