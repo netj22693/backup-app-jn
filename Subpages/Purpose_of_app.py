@@ -265,6 +265,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v33.0** - 'Delivery at' added (Weekday - DD-Month-YY HH:MM - CET/CEST) & logic for delivery time frames - 13-Sep-2025
 		- **v32.9** - TAB2 Charts added -> better visualization - 11-Sep-2025
 		- **v32.7** - TAB2 Analytics & Other transport types after Submit button - 10-Sep-2025
 		- **v30.8** - Distance correction list introduced (for specific roads not possible to calculate) - 28-Aug-2025

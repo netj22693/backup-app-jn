@@ -5,6 +5,9 @@ import requests
 import json
 import plotly.express as px
 import plotly.graph_objects as go
+from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
+import time
 
 
 
@@ -40,6 +43,8 @@ slow_extra_time_truck_h = 120
 slow_extra_time_train_h = 120
 slow_extra_time_air_h = 240
 
+# Variable used for final date time delivery - if offer to customer apprved till this time (hours)
+agreed_till = 24
 
 extra_time_df = pd.DataFrame({
     "Transport" : tranport_types_list,
@@ -790,6 +795,102 @@ data_pie_air_overall = pd.DataFrame({
                     (diff_air_cz + diff_air_sk + diff_air_at + diff_air_de + diff_air_pl)],
                 "Result" : ["Available", "Not available",]
                 })
+
+# Function for Time Frames delivery
+def adjust_delivery_time(dt):
+
+    # st.write(dt)
+
+    hour = dt.hour
+    # Must be firt TIME/HOURS determintaion if move to the next day or not - this was Bug (in case that first date condition and then time condition -> the it can happen that Friday  will be adjusted to Satruday and OVERALL rule is: 
+
+    #  - Delivery Monday: 10:00 - 22:00
+    #  - Delivery Tuesday - Friday : 07:00 - 22:00
+    #  - Delivery Saturday & Sunday: No delivery ->  Monday: 10:00
+
+
+    # First condition, TIME/HOURS. 
+    # If 22:00 - 23:59 -> move to 07:00 next day
+    # If 00:00 - 06:59 -> move to 07:00 same day 
+
+    if hour >= 22:
+        adjusted_dt = (dt + timedelta(days=1)).replace(hour=7, minute=0, second=0, microsecond=0)
+
+    elif 0 <= hour < 7:
+        adjusted_dt = dt.replace(hour=7, minute=0, second=0, microsecond=0)
+
+    else:
+        adjusted_dt = dt
+
+
+    # Second condition. DAY 
+    # If Saturday (5) -> Monday 10:00  
+    # If Sunday (6) -> Monday 10:00  
+
+    weekday = adjusted_dt.weekday()
+
+    if weekday == 5:   
+        adjusted_dt = (adjusted_dt + timedelta(days=2)).replace(hour=10, minute=0, second=0, microsecond=0)
+
+    elif weekday == 6: 
+        adjusted_dt = (adjusted_dt + timedelta(days=1)).replace(hour=10, minute=0, second=0, microsecond=0)
+
+    return adjusted_dt
+
+
+# Date time function 
+def delivery_date_time(overall_time, agreed_till):
+
+    # get actual time in Europe
+    date_time_europe = datetime.now(ZoneInfo(f"Europe/Prague"))
+    offset_to_utc = int(date_time_europe.utcoffset().total_seconds() / 3600)
+
+    europe_date_part = date_time_europe.date()  
+    europe_date_part = europe_date_part.strftime("%d-%b-%y")
+
+    europe_time_part = date_time_europe.time()   
+    europe_time_part = europe_time_part.strftime("%H:%M")
+
+    #gmt time - for delta purpose
+    gmt = time.gmtime()
+    gmt_dt = datetime(
+    gmt.tm_year, gmt.tm_mon, gmt.tm_mday,
+    gmt.tm_hour, gmt.tm_min, gmt.tm_sec,
+    tzinfo=timezone.utc
+    )
+
+    # Delta 
+    delta = timedelta(hours = (overall_time + offset_to_utc + agreed_till))
+    delivery_dt = gmt_dt + delta
+
+    # This part helps to change time delivery in case of time between 22:00 - 06:59
+    delivery_dt = adjust_delivery_time(delivery_dt)
+
+    #formating for screen visualization
+    delivery_dt_formated = delivery_dt.strftime("%A - %d-%b-%y by %H:%M")
+
+    return delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part
+
+
+
+# Date time function  -> to determin time CET or CEST
+def determin_cet_cest(delivery_dt):
+
+    offset_delivery = delivery_dt.replace(tzinfo = ZoneInfo("Europe/Prague"))
+    offset_hours = int(offset_delivery.utcoffset().total_seconds() / 3600)
+
+    if offset_hours == 1:
+        cet_cest = 'CET'
+
+    elif offset_hours == 2:
+        cet_cest = 'CEST'
+
+    else:
+        cet_cest = ''
+
+    return cet_cest
+
+
 
 
 # //////////////////// Frontend screen - top part ////////////////////////
@@ -2804,6 +2905,43 @@ if st.button("Submit", use_container_width=True):
 
 
 
+            delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part = delivery_date_time(overall_time_truck,agreed_till)
+
+            cet_cest_delivery = determin_cet_cest(delivery_dt)
+            cet_cest_now = determin_cet_cest(date_time_europe)
+
+
+
+
+            st.write("- **Expected delivery:**")
+            with st.container(border=True):
+                st.write(f"**{delivery_dt_formated} - {cet_cest_delivery}**")
+            
+            with st.expander("Info", icon=":material/help:"):
+
+                tab_info_1, tab_info_2 = st.tabs([
+                    "How",
+                    "Delivery Time Rules"
+                ])
+
+
+                tab_info_1.write(f"""
+                    - Calculated based on **current {cet_cest_now} time and date** ({europe_date_part} - {europe_time_part})
+                    - **Plus** the Overall end-to-end time: **{overall_time_truck:.2f}** {hour_s_text_truck}
+                    - Plus **24 hours** -> which is time **till the customer needs to approve this offer** to be able to reach the delivery
+                """)    
+
+                tab_info_1.write("- **Delivery Time Rules** - The date and time can be adjusted accordingly to night hours and day in the week")
+
+
+                tab_info_2.write(f"""
+                    - Monday: **10:00 - 22:00**
+                    - Tuesday - Friday : **07:00 - 22:00**
+                    - Saturday & Sunday: No delivery ->  **Monday: 10:00**
+                """)   
+                
+                tab_info_2.write("- In case that calculated delivery time is **not** in these time frames -> **the delivery time is adjsuted to fit into these**")
+
         elif selected_transport == 'Train' or 'Airplane':
 
             ''
@@ -2849,6 +2987,45 @@ if st.button("Submit", use_container_width=True):
         
 
 
+            delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part = delivery_date_time(overall_time_train_air,agreed_till)
+
+            cet_cest_delivery = determin_cet_cest(delivery_dt)
+            cet_cest_now = determin_cet_cest(date_time_europe)
+
+
+
+
+            st.write("- **Expected delivery:**")
+            with st.container(border=True):
+                st.write(f"**{delivery_dt_formated} - {cet_cest_delivery}**")
+            
+            with st.expander("Info", icon=":material/help:"):
+
+                tab_info_ta_1, tab_info_ta_2 = st.tabs([
+                    "How",
+                    "Delivery Time Rules"
+                ])
+
+
+
+                tab_info_ta_1.write(f"""
+                    - Calculated based on **current {cet_cest_now} time and date** ({europe_date_part} - {europe_time_part})
+                    - **Plus** the Overall end-to-end time: **{overall_time_train_air:.2f}** {hour_s_text_train_air}
+                    - Plus **24 hours** -> which is time **till the customer needs to approve this offer** to be able to reach the delivery
+                """)   
+
+                tab_info_ta_1.write("- **Delivery Time Rules** - The date and time can be adjusted accordingly to night hours and day in the week")
+
+
+                tab_info_ta_2.write(f"""
+                    - Monday: **10:00 - 22:00**
+                    - Tuesday - Friday : **07:00 - 22:00**
+                    - Saturday & Sunday: No delivery ->  **Monday: 10:00**
+                """)   
+                
+                tab_info_ta_2.write("- In case that calculated delivery time is **not** in these time frames -> **the delivery time is adjsuted to fit into these**")
+
+
         ''
         ''
         st.write(f"""
@@ -2885,6 +3062,7 @@ if st.button("Submit", use_container_width=True):
 
         with st.expander("Color-coding charts", icon= ":material/help:"):
             st.image("Pictures/Function_7/F7_tab2_colorcoding.svg")
+            pass
 
 
         # This one is for Chart purposes
