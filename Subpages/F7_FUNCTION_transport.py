@@ -2921,7 +2921,7 @@ if st.button("Submit", use_container_width=True):
 
                 tab_info_1, tab_info_2 = st.tabs([
                     "How",
-                    "Delivery Time Rules"
+                    "Delivery Time Frame"
                 ])
 
 
@@ -2931,7 +2931,7 @@ if st.button("Submit", use_container_width=True):
                     - Plus **24 hours** -> which is time **till the customer needs to approve this offer** to be able to reach the delivery
                 """)    
 
-                tab_info_1.write("- **Delivery Time Rules** - The date and time can be adjusted accordingly to night hours and day in the week")
+                tab_info_1.write("- **Delivery Time Frame** - The date and time can be adjusted accordingly to night hours and day in the week")
 
 
                 tab_info_2.write(f"""
@@ -2940,7 +2940,7 @@ if st.button("Submit", use_container_width=True):
                     - Saturday & Sunday: No delivery ->  **Monday: 10:00**
                 """)   
                 
-                tab_info_2.write("- In case that calculated delivery time is **not** in these time frames -> **the delivery time is adjsuted to fit into these**")
+                tab_info_2.write("- In case that **calculated Expected delivery time** is **not** in these time frames -> **the delivery time is adjusted to fit into these**")
 
         elif selected_transport == 'Train' or 'Airplane':
 
@@ -3003,7 +3003,7 @@ if st.button("Submit", use_container_width=True):
 
                 tab_info_ta_1, tab_info_ta_2 = st.tabs([
                     "How",
-                    "Delivery Time Rules"
+                    "Delivery Time Frame"
                 ])
 
 
@@ -3014,7 +3014,7 @@ if st.button("Submit", use_container_width=True):
                     - Plus **24 hours** -> which is time **till the customer needs to approve this offer** to be able to reach the delivery
                 """)   
 
-                tab_info_ta_1.write("- **Delivery Time Rules** - The date and time can be adjusted accordingly to night hours and day in the week")
+                tab_info_ta_1.write("- **Delivery Time Frame** - The date and time can be adjusted accordingly to night hours and day in the week")
 
 
                 tab_info_ta_2.write(f"""
