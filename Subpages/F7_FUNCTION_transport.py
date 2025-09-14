@@ -799,9 +799,8 @@ data_pie_air_overall = pd.DataFrame({
 # Function for Time Frames delivery
 def adjust_delivery_time(dt):
 
-    # st.write(dt)
-
     hour = dt.hour
+
     # Must be firt TIME/HOURS determintaion if move to the next day or not - this was Bug (in case that first date condition and then time condition -> the it can happen that Friday  will be adjusted to Satruday and OVERALL rule is: 
 
     #  - Delivery Monday: 10:00 - 22:00
@@ -828,12 +827,18 @@ def adjust_delivery_time(dt):
     # If Sunday (6) -> Monday 10:00  
 
     weekday = adjusted_dt.weekday()
+    hour_2 = adjusted_dt.hour
 
     if weekday == 5:   
         adjusted_dt = (adjusted_dt + timedelta(days=2)).replace(hour=10, minute=0, second=0, microsecond=0)
 
     elif weekday == 6: 
         adjusted_dt = (adjusted_dt + timedelta(days=1)).replace(hour=10, minute=0, second=0, microsecond=0)
+
+    # If Monday (0) 07:00 - 9:59 -> Monday 10:00  
+    elif weekday == 0:
+            if 6 < hour_2 < 10:
+                adjusted_dt = dt.replace(hour=10, minute=0, second=0, microsecond=0)             
 
     return adjusted_dt
 
