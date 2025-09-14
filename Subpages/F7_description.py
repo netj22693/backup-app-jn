@@ -1,5 +1,48 @@
 import streamlit as st
 
+
+
+# Python code TIME for vsibility
+
+python_time_if = """
+def adjust_delivery_time(dt):
+
+    hour = dt.hour
+
+    # First condition, TIME/HOURS. 
+    # If 22:00 - 23:59 -> move to 07:00 next day
+    # If 00:00 - 06:59 -> move to 07:00 same day 
+
+    if hour >= 22:
+        adjusted_dt = (dt + timedelta(days=1)).replace(hour=7, minute=0, second=0, microsecond=0)
+
+    elif 0 <= hour < 7:
+        adjusted_dt = dt.replace(hour=7, minute=0, second=0, microsecond=0)
+
+    else:
+        adjusted_dt = dt
+
+    # Second condition. DAY 
+    # If Saturday (5) -> Monday 10:00  
+    # If Sunday (6) -> Monday 10:00  
+
+    weekday = adjusted_dt.weekday()
+    hour_2 = adjusted_dt.hour
+
+    if weekday == 5:   
+        adjusted_dt = (adjusted_dt + timedelta(days=2)).replace(hour=10, minute=0, second=0, microsecond=0)
+
+    elif weekday == 6: 
+        adjusted_dt = (adjusted_dt + timedelta(days=1)).replace(hour=10, minute=0, second=0, microsecond=0)
+
+    # If Monday (0) 07:00 - 9:59 -> Monday 10:00  
+    elif weekday == 0:
+            if 6 < hour_2 < 10:
+                adjusted_dt = dt.replace(hour=10, minute=0, second=0, microsecond=0)             
+
+    return adjusted_dt
+"""
+
 # dictionary:
 
 dataset_test = ({
@@ -407,8 +450,8 @@ with tab_tc3:
                     - **Reason**: no delivery Saturday and Sunday
                  """)
 
-    # with st.expander("Pythone code", icon=":material/code:"):
-    #     st.code(language="python")
+    with st.expander("Pythone code", icon=":material/code:"):
+        st.code(python_time_if, language="python")
 
 
 
