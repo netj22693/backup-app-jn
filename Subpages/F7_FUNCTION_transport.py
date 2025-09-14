@@ -2434,7 +2434,7 @@ if st.button("Submit", use_container_width=True):
         # st.write(f" LEVEL 1: big_result_c: {big_result_c}")
 
         if (big_result_r == 0 and big_result_c == 0) and (small_result_r <= 1 and small_result_c <= 1):
-            st.write("L1")
+            # st.write("L1")
             price = price_square
             distance = 30
             return price, distance

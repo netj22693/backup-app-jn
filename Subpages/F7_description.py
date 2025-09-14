@@ -167,14 +167,18 @@ with st.expander("Correction list", icon=":material/help:"):
 st.write("##### Time calculation:") 
 
 st.write("- Overview of variables from which the time result is created")
+
+''
 st.image("Pictures/Function_7/F7_desc_time_variables.svg")
 
 ''
-tab_tc1, tab_tc2 = st.tabs([
+tab_tc1, tab_tc2, tab_tc3 = st.tabs([
     "End-to-End delivery time",
-    "Expected delivery time"
+    "Expected delivery time",
+    "DTF - Delivery Time Frame"
 ])
 
+''
 with tab_tc1:
     st.write("""
             - **End-to-End delivery time**:
@@ -360,6 +364,53 @@ with tab_tc2:
 
     ''
     st.image("Pictures/Function_7/F7_desc_uml_time.svg")
+
+
+with tab_tc3:
+
+    with st.container(border=True):
+        st.write(f"""
+                    - Monday: **10:00 - 22:00**
+                    - Tuesday - Friday : **07:00 - 22:00**
+                    - Saturday & Sunday: No delivery ->  **Monday: 10:00**
+                """)   
+
+  
+    st.write(f"""
+                    - If the **calculated Expected delivery time and date**:
+                        - **Fits** into the Frame -> it is not changed
+                        - **Does not fit** into the Frame -> it is changed accordingly to the logic
+                """)  
+
+    st.image("Pictures/Function_7/F7_desc_time_dtf.svg")
+
+    ''
+    with st.expander("DTF - Examples", icon= ":material/info:"):
+
+        st.write("""
+                 - Example 1:
+                    - **Calculated**: Wednesday - 17-Sep-25 by 19:58
+                    - **Changed to**: no change
+                 """)
+        
+        st.write("""
+                 - Example 2:
+                    - **Calculated**: Wednesday 17-Sep-25 - 04:22
+                    - **Changed to**: Wednesday - 17-Sep-25 - **07:00**
+                    - **Reason**: no delivery by 04:00
+                 """)
+
+        st.write("""
+                 - Example 3:
+                    - **Calculated**: Saturday 20-Sep-25 - 15:48
+                    - **Changed to**: **Monday** - 22-Sep-25 - **10:00**
+                    - **Reason**: no delivery Saturday and Sunday
+                 """)
+
+    # with st.expander("Pythone code", icon=":material/code:"):
+    #     st.code(language="python")
+
+
 
 
 ''
