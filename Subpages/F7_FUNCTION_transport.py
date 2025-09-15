@@ -43,8 +43,8 @@ slow_extra_time_truck_h = 120
 slow_extra_time_train_h = 120
 slow_extra_time_air_h = 240
 
-# Variable used for final date time delivery - if offer to customer apprved till this time (hours)
-agreed_till = 24
+
+
 
 extra_time_df = pd.DataFrame({
     "Transport" : tranport_types_list,
@@ -226,7 +226,7 @@ def api_get_rate():
         usd_to_eur_rate = 0.86
 
         # For actual alignment with API
-        # usd_to_czk_rate = 20.84
+        # usd_to_czk_rate = 20.73
         # usd_to_eur_rate = 0.85
         
         return usd_to_czk_rate, usd_to_eur_rate 
@@ -874,7 +874,16 @@ def delivery_date_time(overall_time, agreed_till):
     #formating for screen visualization
     delivery_dt_formated = delivery_dt.strftime("%A - %d-%b-%y by %H:%M")
 
-    return delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part
+    # Customer to approve till
+    customer_approve_till =  date_time_europe + timedelta(hours = agreed_till)
+    customer_approve_date = customer_approve_till.date() 
+    customer_approve_time = customer_approve_till.time() 
+
+    customer_approve_date = customer_approve_date.strftime("%d-%b-%y")
+    customer_approve_time = customer_approve_time.strftime("%H:%M")
+
+
+    return delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time
 
 
 
@@ -2164,8 +2173,41 @@ with st.expander("Door-to-Door", icon= ":material/info:"):
         - Customer pays for delivery to **B - 20km** -> our company will make a shipment transfer from **Airplane to Truck** for the last **20 km**     
     """)
 
+''
+''
+st.write("**Customer needs to approve the transport offer till:**")
+agreed_till = st.radio(
+    "Customer needs to approve the transport offer till:", 
+    ("1 day", "2 days", "5 days", "7 days"),
+    horizontal = True,
+    label_visibility = "collapsed",
+    index = 1 )
+
+st.caption("2 days set as default. Can be changed accordingly to customer's need.")
 
 
+agreed_till_str = agreed_till
+
+
+def determin_value_agreed_till(input):
+
+    # output in hours
+    if input == "1 day":
+        output = 24
+
+    if input == "2 days":
+        output = 48
+
+    if input == "5 days":
+        output = 120
+
+    if input == "7 days":
+        output = 168
+
+    return output
+
+
+agreed_till = determin_value_agreed_till(agreed_till)
 
 # Check box validation /transformation to money
 
@@ -2868,6 +2910,23 @@ if st.button("Submit", use_container_width=True):
     with tab_final_1:
         if selected_transport == 'Truck':
 
+            # (round(time_journey, 2) here rounding allowed, because upper |f"- Time to cover the distance {from_city} - {to_city} is: **{time_journey:.2f} hour(s)**."| there is already rounding rounding as part of visualiztion of :.2f
+            overall_time_truck = (round(time_journey, 2) + time_break + extra_time + time_dtd)
+
+            delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time = delivery_date_time(overall_time_truck,agreed_till)
+
+            cet_cest_delivery = determin_cet_cest(delivery_dt)
+            cet_cest_now = determin_cet_cest(date_time_europe)
+
+
+
+            ''
+            st.write(f"""
+                - Offer created: **{europe_date_part} - {europe_time_part} {cet_cest_now}**
+                - Customer to approve till: **{customer_approve_date} - {customer_approve_time} {cet_cest_now}** ({agreed_till_str})
+            """)
+
+
             ''
             st.write(f"""
                 - Delivery from **{from_city} ({country_code_from})** to **{to_city} ({country_code_to}):**
@@ -2896,8 +2955,6 @@ if st.button("Submit", use_container_width=True):
             ''
             st.write("- **Overall time end-to-end delivery:**")
 
-            # (round(time_journey, 2) here rounding allowed, because upper |f"- Time to cover the distance {from_city} - {to_city} is: **{time_journey:.2f} hour(s)**."| there is already rounding rounding as part of visualiztion of :.2f
-            overall_time_truck = (round(time_journey, 2) + time_break + extra_time + time_dtd)
 
             if overall_time_truck >= 2:
                 hour_s_text_truck = 'hours'
@@ -2910,14 +2967,6 @@ if st.button("Submit", use_container_width=True):
 
 
 
-            delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part = delivery_date_time(overall_time_truck,agreed_till)
-
-            cet_cest_delivery = determin_cet_cest(delivery_dt)
-            cet_cest_now = determin_cet_cest(date_time_europe)
-
-
-
-
             st.write("- **Expected delivery:**")
             with st.container(border=True):
                 st.write(f"**{delivery_dt_formated} - {cet_cest_delivery}**")
@@ -2926,17 +2975,18 @@ if st.button("Submit", use_container_width=True):
 
                 tab_info_1, tab_info_2 = st.tabs([
                     "How",
-                    "Delivery Time Frame"
+                    "DTF - Delivery Time Frame"
                 ])
 
 
                 tab_info_1.write(f"""
-                    - Calculated based on **current {cet_cest_now} time and date** ({europe_date_part} - {europe_time_part})
-                    - **Plus** the Overall end-to-end time: **{overall_time_truck:.2f}** {hour_s_text_truck}
-                    - Plus **24 hours** -> which is time **till the customer needs to approve this offer** to be able to reach the delivery
+                    - Calculated based on:
+                        - Current time and date: **{europe_date_part} - {europe_time_part} - {cet_cest_now}**
+                        - Overall end-to-end delivery: **{overall_time_truck:.2f} {hour_s_text_truck}**
+                        - Time till the customer needs to approve the offer: **{agreed_till} hours** ({agreed_till_str})
                 """)    
 
-                tab_info_1.write("- **Delivery Time Frame** - The date and time can be adjusted accordingly to night hours and day in the week")
+                tab_info_1.write("- **If the result does not fit to DTF (Delivery Time Frame) -> it is asjusted accordingly the DTF rules**")
 
 
                 tab_info_2.write(f"""
@@ -2947,7 +2997,27 @@ if st.button("Submit", use_container_width=True):
                 
                 tab_info_2.write("- In case that **calculated Expected delivery time** is **not** in these time frames -> **the delivery time is adjusted to fit into these**")
 
+
+
+
         elif selected_transport == 'Train' or 'Airplane':
+
+
+            # (round(time_journey, 2) here rounding allowed, because upper |f"- Time to cover the distance {from_city} - {to_city} is: **{time_journey:.2f} hour(s)**."| there is already rounding rounding as part of visualiztion of :.2f
+            overall_time_train_air = (round(time_journey,2) + extra_time + time_dtd)
+
+            delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time = delivery_date_time(overall_time_train_air,agreed_till)
+
+            cet_cest_delivery = determin_cet_cest(delivery_dt)
+            cet_cest_now = determin_cet_cest(date_time_europe)
+
+
+
+            ''
+            st.write(f"""
+                - Offer created: **{europe_date_part} - {europe_time_part} {cet_cest_now}**
+                - Customer to approve till: **{customer_approve_date} - {customer_approve_time} {cet_cest_now}** ({agreed_till_str})
+            """)
 
             ''
             st.write(f"""
@@ -2978,8 +3048,6 @@ if st.button("Submit", use_container_width=True):
             ''
             st.write("- **Overall time end-to-end delivery:**")
 
-            # (round(time_journey, 2) here rounding allowed, because upper |f"- Time to cover the distance {from_city} - {to_city} is: **{time_journey:.2f} hour(s)**."| there is already rounding rounding as part of visualiztion of :.2f
-            overall_time_train_air = (round(time_journey,2) + extra_time + time_dtd)
 
             if overall_time_train_air >= 2:
                 hour_s_text_train_air = 'hours'
@@ -2992,14 +3060,6 @@ if st.button("Submit", use_container_width=True):
         
 
 
-            delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part = delivery_date_time(overall_time_train_air,agreed_till)
-
-            cet_cest_delivery = determin_cet_cest(delivery_dt)
-            cet_cest_now = determin_cet_cest(date_time_europe)
-
-
-
-
             st.write("- **Expected delivery:**")
             with st.container(border=True):
                 st.write(f"**{delivery_dt_formated} - {cet_cest_delivery}**")
@@ -3008,18 +3068,19 @@ if st.button("Submit", use_container_width=True):
 
                 tab_info_ta_1, tab_info_ta_2 = st.tabs([
                     "How",
-                    "Delivery Time Frame"
+                    "DTF - Delivery Time Frame"
                 ])
 
 
-
                 tab_info_ta_1.write(f"""
-                    - Calculated based on **current {cet_cest_now} time and date** ({europe_date_part} - {europe_time_part})
-                    - **Plus** the Overall end-to-end time: **{overall_time_train_air:.2f}** {hour_s_text_train_air}
-                    - Plus **24 hours** -> which is time **till the customer needs to approve this offer** to be able to reach the delivery
-                """)   
+                    - Calculated based on:
+                        - Current time and date: **{europe_date_part} - {europe_time_part} - {cet_cest_now}**
+                        - Overall end-to-end delivery: **{overall_time_train_air:.2f} {hour_s_text_train_air}**
+                        - Time till the customer needs to approve the offer: **{agreed_till} hours** ({agreed_till_str})
+                """)    
 
-                tab_info_ta_1.write("- **Delivery Time Frame** - The date and time can be adjusted accordingly to night hours and day in the week")
+                tab_info_ta_1.write("- **If the result does not fit to DTF (Delivery Time Frame) -> it is asjusted accordingly the DTF rules**")
+
 
 
                 tab_info_ta_2.write(f"""

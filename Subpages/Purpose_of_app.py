@@ -265,6 +265,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v33.4** - 'Offer to be approved till' option added -> influences 'delivery at' date & time - 15-Sep-2025
 		- **v33.0** - 'Delivery at' added (Weekday - DD-Month-YY HH:MM - CET/CEST) & logic for delivery time frames - 13-Sep-2025
 		- **v32.9** - TAB2 Charts added -> better visualization - 11-Sep-2025
 		- **v32.7** - TAB2 Analytics & Other transport types after Submit button - 10-Sep-2025
