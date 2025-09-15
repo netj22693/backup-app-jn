@@ -215,10 +215,11 @@ st.write("- Overview of variables from which the time result is created")
 st.image("Pictures/Function_7/F7_desc_time_variables.svg")
 
 ''
-tab_tc1, tab_tc2, tab_tc3 = st.tabs([
+tab_tc1, tab_tc2, tab_tc3, tab_tc4 = st.tabs([
     "End-to-End delivery time",
     "Expected delivery time",
-    "DTF - Delivery Time Frame"
+    "DTF - Delivery Time Frame",
+    "Agreed time for offer approval"
 ])
 
 ''
@@ -227,9 +228,13 @@ with tab_tc1:
             - **End-to-End delivery time**:
                 - Time to cover **administration once offer approved by customer** (Administration)
                 - Time to cover **physical move of the shipment** (Transport)
+            """)
+    
+    st.image("Pictures/Function_7/F7_desc_variables_e2e_time_2.svg")
+
+    st.write("""
             - It is a combination of inputs/variables dependent on user case/business scenario
-            - Based on the inputs/variables the overall time for delivery is calculated
-            - *DTD stands for Door-To-Door delivery
+            - DTD stands for Door-To-Door delivery
             """)
 
     ''
@@ -248,6 +253,7 @@ with tab_tc1:
         st.image("Pictures/Function_7/F7_desc_bpmn_time_driver_breaks.svg", width=600)
 
     with tab_time2:
+        st.image("Pictures/Function_7/F7_desc_variables_admin_time.svg")
         st.image("Pictures/Function_7/F7_desc_bpmn_time_table.svg", width=550)
         ''
         ''
@@ -381,12 +387,15 @@ with tab_tc1:
         """)
 
 with tab_tc2:
-    st.write("""
-        - **Expected delivery time** = **End-to-End delivery time** + **Agreed time for offer approval** (currently set as 24 hours)
-             """)
 
     st.write("""
-        - **Expected delivery time** -> Is then checked, if it is in **Delivery Time Frame (DTF)**
+        - Is calculated as:
+             """)
+
+    st.image("Pictures/Function_7/F7_desc_variables_delivery_time_2.svg")
+
+    st.write("""
+        - **Expected delivery time** is then checked, if it is in **Delivery Time Frame (DTF)**
              - **If yes**, the calculated date & time **is kept** and displayed to user
              - **If not**, the calculated date & time **is adjusted** to fit to the DTF
              """)
@@ -453,6 +462,18 @@ with tab_tc3:
     with st.expander("Pythone code", icon=":material/code:"):
         st.code(python_time_if, language="python")
 
+with tab_tc4:
+
+    st.image("Pictures/Function_7/F7_desc_variables_offer_time.svg", width=190)
+    
+    st.write("""
+                - 1 day - 24 hours
+                - 2 days - 48 hours
+                - 5 days - 120 hours
+                - 7 days - 168 hours
+            """)
+
+    st.write("- Can be selected based on customer's need")
 
 
 
