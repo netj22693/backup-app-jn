@@ -226,8 +226,8 @@ def api_get_rate():
         usd_to_eur_rate = 0.86
 
         # For actual alignment with API
-        # usd_to_czk_rate = 20.73
-        # usd_to_eur_rate = 0.85
+        usd_to_czk_rate = 20.66
+        usd_to_eur_rate = 0.85
         
         return usd_to_czk_rate, usd_to_eur_rate 
 
@@ -2913,6 +2913,7 @@ if st.button("Submit", use_container_width=True):
             # (round(time_journey, 2) here rounding allowed, because upper |f"- Time to cover the distance {from_city} - {to_city} is: **{time_journey:.2f} hour(s)**."| there is already rounding rounding as part of visualiztion of :.2f
             overall_time_truck = (round(time_journey, 2) + time_break + extra_time + time_dtd)
 
+
             delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time = delivery_date_time(overall_time_truck,agreed_till)
 
             cet_cest_delivery = determin_cet_cest(delivery_dt)
@@ -3321,10 +3322,36 @@ if st.button("Submit", use_container_width=True):
         tab2_ov_time_air_r0 = round(tab2_ov_time_air_r0, 2)
 
 
+        # 11. Conditions for keeping exact same time/variable  + getting the Expected delivery also for other transport types
+
+        if selected_transport == 'Truck':
+            tab2_delivery_dt_formated_truck = delivery_dt_formated
+        
+        else:
+            tab2_delivery_dt_truck, tab2_delivery_dt_formated_truck, tab2_date_time_europe_truck, tab2_europe_date_part_truck, tab2_europe_time_part_truck, tab2_customer_approve_date_truck, tab2_customer_approve_time_truck = delivery_date_time(tab2_overall_time_truck_r2,agreed_till)
+
+        if selected_transport == 'Train':
+            tab2_delivery_dt_formated_train = delivery_dt_formated  
+
+        else:
+            tab2_delivery_dt_train, tab2_delivery_dt_formated_train, tab2_date_time_europe_train, tab2_europe_date_part_train, tab2_europe_time_part_train, tab2_customer_approve_date_train, tab2_customer_approve_time_train = delivery_date_time(tab2_overall_time_train,agreed_till)
+
+
+
+        if selected_transport == 'Airplane':
+            tab2_delivery_dt_formated_air = delivery_dt_formated  
+
+        else:
+            tab2_delivery_dt_air, tab2_delivery_dt_formated_air, tab2_date_time_europe_air, tab2_europe_date_part_air, tab2_europe_time_part_air, tab2_customer_approve_date_air, tab2_customer_approve_time_air = delivery_date_time(tab2_overall_time_air,agreed_till)
+
+
+
+
         df_tab2_overall_time = pd.DataFrame({
             "Transport type" : tranport_types_list,
             "Time (hours)" : [tab2_overall_time_truck_r2, tab2_overall_time_train_r2, tab2_overall_time_air_r2],
-            f"Price ({selected_currency})" : [tab2_price_overall_truck, tab2_price_overall_train, tab2_price_overall_air]
+            f"Price ({selected_currency})" : [tab2_price_overall_truck, tab2_price_overall_train, tab2_price_overall_air],
+            f"Expected delivery ({cet_cest_now})" : [tab2_delivery_dt_formated_truck, tab2_delivery_dt_formated_train ,tab2_delivery_dt_formated_air]
         })
 
 
