@@ -459,7 +459,7 @@ with tab_tc3:
                     - **Reason**: no delivery Saturday and Sunday
                  """)
 
-    with st.expander("Pythone code", icon=":material/code:"):
+    with st.expander("Python code", icon=":material/code:"):
         st.code(python_time_if, language="python")
 
 with tab_tc4:
