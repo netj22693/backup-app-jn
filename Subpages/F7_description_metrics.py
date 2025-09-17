@@ -2,7 +2,7 @@ import streamlit as st
 
 
 
-st.write("# Use Cases & Metrics")
+st.write("# Use Cases & Metrics:")
 
 ''
 ''

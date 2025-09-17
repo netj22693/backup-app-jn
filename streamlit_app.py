@@ -172,6 +172,13 @@ function_7_desc_metrics = st.Page(
 )
 
 
+function_7_desc_variables = st.Page(
+    "Subpages/F7_description_variables.py",
+    title="Description - Variables",
+    icon= ":material/code:"
+)
+
+
 # Navigation:
 pg = st.navigation(
     {
@@ -210,6 +217,7 @@ pg = st.navigation(
         ],
         "Function 7": [
             function_7_desc,
+            function_7_desc_variables,
             function_7_desc_dtd,
             function_7_desc_metrics,
             function_7_transport,
