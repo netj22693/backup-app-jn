@@ -51,14 +51,14 @@ st.write("""
     - **Truck**:
          - More flexible 
          - Includes City area for Free
-         - Additional distance in area of 10 or 20 km is payed 
+         - Additional distance in area of 10 or 20 km is paid 
          """)
 
 st.write("""
     - **Train** and **Airplane**:
          - Less flexible as you also need an extra Truck for the "first/last mile"
          - There is **a must to transfer the shipment**
-         - Usually the Train hubs or Airports are not directly in the city -> the delivery area is 10 or 20 km (payed)
+         - Usually the Train hubs or Airports are not directly in the city -> the delivery area is 10 or 20 km (paid)
          """)
 
 ''
@@ -92,7 +92,7 @@ with tab1:
     - **Selected transport**: Airplane (applicable also for Train)
     - **Case**: Customer wants just A to B delivery - Airplane
     - This means that the customer will ensure the delivery of the shipment to the Airport (A) and also ensure the pick up from the Airport (B)
-    - **The payed service**: Airplane transfer from A to B
+    - **The paid service**: Airplane transfer from A to B
     """)
 
     ''
@@ -108,7 +108,7 @@ with tab2:
         - **Selected transport**: Airplane (applicable also for Train)
         - **Case**: Customer wants delivery to final destination in area of 20 km from airport
         - This means that the customer will ensure the delivery of the shipment to the Airport (A)
-        - **The payed service**: Airplane transfer from A to B and transfer from Airplane to a Truck to deliver to the destination in area of 20 km from the Airport
+        - **The paid service**: Airplane transfer from A to B and transfer from Airplane to a Truck to deliver to the destination in area of 20 km from the Airport
         """)
 
 
@@ -123,7 +123,7 @@ with tab3:
         **Example 3**: A - 20 km + A to B delivery + B - 20 km
         - **Selected transport**: Train (applicable also for Airplane)
         - **Case**: Full road
-        - **The payed service**: Pick up by Truck, delivery to Airport (A), transfer to Airport (B) by Airplane, transfer to Truck, delivery to final destination. **End-to-end payed**
+        - **The paid service**: Pick up by Truck, delivery to Airport (A), transfer to Airport (B) by Airplane, transfer to Truck, delivery to final destination. **End-to-end paid**
         """)
 
     ''
@@ -141,7 +141,7 @@ with tab4:
     **Example 4 (Different view)**: A to B delivery + B - 20 km
     - **Selected transport**: Train (applicable also for Airplane)
     - **Case**: Customer will ensure delivery to the Train Station/hub
-    - **The payed service**: Delivery from Train Station (A) to Train Station (B), transfer to Truck, delivery to final destination
+    - **The paid service**: Delivery from Train Station (A) to Train Station (B), transfer to Truck, delivery to final destination
     """)
 
     ''
@@ -155,7 +155,7 @@ with tab5:
         **Example 5 (Different view)**: A - 10 km + A to B delivery
         - **Selected transport**: Airplane (applicable also for Train)
         - **Case**: Customer will ensure pick up from to the Airport
-        - **The payed service**: Pick up by Truck, delivery to Airport (A), delivery to Airport (B) by Airplane
+        - **The paid service**: Pick up by Truck, delivery to Airport (A), delivery to Airport (B) by Airplane
         """)
 
     ''
@@ -172,7 +172,7 @@ with tab6:
         **Example 6**: A - 20 km + A to B delivery
         - **Selected transport**: Truck
         - **Case**: End-to-end delivery - B point in the city area
-        - **The payed service**: End-to-end covered by Truck
+        - **The paid service**: End-to-end covered by Truck
         """)
 
     ''

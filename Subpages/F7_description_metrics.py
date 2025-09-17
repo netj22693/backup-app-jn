@@ -322,7 +322,7 @@ with tab_2_1_3.container(border= True):
    ''
    st.write("""
    - **Truck** needs to follow mandatory breaks (11.5 hours for that long distance) but still will be **faster** specifically due to shorter time for administration (32 hours)
-   - **Train** does not need mandatroy breaks but in case of DTD, there is **2x shipment transfer** (Truck -> Train and then Train -> Truck), which **costs more and needs extra time** (2 hours in this case), but the **Train will be at the end significantly cheaper still**. 
+   - **Train** does not need mandatory breaks but in case of DTD, there is **2x shipment transfer** (Truck -> Train and then Train -> Truck), which **costs more and needs extra time** (2 hours in this case), but the **Train will be at the end significantly cheaper still**. 
    """)
 
 # UC4
