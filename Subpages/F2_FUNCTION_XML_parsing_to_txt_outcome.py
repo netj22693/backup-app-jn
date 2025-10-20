@@ -87,7 +87,7 @@ def validate(xml_path: str, xsd_path: str) -> bool:
 st.write("# Upload XML:")
 
 # type = ".xml" - allows to upload only xml files
-object_from_upload = st.file_uploader("", type=".xml")
+object_from_upload = st.file_uploader("Upload your XML file", type=".xml", label_visibility="collapsed")
 
 if object_from_upload is None:
     st.info("When a file uploaded, the application will start")

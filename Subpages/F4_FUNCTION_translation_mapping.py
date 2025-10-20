@@ -13,7 +13,7 @@ col1.write("# XML -> JSON :")
 col1.write("### Upload XML:")
 
 
-object_upl_xml = col1.file_uploader("")
+object_upl_xml = col1.file_uploader("Upload XML", label_visibility="collapsed")
 
 
 if object_upl_xml is None:
@@ -160,7 +160,7 @@ col2.write("# JSON -> XML :")
 col2.write("### Upload JSON:")
 
 
-object_upl_json = col2.file_uploader("",key= "json")
+object_upl_json = col2.file_uploader("Upload JSON", label_visibility="collapsed",key= "json")
 
 if object_upl_json is None:
     col2.info("When a file uploaded, translation to XML will happen")
