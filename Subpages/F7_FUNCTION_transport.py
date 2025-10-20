@@ -997,7 +997,7 @@ with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
             values = "Number",
             title = title_input,
             color = "Result",
-            color_discrete_map={'Available':'rgba(0, 105, 0, 0.8','Not available':'rgba(175, 175, 175, 0.66)',}
+            color_discrete_map={'Available':'rgba(0, 105, 0, 0.8)','Not available':'rgba(175, 175, 175, 0.66)',}
             )
         
         fig_pie.update_traces(texttemplate="%{percent:.2%}")
@@ -1060,7 +1060,7 @@ with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
     )
 
     fig_cz_sk.update_layout(barmode="relative")
-    fig_cz_sk.update_layout(title = "Transport type availability - CZ & SK split")
+    fig_cz_sk.update_layout(title = "Transport type availability - Country split")
 
 
     # -----  Chart ----  Overall ---- 
@@ -1097,60 +1097,70 @@ with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
         "% PL"
         ])
 
+    # Changed deprication  - Here I defined the config based on new rules
+    config_chart = {
+       "template": "streamlit" 
+    }
+
     with tab1:
         with st.container(border=True):
-            st.plotly_chart(fig_cz_sk, theme="streamlit")  
+            st.plotly_chart(fig_cz_sk, config=config_chart) # Changed deprication
+           
+  
              
     with tab2:
         with st.container(border=True):
-            st.plotly_chart(fig_overall, theme="streamlit")
+            st.plotly_chart(fig_overall, config=config_chart) # Changed deprication
+
+
 
     with tab3:
         with st.container(border=True):
             col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
-            col_stat_1.plotly_chart(fig_pie_truck_overall, use_container_width=False, height = 3000)
-            col_stat_2.plotly_chart(fig_pie_train_overall, use_container_width=False)
-            col_stat_3.plotly_chart(fig_pie_air_overall, use_container_width=False)
+            col_stat_1.plotly_chart(fig_pie_truck_overall, config=config_chart)  # Changed deprication
+            col_stat_2.plotly_chart(fig_pie_train_overall, config=config_chart) # Changed deprication
+            col_stat_3.plotly_chart(fig_pie_air_overall, config=config_chart) # Changed deprication
+            
 
     # CZ
     with tab4:
         with st.container(border=True):
             col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
-            col_stat_1.plotly_chart(fig_pie_truck_cz, use_container_width=False, height = 3000)
-            col_stat_2.plotly_chart(fig_pie_train_cz, use_container_width=False)
-            col_stat_3.plotly_chart(fig_pie_air_cz, use_container_width=False)
+            col_stat_1.plotly_chart(fig_pie_truck_cz, config=config_chart) # Changed deprication
+            col_stat_2.plotly_chart(fig_pie_train_cz, config=config_chart) # Changed deprication
+            col_stat_3.plotly_chart(fig_pie_air_cz, config=config_chart) # Changed deprication
 
     # SK
     with tab5:
         with st.container(border=True):
             col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
-            col_stat_1.plotly_chart(fig_pie_truck_sk, use_container_width=False, height = 3000)
-            col_stat_2.plotly_chart(fig_pie_train_sk, use_container_width=False)
-            col_stat_3.plotly_chart(fig_pie_air_sk, use_container_width=False)
+            col_stat_1.plotly_chart(fig_pie_truck_sk, config=config_chart) # Changed deprication
+            col_stat_2.plotly_chart(fig_pie_train_sk, config=config_chart) # Changed deprication
+            col_stat_3.plotly_chart(fig_pie_air_sk, config=config_chart) # Changed deprication
 
     # AT
     with tab6:
         with st.container(border=True):
             col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
-            col_stat_1.plotly_chart(fig_pie_truck_at, use_container_width=False, height = 3000)
-            col_stat_2.plotly_chart(fig_pie_train_at, use_container_width=False)
-            col_stat_3.plotly_chart(fig_pie_air_at, use_container_width=False)
+            col_stat_1.plotly_chart(fig_pie_truck_at, config=config_chart) # Changed deprication
+            col_stat_2.plotly_chart(fig_pie_train_at, config=config_chart) # Changed deprication
+            col_stat_3.plotly_chart(fig_pie_air_at, config=config_chart) # Changed deprication
 
     # DE
     with tab7:
         with st.container(border=True):
             col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
-            col_stat_1.plotly_chart(fig_pie_truck_de, use_container_width=False, height = 3000)
-            col_stat_2.plotly_chart(fig_pie_train_de, use_container_width=False)
-            col_stat_3.plotly_chart(fig_pie_air_de, use_container_width=False)
+            col_stat_1.plotly_chart(fig_pie_truck_de, config=config_chart) # Changed deprication
+            col_stat_2.plotly_chart(fig_pie_train_de, config=config_chart) # Changed deprication
+            col_stat_3.plotly_chart(fig_pie_air_de, config=config_chart) # Changed deprication
 
     # PL
     with tab8:
         with st.container(border=True):
             col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
-            col_stat_1.plotly_chart(fig_pie_truck_pl, use_container_width=False, height = 3000)
-            col_stat_2.plotly_chart(fig_pie_train_pl, use_container_width=False)
-            col_stat_3.plotly_chart(fig_pie_air_pl, use_container_width=False)
+            col_stat_1.plotly_chart(fig_pie_truck_pl, config=config_chart) # Changed deprication
+            col_stat_2.plotly_chart(fig_pie_train_pl, config=config_chart) # Changed deprication
+            col_stat_3.plotly_chart(fig_pie_air_pl, config=config_chart) # Changed deprication
 
 
 
@@ -1188,7 +1198,7 @@ with st.expander("Currency and rate - API", icon = ":material/payments:"):
         st.caption("**1 unit is approximatelly ~ 30 km** (but not always - there are some variables/coeficients making calculation corrections, depending on case City A to City B)")
 
         col_r3,col_r4 = st.columns(2)
-        col_r3.dataframe(standard_def_kc_df, hide_index=True, use_container_width=True)
+        col_r3.dataframe(standard_def_kc_df, hide_index=True, width='stretch') # Changed deprication
 
         st.write("""
                 - In case that the **rate is in** this range the application calculates with these **default** values
@@ -1209,7 +1219,7 @@ with st.expander("Currency and rate - API", icon = ":material/payments:"):
 
 
         col_r3,col_r4 = st.columns(2)
-        col_r3.dataframe(standard_def_eur_df, hide_index=True, use_container_width=True)
+        col_r3.dataframe(standard_def_eur_df, hide_index=True, width='stretch') # Changed deprication
 
         st.write("""
                 - In case that the **rate is in** this range the application calculates with these **default** values
@@ -3479,14 +3489,19 @@ if st.button("Submit", use_container_width=True):
                 ])
 
 
+                config_chart_tab2 = {
+                    "template": "streamlit"
+                }
+
                 with tab_exp_cht_1:
-                    st.plotly_chart(fig_tab2_time_o, theme="streamlit")
+                    st.plotly_chart(fig_tab2_time_o, config=config_chart_tab2) # Changed deprication
+
 
                 with tab_exp_cht_2:
 
                     col_exp_cht_1, col_exp_cht_2 = st.columns(2)
 
-                    col_exp_cht_1.plotly_chart(fig_tab2_time_o2, theme="streamlit")
+                    col_exp_cht_1.plotly_chart(fig_tab2_time_o2, config=config_chart_tab2) # Changed deprication
 
                     col_exp_cht_2.write("""
                     - **Time to cover the transport -> physical movement of the shipment**
@@ -3496,7 +3511,9 @@ if st.button("Submit", use_container_width=True):
                     """)
 
             with st.expander("Chart - Price", icon= ":material/bar_chart:"):
-                st.plotly_chart(fig_tab2_price_o, theme="streamlit")
+                st.plotly_chart(fig_tab2_price_o, config=config_chart_tab2) # Changed deprication
+
+
 
                 st.write("- Note (!): Danger goods is **not allowed in Airplane** -> not counted")
                 col_exp_pr_1, col_exp_pr_2 = st.columns(2)
@@ -3614,14 +3631,16 @@ if st.button("Submit", use_container_width=True):
 
 
             with st.expander("Chart - Time - Distance & DTD", icon= ":material/bar_chart:"):
-                st.plotly_chart(fig_tab2_time, theme="streamlit")
+                st.plotly_chart(fig_tab2_time, config=config_chart_tab2) # Changed deprication
+
 
             with st.expander("Chart - Price - Distance & DTD", icon= ":material/bar_chart:"):
-                st.plotly_chart(fig_overall_2, theme="streamlit")
+                st.plotly_chart(fig_overall_2, config=config_chart_tab2) # Changed deprication
+
 
 
             ''
             st.write(f"- Selected service - **{urgency}**")
 
             col_urg_1, col_urg_2 = st.columns(2)
-            col_urg_1.dataframe(df_tab2_service, use_container_width=True, hide_index=True)        
+            col_urg_1.dataframe(df_tab2_service, width='stretch', hide_index=True)   # Changed deprication      

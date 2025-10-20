@@ -1025,23 +1025,6 @@ with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
         fig_pie.update_traces(texttemplate="%{percent:.2%}")
         fig_pie.update_layout(showlegend = False)
 
-        # fig_pie = go.Figure(
-        #     go.Pie(
-        #             labels=df["Result"],
-        #             values=df["Number"],
-        #             marker=dict(colors=[
-        #                 'rgba(0, 105, 0, 0.8)' if r == 'Available' else 'rgba(175, 175, 175, 0.66)' 
-        #                 for r in df["Result"]
-        #             ]),
-        #             textinfo='percent',
-        #             hoverinfo='label+value+percent'
-        #         )
-        #     )
-
-        # fig_pie.update_layout(
-        #         title=title_input,
-        #         showlegend=False
-        #     )
         return fig_pie
 
     fig_pie_truck_cz = pie_chart(data_pie_truck_cz, "CZ Truck")
@@ -1066,7 +1049,7 @@ with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
 
     fig_pie_truck_overall = pie_chart(data_pie_truck_overall, "Truck")
     fig_pie_train_overall = pie_chart(data_pie_train_overall, "Train")
-    fig_pie_air_overall = pie_chart(data_pie_air_overall, title_input="Airplane")
+    fig_pie_air_overall = pie_chart(data_pie_air_overall, "Airplane")
 
 
 
@@ -1136,7 +1119,7 @@ with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
         "% PL"
         ])
 
-
+    # Changed deprication  - Here I defined the config based on new rules
     config_chart = {
        "template": "streamlit" 
     }
@@ -1144,75 +1127,62 @@ with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
     with tab1:
         with st.container(border=True):
             st.plotly_chart(fig_cz_sk, config=config_chart) # Changed deprication
-            pass
            
   
              
     with tab2:
         with st.container(border=True):
             st.plotly_chart(fig_overall, config=config_chart) # Changed deprication
-            pass 
+
 
 
     with tab3:
         with st.container(border=True):
-            # col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
-            # col_stat_1.plotly_chart(fig_pie_truck_overall, width='content', config=config_chart)  # Changed deprication
-            # col_stat_2.plotly_chart(fig_pie_train_overall, width='content', config=config_chart) # Changed deprication
-            # col_stat_3.plotly_chart(fig_pie_air_overall, width='content', config=config_chart) # Changed deprication
-
-            pass
+            col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
+            col_stat_1.plotly_chart(fig_pie_truck_overall, width='content', config=config_chart)  # Changed deprication
+            col_stat_2.plotly_chart(fig_pie_train_overall, width='content', config=config_chart) # Changed deprication
+            col_stat_3.plotly_chart(fig_pie_air_overall, width='content', config=config_chart) # Changed deprication
             
 
     # CZ
     with tab4:
         with st.container(border=True):
-            # col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
-            # col_stat_1.plotly_chart(fig_pie_truck_cz, width='content', config=config_chart) # Changed deprication
-            # col_stat_2.plotly_chart(fig_pie_train_cz, width='content', config=config_chart) # Changed deprication
-            # col_stat_3.plotly_chart(fig_pie_air_cz, width='content', config=config_chart) # Changed deprication
-
-            pass
+            col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
+            col_stat_1.plotly_chart(fig_pie_truck_cz, width='content', config=config_chart) # Changed deprication
+            col_stat_2.plotly_chart(fig_pie_train_cz, width='content', config=config_chart) # Changed deprication
+            col_stat_3.plotly_chart(fig_pie_air_cz, width='content', config=config_chart) # Changed deprication
 
     # SK
     with tab5:
         with st.container(border=True):
-            # col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
-            # col_stat_1.plotly_chart(fig_pie_truck_sk, width='content', config=config_chart) # Changed deprication
-            # col_stat_2.plotly_chart(fig_pie_train_sk, width='content', config=config_chart) # Changed deprication
-            # col_stat_3.plotly_chart(fig_pie_air_sk, width='content', config=config_chart) # Changed deprication
-
-            pass
+            col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
+            col_stat_1.plotly_chart(fig_pie_truck_sk, width='content', config=config_chart) # Changed deprication
+            col_stat_2.plotly_chart(fig_pie_train_sk, width='content', config=config_chart) # Changed deprication
+            col_stat_3.plotly_chart(fig_pie_air_sk, width='content', config=config_chart) # Changed deprication
 
     # AT
     with tab6:
         with st.container(border=True):
-            # col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
-            # col_stat_1.plotly_chart(fig_pie_truck_at, width='content', config=config_chart) # Changed deprication
-            # col_stat_2.plotly_chart(fig_pie_train_at, width='content', config=config_chart) # Changed deprication
-            # col_stat_3.plotly_chart(fig_pie_air_at, width='content', config=config_chart) # Changed deprication
-
-            pass
+            col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
+            col_stat_1.plotly_chart(fig_pie_truck_at, width='content', config=config_chart) # Changed deprication
+            col_stat_2.plotly_chart(fig_pie_train_at, width='content', config=config_chart) # Changed deprication
+            col_stat_3.plotly_chart(fig_pie_air_at, width='content', config=config_chart) # Changed deprication
 
     # DE
     with tab7:
         with st.container(border=True):
-            # col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
-            # col_stat_1.plotly_chart(fig_pie_truck_de, width='content', config=config_chart) # Changed deprication
-            # col_stat_2.plotly_chart(fig_pie_train_de, width='content', config=config_chart) # Changed deprication
-            # col_stat_3.plotly_chart(fig_pie_air_de, width='content', config=config_chart) # Changed deprication
-
-            pass
+            col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
+            col_stat_1.plotly_chart(fig_pie_truck_de, width='content', config=config_chart) # Changed deprication
+            col_stat_2.plotly_chart(fig_pie_train_de, width='content', config=config_chart) # Changed deprication
+            col_stat_3.plotly_chart(fig_pie_air_de, width='content', config=config_chart) # Changed deprication
 
     # PL
     with tab8:
         with st.container(border=True):
             col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
-            # col_stat_1.plotly_chart(fig_pie_truck_pl, width='content', config=config_chart) # Changed deprication
-            # col_stat_2.plotly_chart(fig_pie_train_pl, width='content', config=config_chart) # Changed deprication
+            col_stat_1.plotly_chart(fig_pie_truck_pl, width='content', config=config_chart) # Changed deprication
+            col_stat_2.plotly_chart(fig_pie_train_pl, width='content', config=config_chart) # Changed deprication
             col_stat_3.plotly_chart(fig_pie_air_pl, width='content', config=config_chart) # Changed deprication
-
-            pass 
 
 
 

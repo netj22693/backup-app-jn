@@ -178,6 +178,12 @@ function_7_desc_variables = st.Page(
     icon= ":material/code:"
 )
 
+# For dev/test purposes - on 31-Dec-2025 use_container_width= will be depricated in context of plotly 
+test_7 = st.Page(
+    "Subpages/Dev_deprication_Dec_2025/F7_Function_dev_test.py",
+    title="TEST_F7_deprication",
+    icon= ":material/code:"
+)
 
 # Navigation:
 pg = st.navigation(
@@ -185,7 +191,8 @@ pg = st.navigation(
         "About this application": [
             app_purpose,
             ],
-        # "TESTING": [testing, testuju_stsession],
+            
+        # "TESTING": [testing, testuju_stsession, test_7],
 
         "Functions 1 and 2" : [
             fun_1and2_descrip,
