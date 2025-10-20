@@ -202,8 +202,6 @@ with st.expander(
 	"Contact - LinkedIn",
 	icon=":material/id_card:"
 ):	
-
-	''
 	''
 	st.image("Pictures/linkedin-logo-2013-1.svg", width=95)
 	st.write("- Do you like this app? :) LinkedIn profile [Here](https://www.linkedin.com/in/jan-netolicka-12209a221/)")
@@ -233,7 +231,6 @@ with st.expander(
 ):	
 
 	''
-	''
 	st.write("- GitHub code repository link [Here](https://github.com/netj22693/backup-app-jn/blob/main/streamlit_app.py)")
 	st.image("Pictures/Github_archimate_2.svg")
 
@@ -244,7 +241,6 @@ with st.expander(
 	icon=":material/computer:"
 ):	
 
-	''
 	''
 	st.write("- The Streamlit Framework helps to build web apps")
 	st.write("- The **primary** approach is through **web browser**")
@@ -265,6 +261,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v35.0** - Plotly() arguments adjusted, deprication will happen end 2025  - 20-Oct-2025
 		- **v33.5** - 'Delivery at' also added to TAB2 -> available in analytics for other transports - 16-Sep-2025
 		- **v33.4** - 'Offer to be approved till' option added -> influences 'delivery at' date & time - 15-Sep-2025
 		- **v33.0** - 'Delivery at' added (Weekday - DD-Month-YY HH:MM - CET/CEST) & logic for delivery time frames - 13-Sep-2025
