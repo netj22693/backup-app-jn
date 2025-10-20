@@ -2156,7 +2156,7 @@ with st.expander("Door-to-Door", icon= ":material/info:"):
                 label = "Go to Door-to-Door page",
                 url="https://dataparsing.streamlit.app/F7_description_dtd",
                 help="The button will redirect to the relevant page within this app for download.",
-                use_container_width=True,
+                width="stretch",
                 icon=":material/launch:"
             )
 
@@ -2262,7 +2262,7 @@ if shipment_value is not None:
 
 ''
 st.write("------")
-if st.button("Submit", use_container_width=True):
+if st.button("Submit", width="stretch"):
 
     # Firstly, validation if all inputs are provided properly
     def input_validation(from_city,to_city):
