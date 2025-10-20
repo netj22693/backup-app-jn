@@ -715,7 +715,7 @@ with st.expander(
 		label = "Go to XSD page",
 		url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
 		help="The button will redirect to the relevant page within this app for download.",
-		use_container_width=True,
+		width="stretch",
 		icon=":material/launch:"
 
 		) 
@@ -765,7 +765,7 @@ with st.expander(
 		label = "Go to Function 2",
 		page="Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
 		help="The button will redirect to the relevant page within this app.",
-		use_container_width=True,
+		width="stretch",
 		icon=":material/play_circle:"
 		) 
 	''
@@ -794,7 +794,7 @@ st.page_link(
     label = "Go to: Function 2",
 	page="Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
     icon=":material/play_circle:",
 	) 
 
@@ -802,7 +802,7 @@ st.page_link(
 	label = "Previous page",
 	page="Subpages/F2_description_DB_ERT.py",
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
 	icon=":material/west:"
 	) 
 

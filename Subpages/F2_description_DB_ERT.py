@@ -1009,7 +1009,7 @@ st.page_link(
     label = "Go to: Function 1",
 	page="Subpages/F1_FUNCTION_XML_dowload.py",
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
     icon=":material/play_circle:",
 	) 
 
@@ -1017,6 +1017,6 @@ st.page_link(
 	label = "Previous page",
 	page="Subpages/F1_F2_description_XML_XSD.py",
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
 	icon=":material/west:"
 	) 

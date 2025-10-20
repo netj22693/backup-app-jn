@@ -39,7 +39,7 @@ st.page_link(
     label = "Next page",
 	page="Subpages/F1_F2_description_BPMN.py",
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
     icon=":material/east:",
 	) 
 

@@ -90,7 +90,7 @@ st.page_link(
     label = "Next page",
 	page="Subpages/F1_F2_description_XML_XSD.py",
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
     icon=":material/east:",
 	) 
 
@@ -98,6 +98,6 @@ st.page_link(
 	label = "Previous page",
 	page="Subpages/F2_description_UML.py",
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
 	icon=":material/west:"
 	) 
