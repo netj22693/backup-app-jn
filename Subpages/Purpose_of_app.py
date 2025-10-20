@@ -261,7 +261,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
-		- **v35.0** - Plotly() arguments adjusted, deprication will happen end 2025  - 20-Oct-2025
+		- **v35.0** - Plotly() arguments adjusted, deprication will happen end of 2025  - 20-Oct-2025
 		- **v33.5** - 'Delivery at' also added to TAB2 -> available in analytics for other transports - 16-Sep-2025
 		- **v33.4** - 'Offer to be approved till' option added -> influences 'delivery at' date & time - 15-Sep-2025
 		- **v33.0** - 'Delivery at' added (Weekday - DD-Month-YY HH:MM - CET/CEST) & logic for delivery time frames - 13-Sep-2025
@@ -315,6 +315,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 2:
+		- **v35.4** - Plotly() arguments adjusted, deprication will happen end of 2025  - 20-Oct-2025
 		- **v16.4** - Better visualization in dataframes - 2 decimals always - 22-July-2025
 		- **v16.2** - New expander (SQL 4 - average values) - 22-July-2025
 		- **v15.0** - Input XML validated against XSD (new feature built) - 11-July-2025
