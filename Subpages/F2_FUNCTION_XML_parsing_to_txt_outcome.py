@@ -35,7 +35,7 @@ def xsd_not_passed():
                     label = "Go to: Function 1",
                     url="https://dataparsing.streamlit.app/F1_FUNCTION_XML_dowload",
                     help="The button will redirect to the relevant page within this app.",
-                    use_container_width=True,
+                    width="stretch",
                     icon=":material/launch:",
         ) 
 
@@ -47,7 +47,7 @@ def xsd_not_passed():
                     label = "XML principles for this Function 2",
                     url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
                     help="The button will redirect to the relevant page within this app.",
-                    use_container_width=True,
+                    width="stretch",
                     icon=":material/launch:",
                     )
 
@@ -109,7 +109,7 @@ if object_from_upload is None:
                     label = "Go to: Function 1",
                     url="https://dataparsing.streamlit.app/F1_FUNCTION_XML_dowload",
                     help="The button will redirect to the relevant page within this app.",
-                    use_container_width=True,
+                    width="stretch",
                     icon=":material/launch:",
                     ) 
                 ''
@@ -133,7 +133,7 @@ if object_from_upload is None:
                     label = "Go to: Function 1",
                     url="https://dataparsing.streamlit.app/F1_FUNCTION_XML_dowload#4-xml-template",
                     help="The button will redirect to the relevant page within this app.",
-                    use_container_width=True,
+                    width="stretch",
                     icon=":material/launch:",
                     ) 
 
@@ -147,7 +147,7 @@ if object_from_upload is None:
                     label = "XML principles for this Function 2",
                     url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
                     help="The button will redirect to the relevant page within this app.",
-                    use_container_width=True,
+                    width="stretch",
                     icon=":material/launch:",
                     )
 
@@ -169,7 +169,6 @@ if object_from_upload is not None:
         tree_element_data = ET.parse(object_from_upload)
 
         root = tree_element_data.getroot()
-        print(f"root identified as {root}")
 
         # Data parsing from header
         value_customer = root[0][0].text
@@ -575,19 +574,11 @@ if object_from_upload is not None:
             """)
 
             ''
-            # st.page_link(
-            #     label = "XML princpiles for this Function 2",
-            #     page="Subpages/F1_F2_description_XML_XSD.py",
-            #     help="The button will redirect to the relevant page within this app.",
-            #     use_container_width=True,
-            #     icon=":material/launch:",
-            #     ) 
-
             st.link_button(
                 label = "Go to XSD, XML description page",
                 url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
                 help="The button will redirect to the relevant page within this app for download.",
-                use_container_width=True,
+                width="stretch",
                 icon=":material/launch:"
             )
             ''
@@ -665,7 +656,7 @@ if object_from_upload is not None:
 
 
             st.write(f"- Number of items in **each product Category** (No. of items - {max_value_attribut}):")
-            st.dataframe(ps.sqldf(q0a, locals()), hide_index=True, use_container_width=True)
+            st.dataframe(ps.sqldf(q0a, locals()), hide_index=True, width="stretch")
 
             # Number of items with additional service
             q0b = """SELECT 
@@ -686,7 +677,7 @@ if object_from_upload is not None:
             ''
             ''
             st.write("- Number of items having **additional services**:")
-            st.dataframe(ps.sqldf(q0b, locals()), hide_index=True, use_container_width=True)
+            st.dataframe(ps.sqldf(q0b, locals()), hide_index=True, width="stretch")
 
             # Number of items with  NO additional service = 'None'
             q0c = """SELECT
@@ -707,7 +698,7 @@ if object_from_upload is not None:
             ''
             ''
             st.write("- Number of items **without** any additional service:")
-            st.dataframe(ps.sqldf(q0c, locals()), hide_index=True, use_container_width=True)
+            st.dataframe(ps.sqldf(q0c, locals()), hide_index=True, width="stretch")
 
 
         with st.expander("SQL Queries 2 - Prices/Costs", icon = ":material/view_list:"):
@@ -740,7 +731,7 @@ if object_from_upload is not None:
 
 			# Q1 visualization	
             st.write("- The **most expensive** item (Price):")
-            st.dataframe(data=style_q1, hide_index=True, use_container_width=True)
+            st.dataframe(data=style_q1, hide_index=True, width="stretch")
 
 
             # The most expensive item including Additional service
@@ -794,8 +785,8 @@ if object_from_upload is not None:
             ''
             ''
             st.write("- The **most expensive additional service** (Extended warranty and Insurance):")
-            st.dataframe(data=style_q2, hide_index=True, use_container_width=True)
-            st.dataframe(data=style_q2b, hide_index=True, use_container_width=True)
+            st.dataframe(data=style_q2, hide_index=True, width="stretch")
+            st.dataframe(data=style_q2b, hide_index=True, width="stretch")
 
             # The cheapest item
             q3 = """SELECT
@@ -822,7 +813,7 @@ if object_from_upload is not None:
             ''
             ''
             st.write("- The **cheapest** item (lowest Price):")
-            st.dataframe(data=style_q3, hide_index=True, use_container_width=True)
+            st.dataframe(data=style_q3, hide_index=True, width="stretch")
 
 
             # The cheapest additional services
@@ -874,8 +865,8 @@ if object_from_upload is not None:
             ''
             ''
             st.write("- The **cheapest additional service** (Extended warranty and Insurance):")
-            st.dataframe(data= style_q4, hide_index=True, use_container_width=True)
-            st.dataframe(data= style_q4b, hide_index=True, use_container_width=True)
+            st.dataframe(data= style_q4, hide_index=True, width="stretch")
+            st.dataframe(data= style_q4b, hide_index=True, width="stretch")
 
 
         # Expander SQL 3 
@@ -912,7 +903,7 @@ if object_from_upload is not None:
 			# Data visualization
             st.write(f"- **(1) Percentage % ratio** of product costs per **Category**. From  total sum of products: **{value_total_sum:,.2f} {currency}** ")
 
-            st.dataframe(data=style_q5, hide_index=True, use_container_width=True)
+            st.dataframe(data=style_q5, hide_index=True, width="stretch")
             
 
             # Data for chart -  Percentage % ratio of product prices per Category - NOT including additional services
@@ -952,7 +943,7 @@ if object_from_upload is not None:
             ''
             st.write(f"- **(2) Percentage % ratio** of product prices per **Category**. From  total sum of products: **{value_to_paid:,.2f} {currency}**, **including** additional services **{sum_additional_serv:,.2f} {currency}**.")
 
-            st.dataframe(data = style_q5b, hide_index=True, use_container_width=True)
+            st.dataframe(data = style_q5b, hide_index=True, width="stretch")
 
 
 
@@ -983,7 +974,7 @@ if object_from_upload is not None:
             ''
             st.write(f"- **(3) Percentage % ratio** of **additional services** per Category (**{sum_additional_serv:,.2f} {currency}**)")
 
-            st.dataframe(data=style_q6, hide_index=True, use_container_width=True)
+            st.dataframe(data=style_q6, hide_index=True, width="stretch")
 
 
          
@@ -1110,9 +1101,9 @@ if object_from_upload is not None:
             col1, col2 = st.columns(2, gap="medium")
 
 
-            col1.plotly_chart(fig_pie_sql3_1, use_container_width=True)
-            col2.plotly_chart(fig_pie_sql3_3, use_container_width=True)
-            col1.plotly_chart(fig_pie_sql3_2, use_container_width=True)
+            col1.plotly_chart(fig_pie_sql3_1)
+            col2.plotly_chart(fig_pie_sql3_3)
+            col1.plotly_chart(fig_pie_sql3_2)
 
 
         # SQL 4
@@ -1148,7 +1139,7 @@ if object_from_upload is not None:
 
 			# Data visualization
             st.write(f"- **Average price** in each product Category (Total price **{value_total_sum:,.2f} {currency}** - **without** additional services):")
-            st.dataframe(data=style_q4_1, hide_index=True, use_container_width=True)
+            st.dataframe(data=style_q4_1, hide_index=True, width="stretch")
 
 
 
@@ -1185,7 +1176,7 @@ if object_from_upload is not None:
             
             """)
 
-            st.dataframe(data=style_q4_2, hide_index=True, use_container_width=True)
+            st.dataframe(data=style_q4_2, hide_index=True, width="stretch")
 
 
             # AVG Price of additional services
@@ -1218,7 +1209,7 @@ if object_from_upload is not None:
                 - sum - sum of costs
                 - average - average cost per item 
             """)
-            st.dataframe(data = style_q4_3, hide_index=True, use_container_width=True)
+            st.dataframe(data = style_q4_3, hide_index=True, width="stretch")
         
         # ========= Data Visualization ====================
         ''
@@ -1324,7 +1315,7 @@ if object_from_upload is not None:
         # Visualization of the table (where filters already applied)
         ''
         ''
-        data_table_2 = st.dataframe(data=df_filtered_styled, hide_index=True, use_container_width=True)
+        data_table_2 = st.dataframe(data=df_filtered_styled, hide_index=True, width="stretch")
         
 
         # Pie chart
@@ -1345,7 +1336,7 @@ if object_from_upload is not None:
         fig_pie.update_traces(texttemplate="%{percent:.2%}")
 
         with st.container(border=True):
-            st.plotly_chart(fig_pie, use_container_width=True)
+            st.plotly_chart(fig_pie)
         
 
         
@@ -1358,7 +1349,7 @@ if object_from_upload is not None:
             )
 
         with st.container(border=True):
-            st.plotly_chart(fig_bar, use_container_width=True)
+            st.plotly_chart(fig_bar)
 
 
         # 15-June - testuju
@@ -1384,7 +1375,7 @@ if object_from_upload is not None:
                 )
 
         with st.container(border=True):
-            st.plotly_chart(fig_bar_2, use_container_width=True)
+            st.plotly_chart(fig_bar_2)
 
 
         # v4.0 - new charts ---------------------------------------
@@ -1408,7 +1399,7 @@ if object_from_upload is not None:
         fig_pie_2.update_traces(texttemplate="%{percent:.2%}")
 
         with st.container(border=True):
-            st.plotly_chart(fig_pie_2, use_container_width=True)
+            st.plotly_chart(fig_pie_2)
             st.write(f"- Products costs: **{value_total_sum_fl:,.2f}** {currency}")
             st.write(f"- Additional services costs: **{sum_adds_fl:,.2f}** {currency}")
             st.write(f"- Summary:  **{(sum_adds_fl + value_total_sum_fl):,.2f}** {currency}")
@@ -1500,7 +1491,7 @@ if object_from_upload is not None:
             data= final_outcome,
             file_name= file_name_fstring,
             icon = ":material/download:",
-            use_container_width=True):
+            width="stretch"):
                 
             st.info("download will start in few seconds")
         
@@ -1517,7 +1508,7 @@ if object_from_upload is not None:
                 label = "Function 3 - Description",
                 page="Subpages/F3_F4_description.py",
                 help="The button will redirect to the relevant page within this app.",
-                use_container_width=True,
+                width="stretch",
                 icon=":material/code:",
                 )
 
@@ -1525,7 +1516,7 @@ if object_from_upload is not None:
                 label = "Function 3",
                 page="Subpages/F3_FUNCTION_creation_of_XML.py",
                 help="The button will redirect to the relevant page within this app.",
-                use_container_width=True,
+                width="stretch",
                 icon=":material/play_circle:",
                 )
             
@@ -1533,14 +1524,14 @@ if object_from_upload is not None:
                 label = "Home page",
                 page="Subpages/Purpose_of_app.py",
                 help="The button will redirect to the relevant page within this app.",
-                use_container_width=True,
+                width="stretch",
                 icon=":material/code:",
                 )
             
         
         if st.button(
             "Close Function 2",
-            use_container_width= True,
+            width="stretch",
             icon=":material/close:"
         ):
             process_done()
