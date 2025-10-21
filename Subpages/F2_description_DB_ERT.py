@@ -176,7 +176,7 @@ st.write("-----")
 st.write("#### Entity Relationship Diagram:")
 ''
 ''
-st.image("Pictures/Function_2/F2_2_DB ERD_3.PNG")
+st.image("Pictures/Function_2/F2_2_DB_ERD_6.svg")
 ''
 st.write("Joining using keys:")
 st.code('''
@@ -194,7 +194,7 @@ st.write("##### Description of the tables:")
 ''
 st.write("1) Customer details - cust")
 ''
-st.image("Pictures/Function_2/F2_cust.PNG")
+st.image("Pictures/Function_2/F2_cust.svg")
 ''
 st.write("""
 - cust -> means customer
@@ -286,7 +286,7 @@ with st.expander(
 ''
 st.write("2) Invoice summary - sum_inv")
 ''
-st.image("Pictures/Function_2/F2_sum.PNG")
+st.image("Pictures/Function_2/F2_sum.svg")
 ''
 st.write("""
 - This table reflects data coming in XML header
@@ -324,7 +324,7 @@ with st.expander(
     FROM sum_inv INNER JOIN cust ON (cust_id = c_id)
     ''', language="sql")
 
-    st.image("Pictures/Function_2/F2_DB_sum_inv join cust.png")
+    st.image("Pictures/Function_2/F2_DB_sum_inv_join_cust.svg")
     ''
     ''
     st.write("""       
@@ -378,7 +378,7 @@ with st.expander(
 ''
 st.write("3) Invoice detail - detail_inv")
 ''
-st.image("Pictures/Function_2/F2_detail.PNG")
+st.image("Pictures/Function_2/F2_detail.svg")
 ''
 st.write("""
 - This table reflects data coming in XML detail
@@ -402,11 +402,13 @@ with st.expander(
         - **Type**: parsed from XML
         """
         )
+    
     st.code('''
-    SELECT *
-    FROM sum_inv INNER JOIN detail_inv ON (sinv_id = inv_num)
+SELECT *
+FROM sum_inv INNER JOIN detail_inv ON (sinv_id = inv_num)
     ''', language="sql")
-    st.image("Pictures/Function_2/F2_DB_sum_inv join detail_inv.png")
+
+    st.image("Pictures/Function_2/F2_DB_sum_inv_join_detail_inv.svg")
     ''
     ''
     st.write("""       
@@ -429,7 +431,7 @@ with st.expander(
     )
     ''
     st.code('''
-	<xs:pattern value="PC|TV|Gaming|Mobile phones|Tablets|Major Appliances|Households"/>
+<xs:pattern value="PC|TV|Gaming|Mobile phones|Tablets|Major Appliances|Households"/>
     ''',
     language="xml"
     )
@@ -448,7 +450,7 @@ with st.expander(
     )
     ''
     st.code('''
-	<xs:pattern value="None|extended warranty|insurance"/>
+<xs:pattern value="None|extended warranty|insurance"/>
     ''',
     language="xml"
     )
@@ -483,7 +485,7 @@ with st.expander(
 ''
 st.write("##### More details about the cardinality:")
 ''
-st.image("Pictures/Function_2/F2_DB_cardinality.PNG", width= 180)
+st.image("Pictures/Function_2/F2_DB_cardinality.svg")
 ''
 with st.expander(
 	"Detailed description - ERD cardinality",
@@ -495,7 +497,7 @@ with st.expander(
     st.write("###### 1 - One (and only one) to 0..* Zero or many:")
     ''
     ''
-    st.image("Pictures/Function_2/F2_2_DB ERD zero to many_2.PNG")
+    st.image("Pictures/Function_2/F2_2_DB_ERD_zero_to_many_2.svg")
     ''
     st.write("""
     - Has been chosen based on a **business logic**. 
@@ -533,7 +535,7 @@ with st.expander(
     st.write("###### 1 - One (and only one) to 1..* One or many:")
     ''
     ''
-    st.image("Pictures/Function_2/F2_2_DB ERD one to many.PNG")
+    st.image("Pictures/Function_2/F2_2_DB ERD_one_to_many.svg")
     ''
     st.write("""
     - Has been chosen based on logix of the **XML**/XSD definition. 
