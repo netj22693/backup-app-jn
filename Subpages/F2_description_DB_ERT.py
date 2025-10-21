@@ -320,8 +320,8 @@ with st.expander(
         """
         )
     st.code('''
-    SELECT *
-    FROM sum_inv INNER JOIN cust ON (cust_id = c_id)
+SELECT *
+FROM sum_inv INNER JOIN cust ON (cust_id = c_id)
     ''', language="sql")
 
     st.image("Pictures/Function_2/F2_DB_sum_inv_join_cust.svg")
@@ -367,7 +367,7 @@ with st.expander(
         )
     ''
     st.code('''
-	<xs:pattern value="euro|US dollar|Kč"/>
+<xs:pattern value="euro|US dollar|Kč"/>
     ''',
     language="xml"
     )
@@ -514,18 +514,18 @@ with st.expander(
     st.image("Pictures/Function_2/F2_2_DB registered customer with 0 invoices.PNG")
     ''
     st.code('''
-    SELECT
-        name,
-        count(cust_id) as "How many invoices registered in 'sum_inv' table"
-    
-    FROM sum_inv
-        RIGHT JOIN cust ON (cust_id = c_id)
-    
-    GROUP BY
-        cust_id
-            
-    ORDER BY
-        count(cust_id) ASC
+SELECT
+    name,
+    count(cust_id) as "How many invoices registered in 'sum_inv' table"
+
+FROM sum_inv
+    RIGHT JOIN cust ON (cust_id = c_id)
+
+GROUP BY
+    cust_id
+        
+ORDER BY
+    count(cust_id) ASC
     ''', language="sql")
     ''
     ''
@@ -557,18 +557,18 @@ with st.expander(
     st.image("Pictures/Function_2/F2_2_DB number of lines in invoices.PNG")
     ''
     st.code('''
-    SELECT 
-        sinv_num,
-        count(inv_num) as 'Number of detail lines/products in invoice'
-        
-    FROM sum_inv
-        INNER JOIN detail_inv ON (sinv_num = inv_num)
-        
-    GROUP BY
-        sinv_num
+SELECT 
+    sinv_num,
+    count(inv_num) as 'Number of detail lines/products in invoice'
+    
+FROM sum_inv
+    INNER JOIN detail_inv ON (sinv_num = inv_num)
+    
+GROUP BY
+    sinv_num
 
-    ORDER BY
-        count(inv_num) DESC
+ORDER BY
+    count(inv_num) DESC
     ''', language="sql")
 ''
 ''
@@ -608,28 +608,31 @@ with st.expander(
 ''
 st.write("Details about customer 'ABC s.r.o.'")
 st.code('''
-    SELECT *
-    FROM cust
-    WHERE name = 'ABC s.r.o.'
+SELECT *
+FROM cust
+WHERE name = 'ABC s.r.o.'
     ''', language="sql")
+
 st.image("Pictures/Function_2/F2_SQL_name.PNG")
 ''
 ''
 st.write("Info about invoice 'INV-123456' - header")
 st.code('''
-    SELECT *
-    FROM sum_inv
-    WHERE sinv_num = 'INV-123456'
+SELECT *
+FROM sum_inv
+WHERE sinv_num = 'INV-123456'
     ''', language="sql")
+
 st.image("Pictures/Function_2/F2_SQL_INV-123456.PNG")
 ''
 ''
 st.write("Info about invoice 'INV-123456' - detail")
 st.code('''
-    SELECT *
-    FROM detail_inv
-    WHERE inv_num = 'INV-123456'
+SELECT *
+FROM detail_inv
+WHERE inv_num = 'INV-123456'
     ''', language="sql")
+
 st.image("Pictures/Function_2/F2_SQL_INV-123456_detail.PNG")
 ''
 ''
@@ -733,15 +736,15 @@ with st.expander(
     )
 
     st.code('''
-    SELECT *
-    
-    FROM
-        sum_inv
-    
-    WHERE 
-        date LIKE '2025-01-%'
-        AND 
-        cur = 'koruna'
+SELECT *
+
+FROM
+    sum_inv
+
+WHERE 
+    date LIKE '2025-01-%'
+    AND 
+    cur = 'koruna'
     ''',
     language="sql"
     )
@@ -761,30 +764,30 @@ with st.expander(
     st.write("- Execution of the Python script: ")
 
     st.code('''
-    import pandas as pd
+import pandas as pd
 
-    # Data import CSV 
-    df = pd.read_csv("sum_inv_202506071712_prefiltered.csv")
+# Data import CSV 
+df = pd.read_csv("sum_inv_202506071712_prefiltered.csv")
 
-    #New column created in DF -> to get full cost per product
-    summary_col = df['summary'] = df['ttl_sum'] + df['ttl_sum_serv']
+#New column created in DF -> to get full cost per product
+summary_col = df['summary'] = df['ttl_sum'] + df['ttl_sum_serv']
 
-    # getting sum value from the column 
-    sum = sum(summary_col)
+# getting sum value from the column 
+sum = sum(summary_col)
 
-    # ... and then use it for calculation of % ratio
-    df['Percentage ratio % from revenue'] = round((summary_col/sum) * 100, 3)
+# ... and then use it for calculation of % ratio
+df['Percentage ratio % from revenue'] = round((summary_col/sum) * 100, 3)
 
-    # ---- This part is to replicate the exact result from the SQL query ----
-    # Drop of some columns
-    df = df.drop(['cust_id','ttl_sum','ttl_sum_serv'], axis=1)
+# ---- This part is to replicate the exact result from the SQL query ----
+# Drop of some columns
+df = df.drop(['cust_id','ttl_sum','ttl_sum_serv'], axis=1)
 
-    # Swap of 2 columns -> to get the same order
-    df = df.iloc[:, [0, 1, 3, 2, 4]]
-    # -----------------------------------------------------------------------
+# Swap of 2 columns -> to get the same order
+df = df.iloc[:, [0, 1, 3, 2, 4]]
+# -----------------------------------------------------------------------
 
-    # Data Export
-    df.to_csv("Ratio.csv", index=False) 
+# Data Export
+df.to_csv("Ratio.csv", index=False) 
     ''',
     language="python")
 
@@ -918,16 +921,16 @@ with st.expander(
     )
 
     st.code('''
-    -- here in the SELECT can be whatever columns + the 3 mandatory
-    SELECT *
-    
-    -- also the table can join other tables, if data needed
-    FROM
-        sum_inv si 
-    
-    -- also other filters/conditions possible
-    WHERE
-        date BETWEEN '2025-02-01' AND '2025-03-19'
+-- here in the SELECT can be whatever columns + the 3 mandatory
+SELECT *
+
+-- also the table can join other tables, if data needed
+FROM
+    sum_inv si 
+
+-- also other filters/conditions possible
+WHERE
+    date BETWEEN '2025-02-01' AND '2025-03-19'
     ''', language="sql"
     )
 
@@ -947,29 +950,29 @@ with st.expander(
     st.write("- Execution of the Python script: ")
 
     st.code('''
-    import pandas as pd
-    import numpy as np
-            
-    # Data import CSV 
-    df = pd.read_csv("sum_inv_202506061511_prefiltered.csv")
+import pandas as pd
+import numpy as np
+        
+# Data import CSV 
+df = pd.read_csv("sum_inv_202506061511_prefiltered.csv")
 
-    #New columns created in Data Frame -> sumary (ttl_sum + ttl_sum_serv) to get full cost per product
-    df['summary'] = df['ttl_sum'] + df['ttl_sum_serv']
-    df['converted to koruna'] = 'koruna'
+#New columns created in Data Frame -> sumary (ttl_sum + ttl_sum_serv) to get full cost per product
+df['summary'] = df['ttl_sum'] + df['ttl_sum_serv']
+df['converted to koruna'] = 'koruna'
 
-    # Conversion rate - INPUT
-    cr_k_euro = float(input("Convertion rate - Koruna to EUR?"))
-    cr_k_usd = float(input("Convertion rate - Koruna to USD?"))
+# Conversion rate - INPUT
+cr_k_euro = float(input("Convertion rate - Koruna to EUR?"))
+cr_k_usd = float(input("Convertion rate - Koruna to USD?"))
 
-    # Conversion/Calculation in the Data Frame
-    df['summary'] = np.where(df['cur'] == 'euro', ((df['ttl_sum'] + df['ttl_sum_serv'])*cr_k_euro) , df['summary'])
-    df['summary'] = np.where(df['cur'] == 'us dollar', ((df['ttl_sum'] + df['ttl_sum_serv'])*cr_k_usd) , df['summary'])
+# Conversion/Calculation in the Data Frame
+df['summary'] = np.where(df['cur'] == 'euro', ((df['ttl_sum'] + df['ttl_sum_serv'])*cr_k_euro) , df['summary'])
+df['summary'] = np.where(df['cur'] == 'us dollar', ((df['ttl_sum'] + df['ttl_sum_serv'])*cr_k_usd) , df['summary'])
 
-    #Sorting
-    df = df.sort_values(by=['summary'], ascending=False)
+#Sorting
+df = df.sort_values(by=['summary'], ascending=False)
 
-    # Data Export
-    df.to_csv("Converted.csv")
+# Data Export
+df.to_csv("Converted.csv")
 
     ''',
     language="python"       
