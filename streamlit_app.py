@@ -192,7 +192,7 @@ pg = st.navigation(
             app_purpose,
             ],
             
-        # "TESTING": [testing, testuju_stsession, test_7],
+        "TESTING": [testing, testuju_stsession, test_7],
 
         "Functions 1 and 2" : [
             fun_1and2_descrip,

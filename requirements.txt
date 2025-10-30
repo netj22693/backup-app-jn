@@ -3,3 +3,5 @@ st_pages
 lxml
 plotly.express
 pandasql
+psycopg2-binary
+sqlalchemy
