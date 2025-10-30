@@ -178,6 +178,15 @@ function_7_desc_variables = st.Page(
     icon= ":material/code:"
 )
 
+function_8_company_book = st.Page(
+    "Subpages/F8_FUNCTION_company_book.py",
+    title="8. Company book",
+    icon= ":material/play_circle:"
+)
+
+
+
+
 # For dev/test purposes - on 31-Dec-2025 use_container_width= will be depricated in context of plotly 
 test_7 = st.Page(
     "Subpages/Dev_deprication_Dec_2025/F7_Function_dev_test.py",
@@ -229,6 +238,9 @@ pg = st.navigation(
             function_7_desc_metrics,
             function_7_transport,
         ],
+        # "Function 8" : [
+        #     function_8_company_book
+        # ]
 
     },
     expanded=True  #23-Jun-2025: since streamlit version 1.46.0, this is needed to have the right menu bar always open as default (possibility to collaps still available)
