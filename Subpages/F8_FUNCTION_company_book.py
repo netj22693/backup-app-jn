@@ -92,7 +92,7 @@ with tab1:
                 international_transport as "International transport"
 
             FROM
-                customer INNER JOIN {country_table} ON (cus_id = c_cus_id)
+                company INNER JOIN {country_table} ON (comp_id = c_comp_id)
 
             WHERE
                 {transport_type} = TRUE AND 
@@ -116,7 +116,7 @@ with tab1:
                 international_transport as "International transport"
 
             FROM
-                customer INNER JOIN {country_table} ON (cus_id = c_cus_id)
+                company INNER JOIN {country_table} ON (comp_id = c_comp_id)
 
             WHERE
                 {transport_type} = TRUE
@@ -141,7 +141,7 @@ with tab2:
 
     engine = db_connection()
 
-    company_df = pd.read_sql("SELECT name FROM customer;", engine)
+    company_df = pd.read_sql("SELECT name FROM company;", engine)
     company_list = company_df['name'].tolist()
     company_list.sort()
 
@@ -162,7 +162,7 @@ with tab2:
 
         with engine.connect() as conn:
             result = conn.execute(
-                text("SELECT cus_id FROM customer WHERE name = :company"),
+                text("SELECT comp_id FROM company WHERE name = :company"),
                 {"company": selected_company}
             )
             cus_id = result.scalar()
@@ -182,10 +182,10 @@ with tab2:
                     branch_id as "Branch id"
 
                 FROM
-                    customer INNER JOIN country_{country_code} ON (cus_id = c_cus_id)
+                    company INNER JOIN country_{country_code} ON (comp_id = c_comp_id)
 
                 WHERE
-                    c_cus_id = {customer}
+                    c_comp_id = {customer}
                             
                 ORDER BY
                     name,
@@ -241,7 +241,7 @@ with tab3:
                 airplane as "Airplane",
                 international_transport as "International transport"
             FROM
-                customer
+                company
             ORDER BY 
                 name ASC         
             ;""", engine)
