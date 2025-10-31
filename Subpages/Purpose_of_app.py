@@ -4,7 +4,7 @@ import streamlit as st
 st.write("# Welcome!")
 ''
 st.write(
-    "Purpose of this application is to play with XML and JSON data. The application has **7 functions**:"
+    "Purpose of this application is to play with XML and JSON data. The application has **8 functions**:"
     )
 ''
 st.write("""
@@ -31,6 +31,11 @@ st.write("""
     """
     )
 ''
+st.write("""
+    - **Function 8:** Company Book - provides visibility of transport companies - **DB on cloud**
+    """
+    )
+''
 ''
 "More details about the functions can be seen in the subpages - what the functions do, what data structures are used, etc."
 
@@ -49,7 +54,7 @@ with tab1:
 	st.write("###### ArchiMate - Overview of the functions:")
 	''
 	# st.image("Pictures/Archimate_functions_overview.svg")
-	st.image("Pictures/Archimate_functions_overview_5.svg")
+	st.image("Pictures/Archimate_functions_overview_6.svg")
 	
 with tab2:
 	st.write("###### UML - Overview of the functions:")
@@ -63,6 +68,9 @@ with tab2:
 	st.image("Pictures/Overall_UML_F6.svg")
 	''
 	st.image("Pictures/Overall_UML_F7.svg")
+	''
+	st.image("Pictures/Overall_UML_F8.svg")
+
 ''
 ''
 # Buttons for redirectiong to the relevant Functions
@@ -165,6 +173,23 @@ st.page_link(
 	icon=":material/play_circle:"
 	) 
 
+''
+st.page_link(
+    label = "Description about F8",
+	page="Subpages/F8_description.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+    icon=":material/code:",
+	)
+
+st.page_link(
+	label = "Function 8",
+	page="Subpages/F8_FUNCTION_company_book.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+	icon=":material/play_circle:"
+	) 
+
 # Bug - expander
 ''
 ''
@@ -257,6 +282,12 @@ with st.expander(
 
 	''
 	st.write("Key highlights (* **vX.X** -> version of application):")
+
+	''
+	st.write("""
+	- Function 8:
+		- **v36.2** - F8 released - 31-Oct-2025
+	""")
 
 	''
 	st.write("""

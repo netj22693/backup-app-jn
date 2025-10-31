@@ -5,7 +5,7 @@ st.write("# Description - Function 8")
 ''
 ''
 st.write("""
-    - **Function 8:** Company Book - provides visibility of transporting companies **DB on cloud**
+    - **Function 8:** Company Book - provides visibility of transport companies - **DB on cloud**
     """
     )
 ''

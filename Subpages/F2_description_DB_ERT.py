@@ -169,7 +169,7 @@ xml_data_euro = """<?xml version="1.0" encoding="UTF-8"?>
 
 # ========== DB and ERD description ===========================
 st.write("# DB & ERD")
-st.write("(!) Currently, this application is **NOT** connected to any DB. Maybe one day in the future :).")
+st.write("(!) Currently, this function is **NOT** connected to any DB. Maybe one day in the future :).")
 st.write("This is for visibility how DB tables could look like.")
 
 st.write("-----")
