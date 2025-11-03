@@ -336,54 +336,56 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 		icon=":material/monitoring:"
 	):
                 
-                # try-except logic to cover API unavailability
-                try:
-                    # API count/remaining
-                    api_count = "https://api.freecurrencyapi.com/v1/status?apikey=fca_live_6SzWJxPYa8Co3Xr9ziCTd7Mt7Yavrhpy2M5A0JZ4"
+		# try-except logic to cover API unavailability
+		# try:
+			# API count/remaining
+			api_key = st.secrets["F5_api_2"]["password"]
 
-                    # get reguest - cached for 10 minutes
-                    @st.cache_data(ttl=600)
-                    def get_response_api_3(api_count):
-                        api_3 = requests.get(api_count, verify=False, timeout=5).text
-                        return api_3
+			api_count = f"https://api.freecurrencyapi.com/v1/status?apikey={api_key}"
 
-                    api_3 = get_response_api_3(api_count)
+			# get reguest - cached for 10 minutes
+			@st.cache_data(ttl=600)
+			def get_response_api_3(api_count):
+				api_3 = requests.get(api_count, verify=False, timeout=5).text
+				return api_3
 
-                    # JSON format creation
-                    api_3_json = json.loads(api_3)
+			api_3 = get_response_api_3(api_count)
 
-                    # Search for data in the API defined format - JSON
-                    used = api_3_json['quotas']['month']['used']
-                    remaining = api_3_json['quotas']['month']['remaining']
+			# JSON format creation
+			api_3_json = json.loads(api_3)
 
-                    # Description on the screen
-                    st.write(f"- In this month subscription period - **used: {used}** and **remaining: {remaining}** requests")
-                    st.write("- This data will be **cached** here for **next 10 minutes**")
+			# Search for data in the API defined format - JSON
+			used = api_3_json['quotas']['month']['used']
+			remaining = api_3_json['quotas']['month']['remaining']
 
-                    # Simple pie chart
-                    data_pie_api = pd.DataFrame({
-                    "Figures" : [used,remaining],
-                    "Topics" : [f"Used:  {used}",f"Remaining:  {remaining}"],
+			# Description on the screen
+			st.write(f"- In this month subscription period - **used: {used}** and **remaining: {remaining}** requests")
+			st.write("- This data will be **cached** here for **next 10 minutes**")
 
-                    })
+			# Simple pie chart
+			data_pie_api = pd.DataFrame({
+			"Figures" : [used,remaining],
+			"Topics" : [f"Used:  {used}",f"Remaining:  {remaining}"],
 
-                    fig_api = px.pie(
-                        data_pie_api, 
-                        names = "Topics",
-                        values = "Figures",
-                        title = "API status of GET requests from this application - month period"
-                    )  
+			})
+
+			fig_api = px.pie(
+				data_pie_api, 
+				names = "Topics",
+				values = "Figures",
+				title = "API status of GET requests from this application - month period"
+			)  
 
 
-                    st.write(fig_api)
-        
-                except:
-                    st.warning("""
-                    - Apologies, the status API is currently NOT available due to:
-                        - Either the API system refused to establish connection
-                        - Or limit of 5k requests per month has been reached              
-                    """
-                    )
+			st.write(fig_api)
+
+		# except:
+			st.warning("""
+			- Apologies, the status API is currently NOT available due to:
+				- Either the API system refused to establish connection
+				- Or limit of 5k requests per month has been reached              
+			"""
+			)
               
 
 ''

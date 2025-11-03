@@ -30,7 +30,10 @@ try:
 
 
   # ========================= API 2 ====================
-  api_freecurrency_api = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_6SzWJxPYa8Co3Xr9ziCTd7Mt7Yavrhpy2M5A0JZ4&currencies=USD&base_currency=EUR"
+
+  secrets_api_2 = st.secrets["F5_api_2"]["password"]
+
+  api_freecurrency_api = f"https://api.freecurrencyapi.com/v1/latest?apikey={secrets_api_2}&currencies=USD&base_currency=EUR"
 
   #get reguest
   @st.cache_data(ttl=3600)
