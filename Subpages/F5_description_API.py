@@ -337,7 +337,7 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 	):
                 
 		# try-except logic to cover API unavailability
-		# try:
+		try:
 			# API count/remaining
 			api_key = st.secrets["F5_api_2"]["password"]
 
@@ -379,7 +379,7 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 
 			st.write(fig_api)
 
-		# except:
+		except:
 			st.warning("""
 			- Apologies, the status API is currently NOT available due to:
 				- Either the API system refused to establish connection
