@@ -286,6 +286,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 8:
+		- **v36.4** - Error handlig added also for SQL query (in case that DB structure will get broken) - 03-Nov-2025	
 		- **v36.2** - F8 released - 31-Oct-2025
 	""")
 

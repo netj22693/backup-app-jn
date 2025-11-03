@@ -127,13 +127,30 @@ with tab1:
                 district ASC;
             """
 
+        def read_query_international_domestic(query):
+
+            try:
+                df = pd.read_sql(query, engine)
+            
+            except:
+                st.warning("Query issue - results not gotten - SQL query is not matching with DB structure")
+                st.stop()
+            
+            return df
+
+
         if international == 'FALSE':
-            df = pd.read_sql(query_domestic, engine)
+
+            df = read_query_international_domestic(query_domestic)
 
         if international == 'TRUE':
-            df = pd.read_sql(query_international, engine)
+
+            df = read_query_international_domestic(query_international)
+
 
         df.index = df.index + 1
+
+        ''
         st.dataframe(df, width = "stretch")
 
 
@@ -200,12 +217,19 @@ with tab2:
         query_country_de = return_query_country('de', cus_id)
         query_country_pl = return_query_country('pl', cus_id)
         query_country_sk = return_query_country('sk', cus_id)
+        
 
-        df_at = pd.read_sql(query_country_at, engine)
-        df_cz = pd.read_sql(query_country_cz, engine)
-        df_de = pd.read_sql(query_country_de, engine)
-        df_pl = pd.read_sql(query_country_pl, engine)
-        df_sk = pd.read_sql(query_country_sk, engine)
+        try:
+            df_at = pd.read_sql(query_country_at, engine)
+            df_cz = pd.read_sql(query_country_cz, engine)
+            df_de = pd.read_sql(query_country_de, engine)
+            df_pl = pd.read_sql(query_country_pl, engine)
+            df_sk = pd.read_sql(query_country_sk, engine)
+
+        except:
+            st.warning("Query issue - results not gotten - SQL query is not matching with DB structure")
+            st.stop() 
+
 
         df_at.index = df_at.index + 1
         df_cz.index = df_cz.index + 1
@@ -213,6 +237,8 @@ with tab2:
         df_pl.index = df_pl.index + 1
         df_sk.index = df_sk.index + 1
 
+
+        ''
         st.write("Austria - AT")
         st.write(df_at)
 
@@ -233,19 +259,25 @@ with tab3:
 
         engine = db_connection()
 
-        df = pd.read_sql("""
-            SELECT 
-                name as "Name",
-                truck as "Truck",
-                train as "Train",
-                airplane as "Airplane",
-                international_transport as "International transport"
-            FROM
-                company
-            ORDER BY 
-                name ASC         
-            ;""", engine)
-        
+        try:
+            df = pd.read_sql("""
+                SELECT 
+                    name as "Name",
+                    truck as "Truck",
+                    train as "Train",
+                    airplane as "Airplane",
+                    international_transport as "International transport"
+                FROM
+                    company
+                ORDER BY 
+                    name ASC         
+                ;""", engine)
+
+        except:
+            st.warning("Query issue - results not gotten - SQL query is not matching with DB structure")
+            st.stop() 
+
+
         df.index = df.index + 1
 
         # Screen
