@@ -34,7 +34,7 @@ st.write("""
 - The DB is designed based on **principle of 2 kinds of tables**
 - Table 1 **'company'** stores information about companies providing transport - and what type of transport does - **Truck, Train, Airplane, International/Domestic transport** 
 - Table 2 **'country_XX**' stores information about branches/contact points of the companies per specific country
-- This creates a relationship **1 Parent - multiple Children** having **'1 to Many Optional'** relations also when it comes to records
+- This creates a relationship **1 Parent - multiple Children** having **'0 to Many'** relations also when it comes to records
 """)
 ''
 st.image("Pictures/Function_8/F8_ERD.svg")
