@@ -3,11 +3,16 @@ from sqlalchemy import text
 import pandas as pd
 import streamlit as st
 
+@st.dialog("Error: DB not connected")
+def db_connection_fail():
+
+    st.warning("Application is not able to establish connection with DB server -> **Function 8 is currently not available**")
+    st.stop()
 
 
 def db_connection():
 
-        # Load secrets
+    # Load secrets
     db = st.secrets["neon"]
 
     # connection string
@@ -20,7 +25,7 @@ def db_connection():
 
     except:
         st.warning("DB not connected")
-        st.stop()
+        db_connection_fail()
 
 
 st.write("# Company Book:")
@@ -129,12 +134,7 @@ with tab1:
 
         def read_query_international_domestic(query):
 
-            try:
-                df = pd.read_sql(query, engine)
-            
-            except:
-                st.warning("Query issue - results not gotten - SQL query is not matching with DB structure")
-                st.stop()
+            df = pd.read_sql(query, engine)
             
             return df
 
@@ -219,16 +219,12 @@ with tab2:
         query_country_sk = return_query_country('sk', cus_id)
         
 
-        try:
-            df_at = pd.read_sql(query_country_at, engine)
-            df_cz = pd.read_sql(query_country_cz, engine)
-            df_de = pd.read_sql(query_country_de, engine)
-            df_pl = pd.read_sql(query_country_pl, engine)
-            df_sk = pd.read_sql(query_country_sk, engine)
 
-        except:
-            st.warning("Query issue - results not gotten - SQL query is not matching with DB structure")
-            st.stop() 
+        df_at = pd.read_sql(query_country_at, engine)
+        df_cz = pd.read_sql(query_country_cz, engine)
+        df_de = pd.read_sql(query_country_de, engine)
+        df_pl = pd.read_sql(query_country_pl, engine)
+        df_sk = pd.read_sql(query_country_sk, engine)
 
 
         df_at.index = df_at.index + 1
@@ -282,8 +278,7 @@ with tab3:
 
 
         # Main query -> DF and overview
-        try:
-            df = pd.read_sql("""
+        df = pd.read_sql("""
                 SELECT 
                     name as "Name",
                     truck as "Truck",
@@ -295,10 +290,6 @@ with tab3:
                 ORDER BY 
                     name ASC         
                 ;""", engine)
-
-        except:
-            st.warning("Query issue - results not gotten - SQL query is not matching with DB structure")
-            st.stop() 
 
 
         df.index = df.index + 1
