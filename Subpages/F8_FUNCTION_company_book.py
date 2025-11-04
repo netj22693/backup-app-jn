@@ -259,6 +259,30 @@ with tab3:
 
         engine = db_connection()
 
+        # Number of companies reqistered in DB
+        df_company_no = pd.read_sql("""        
+                SELECT count(comp_id) as count
+                FROM company;
+                """, engine)
+        
+        company_num = df_company_no['count'].iloc[0]
+
+
+        # Number of branches in DB - accross all country_xx tables
+        df_branch_num = pd.read_sql("""        
+                SELECT GREATEST(
+                    (SELECT COALESCE(MAX(branch_id),0) FROM country_at),
+                    (SELECT COALESCE(MAX(branch_id),0) FROM country_cz),
+                    (SELECT COALESCE(MAX(branch_id),0) FROM country_de),
+                    (SELECT COALESCE(MAX(branch_id),0) FROM country_pl),
+                    (SELECT COALESCE(MAX(branch_id),0) FROM country_sk)
+                ) as max;
+                """, engine)
+        
+        branch_num = df_branch_num['max'].iloc[0]
+
+
+        # Main query -> DF and overview
         try:
             df = pd.read_sql("""
                 SELECT 
@@ -282,8 +306,9 @@ with tab3:
 
         # Screen
         ''
-        st.write("""
-        - Overview of the companies
+        st.write(f"""
+        - Number of companies: **{company_num}**
+        - Number of branches: **{branch_num}**
         """)
 
         ''
