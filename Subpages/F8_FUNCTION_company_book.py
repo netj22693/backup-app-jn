@@ -270,16 +270,15 @@ with tab3:
 
         # Number of branches in DB - accross all country_xx tables
         df_branch_num = pd.read_sql("""        
-                SELECT GREATEST(
-                    (SELECT COALESCE(MAX(branch_id),0) FROM country_at),
-                    (SELECT COALESCE(MAX(branch_id),0) FROM country_cz),
-                    (SELECT COALESCE(MAX(branch_id),0) FROM country_de),
-                    (SELECT COALESCE(MAX(branch_id),0) FROM country_pl),
-                    (SELECT COALESCE(MAX(branch_id),0) FROM country_sk)
-                ) as max;
+                        SELECT 
+                            (SELECT COUNT(branch_id) FROM country_at) +
+                            (SELECT COUNT(branch_id) FROM country_cz) +
+                            (SELECT COUNT(branch_id) FROM country_de) +
+                            (SELECT COUNT(branch_id) FROM country_pl) +
+                            (SELECT COUNT(branch_id) FROM country_sk) as total_count;
                 """, engine)
         
-        branch_num = df_branch_num['max'].iloc[0]
+        branch_num = df_branch_num['total_count'].iloc[0]
 
 
         # Main query -> DF and overview
