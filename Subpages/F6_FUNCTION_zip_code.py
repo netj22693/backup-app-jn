@@ -31,8 +31,7 @@ st.write("#### (1) ZIP code(s) based on City:")
 with st.expander("How to use this function",
     icon=":material/help:"
     ):
-    ''
-    ''
+
     st.write("""
     - This function helps to provide **ZIP code number for particular city**
     - It is for **shipping purposes**
@@ -55,8 +54,6 @@ with st.expander("Some examples of Cities you can use",
     icon=":material/help:"
     ):
 
-    ''
-    ''
     st.write("""
     - **CZ** - Czech Republic
         - Prague
@@ -77,8 +74,6 @@ with st.expander("Known limitation",
     icon=":material/sync_problem:"
     ):
 
-    ''
-    ''
     st.write("""
     - Sometimes this API **is not able to establish connection**
     - It is probably on the Zipcodebase.com side
@@ -336,8 +331,7 @@ st.write("#### (2) Validation of city based on ZIP code:")
 with st.expander("How to use this function",
     icon=":material/help:"
     ):
-    ''
-    ''
+
     st.write("""
     - This function is for **validation of ZIP codes** to which **city, state/region** it belongs
     - It is for **shipping purposes**
@@ -372,8 +366,6 @@ with st.expander("Some examples of ZIP codes you can use",
     icon=":material/help:"
     ):
 
-    ''
-    ''
     st.write("- In case that you do not have any/do not know, you can use any of these:")
     st.write("""
     - **CZ** - Czech Republic
@@ -393,8 +385,6 @@ with st.expander("Known limitation",
     icon=":material/sync_problem:"
     ):
 
-    ''
-    ''
     st.write("""
     - This API allows **only 300** calls/requests per month (Free subscription)
     """
