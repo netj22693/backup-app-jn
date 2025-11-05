@@ -41,6 +41,30 @@ tab1, tab2, tab3 = st.tabs([
     "Overview - Companies"
 ])
 
+
+#Generic connection when main page loaded
+engine_generic = db_connection()
+
+
+branch_type_info_df = pd.read_sql("""
+    SELECT
+        branch_text as "Type",
+        description as "Description"                  
+    FROM 
+        branch
+    WHERE
+        type_code >= 3
+    ORDER BY
+        type_code 
+    ;""", engine_generic)
+
+
+
+
+
+
+
+
 with tab1:
     country_list = ["AT","CZ","DE","PL","SK"]
     country_list.sort()
@@ -82,6 +106,22 @@ with tab1:
     if submit_button:
 
         engine = db_connection()
+        
+
+        def determin_transport_for_db_query(transport):
+
+            mapping = {
+                    "truck": 5,
+                    "train": 6,
+                    "airplane": 7
+                }
+            return mapping.get(transport, 0)
+
+
+        # preparation of inputs/for dynamic SQL query
+        transport_type_code = determin_transport_for_db_query(transport_type)
+
+        branch_codes_display = f"'1','2','3','4','{transport_type_code}'"
 
         country_table = f"country_{country_from}"
 
@@ -90,6 +130,7 @@ with tab1:
             SELECT
                 name as "Name",
                 city as "City",
+                branch_text as "Type",
                 street as "Street",
                 number as "No.",
                 district as "District",
@@ -98,12 +139,13 @@ with tab1:
 
             FROM
                 company INNER JOIN {country_table} ON (comp_id = c_comp_id)
+                INNER JOIN branch ON (branch_type = type_code)
 
             WHERE
                 {transport_type} = TRUE AND 
-                international_transport != FALSE
+                international_transport != FALSE AND
+                type_code IN({branch_codes_display})
 
-                        
             ORDER BY
                 name,
                 city, 
@@ -114,6 +156,7 @@ with tab1:
             SELECT
                 name as "Name",
                 city as "City",
+                branch_text as "Type",
                 street as "Street",
                 number as "No.",
                 district as "District",
@@ -122,9 +165,10 @@ with tab1:
 
             FROM
                 company INNER JOIN {country_table} ON (comp_id = c_comp_id)
-
+                INNER JOIN branch ON (branch_type = type_code)
             WHERE
-                {transport_type} = TRUE
+                {transport_type} = TRUE AND
+                type_code IN({branch_codes_display})
                         
             ORDER BY
                 name,
@@ -150,6 +194,11 @@ with tab1:
 
         df.index = df.index + 1
 
+        #Screen
+        ''
+        with st.expander("Branch type info:",width= "stretch", icon=":material/help_outline:"):
+            st.dataframe(branch_type_info_df, hide_index=True)
+        
         ''
         st.dataframe(df, width = "stretch")
 
@@ -191,15 +240,17 @@ with tab2:
                 SELECT
                     name as "Name",
                     city as "City",
+                    branch_text as "Type",
                     street as "Street",
                     number as "No.",
                     district as "District",
                     zip_code as "ZIP code",
-                    international_transport as "International transport",
                     branch_id as "Branch id"
 
                 FROM
-                    company INNER JOIN country_{country_code} ON (comp_id = c_comp_id)
+                    company 
+                    INNER JOIN country_{country_code} ON (comp_id = c_comp_id)
+                    INNER JOIN branch ON (branch_type = type_code)
 
                 WHERE
                     c_comp_id = {customer}
@@ -233,6 +284,11 @@ with tab2:
         df_pl.index = df_pl.index + 1
         df_sk.index = df_sk.index + 1
 
+        # Screen 
+
+        ''
+        with st.expander("Branch type info:",width= "stretch", icon=":material/help_outline:"):
+            st.dataframe(branch_type_info_df, hide_index=True)
 
         ''
         st.write("Austria - AT")

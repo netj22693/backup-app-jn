@@ -1,544 +1,362 @@
-import streamlit as st
-import requests
-import json
+from sqlalchemy import create_engine
+from sqlalchemy import text
 import pandas as pd
-import sys
+import streamlit as st
+
+@st.dialog("Error: DB not connected")
+def db_connection_fail():
+
+    st.warning("Application is not able to establish connection with DB server -> **Function 8 is currently not available**")
+    st.stop()
 
 
- 
+def db_connection():
+
+    # Load secrets
+    db = st.secrets["neon"]
+
+    # connection string
+    try: 
+        conn_string = f"postgresql+psycopg2://neondb_owner:{db['password']}@ep-lucky-bar-a9hww36i-pooler.gwc.azure.neon.tech/neondb?sslmode=require"
 
 
-# ================= App Screen ============================
+        engine = create_engine(conn_string)
+        return engine
 
-st.write("# ZIP Code search:")
+    except:
+        st.warning("DB not connected")
+        db_connection_fail()
+
+
+st.write("# Company Book:")
 ''
 ''
-st.write("""
-- API based 
-- The information comes from (1) https://app.zipcodebase.com and (2) https://app.zipcodestack.com/
-- **Note:** Because it is about 2 differnt applications sending the data, it can happen that sometimes there will not be 100% match 
-""")
+''
+st.image("Pictures/Function_8/F8_brands.svg", width=450)
 
 ''
-''
-''
-st.write("#### (1) ZIP code(s) based on City:")
+tab1, tab2, tab3 = st.tabs([
+    "Transport From - To",
+    "Specific Company",
+    "Overview - Companies"
+])
 
-# ================== Rules for users ======================
+
+#Generic connection when main page loaded
+
+engine_generic = db_connection()
 
 
-''
-with st.expander("How to use this function",
-    icon=":material/help:"
-    ):
-    ''
+branch_type_info_df = pd.read_sql("""
+    SELECT
+        branch_text as "Type",
+        description as "Description"                  
+    FROM 
+        branch
+    WHERE
+        type_code >= 3
+    ORDER BY
+        type_code 
+    ;""", engine_generic)
+
+
+
+
+
+
+
+
+with tab1:
+    country_list = ["AT","CZ","DE","PL","SK"]
+    country_list.sort()
+
+    list_transport = ["Truck","Train","Airplane"]
+
+
+    # Screen
     ''
     st.write("""
-    - This function helps to provide **ZIP code number for particular city**
-    - It is for **shipping purposes**
-    """
-    )
+    - Provides **companies available** for selected **type of transport** and their **contact points/branches** 
+    """)
 
     ''
-    st.write("- Firstly - Select country from the list (either CZ or SK): ")
-    st.image("Pictures/Function_6/F6_menu_skcz.svg")
-
-    ''
-    ''
-    ''
-    st.write("- Secondly - Fill in the name of city:  can and cannot use capital leter: Prague/prague")
-    # st.image("Pictures/Function_6/F6_menu2_city.svg")
-    st.write("- There can be **only 1 city per request**")
-    # st.image("Pictures/Function_6/F6_menu2_city.svg")
-
-with st.expander("Some examples of Cities you can use",
-    icon=":material/help:"
-    ):
-
-    ''
-    ''
-    st.write("""
-    - **CZ** - Czech Republic
-        - Prague
-        - Olomouc
-        - Zlin
-    """
-    )
-
-    st.write("""
-    - **SK** - Slovakia
-        - Kosice
-        - Trencin
-        - Banska Bystrica
-    """
-    )
-
-with st.expander("Known limitation",
-    icon=":material/sync_problem:"
-    ):
-
-    ''
-    ''
-    st.write("""
-    - Sometimes this API **is not able to establish connection**
-    - It is probably on the Zipcodebase.com side
-    - So the API call timeout is set to 2 seconds (which is max 2 calls) and then I set an intteruption in the code
-    - They actually gurantee 99.9% uptime but **I have a Free subscription** of the API so I will have **probably less** :)
-    - In case that connectivity not established and this app will display an alert. You can try again in 10-20 minutes. 
-    - Sometimes the API connectivity works perfectly but sometimes not. 
-    """
-    )
-
-# ================= API ============================
-
-# FOR TESTINGS - to do not call API, if not neccessary
-
-def TEST_get_request_2(city,country):
-
-    json_data_api_2 ={
-            "query": {
-                "city": city,
-                "state": "null",
-                "country": country
-            },
-            "results": [
-                "251 63",
-                "110 00",
-                "140 21",
-                "140 78",
-                "144 00",
-            ]
-        }
-    
-    return json_data_api_2
-
-
-# For PROD purposes 
-# https://app.zipcodebase.com/ - Bug: 1 api call is counted like 6
-def get_api_2(city,country):
-
-    api_key_1 = st.secrets["F6_api_1"]["password_1"]
-    headers = { 
-    "apikey": api_key_1}
-
-    params = (
-    ("city", city),
-    ("country", country),
-    );
-
-    
-    response = requests.get(f'https://app.zipcodebase.com/api/v1/code/city?apikey={api_key_1}', headers=headers, params=params, timeout=2);
-
-    # st.write(f" write před return {response.text}")
-    response = response.text
-    # st.write(f" po response.text {response}")
-
-    #Very important step to make for data type
-    response = json.loads(response) 
-    return response
-
+    with st.form(key="user_form"):
+        country_from = st.selectbox(label="Country From", options=country_list, help="Origin of transport.")
+        country_to = st.selectbox(label="Country To", options=country_list, help="Destination of transport. It helps to distinguish if only domestic-transport companies to be included or not (in case that transport will happen in one country).")
+        transport_type = st.selectbox(label="Transport type", options=list_transport, help="Select preferred transport type.")
         
+        submit_button = st.form_submit_button(label= "Submit", width="stretch")
+
+    # lowering letters for SQL purpose - case sensitive
+    country_from = country_from.lower()
+    country_to = country_to.lower()
+    transport_type = transport_type.lower()
 
 
-# ================== User inputs ==========================
+    def determin_international(c_from, c_to):
 
-''
-''
-''
-with st.form("List of ZIP codes"):
-    country = st.selectbox("Country:",
-        ["CZ", "SK"],
-        help="Select country, based on the City you are looking for. CZ - Czech Republic, SK - Slovakia",
-        ).casefold()
-    
-    city = st.text_input("City",
-        help="Only 1 city is allowed",
-        ).capitalize()
+        if c_from == c_to:
+            return 'FALSE'
 
-    submit_button_1 = st.form_submit_button(
-        label="Submit",
-        use_container_width=True,
-        icon = ":material/apps:",
-        )
-    
-    ''
-    ''
-    if submit_button_1:
-        
-        # Firstly a validation that inputs provided -> if not, API will not be called
-        if city == "":
-                st.warning("Please provide City")
-                
         else:
-                
-            try:
-                # This is for PROD   /////////////////////////////////////////////// API 1
-                f_data_json_2 = get_api_2(city,country)
+            return 'TRUE'
+
+    international = determin_international(country_from, country_to)
 
 
-                
-                # This for TESTING
-                # f_data_json_2 = TEST_get_request_2(city,country)
-                # st.write(f" here data should be for parsing: {f_data_json_2}")
-                
-            except:
-                st.warning("Apologies - The API is currently not available - connection timeout (2 seconds). Try again in 10-20 minutes.")
+    if submit_button:
+
+        engine = db_connection()
         
-            # Data parsing from JSON
-            ds = f_data_json_2['results']
-            ds = list(map(str, ds))
+
+        def determin_transport_for_db_query(transport):
+
+            mapping = {
+                    "truck": 5,
+                    "train": 6,
+                    "airplane": 7
+                }
+            return mapping.get(transport, 0)
+
+
+        # preparation of inputs/for dynamic SQL query
+        transport_type_code = determin_transport_for_db_query(transport_type)
+
+        branch_codes_display = f"'1','2','3','4','{transport_type_code}'"
+
+        country_table = f"country_{country_from}"
+
+
+        query_international = f"""
+            SELECT
+                name as "Name",
+                city as "City",
+                branch_text as "Type",
+                street as "Street",
+                number as "No.",
+                district as "District",
+                zip_code as "ZIP code",
+                international_transport as "International transport"
+
+            FROM
+                company INNER JOIN {country_table} ON (comp_id = c_comp_id)
+                INNER JOIN branch ON (branch_type = type_code)
+
+            WHERE
+                {transport_type} = TRUE AND 
+                international_transport != FALSE AND
+                type_code IN({branch_codes_display})
+
+            ORDER BY
+                name,
+                city, 
+                district ASC;
+            """
+
+        query_domestic = f"""
+            SELECT
+                name as "Name",
+                city as "City",
+                branch_text as "Type",
+                street as "Street",
+                number as "No.",
+                district as "District",
+                zip_code as "ZIP code",
+                international_transport as "International transport"
+
+            FROM
+                company INNER JOIN {country_table} ON (comp_id = c_comp_id)
+                INNER JOIN branch ON (branch_type = type_code)
+            WHERE
+                {transport_type} = TRUE AND
+                type_code IN({branch_codes_display})
+                        
+            ORDER BY
+                name,
+                city, 
+                district ASC;
+            """
+
+        def read_query_international_domestic(query):
+
+            df = pd.read_sql(query, engine)
             
-
-            # logic for validation of income 
-            b = len(ds)
-            b = b - 1
-            # st.write(b)
-            
-
-            if b == -1:
-                st.warning("Your City is not related to the selected country or doesn't exist in DB")
-                
-            else:
-                # data visualization APP
-                data_serie = pd.Series(ds, name="ZIP codes",)
-                data_serie.index += 1
-                ''
-                ''
-                st.write(data_serie)
-                
-
-                # data translation into string with coma , for the (1) API
-                string_for_api_1 = ",".join(ds)
-                
-
-                ''
-                st.write("- Here **you can take the string** and put it into the box below (the second API/Search):")
-                st.write(string_for_api_1)
-                ''
-                '' 
-                st.write("- **(!) Important note:**")
-                st.info("Because the API 2 (below) is a different application/works with different data -> it can happen that some of these ZIP codes might not be neccessary matching and the API 2 will NOT have the same data/ZIP codes")
+            return df
 
 
-                 
+        if international == 'FALSE':
 
-# ==========================================================================
-# //////////////////////////////////////////////////////////////////////////
-# ==========================================================================
-# for testign purposes to do not call api 
-def TEST_get_request(codes,country):
+            df = read_query_international_domestic(query_domestic)
 
-    data_json = {
-	"query": {
-		"codes": [
-			codes
-		],
-		"country": country
-	},
-	"results": {
-		"110007": [
-			{
-				"postal_code": "110 008888",
-				"country_code": "CZ",
-				"latitude": 50.3667,
-				"longitude": 16.0417,
-				"city": "Praha 1-Josefov",
-				"state": "Hlavní město Praha",
-				"city_en": "Praha 1-Josefov",
-				"state_en": "Hlavní město Praha",
-				"state_code": "52"
-			},
-			{
-				"postal_code": "110 007777",
-				"country_code": "CZ",
-				"latitude": 50.3333,
-				"longitude": 15.9167,
-				"city": "Josefov",
-				"state": "Hlavní město Praha",
-				"city_en": "Josefov",
-				"state_en": "Hlavní město Praha",
-				"state_code": "52"
-			}
-		],
-        "9999": [
-			{
-				"postal_code": "123",
-				"country_code": "CZ",
-				"latitude": 50.3667,
-				"longitude": 16.0417,
-				"city": "Praha 1-Josefov",
-				"state": "Hlavní město Praha",
-				"city_en": "Praha 1-Josefov",
-				"state_en": "Hlavní město Praha",
-				"state_code": "52"
-			},
-			{
-				"postal_code": "456",
-				"country_code": "CZ",
-				"latitude": 50.3333,
-				"longitude": 15.9167,
-				"city": "Josefov",
-				"state": "Hlavní město Praha",
-				"city_en": "Josefov",
-				"state_en": "Hlavní město Praha",
-				"state_code": "52"
-			}
-		]
-	}
-}
-  
+        if international == 'TRUE':
 
-    return data_json
- 
+            df = read_query_international_domestic(query_international)
 
 
+        df.index = df.index + 1
 
-# ============= Real API - GET request ===================== 
-
-def  get_request(codes, country):
-
-    # API ZIPCODESTACK
-    api_url = "https://api.zipcodestack.com/v1/search"
-
-    api_key_2 = "zip_live_pWsWrXrfbOBJpOjUwXuVT8RDRkWCtUj44M2RKzLd"
-
-    headers = { 
-    "apikey": api_key_2}
-
-    params = (
-    ("codes",codes),
-    ("country",country),
-    );
-
-    # get reguest
-    
-    api_1 = requests.get(api_url, headers=headers, params=params,  verify=False, timeout=2).text
-    
-    f_data_json = json.loads(api_1)
-    return f_data_json
-    
-
-
-
-# ================= App Scree ============================
-
-''
-''
-''
-st.write("#### (2) Validation of city based on ZIP code:")
-''
-''
-
-# ================== Rules for users ======================
-
-
-with st.expander("How to use this function",
-    icon=":material/help:"
-    ):
-    ''
-    ''
-    st.write("""
-    - This function is for **validation of ZIP codes** to which **city, state/region** it belongs
-    - It is for **shipping purposes**
-    """
-    )
-
-    ''
-    st.write("- Firstly - Select country from the list (either CZ or SK): ")
-    st.image("Pictures/Function_6/F6_menu_skcz.svg")
-
-    ''
-    ''
-    ''
-    st.write("- Secondly - Fill in the ZIP code you would like to check:")
-    st.image("Pictures/Function_6/F6_menu_post_single.svg")
-    ''
-    st.write("- **(!) RECOMMENDED:** If you want to check more, fill it like this: ZIPcode,ZIPcode,ZIPcode... and use a comma , as a separator")
-    st.write("- **(!) BUT** have **MAX 10** ZIP codes in 1 request")
-    st.image("Pictures/Function_6/F6_menu_post_multiple.svg")
-    ''
-    st.caption("** This approach of multiple inputs in one request helps to save/limit the number of API calls (source application limits this)")
-
-
-    ''
-    ''
-    st.write("Negative scenarios:")
-    st.write("- In case that your ZIP code input (one) is **NOT** related to the CZ or SK country warning note will be displayed ")
-    st.image("Pictures/Function_6/F6_menu_nozip.svg")
-    st.write("- In case that your ZIP code is **NOT** related to the CZ or SK, but you provided multiple codes, then the exiting will be delivered the others not. E.g. 4 codes filled in (3 existing, 1 not) -> 3 will be delivered")
-
-with st.expander("Some examples of ZIP codes you can use",
-    icon=":material/help:"
-    ):
-
-    ''
-    ''
-    st.write("- In case that you do not have any/do not know, you can use any of these:")
-    st.write("""
-    - **CZ** - Czech Republic
-        - 3 ZIP codes
-        - 11000,25163,15800
-    """
-    )
-
-    st.write("""
-    - **SK** - Slovakia
-        - 3 ZIP codes
-        - 013 41,013 06,811 08 
-    """
-    )
-
-with st.expander("Known limitation",
-    icon=":material/sync_problem:"
-    ):
-
-    ''
-    ''
-    st.write("""
-    - This API allows **only 300** calls/requests per month (Free subscription)
-    """
-    )
-    
-# ================== User inputs ==========================
-
-''
-''
-''
-with st.form("Get city based on ZIP code(s)"):
-    country = st.selectbox("Country:",
-        ["CZ", "SK"],
-        help="Select country you assume that your ZIP code is from. CZ - Czech Republic, SK - Slovakia",
-        )
-    
-    codes = st.text_input("ZIP code",
-        help = "You can put 1 or more ZIP codes. If more the format is: ZIPcode,ZIPcode,ZIPcode... To do not overwhelm the API, put MAX 10 ZIP codes in one search."
-        )
-    
-    ''
-    ''
-    if st.form_submit_button(
-        label="Submit",
-        use_container_width=True,
-        icon = ":material/apps:",
-        ):
-
+        #Screen
+        ''
+        with st.expander("Branch type info:",width= "stretch", icon=":material/help_outline:"):
+            st.dataframe(branch_type_info_df, hide_index=True)
         
-		# if/else logic for validation of input -> to do not call API  if no codes provided
-		# Reason: if no ZIP code sprovided it will send 300+ ZIP codes (propably all under CZ or SK). BUT - 10 ZIP codes is charge as 1 API call -> this one single call would costs 30+ calls.
-          
-        if codes == "":
-             st.warning("Please provide ZIP code(s)")
-             st.stop()
+        ''
+        st.dataframe(df, width = "stretch")
 
 
-        # 06-July-25: Bug fix/but also LIMITATION of this part of code 
-        # Might not look that clean as there is multiple try-except and if conditions + nested while and for loops in them. Reason: this is only way I found how the streamlit is able to cover multiple happy/unhappy scenarios/states of the app and specifically for unhappy paths/scenarios completelly stop the script (specifically when get requests of api happens). I tried to split it under def() functions ended with exit() but the exit() function is not completelly stoping the streamlit and st.stop() is too big hard stop. 
-        try: 
-            # PROD /////////////////////////////////////////////// API 2
-            f_data_json = get_request(codes, country)
-            
-            # For TEST purposes 
-            #  f_data_json = TEST_get_request(codes, country)
-            # st.write(f_data_json)
+with tab2:
 
-        except:
-            st.warning("Apologies - The API is currently not available - connection timeout (2 seconds) stopped the request")
-            st.stop()
+    engine = db_connection()
 
-        # ============ Data parsing from JSON ================
-        #03-July-2025 - I am trying try/except for principle of not enought API requests 
-        # {"message":"You used all your monthly requests. Please upgrade your plan at https://app.zipcodestack.com/subscription"}  -> try except block
-            
-        try:
-            # ==== Parsing of the ZIP codes from JSON =======
-            # Those are the same ZIP CODES as entered in user input
-            # But in case that user will put a ZIP code which is not existing on the API side -> this mechanism will prevent from failing and just simply, will not get any response to show from the API. 
-            # the JSON structure is built on dynamic value principle in segment
-            # "results": { "11000": [{}],"12300": [{}]}   - the numbers (in string type) are the dynamic ones -> yes, those are the inputs from user -> JSON reflects that in the message
-            
-            # step 1 - the dynamic values to be parsed into list
-            result_val = []
-            
-            # step 2 - number of items in the list 
-            for result_jsn in f_data_json["results"]:
-                result_jsn = str(result_jsn)
-                result_val.append(result_jsn)
-                
-                #mapping into string
-                result_val = list(map(str, result_val))
-                #    st.write(f"after mapping into string: {result_val}")
-                
+    company_df = pd.read_sql("SELECT name FROM company;", engine)
+    company_list = company_df['name'].tolist()
+    company_list.sort()
 
-            # step 2 - number of items in the list
-            a = len(result_val)
-            
-            # step 3 - the number of items - 1 => we get number of indexes
-            a = a - 1
-            # st.write(a)
-            
+    # Screen
+    ''
+    st.write("""
+    - Provides **visibility** about selected company - **availability and branches in countries**
+    """)
 
-            if a == -1:
-                st.warning("Your ZIP code(s) is not related to the selected country or doesn't exist in DB")
-                
-            else:
-                # ---- inserted steps of visualization on the user screen ------
-                # why here in the code? Because if the upper conditions passed visualization is needed, not earlier
-                ''
-                ''
-                
-                
-                st.write("##### Results:")
-                
-                # split into tabs
-                tab1,tab2 = st.tabs(["Table","Raw data"])
+    ''
+    with st.form(key="user_form_2"):
 
-                # --------------------------------------------------------------
-                
-                # step 4 - setting a default index for for loop as O (to take the first dynamic number from the list as variable)
-                index = 0
-                
-                # step 5 - while loop - to run until all the indexes checked/run
-                while index <= a:
-                        
-                        # parsing of other values on the another JSON level
-                        # the dynamic value are run based on the index number
-                        result_val_single = result_val[index]
-                        
-                        #empty variables -> to be filled by data from the foor loop
-                        postal_code_list = []
-                        city_list = []
-                        state_list = []
-                        
-                        for result in f_data_json["results"][result_val_single]:
-                            tab2.write(f"- ZIP code: {result['postal_code']}")
-                            tab2.write(f"- City name: {result['city_en']}")
-                            tab2.write(f"- State: {result['state_en']}")
-                            tab2.write(f"=====================================")
+        selected_company = st.selectbox(label="Company", options=company_list, help="Select or type a company name you are interested in.")
+
+        submit_button = st.form_submit_button(label= "Submit", width="stretch")
+
+    if submit_button:
+
+        with engine.connect() as conn:
+            result = conn.execute(
+                text("SELECT comp_id FROM company WHERE name = :company"),
+                {"company": selected_company}
+            )
+            cus_id = result.scalar()
+
+
+        def return_query_country(country_code, customer):
+
+            query_country = f"""
+                SELECT
+                    name as "Name",
+                    city as "City",
+                    branch_text as "Type",
+                    street as "Street",
+                    number as "No.",
+                    district as "District",
+                    zip_code as "ZIP code",
+                    branch_id as "Branch id"
+
+                FROM
+                    company 
+                    INNER JOIN country_{country_code} ON (comp_id = c_comp_id)
+                    INNER JOIN branch ON (branch_type = type_code)
+
+                WHERE
+                    c_comp_id = {customer}
                             
-                            postal_code_list.append(result['postal_code'])
-                            city_list.append(result['city_en'])
-                            state_list.append(result['state_en'])
+                ORDER BY
+                    name,
+                    city, 
+                    district ASC;
+                """
+            return query_country
+        
 
-                        # this increases the index number/move to the next item in the list
-                        index = index + 1
+        query_country_at = return_query_country('at', cus_id)
+        query_country_cz = return_query_country('cz', cus_id)
+        query_country_de = return_query_country('de', cus_id)
+        query_country_pl = return_query_country('pl', cus_id)
+        query_country_sk = return_query_country('sk', cus_id)
+        
 
 
-                        # Note: important to keep this DF after the for loop -> to have the lists already filled with values (from the for loop)
-                        result_dict = pd.DataFrame ({
-                            "ZIP code" : postal_code_list,
-                            "City name" : city_list,
-                            "State" :  state_list                                
-                        })
-                        
+        df_at = pd.read_sql(query_country_at, engine)
+        df_cz = pd.read_sql(query_country_cz, engine)
+        df_de = pd.read_sql(query_country_de, engine)
+        df_pl = pd.read_sql(query_country_pl, engine)
+        df_sk = pd.read_sql(query_country_sk, engine)
 
-                        # Tables - data visualization on the screen
-                        
-                        result_dict.index += 1	 
-                                                
-                        tab1.write(result_dict)                              
-                            
-                    
-                    
-        except:
-            st.warning("Apologies, the limit of the API calls per month has been reached. It will be **renewed by 1st next month**. THIS PART OF APPLICATION IS CURRENTLY NOT AVAILABLE.")
-            
+
+        df_at.index = df_at.index + 1
+        df_cz.index = df_cz.index + 1
+        df_de.index = df_de.index + 1
+        df_pl.index = df_pl.index + 1
+        df_sk.index = df_sk.index + 1
+
+        # Screen 
+
+        ''
+        with st.expander("Branch type info:",width= "stretch", icon=":material/help_outline:"):
+            st.dataframe(branch_type_info_df, hide_index=True)
+
+        ''
+        st.write("Austria - AT")
+        st.write(df_at)
+
+        st.write("Czech Republic - CZ")
+        st.write(df_cz)
+
+        st.write("Germany - DE")
+        st.write(df_de)
+
+        st.write("Poland - PL")
+        st.write(df_pl)
+
+        st.write("Slovakia - SK")
+        st.write(df_sk)
+
+
+with tab3:
+
+        engine = db_connection()
+
+        # Number of companies reqistered in DB
+        df_company_no = pd.read_sql("""        
+                SELECT count(comp_id) as count
+                FROM company;
+                """, engine)
+        
+        company_num = df_company_no['count'].iloc[0]
+
+
+        # Number of branches in DB - accross all country_xx tables
+        df_branch_num = pd.read_sql("""        
+                        SELECT 
+                            (SELECT COUNT(branch_id) FROM country_at) +
+                            (SELECT COUNT(branch_id) FROM country_cz) +
+                            (SELECT COUNT(branch_id) FROM country_de) +
+                            (SELECT COUNT(branch_id) FROM country_pl) +
+                            (SELECT COUNT(branch_id) FROM country_sk) as total_count;
+                """, engine)
+        
+        branch_num = df_branch_num['total_count'].iloc[0]
+
+
+        # Main query -> DF and overview
+        df = pd.read_sql("""
+                SELECT 
+                    name as "Name",
+                    truck as "Truck",
+                    train as "Train",
+                    airplane as "Airplane",
+                    international_transport as "International transport"
+                FROM
+                    company
+                ORDER BY 
+                    name ASC         
+                ;""", engine)
+
+
+        df.index = df.index + 1
+
+        # Screen
+        ''
+        st.write(f"""
+        - Number of companies: **{company_num}**
+        - Number of branches: **{branch_num}**
+        """)
+
+        ''
+        st.dataframe(df, width = "stretch", height=800)

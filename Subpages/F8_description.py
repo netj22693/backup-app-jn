@@ -31,13 +31,19 @@ st.image("Pictures/Function_8/F8_Archimate.svg")
 st.write("##### DB structure - ERD:")
 ''
 st.write("""
-- The DB is designed based on **principle of 2 kinds of tables**
-- Table 1 **'company'** stores information about companies providing transport - and what type of transport does - **Truck, Train, Airplane, International/Domestic transport** 
-- Table 2 **'country_XX**' stores information about branches/contact points of the companies per specific country
-- This creates a relationship **1 Parent - multiple Children** having **'0 to Many'** relations also when it comes to records
+- The DB is designed based on **principle of 2 main kinds of tables** to cover the **core of data/information**
+	- Table 1 **'company'** stores information about companies providing transport - and what type of transport does - **Truck, Train, Airplane, International/Domestic transport** 
+	- Table 2 **'country_XX'** stores information about branches/contact points of the companies per specific country - **adresses** + **branch type code** 
+	- This creates a relationship **1 Parent - multiple Children** having **'0 to Many'** relations also when it comes to records
+""")
+st.write("""
+- Then there is **3rd** table '**branch**' which is linked to the **branch type code** in 'country_XX' tables
+	- This branch type code is very important for SQL filtering when it comes to Truck, Train, Airplane critria 
+    - And also through SQL JOIN helps to provide text information in dataframes visualized on user screens
+    - The branch type code, its text and description can be maintained in this 'branch' table
 """)
 ''
-st.image("Pictures/Function_8/F8_ERD.svg")
+st.image("Pictures/Function_8/F8_ERD_v2.svg")
 
 ''
 st.write("""
@@ -48,12 +54,21 @@ st.write("""
 """)
 ''
 ''
-st.image("Pictures/Function_8/F8_erd_small.svg")
-
+st.image("Pictures/Function_8/F8_erd_small_v3.svg")
 
 ''
+''
+st.write("- Example of data:")
+st.image("Pictures/Function_8/F8_erd_table_relations_example.svg")
+
+''
+''
+''
+st.write("##### Logic - SQL query:")
+''
+''
 st.write("""
-- With this DB logic there can be SQL queries set in the code to provide relevant data to the user screen
+- Based on the DB logic there can be SQL queries set in the code to provide relevant data to the user screen
 """)
 
 ''
@@ -67,7 +82,7 @@ st.image("Pictures/Function_8/F8_bpmn_query_internal_crossborder.svg")
 
 ''
 st.write("""
-- User is for particular company branches 
+- User is searching for particular company branches 
 """)
 
 ''
