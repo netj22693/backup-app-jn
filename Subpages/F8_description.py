@@ -31,7 +31,7 @@ with st.expander("Known limitation - latency", icon=":material/sync_problem:"):
     st.write("""
 - The **Function 8** can be quite slow, **5-10 seconds**, when loading data - reasons:
     - I use **FREE version** of the Neon DB and Streamlit
-    - **Latency** - Neon DB server is in Franfurt in **DE** and Streamlit in **USA**
+    - **Latency** - Neon DB server is in Frankfurt in **DE** and Streamlit in **USA**
     - The Fucntion 8 is built on **multiple queries pulling data** which needs to be performed. So the latency slows this down a little bit
 	""")
 
