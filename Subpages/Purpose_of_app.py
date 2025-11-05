@@ -44,9 +44,10 @@ st.write("enjoy... :)")
 ''
 ''
 # split into Tabs 
-tab1,tab2 = st.tabs([
+tab1,tab2, tab3 = st.tabs([
     "ArchiMate - Overview",
-    "UML - Activity diagram - Overview "
+    "UML - Activity diagram - Overview",
+	"Architecture landscape"
 ])
 
 #Tab 1
@@ -70,6 +71,11 @@ with tab2:
 	st.image("Pictures/Overall_UML_F7.svg")
 	''
 	st.image("Pictures/Overall_UML_F8.svg")
+
+with tab3:
+	st.write("###### Architecture landscape:")
+	''
+	st.image("Pictures/App_landscape_architecture.svg")
 
 ''
 ''
