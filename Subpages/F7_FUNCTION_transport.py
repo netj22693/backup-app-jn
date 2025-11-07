@@ -191,7 +191,10 @@ correction_list_data = [
 
 def api_get_rate():
     try:
-        api_freecurrency_api = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_wD1NduThhBnySFJAlV9f6xnQmMhkJa6qFzX7DJz4&currencies=EUR%2CCZK"
+
+        api_key = st.secrets["F7_api"]["password_7"]
+
+        api_freecurrency_api = f"https://api.freecurrencyapi.com/v1/latest?apikey={api_key}&currencies=EUR%2CCZK"
 
         #get reguest
         @st.cache_data(ttl=3600)
