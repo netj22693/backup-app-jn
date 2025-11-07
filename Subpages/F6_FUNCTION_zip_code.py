@@ -296,7 +296,7 @@ def  get_request(codes, country):
     # API ZIPCODESTACK
     api_url = "https://api.zipcodestack.com/v1/search"
 
-    api_key_2 = "zip_live_pWsWrXrfbOBJpOjUwXuVT8RDRkWCtUj44M2RKzLd"
+    api_key_2 = st.secrets["F6_api_2"]["password_2"]
 
     headers = { 
     "apikey": api_key_2}
