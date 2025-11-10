@@ -1,28 +1,28 @@
 {
     "header": {
-        "order_number": "68988746332005372342",
-        "customer": "a",
-        "invoice_number": "INV-268652",
+        "order_number": "59141514677536917468",
+        "customer": "S",
+        "invoice_number": "INV-686385",
         "date": "2025-11-10",
         "price": {
-            "total_sum": 25.4,
+            "total_sum": 12.6,
             "currency": "euro"
         }
     },
     "detail": {
-        "category": "PC",
-        "product_name": "a",
-        "price_amount": 20.0,
+        "category": "Tablets",
+        "product_name": "C",
+        "price_amount": 10.0,
         "additional_service": {
-            "service": "Y",
-            "service_type": "insurance",
-            "service_price": 3.0
+            "service": "N",
+            "service_type": "None",
+            "service_price": 0.0
         }
     },
     "transportation": {
         "transporter": "Fedex",
-        "country": "Czech Republic",
+        "country": "Slovakia",
         "size": "small",
-        "transport_price": 2.4
+        "transport_price": 2.6
     }
 }

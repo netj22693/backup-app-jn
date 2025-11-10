@@ -361,6 +361,7 @@ if  st.button(
         st.write(f" - Price for the extra service: **{service_price_fn:,.2f} {currency_selb}** - Extra service: **{add_service_select}** ")
         ''
         st.write(f" - Price for transport: **{calc_transport_price:,.2f} {currency_selb}** - Transport company: **{transport_co_selb}** - Country: **{city_selb}**")
+        st.write(f" - Parcel size: **{size_selb}**")
         ''
         st.write(f" - Total price to pay: **{final_price_fl:,.2f} {currency_selb}**")
 
