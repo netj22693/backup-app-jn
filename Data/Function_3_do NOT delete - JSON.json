@@ -1,17 +1,17 @@
 {
     "header": {
-        "order_number": "59141514677536917468",
-        "customer": "S",
-        "invoice_number": "INV-686385",
+        "order_number": "25985116915509714548",
+        "customer": "c",
+        "invoice_number": "INV-782149",
         "date": "2025-11-10",
         "price": {
-            "total_sum": 12.6,
+            "total_sum": 12.0,
             "currency": "euro"
         }
     },
     "detail": {
-        "category": "Tablets",
-        "product_name": "C",
+        "category": "TV",
+        "product_name": "c",
         "price_amount": 10.0,
         "additional_service": {
             "service": "N",
@@ -20,9 +20,9 @@
         }
     },
     "transportation": {
-        "transporter": "Fedex",
-        "country": "Slovakia",
+        "transporter": "DHL",
+        "country": "Czech Republic",
         "size": "small",
-        "transport_price": 2.6
+        "transport_price": 2.0
     }
 }

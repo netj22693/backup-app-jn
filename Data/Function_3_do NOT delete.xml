@@ -1,18 +1,18 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <invoice>
   <header>
-    <order_number>59141514677536917468</order_number>
-    <customer>S</customer>
-    <invoice_number>INV-686385</invoice_number>
+    <order_number>25985116915509714548</order_number>
+    <customer>c</customer>
+    <invoice_number>INV-782149</invoice_number>
     <date>2025-11-10</date>
     <price>
-      <total_sum>12.6</total_sum>
+      <total_sum>12.0</total_sum>
       <currency>euro</currency>
   </price>
   </header>
   <detail>
-    <category>Tablets</category>
-    <product_name>C</product_name>
+    <category>TV</category>
+    <product_name>c</product_name>
     <price_amount>10.0</price_amount>
     <additional_service>
       <service>N</service>
@@ -21,9 +21,9 @@
   </additional_service>
   </detail>
   <transportation>
-    <transporter>Fedex</transporter>
-    <country>Slovakia</country>
+    <transporter>DHL</transporter>
+    <country>Czech Republic</country>
     <size>small</size>
-    <transport_price>2.6</transport_price>
+    <transport_price>2.0</transport_price>
   </transportation>
 </invoice>

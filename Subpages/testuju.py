@@ -4,8 +4,10 @@ import string
 import random
 import time
 import json
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Column, Integer, String, Boolean
+from sqlalchemy.orm import declarative_base, Session
 import pandas as pd
+
 
 
 
@@ -331,16 +333,13 @@ if  st.button(
 
 
 
-        db_enigne = connection_db()
+        db_engine = connection_db()
 
         currency_query = transform_currency_for_query(currency_selb)
-        st.write(currency_query)
 
         country_code = transform_country_to_code(city_selb)
-        st.write(country_code)
 
-        calc_transport_price = get_transport_price(db_enigne, currency_query, country_code, size_selb, transport_co_selb)
-        st.write(calc_transport_price)
+        calc_transport_price = get_transport_price(db_engine, currency_query, country_code, size_selb, transport_co_selb)
 
 
 
@@ -364,6 +363,7 @@ if  st.button(
         st.write(f" - Price for the extra service: **{service_price_fn:,.2f} {currency_selb}** - Extra service: **{add_service_select}** ")
         ''
         st.write(f" - Price for transport: **{calc_transport_price:,.2f} {currency_selb}** - Transport company: **{transport_co_selb}** - Country: **{city_selb}**")
+        st.write(f" - Parcel size: **{size_selb}**")
         ''
         st.write(f" - Total price to pay: **{final_price_fl:,.2f} {currency_selb}**")
 
@@ -457,15 +457,9 @@ if  st.button(
         file_name_json_fstring = f"{invoice_number_generated}.json"
 
 
-        # ================ Process complete function =================
+        # ================ Process complete function and not complete =================
 
-        @st.dialog("Complete!")
-        def process_done():
-            st.write("""
-                        - File was created and downloaded -> :green[**The process is successfully DONE**].
-                        """)
-            
-
+        def final_dialogs_goto():    
             ''
             st.write("**Go to:**")
 
@@ -477,7 +471,6 @@ if  st.button(
                 icon=":material/play_circle:",
                 )
             
-            ''
             st.page_link(
                 label = "Function 5 - Description - API",
                 page="Subpages/F5_description_API.py",
@@ -494,35 +487,113 @@ if  st.button(
                 icon=":material/code:",
                 )
 
+        @st.dialog("Complete!")
+        def process_done():
+            st.write(f"""
+                - File was created and downloaded -> :green[**Complete**]
+                - Order **{order_number}** was inserted into DB -> :green[**Complete**]
+                """)
+            ''
+            final_dialogs_goto()
 
 
+        @st.dialog("Insert into DB failed") 
+        def insert_db_not_complete():
+            st.write("""
+                - File was created and downloaded -> :green[**Complete**]
+                - But Order **was not** inserted into DB -> :red[**Technical issue**]
+                """)
+            ''
+            final_dialogs_goto()
+
+
+        # ================= DOWNLOAD + FINALIZTION OF THE PROCESS ===========
         ''
         st.write("###### Download:")
+
+        # Data to be inserted to DB
+        data_for_insert = {
+        "order_number": "TEST",
+        "date": "2025-11-10",
+        "customer": "buyer",
+        "category": "PC",
+        "product_name": "aaa",
+        "product_price": "10.00",
+        "extra_service": True,
+        "extra_service_type": "Insurance",
+        "country": "Czech Republic",
+        "tr_company": "DHL",
+        "tr_price": "2.17",
+        "parcel_size": "small",
+        "total_price": "13.67",
+        "currency": "US dollar"
+        }
+
+
+        def sql_insert_function(engine, data):
+            
+            print("jsem v sql_insert_function")
+            Base = declarative_base()
+
+            class Invoice(Base):
+                __tablename__ = "invoice"
+                __table_args__ = {"schema": "f4b"}
+
+                record_id = Column(Integer, primary_key=True)
+                order_number = Column(String)
+                date = Column(String)
+                customer = Column(String)
+                category = Column(String)
+                product_name = Column(String)
+                product_price = Column(String)
+                extra_service = Column(Boolean)
+                extra_service_type = Column(String)
+                extra_service_price = Column(String)
+                country = Column(String)
+                tr_company = Column(String)
+                tr_price = Column(String)
+                parcel_size = Column(String)
+                total_price = Column(String)
+                currency = Column(String)
+
+            with Session(engine) as session:
+                new_invoice = Invoice(**data)
+                session.add(new_invoice)
+                session.commit()
+            
+            print("jsem tu")
+
             
             
-        with open('Data/Function_3_do NOT delete.xml') as f:
-            if st.download_button(
+        def on_download_click():
+            try:
+                print("Jsem v on_download_click")
+                sql_insert_function(db_engine, data_for_insert)
+                process_done()
+
+            except Exception as e:
+                print(f"Insert failed: {e}")
+                insert_db_not_complete()
+
+        with open('Data/Function_3_do NOT delete.xml', 'rb') as f:
+            st.download_button(
                 'Download - XML',
-                f, file_name = file_name_xml_fstring,
+                f,
+                file_name=file_name_xml_fstring,
                 use_container_width=True,
-                icon = ":material/download:",
-                on_click=process_done
-                ):
-                st.info("download will start in few seconds")
-
-
+                icon=":material/download:",
+                on_click=on_download_click
+            )
 
         
         with open('Data/Function_3_do NOT delete - JSON.json') as j:
-            if st.download_button(
-                'Download - JSON',
-                j, file_name = file_name_json_fstring,
-                use_container_width=True,
-                icon = ":material/download:",
-                on_click=process_done
-                ):
-            
-                st.info("download will start in few seconds")
+            st.download_button(
+            'Download - JSON',
+            j, file_name = file_name_json_fstring,
+            use_container_width=True,
+            icon = ":material/download:",
+            on_click=process_done
+            )
 
             
                 
