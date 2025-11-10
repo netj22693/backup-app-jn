@@ -4,6 +4,8 @@ import string
 import random
 import time
 import json
+from sqlalchemy import create_engine
+import pandas as pd
 
 
 
@@ -44,6 +46,30 @@ order_num_generated = order_generator()
 now = time.localtime()
 print(now)
 date_input = time.strftime("%Y-%m-%d", now)
+
+
+@st.dialog("Error: DB not connected")
+def db_connection_fail():
+
+    st.warning("Application is not able to establish connection with DB server -> **This invoice was not saved into DB**")
+    st.stop()
+
+
+def connection_db():
+    # Load secrets
+    db = st.secrets["neon"]
+
+    # connection string
+    try: 
+        conn_string = f"postgresql+psycopg2://neondb_owner:{db['password']}@ep-lucky-bar-a9hww36i-pooler.gwc.azure.neon.tech/neondb?sslmode=require"
+
+        engine = create_engine(conn_string)
+        return engine
+
+    except:
+        db_connection_fail()
+
+
 
 # ================ Application Screen - INPUT Buttons ========================
 st.write("# Delivery details:")
@@ -173,143 +199,6 @@ price_fl = float("{:.2f}".format(price_fl))
 
 
 
-
-# ============ Logic for Transport values based on user inputs ==============
-
-def calculation_transport(city_selb,size_selb,transport_co_selb, currency_selb):   
-    # Czech Republic, DHL, small
-    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'euro':
-        return 2.00
-    
-    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'US dollar':
-        return 2.17
-    
-    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'Kč':
-        return 50.00
-
-    # Czech Republic, DHL, medium
-    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'euro':
-        return 3.20
-    
-    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'US dollar':
-        return 3.48
-    
-    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'Kč':
-        return 80.00
-
-    # Czech Republic, DHL, large
-    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'euro':
-        return 4.00
-    
-    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'US dollar':
-        return 4.35
-    
-    if city_selb == 'Czech Republic' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'Kč':
-        return 100.00
-    
-    # Czech Republic, Fedex, small
-    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'euro':
-        return 2.40
-    
-    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'US dollar':
-        return 2.61
-    
-    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'Kč':
-        return 60.00
-    
-    # Czech Republic, Fedex, medium
-    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'euro':
-        return 3.20
-    
-    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'US dollar':
-        return 3.48
-    
-    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'Kč':
-        return 80.00
-    
-    # Czech Republic, Fedex, large
-    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'euro':
-        return 4.40
-    
-    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'US dollar':
-        return 4.78
-    
-    if city_selb == 'Czech Republic' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'Kč':
-        return 110.00
-    
-    # Slovakia, DHL, small
-    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'euro':
-        return 2.80
-    
-    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'US dollar':
-        return 3.04
-    
-    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'Kč':
-        return 70.00
-    
-    # Slovakia, DHL, medium
-    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'euro':
-        return 4.00
-    
-    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'US dollar':
-        return 4.35
-    
-    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'medium' and currency_selb == 'Kč':
-        return 100.00
-    
-    # Slovakia, DHL, small
-    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'euro':
-        return 2.80
-    
-    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'US dollar':
-        return 3.04
-    
-    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'small' and currency_selb == 'Kč':
-        return 70.00
-    
-    # Slovakia, DHL, large
-    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'euro':
-        return 6.00
-    
-    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'US dollar':
-        return 6.52
-    
-    if city_selb == 'Slovakia' and transport_co_selb == 'DHL' and size_selb == 'large' and currency_selb == 'Kč':
-        return 150.00
-
-    # Slovakia, Fedex, small
-    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'euro':
-        return 2.60
-    
-    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'US dollar':
-        return 2.83
-    
-    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'small' and currency_selb == 'Kč':
-        return 65.00
-    
-    # Slovakia, Fedex, medium
-    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'euro':
-        return 4.80
-    
-    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'US dollar':
-        return 5.22
-    
-    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'medium' and currency_selb == 'Kč':
-        return 120.00
-    
-    # Slovakia, Fedex, large
-    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'euro':
-        return 6.00
-    
-    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'US dollar':
-        return 6.52
-    
-    if city_selb == 'Slovakia' and transport_co_selb == 'Fedex' and size_selb == 'large' and currency_selb == 'Kč':
-        return 150.00
-
-calc_transport_price = calculation_transport(city_selb,size_selb,transport_co_selb, currency_selb)
-
-
 # =============== Logic for additional service (selected by user on screen) =======
 
 # def() for making a string object
@@ -364,12 +253,6 @@ service_fn = fun_add_service_3(add_service_select)
 
 # ==================== User screen =================================
 
-# Logic / notification guidence when fullfiled properly
-if customer_input == '' or product_name_inp == '' or category_selb == None or currency_selb == None or price == 0.00 or add_service_select == '' or city_selb == None or transport_co_selb == None or size_selb == None :
-    st.warning("**One/Some of the inputs still not entered.** Please check and make sure that you have correctly fullfiled all.")
-
-else:
-    st.success("Fulfiled properly - Submit button can be used.")
 
 
 # Clear of inputs - Reset button
@@ -387,6 +270,9 @@ def reset():
 
 
 # Submit button
+
+''
+''
 if  st.button(
     "Submit",
     use_container_width=True,
@@ -398,13 +284,63 @@ if  st.button(
 
         # This step is stopping the script it this 'if' condition is met. 
         # Simply, if missing input and Submit button pushed -> the application will nto continue
-        st.error("**Not all inputs provided** - please check, fill in and then push the **Submit** button again.")
+        st.warning("**Not all inputs provided** - please check, fill in and then push the **Submit** button again.")
 
 
     else:
-
         a = id_generator()
         invoice_number_generated = 'INV-' + a
+
+        def get_transport_price(engine, currency, c_code, size, company):
+            
+            query = f"""
+            SELECT {currency} 
+                FROM f3.company a
+                INNER JOIN f3.country_{c_code} b ON (a.comp_id = b.c_comp_id)
+                INNER JOIN f3.parcel_size c ON (b.size = c.size_id)
+                WHERE
+                a.name = '{company}' AND
+                c.name = '{size}'
+            """
+
+            df_query_result = pd.read_sql(query, engine)
+            query_result = df_query_result[f'{currency}'].iloc[0]
+
+            return query_result
+        
+        def transform_currency_for_query(currency):
+
+            mapping = {
+                "euro": "euro",
+                "US dollar": "us_dollar",
+                "Kč": "koruna"
+            }
+
+            return mapping.get(currency)      
+
+
+
+        def transform_country_to_code(country):
+
+            mapping = {
+                "Czech Republic": "cz",
+                "Slovakia": "sk",
+            }
+
+            return mapping.get(country) 
+
+
+
+        db_enigne = connection_db()
+
+        currency_query = transform_currency_for_query(currency_selb)
+
+        country_code = transform_country_to_code(city_selb)
+
+        calc_transport_price = get_transport_price(db_enigne, currency_query, country_code, size_selb, transport_co_selb)
+
+
+
         
         # Calculation of final price 
         # important to keep the calculation after SUBMIT button, if not TypeError: unsupported operand type(s) for +: 'float' and 'NoneType'
@@ -523,20 +459,12 @@ if  st.button(
         @st.dialog("Complete!")
         def process_done():
             st.write("""
-                     - File was created and downloaded -> :green[**The process is successfully DONE**].
-                     """)
+                - File was created and downloaded -> :green[**The process is successfully DONE**].
+                """)
             
 
             ''
             st.write("**Go to:**")
-            # st.page_link(
-            #     label = "Again use this Function 3",
-            #     page="Subpages/F3_FUNCTION_creation_of_XML.py",
-            #     help="The button will redirect to the relevant page within this app.",
-            #     use_container_width=True,
-            #     icon=":material/play_circle:",
-            #     )
-
 
             st.page_link(
                 label = "Function 4 - Mapping",
@@ -581,10 +509,6 @@ if  st.button(
 
 
 
-
-
-
-        
         
         with open('Data/Function_3_do NOT delete - JSON.json') as j:
             if st.download_button(
@@ -597,8 +521,8 @@ if  st.button(
             
                 st.info("download will start in few seconds")
 
-        
             
+                
 ("---------")
 st.button(
     "Reset",

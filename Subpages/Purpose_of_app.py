@@ -320,33 +320,34 @@ with st.expander(
 		- **v12.1** - Better visualization of results (tabs) - 06-July-2025
 		- **v12.0** - APIs not called in case of empty forms (missing inputs) - to not waste API calls - 06-July-2025
 		- **v10.2** - Additional try-except logic to cover API limit reached situation  - 03-July-2025
-		- **v10.0** - F6 released  - 02-July-2025
+		- **v10.0** - F6 released - 02-July-2025
 	""")
 
 	''
 	st.write("""
 	- Function 5:
-		- **11.0** - try-except logic added + timeout 5 secs, to cover unavailability of APIs  - 04-July-2025
-		- **v4.1** - API 3 added (status/monitoring of API 2 get requests)  - 16-Jun-2025
-		- **v2.7** - API 2 added  - 10-Jun-2025
-		- **v2.6** - F5 developed (API 1)  - 10-Jun-2025
+		- **v11.0** - try-except logic added + timeout 5 secs, to cover unavailability of APIs - 04-July-2025
+		- **v4.1** - API 3 added (status/monitoring of API 2 get requests) - 16-Jun-2025
+		- **v2.7** - API 2 added - 10-Jun-2025
+		- **v2.6** - F5 developed (API 1) - 10-Jun-2025
 	""")
 
 
 	''
 	st.write("""
 	- Function 4:
-		- **v7.2** - Try/Except - Error handling, if wrong file uploaded  - 18-Jun-2025	
-		- **v0.7** - F4 released  - 23-March-2025
+		- **v7.2** - Try/Except - Error handling, if wrong file uploaded - 18-Jun-2025	
+		- **v0.7** - F4 released - 23-March-2025
 	""")
 	
 
 	''
 	st.write("""
 	- Function 3:
-		- **v17.2** - End of the process adjusted - info message/box appears  - 28-July-2025	
-		- **v5.2** - Try/Except - Error handling, if wrong file uploaded  - 17-Jun-2025		  
-		- **v0.7** - Bug fix/fine tuning  - 23-March-2025
+		- **v41.0** - Connected to DB to get transport price - 11-Nov-2025
+		- **v17.2** - End of the process adjusted - info message/box appears - 28-July-2025	
+		- **v5.2** - Try/Except - Error handling - 17-Jun-2025	 
+		- **v0.7** - Bug fix/fine tuning - 23-March-2025
 		- **v0.6** - F3 released - 13-March-2025
 	""")
 
@@ -360,7 +361,7 @@ with st.expander(
 		- **v15.0** - Input XML validated against XSD (new feature built) - 11-July-2025
 		- **v14.0** - New expander (SQL 3) - another SQL queries & Pie charts - 10-July-2025
 		- **v8.1** - More filters/Advanced filtering - 23-Jun-2025		
-		- **v5.2** - Try/Except - Error handling, if wrong file uploaded  - 17-Jun-2025		  
+		- **v5.2** - Try/Except - Error handling, if wrong file uploaded - 17-Jun-2025		  
 		- **v5.0** - New expanders with SQL queries (Data highlights) - 16-Jun-2025
 		- **v0.1** - F2 released (together with F1) - 20-Feb-2025
 	""")

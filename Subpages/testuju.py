@@ -1,17 +1,61 @@
-from sqlalchemy import create_engine
-from sqlalchemy import text
-import pandas as pd
 import streamlit as st
+import xml.etree.ElementTree as ET
+import string
+import random
+import time
+import json
+from sqlalchemy import create_engine
+import pandas as pd
+
+
+
+# ================ Functions defined =========================
+
+# Function for pretty print of XML elements
+def prettify(element, indent='  '):
+    queue = [(0, element)]  # (level, element)
+    while queue:
+        level, element = queue.pop(0)
+        children = [(level + 1, child) for child in list(element)]
+        if children:
+            element.text = '\n' + indent * (level+1)  # for child open
+        if queue:
+            element.tail = '\n' + indent * queue[0][0]  # for sibling open
+        else:
+            element.tail = '\n' + indent * (level-1)  # for parent close
+        queue[0:0] = children  # prepend so children come before siblings
+
+
+
+# Function for generating random 6 digits for invoice number
+def id_generator(size=6, chars=string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
+# a = id_generator()
+# invoice_number_generated = 'INV-' + a
+
+# Function for generating random 12 digits for invoice number
+def order_generator(size=20, chars=string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
+order_num_generated = order_generator()
+
+
+
+# Generation of date for <date> element
+now = time.localtime()
+print(now)
+date_input = time.strftime("%Y-%m-%d", now)
+
 
 @st.dialog("Error: DB not connected")
 def db_connection_fail():
 
-    st.warning("Application is not able to establish connection with DB server -> **Function 8 is currently not available**")
+    st.warning("Application is not able to establish connection with DB server -> **This invoice was not saved into DB**")
     st.stop()
 
 
-def db_connection():
-
+def connection_db():
     # Load secrets
     db = st.secrets["neon"]
 
@@ -19,344 +63,473 @@ def db_connection():
     try: 
         conn_string = f"postgresql+psycopg2://neondb_owner:{db['password']}@ep-lucky-bar-a9hww36i-pooler.gwc.azure.neon.tech/neondb?sslmode=require"
 
-
         engine = create_engine(conn_string)
         return engine
 
     except:
-        st.warning("DB not connected")
         db_connection_fail()
 
 
-st.write("# Company Book:")
+
+# ================ Application Screen - INPUT Buttons ========================
+st.write("# Delivery details:")
 ''
+
+st.write("Please provide details about order...")
 ''
-''
-st.image("Pictures/Function_8/F8_brands.svg", width=450)
+with st. expander("Buyer", icon=":material/tag_faces:"):
+    customer_input = st.text_input(
+        "Customer/Company name:",
+        help = "Write a customer name/company name",
+        key= "k_customer"
+        )
 
-''
-tab1, tab2, tab3 = st.tabs([
-    "Transport From - To",
-    "Specific Company",
-    "Overview - Companies"
-])
+with st. expander("Product", icon=":material/devices:"):
 
+    product_name_inp = st.text_input(
+        "Product name:",
+        help = "Write a product name",
+        key= "k_product"
+        )
 
-#Generic connection when main page loaded
+    category_selb = st.selectbox(
+        "Category:" ,
+        index = None,
+        placeholder= "Select...",
+        options=["PC","TV","Gaming","Mobile phones","Tablets","Major Appliances","Households"],
+        help = "Select category from which the product is",
+        key= "k_category"
+         )
 
-engine_generic = db_connection()
-
-
-branch_type_info_df = pd.read_sql("""
-    SELECT
-        branch_text as "Type",
-        description as "Description"                  
-    FROM 
-        branch
-    WHERE
-        type_code >= 3
-    ORDER BY
-        type_code 
-    ;""", engine_generic)
-
-
-
-
-
-
-
-
-with tab1:
-    country_list = ["AT","CZ","DE","PL","SK"]
-    country_list.sort()
-
-    list_transport = ["Truck","Train","Airplane"]
-
-
-    # Screen
-    ''
-    st.write("""
-    - Provides **companies available** for selected **type of transport** and their **contact points/branches** 
-    """)
-
-    ''
-    with st.form(key="user_form"):
-        country_from = st.selectbox(label="Country From", options=country_list, help="Origin of transport.")
-        country_to = st.selectbox(label="Country To", options=country_list, help="Destination of transport. It helps to distinguish if only domestic-transport companies to be included or not (in case that transport will happen in one country).")
-        transport_type = st.selectbox(label="Transport type", options=list_transport, help="Select preferred transport type.")
-        
-        submit_button = st.form_submit_button(label= "Submit", width="stretch")
-
-    # lowering letters for SQL purpose - case sensitive
-    country_from = country_from.lower()
-    country_to = country_to.lower()
-    transport_type = transport_type.lower()
+with st. expander("Price", icon = ":material/euro_symbol:"):
+    currency_selb = st.selectbox(
+        "Currency:" ,
+        index = None,
+        placeholder= "Select...",
+        options=["euro","US dollar","Kč"],
+        help = "Select one from the predefined currencies",
+        key= "k_currency"
+        )
+    
+    price = st.number_input(
+        "Product price:",
+        min_value=0.00,
+        step = 10.00,
+        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it.",
+        key= "k_price"
+        )
+    
+    if price == 0.00:
+        st.warning("Please change the value to reflect money to be paid (0.00 is not billable)")
 
 
-    def determin_international(c_from, c_to):
+with st.expander("Extra purchase", icon = ":material/exposure_plus_1:"):
 
-        if c_from == c_to:
-            return 'FALSE'
+    add_service_select = st.selectbox(
+        "Additional service:" ,
+        options=["No additional service","Insurance","Extended warranty"],
+        help = "Select one of the options",
+        key= "k_add_service"
+         )
+
+    if add_service_select == 'Insurance':
+        st.info("costs 15% from product price")
+        ''
+        if price == 0.00 or currency_selb == None:
+            pass
 
         else:
-            return 'TRUE'
+            st.write(f"Product price: {price:,.2f} -> Service costs: **{((price/100)*15):,.2f} {currency_selb}**")
+    
+    if add_service_select == 'Extended warranty':
+        st.info("costs 10% from product price")
+        ''
+        if price == 0.00 or currency_selb == None:
+            pass
 
-    international = determin_international(country_from, country_to)
+        else:
+            st.write(f"Product price: {price:,.2f} -> Service costs: **{((price/100)*10):,.2f} {currency_selb}**")
 
 
-    if submit_button:
 
-        engine = db_connection()
+with st.expander("Transportation", icon = ":material/directions_bus:"):
+
+    city_selb = st.selectbox(
+        "Country:" ,
+        options=["Czech Republic","Slovakia"],
+        index = None,
+        placeholder="Select...",
+        help = "Select one of the options - there is different price for service for each country -> see the pricing table below.",
+        key= "k_country"
+         )
+      
+    transport_co_selb = st.selectbox(
+        "Transporting company:" ,
+        options=["DHL","Fedex"],
+        index = None,
+        placeholder="Select...",
+        help = "Select one of the options - there is different price for each company -> see the pricing table below.",
+        key= "k_transp"
+         )
+    
+    size_selb = st.selectbox(
+        "Size of package:" ,
+        options=["small","medium","large"],
+        index = None,
+        placeholder="Select...",
+        help = "Select one of the options - there is different price for each size. Sum of the lengths of all three sides of the parcel max: Small - 50 cm (e.g. 20 cm x 20 cm x 10 cm). Medium 100 cm. Large 200 cm.",
+        key= "k_size"        
+        )
+    ''
+    st.image("Pictures/Function_3/Sizes.png")
+    ''
+    st.write("Pricing table:")
+    ''
+    st.image("Pictures/Function_3/Price_list.png")
+
+''
+''
+
+# Conversion between formats -> due to later mapping into message structures
+# this rounding to 2 decimals avoids bugs in case that the input will be having more than 2 decimals. Case: User MANUALY enters number example 20.7777777 -> automatically gets rounded
+price = round(price, 2)
+price_str = str(price)
+price_fl = float(price)
+price_fl = float("{:.2f}".format(price_fl))
+
+
+
+# =============== Logic for additional service (selected by user on screen) =======
+
+# def() for making a string object
+def fun_add_service_1(option):
+    
+    if option == 'No additional service':
+        return 'None'
+
+    elif option == 'Insurance':
+        return 'insurance'
+    
+    elif option == 'Extended warranty':
+        return 'extended warranty'
+
+# translation of what was selected from user input into object using def()
+service_type_fn = fun_add_service_1(add_service_select)
+
+# def() for calculation of predefined costs based on price and add. service from user inputs
+def fun_add_service_2(option, price):
+    
+    if option == 'No additional service':
+        return 0.00
+
+    elif option == 'Insurance':
+        ins = price * 0.15
+        #ins = str(ins)
+        return ins
+    
+    elif option == 'Extended warranty':
+        extv = price * 0.1
+        #extv = str(extv)
+        return extv
+
+# creation of objects /change of data types
+service_price_fn = fun_add_service_2(add_service_select, price)
+service_price_fn = round(service_price_fn, 2)
+service_price_fn_str = str(service_price_fn)
+service_price_fl = float(service_price_fn)
+
+
+# def() for transfering user input into field in XML/JSON
+def fun_add_service_3(option):
+    
+    if option == 'No additional service':
+        return 'N'
+
+    else:
+        return 'Y'
+       
+
+service_fn = fun_add_service_3(add_service_select)
+
+# ==================== User screen =================================
+
+
+
+# Clear of inputs - Reset button
+def reset():
+    st.session_state["k_customer"] = None
+    st.session_state["k_product"] = None
+    st.session_state["k_category"] = None
+    st.session_state["k_currency"] = None
+    st.session_state["k_price"] = 0.00
+    st.session_state["k_add_service"] = "No additional service"
+    st.session_state["k_country"] = None
+    st.session_state["k_transp"] = None
+    st.session_state["k_size"] = None
+
+
+
+# Submit button
+
+''
+''
+if  st.button(
+    "Submit",
+    use_container_width=True,
+    icon = ":material/apps:",
+    help = "Submit runs the application -> provide calculation -> summary of the invoice and option of generating either XML or JSON file"
+    ):
+
+    if customer_input == '' or product_name_inp == '' or category_selb == None or currency_selb == None or price == 0.00 or add_service_select == '' or city_selb == None or transport_co_selb == None or size_selb == None :
+
+        # This step is stopping the script it this 'if' condition is met. 
+        # Simply, if missing input and Submit button pushed -> the application will nto continue
+        st.warning("**Not all inputs provided** - please check, fill in and then push the **Submit** button again.")
+
+
+    else:
+        a = id_generator()
+        invoice_number_generated = 'INV-' + a
+
+        def get_transport_price(engine, currency, c_code, size, company):
+            
+            query = f"""
+            SELECT {currency} 
+                FROM f3.company a
+                INNER JOIN f3.country_{c_code} b ON (a.comp_id = b.c_comp_id)
+                INNER JOIN f3.parcel_size c ON (b.size = c.size_id)
+                WHERE
+                a.name = '{company}' AND
+                c.name = '{size}'
+            """
+
+            df_query_result = pd.read_sql(query, engine)
+            query_result = df_query_result[f'{currency}'].iloc[0]
+
+            return query_result
         
-
-        def determin_transport_for_db_query(transport):
+        def transform_currency_for_query(currency):
 
             mapping = {
-                    "truck": 5,
-                    "train": 6,
-                    "airplane": 7
-                }
-            return mapping.get(transport, 0)
+                "euro": "euro",
+                "US dollar": "us_dollar",
+                "Kč": "koruna"
+            }
+
+            return mapping.get(currency)      
 
 
-        # preparation of inputs/for dynamic SQL query
-        transport_type_code = determin_transport_for_db_query(transport_type)
 
-        branch_codes_display = f"'1','2','3','4','{transport_type_code}'"
+        def transform_country_to_code(country):
 
-        country_table = f"country_{country_from}"
+            mapping = {
+                "Czech Republic": "cz",
+                "Slovakia": "sk",
+            }
+
+            return mapping.get(country) 
 
 
-        query_international = f"""
-            SELECT
-                name as "Name",
-                city as "City",
-                branch_text as "Type",
-                street as "Street",
-                number as "No.",
-                district as "District",
-                zip_code as "ZIP code",
-                international_transport as "International transport"
 
-            FROM
-                company INNER JOIN {country_table} ON (comp_id = c_comp_id)
-                INNER JOIN branch ON (branch_type = type_code)
+        db_enigne = connection_db()
 
-            WHERE
-                {transport_type} = TRUE AND 
-                international_transport != FALSE AND
-                type_code IN({branch_codes_display})
+        currency_query = transform_currency_for_query(currency_selb)
+        st.write(currency_query)
 
-            ORDER BY
-                name,
-                city, 
-                district ASC;
-            """
+        country_code = transform_country_to_code(city_selb)
+        st.write(country_code)
 
-        query_domestic = f"""
-            SELECT
-                name as "Name",
-                city as "City",
-                branch_text as "Type",
-                street as "Street",
-                number as "No.",
-                district as "District",
-                zip_code as "ZIP code",
-                international_transport as "International transport"
+        calc_transport_price = get_transport_price(db_enigne, currency_query, country_code, size_selb, transport_co_selb)
+        st.write(calc_transport_price)
 
-            FROM
-                company INNER JOIN {country_table} ON (comp_id = c_comp_id)
-                INNER JOIN branch ON (branch_type = type_code)
-            WHERE
-                {transport_type} = TRUE AND
-                type_code IN({branch_codes_display})
-                        
-            ORDER BY
-                name,
-                city, 
-                district ASC;
-            """
 
-        def read_query_international_domestic(query):
 
-            df = pd.read_sql(query, engine)
+        
+        # Calculation of final price 
+        # important to keep the calculation after SUBMIT button, if not TypeError: unsupported operand type(s) for +: 'float' and 'NoneType'
+        final_price_fl = price + calc_transport_price + service_price_fn
+        final_price_fl = round(final_price_fl, 2)
+        final_price_fl_str = str(final_price_fl)
+        
+        st.write("#### Summary of your order:")
+
+        st.write(f" - Customer name: **{customer_input}**")
+        st.write(f" - Order number: **{order_num_generated}**")
+        ''
+        st.write(f" - Product name: **{product_name_inp}**")
+        st.write(f" - Category: **{category_selb}**")
+        st.write(f" - Price: **{price:,.2f} {currency_selb}**")
+        ''
+        #st.write(f" - Extra service: {add_service_select}")
+        st.write(f" - Price for the extra service: **{service_price_fn:,.2f} {currency_selb}** - Extra service: **{add_service_select}** ")
+        ''
+        st.write(f" - Price for transport: **{calc_transport_price:,.2f} {currency_selb}** - Transport company: **{transport_co_selb}** - Country: **{city_selb}**")
+        ''
+        st.write(f" - Total price to pay: **{final_price_fl:,.2f} {currency_selb}**")
+
+
+        ''
+        ''
+        st.info("""
+                - If this is what you expect, you can proceed with Download button which will create a file (XML or JSON). 
+                - If not, you can go up and change your inputs.""")
+        
+        # Change of data type
+        calc_transport_price_str = str(calc_transport_price)
+        
+        
+        # ================ XML and JSON creation =================================
+        # XML structure build
+        xml_doc = ET.Element("invoice")
+        header = ET.SubElement(xml_doc, 'header')
+        order_number = ET.SubElement(header, 'order_number').text = order_num_generated
+        customer = ET.SubElement(header, 'customer').text = customer_input
+        invoice_number = ET.SubElement(header, 'invoice_number').text = invoice_number_generated
+        date = ET.SubElement(header, 'date').text = date_input
+        price = ET.SubElement(header, 'price')
+        total_sum = ET.SubElement(price, 'total_sum').text = final_price_fl_str
+        #total_sum_services = ET.SubElement(price, 'total_sum_services').text = service_price_fn
+        currency = ET.SubElement(price, 'currency').text = currency_selb
+
+        detail = ET.SubElement(xml_doc, 'detail')
+        category= ET.SubElement(detail, 'category').text = category_selb
+        product_name = ET.SubElement(detail, 'product_name').text = product_name_inp
+        price_amount = ET.SubElement(detail, 'price_amount').text = price_str
+        addtional_service = ET.SubElement(detail, 'additional_service')
+        service = ET.SubElement(addtional_service, 'service'). text = service_fn
+        service_type = ET.SubElement(addtional_service, 'service_type').text = service_type_fn
+        service_price = ET.SubElement(addtional_service, 'service_price').text = service_price_fn_str
+
+        transportation = ET.SubElement(xml_doc, 'transportation')
+        transporter = ET.SubElement(transportation, 'transporter').text = transport_co_selb
+        country = ET.SubElement(transportation, 'country').text = city_selb
+        size = ET.SubElement(transportation, 'size').text = size_selb
+        transport_price = ET.SubElement(transportation, 'transport_price').text = calc_transport_price_str
+
+        # Calling of the pretty print function to put the XML into nice shape (based on nesting)
+        prettify(xml_doc)
+
+        tree = ET.ElementTree(xml_doc)
+
+        # xml_declaration=Tru -> generuje XML prolog
+        tree.write('Data/Function_3_do NOT delete.xml', encoding='UTF-8', xml_declaration=True)
+
+
+        # JSON structure build
+        data_json = {
+        "header" : {
+            "order_number" : order_num_generated,
+            "customer": customer_input,
+            "invoice_number": invoice_number_generated,
+            "date": date_input,
+            "price": {
+                "total_sum": final_price_fl,
+                "currency": currency_selb
+            }
+        },
+        "detail": {
+            "category": category_selb,
+            "product_name": product_name_inp,
+            "price_amount": price_fl,
+            "additional_service": {
+                "service": service_fn,
+                "service_type": service_type_fn,
+                "service_price": service_price_fl
+            }
+        },
+        "transportation": {
+            "transporter": transport_co_selb,
+            "country": city_selb,
+            "size": size_selb,
+            "transport_price": calc_transport_price
+        }
+        }
+
+        json_object = json.dumps(data_json, indent=4)
+
+        with open("Data/Function_3_do NOT delete - JSON.json", "w") as outfile:
+            outfile.write(json_object)
+            outfile.close()
+
+
+        # File names creation
+        file_name_xml_fstring = f"{invoice_number_generated}.xml"
+        file_name_json_fstring = f"{invoice_number_generated}.json"
+
+
+        # ================ Process complete function =================
+
+        @st.dialog("Complete!")
+        def process_done():
+            st.write("""
+                        - File was created and downloaded -> :green[**The process is successfully DONE**].
+                        """)
             
-            return df
+
+            ''
+            st.write("**Go to:**")
+
+            st.page_link(
+                label = "Function 4 - Mapping",
+                page="Subpages/F4_FUNCTION_translation_mapping.py",
+                help="The button will redirect to the relevant page within this app.",
+                use_container_width=True,
+                icon=":material/play_circle:",
+                )
+            
+            ''
+            st.page_link(
+                label = "Function 5 - Description - API",
+                page="Subpages/F5_description_API.py",
+                help="The button will redirect to the relevant page within this app.",
+                use_container_width=True,
+                icon=":material/code:",
+                )
+            
+            st.page_link(
+                label = "Home page",
+                page="Subpages/Purpose_of_app.py",
+                help="The button will redirect to the relevant page within this app.",
+                use_container_width=True,
+                icon=":material/code:",
+                )
 
 
-        if international == 'FALSE':
 
-            df = read_query_international_domestic(query_domestic)
-
-        if international == 'TRUE':
-
-            df = read_query_international_domestic(query_international)
-
-
-        df.index = df.index + 1
-
-        #Screen
         ''
-        with st.expander("Branch type info:",width= "stretch", icon=":material/help_outline:"):
-            st.dataframe(branch_type_info_df, hide_index=True)
+        st.write("###### Download:")
+            
+            
+        with open('Data/Function_3_do NOT delete.xml') as f:
+            if st.download_button(
+                'Download - XML',
+                f, file_name = file_name_xml_fstring,
+                use_container_width=True,
+                icon = ":material/download:",
+                on_click=process_done
+                ):
+                st.info("download will start in few seconds")
+
+
+
         
-        ''
-        st.dataframe(df, width = "stretch")
+        with open('Data/Function_3_do NOT delete - JSON.json') as j:
+            if st.download_button(
+                'Download - JSON',
+                j, file_name = file_name_json_fstring,
+                use_container_width=True,
+                icon = ":material/download:",
+                on_click=process_done
+                ):
+            
+                st.info("download will start in few seconds")
 
+            
+                
+("---------")
+st.button(
+    "Reset",
+    use_container_width= True,
+    on_click = reset,
+    help = "It will clear the form")
 
-with tab2:
-
-    engine = db_connection()
-
-    company_df = pd.read_sql("SELECT name FROM company;", engine)
-    company_list = company_df['name'].tolist()
-    company_list.sort()
-
-    # Screen
-    ''
-    st.write("""
-    - Provides **visibility** about selected company - **availability and branches in countries**
-    """)
-
-    ''
-    with st.form(key="user_form_2"):
-
-        selected_company = st.selectbox(label="Company", options=company_list, help="Select or type a company name you are interested in.")
-
-        submit_button = st.form_submit_button(label= "Submit", width="stretch")
-
-    if submit_button:
-
-        with engine.connect() as conn:
-            result = conn.execute(
-                text("SELECT comp_id FROM company WHERE name = :company"),
-                {"company": selected_company}
-            )
-            cus_id = result.scalar()
-
-
-        def return_query_country(country_code, customer):
-
-            query_country = f"""
-                SELECT
-                    name as "Name",
-                    city as "City",
-                    branch_text as "Type",
-                    street as "Street",
-                    number as "No.",
-                    district as "District",
-                    zip_code as "ZIP code",
-                    branch_id as "Branch id"
-
-                FROM
-                    company 
-                    INNER JOIN country_{country_code} ON (comp_id = c_comp_id)
-                    INNER JOIN branch ON (branch_type = type_code)
-
-                WHERE
-                    c_comp_id = {customer}
-                            
-                ORDER BY
-                    name,
-                    city, 
-                    district ASC;
-                """
-            return query_country
-        
-
-        query_country_at = return_query_country('at', cus_id)
-        query_country_cz = return_query_country('cz', cus_id)
-        query_country_de = return_query_country('de', cus_id)
-        query_country_pl = return_query_country('pl', cus_id)
-        query_country_sk = return_query_country('sk', cus_id)
-        
-
-
-        df_at = pd.read_sql(query_country_at, engine)
-        df_cz = pd.read_sql(query_country_cz, engine)
-        df_de = pd.read_sql(query_country_de, engine)
-        df_pl = pd.read_sql(query_country_pl, engine)
-        df_sk = pd.read_sql(query_country_sk, engine)
-
-
-        df_at.index = df_at.index + 1
-        df_cz.index = df_cz.index + 1
-        df_de.index = df_de.index + 1
-        df_pl.index = df_pl.index + 1
-        df_sk.index = df_sk.index + 1
-
-        # Screen 
-
-        ''
-        with st.expander("Branch type info:",width= "stretch", icon=":material/help_outline:"):
-            st.dataframe(branch_type_info_df, hide_index=True)
-
-        ''
-        st.write("Austria - AT")
-        st.write(df_at)
-
-        st.write("Czech Republic - CZ")
-        st.write(df_cz)
-
-        st.write("Germany - DE")
-        st.write(df_de)
-
-        st.write("Poland - PL")
-        st.write(df_pl)
-
-        st.write("Slovakia - SK")
-        st.write(df_sk)
-
-
-with tab3:
-
-        engine = db_connection()
-
-        # Number of companies reqistered in DB
-        df_company_no = pd.read_sql("""        
-                SELECT count(comp_id) as count
-                FROM company;
-                """, engine)
-        
-        company_num = df_company_no['count'].iloc[0]
-
-
-        # Number of branches in DB - accross all country_xx tables
-        df_branch_num = pd.read_sql("""        
-                        SELECT 
-                            (SELECT COUNT(branch_id) FROM country_at) +
-                            (SELECT COUNT(branch_id) FROM country_cz) +
-                            (SELECT COUNT(branch_id) FROM country_de) +
-                            (SELECT COUNT(branch_id) FROM country_pl) +
-                            (SELECT COUNT(branch_id) FROM country_sk) as total_count;
-                """, engine)
-        
-        branch_num = df_branch_num['total_count'].iloc[0]
-
-
-        # Main query -> DF and overview
-        df = pd.read_sql("""
-                SELECT 
-                    name as "Name",
-                    truck as "Truck",
-                    train as "Train",
-                    airplane as "Airplane",
-                    international_transport as "International transport"
-                FROM
-                    company
-                ORDER BY 
-                    name ASC         
-                ;""", engine)
-
-
-        df.index = df.index + 1
-
-        # Screen
-        ''
-        st.write(f"""
-        - Number of companies: **{company_num}**
-        - Number of branches: **{branch_num}**
-        """)
-
-        ''
-        st.dataframe(df, width = "stretch", height=800)
