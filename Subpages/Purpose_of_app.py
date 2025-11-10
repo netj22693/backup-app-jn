@@ -343,6 +343,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 3:
+		- **v42.0** - End of process: invoice is inserted into DB - 11-Nov-2025
 		- **v41.0** - Connected to DB to get transport price - 11-Nov-2025
 		- **v17.2** - End of the process adjusted - info message/box appears - 28-July-2025	
 		- **v5.2** - Try/Except - Error handling - 17-Jun-2025	 

@@ -4,7 +4,7 @@ import string
 import random
 import time
 import json
-from sqlalchemy import create_engine, Column, Integer, String, Boolean
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float
 from sqlalchemy.orm import declarative_base, Session
 import pandas as pd
 
@@ -37,16 +37,16 @@ def id_generator(size=6, chars=string.digits):
 # invoice_number_generated = 'INV-' + a
 
 # Function for generating random 12 digits for invoice number
-def order_generator(size=20, chars=string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
+# def order_generator(size=5, chars=string.digits):
+#     return ''.join(random.choice(chars) for _ in range(size))
 
-order_num_generated = order_generator()
+# order_num_generated = order_generator()
 
 
 
 # Generation of date for <date> element
 now = time.localtime()
-print(now)
+
 date_input = time.strftime("%Y-%m-%d", now)
 
 
@@ -166,7 +166,7 @@ with st.expander("Transportation", icon = ":material/directions_bus:"):
          )
       
     transport_co_selb = st.selectbox(
-        "Transporting company:" ,
+        "Transport company:" ,
         options=["DHL","Fedex"],
         index = None,
         placeholder="Select...",
@@ -310,6 +310,25 @@ if  st.button(
 
             return query_result
         
+        def make_order_num(engine):
+
+            query = f"""
+            SELECT MAX(order_number) AS order_number
+            FROM f4b.invoice
+            """
+
+            df_query_result = pd.read_sql(query, engine)
+
+            query_result = df_query_result['order_number'].iloc[0]
+            
+            # Take the last existing in DB (the highest) + 1 -> next available number
+            next_order_num = query_result + 1
+            next_order_num = str(next_order_num)
+
+            return next_order_num
+
+            
+        
         def transform_currency_for_query(currency):
 
             mapping = {
@@ -341,6 +360,7 @@ if  st.button(
 
         calc_transport_price = get_transport_price(db_engine, currency_query, country_code, size_selb, transport_co_selb)
 
+        order_num_generated = make_order_num(db_engine)
 
 
         
@@ -511,28 +531,117 @@ if  st.button(
         ''
         st.write("###### Download:")
 
+        # Functions for mapping
+        def mapping_category(input):
+
+            mapping = {
+                "PC" : 1,
+                "TV" : 2,
+                "Gaming" : 3,
+                "Mobile phones" : 4,
+                "Tablets" : 5,
+                "Major Appliances" : 6,
+                "Households" : 7
+            }
+
+            return mapping.get(input) 
+
+        def mapping_category(input):
+
+            mapping = {
+                "PC" : 1,
+                "TV" : 2,
+                "Gaming" : 3,
+                "Mobile phones" : 4,
+                "Tablets" : 5,
+                "Major Appliances" : 6,
+                "Households" : 7
+            }
+            return mapping.get(input) 
+
+
+        def mapping_extra_service(input):
+
+            mapping = {
+                "No additional service" : 1,
+                "Insurance" : 2,
+                "Extended warranty" : 3
+            }
+
+            result = mapping.get(input)
+
+            if result != 1:
+                result_bool = True
+            else:
+                result_bool = False
+
+            return result, result_bool
+
+
+        def mapping_country(input):
+
+            mapping = {
+                "Czech Republic" : 1,
+                "Slovakia" : 2
+            }
+            return mapping.get(input) 
+
+        def mapping_transport_company(input):
+
+            mapping = {
+                "DHL" : 1,
+                "Fedex" : 2
+            }
+            return mapping.get(input) 
+        
+        def mapping_size(input):
+
+            mapping = {
+                "small" : "s",
+                "medium" : "m",
+                "large" : "l",
+            }
+            return mapping.get(input) 
+        
+        def mapping_currency(input):
+
+            mapping = {
+                "euro" : 1,
+                "US dollar" : 2,
+                "Kč" : 3,
+            }
+            return mapping.get(input) 
+        
+        mapped_category = mapping_category(category_selb)
+        mapped_extra_service, mapped_extra_service_bool = mapping_extra_service(add_service_select)
+        mapped_country = mapping_country(city_selb)
+        mapped_tr_company = mapping_transport_company(transport_co_selb)
+        mapped_size = mapping_size(size_selb)
+        mapped_currency = mapping_currency(currency_selb)
+
+
         # Data to be inserted to DB
         data_for_insert = {
-        "order_number": "TEST",
-        "date": "2025-11-10",
-        "customer": "buyer",
-        "category": "PC",
-        "product_name": "aaa",
-        "product_price": "10.00",
-        "extra_service": True,
-        "extra_service_type": "Insurance",
-        "country": "Czech Republic",
-        "tr_company": "DHL",
-        "tr_price": "2.17",
-        "parcel_size": "small",
-        "total_price": "13.67",
-        "currency": "US dollar"
+        "order_number": order_number,   
+        "date": date_input,
+        "customer": customer_input,   
+        "category": mapped_category,       
+        "product_name": product_name_inp,
+        "product_price": price_fl,
+        "extra_service": mapped_extra_service_bool,           
+        "extra_service_type": mapped_extra_service,
+        "extra_service_price": service_price_fn,
+        "country": mapped_country,
+        "tr_company": mapped_tr_company,
+        "tr_price": transport_price,
+        "parcel_size": mapped_size,
+        "total_price": float(final_price_fl),
+        "currency": mapped_currency,
         }
 
 
         def sql_insert_function(engine, data):
             
-            print("jsem v sql_insert_function")
             Base = declarative_base()
 
             class Invoice(Base):
@@ -545,15 +654,15 @@ if  st.button(
                 customer = Column(String)
                 category = Column(String)
                 product_name = Column(String)
-                product_price = Column(String)
+                product_price = Column(Float)
                 extra_service = Column(Boolean)
                 extra_service_type = Column(String)
                 extra_service_price = Column(String)
                 country = Column(String)
                 tr_company = Column(String)
-                tr_price = Column(String)
+                tr_price = Column(Float)
                 parcel_size = Column(String)
-                total_price = Column(String)
+                total_price = Column(Float)
                 currency = Column(String)
 
             with Session(engine) as session:
@@ -561,13 +670,11 @@ if  st.button(
                 session.add(new_invoice)
                 session.commit()
             
-            print("jsem tu")
 
             
             
         def on_download_click():
             try:
-                print("Jsem v on_download_click")
                 sql_insert_function(db_engine, data_for_insert)
                 process_done()
 
@@ -576,6 +683,7 @@ if  st.button(
                 insert_db_not_complete()
 
         with open('Data/Function_3_do NOT delete.xml', 'rb') as f:
+
             st.download_button(
                 'Download - XML',
                 f,
@@ -587,12 +695,13 @@ if  st.button(
 
         
         with open('Data/Function_3_do NOT delete - JSON.json') as j:
+
             st.download_button(
-            'Download - JSON',
-            j, file_name = file_name_json_fstring,
-            use_container_width=True,
-            icon = ":material/download:",
-            on_click=process_done
+                'Download - JSON',
+                j, file_name = file_name_json_fstring,
+                use_container_width=True,
+                icon = ":material/download:",
+                on_click=on_download_click
             )
 
             
