@@ -1,12 +1,13 @@
 import streamlit as st
 
+
 st.write("# BPMN diagrams:")
 st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
 
 
 # Split into tabs
 tab1, tab2 = st.tabs([
-	"BPMN - Function 3",
+	"BPMN - Function 3 & DB ERD",
 	"BPMN - Function 4"
 ])
 
@@ -30,16 +31,15 @@ with tab1:
     - In case of all inputs are okay, user can push download button for generating of an invoice either in XML format or JSON. 
     - In case that user wants to change something in the original inputs, he can rewrite/change the inputs and then push Submit button again...
     '''
-    st.write("-----")
+
+    ''
+    ''
     st.write("##### Application calculation process:")
     ''
     ''
     # st.image("Pictures/Function_3/Function_3_BPMN_calculation process_2.png")
-    st.image("Pictures/Function_3/Function_3_BPMN_calculation process_2.svg")
+    st.image("Pictures/Function_3/Function_3_BPMN_calculation process_3.svg")
     ''
-    '''
-    - The calculation happens based on predefined inputs/costs which are part of application rules in the code.
-    '''
     '''
     - If the BPMN diagram would be transferred into the "**application look**", then it would be like this:
     '''
@@ -56,12 +56,41 @@ with tab1:
     - Additional service/extra costs - **Insurance** - **15% from product price**
     - Additional service/extra costs - **Extended warranty** - **10% from product price**
 
-    - And then **specific costs** for transport depending on **Country, Transporting Company, Size of package**
+    - And then **specific costs** for transport depending on **Country, Transporting Company, Size of package** - **stored in DB**
     '''
     ''
     st.image("Pictures/Function_3/Price_list.png")
     ''
     ''
+    st.write("##### DB & ERD:")
+    ''
+    st.write("- This shows the **DB structure** to be able to maintain data and get **transport price** value **based on user inputs**")
+    ''
+    st.image("Pictures/Function_3/F3_ERD_transport_price.svg")
+    ''
+
+    currency = 'euro'
+    c_code = 'cz'
+    company = 'DHL'
+    size = 'small'
+
+    query = f"""
+    SELECT {currency} 
+
+    FROM f3.company a
+        INNER JOIN f3.country_{c_code} b ON (a.comp_id = b.c_comp_id)
+        INNER JOIN f3.parcel_size c ON (b.size = c.size_id)
+        
+    WHERE
+        a.name = '{company}' AND
+        c.name = '{size}'
+    """
+
+    st.write("- Dynamic SQL query:")
+    st.code(query, language="sql")
+    
+
+
 
 #Tab 2
 with tab2:

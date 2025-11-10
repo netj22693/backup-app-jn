@@ -13,7 +13,7 @@ st.write("""
     """)
 ''
 st.write("""
-    - **Function 3:** Creation of XML (slightly different one than used in F1 and F2) or JSON, through the application screen (manual inputs)
+    - **Function 3:** Creation of XML (slightly different one than used in F1 and F2) or JSON, through the application screen (manual inputs) - **DB on cloud**
     - **Function 4:** Mapping/change of file format XML -> JSON or JSON -> XML 
     """)
 ''

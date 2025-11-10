@@ -64,7 +64,7 @@ function_3_xml = st.Page(
 
 function_3_BPMN = st.Page(
     "Subpages/F3_F4_description_BPMN.py",
-    title="Description - BPMN",
+    title="Description - BPMN & DB",
     icon= ":material/code:"
     )
 
