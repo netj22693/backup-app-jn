@@ -10,14 +10,14 @@ st.write("""
 
 ''
 ''
-st.image("Pictures/Function_3/F3_Archimate_diagram.svg")
+st.image("Pictures/Function_3/F3_Archimate_diagram_v2.svg")
 
 
 ''
 ''
 st.write("""
 - **Business Layer (Yellow)**:
-    - Element Event (need for billing) is the business trigger for Invoice creation 
+    - Element **Event** (a need for billing) is the business trigger for Invoice creation 
     - **Invoice** is the business object/outcome of the Function 3 process
 """)
 
@@ -25,14 +25,15 @@ st.write("""
 st.write("""
 - **Application Layer (Blue)**:
     - The Business process is served by this application giving the possibility to create such invoice in required formats (XML or JSON)
+    - The Calculation component is served by component DB (without DB it cannot work)
 """)
 
 ''
 st.write("""
 - **Technology Layer (Green)**:
-    - This is about dedicated Streamlit application server on which this application runs
-    - The principle of this **Streamlit Framework & environment** is **IaaS on Cloud**
-    - It is **Google Cloud**
+    - This is about dedicated Streamlit application server on which this application runs and Neon DB server
+        - The principle of this **Streamlit Framework & environment** is **IaaS on Google Cloud**
+        - The **DB environment** is **PaaS on Noen Cloud**
     - Codespace: **MS Visual Studio Code**
     - Repository: **GitHub**
     """)
@@ -46,6 +47,8 @@ st.image("Pictures/Logo/Logo_GitHub.svg", width=140)
 st.image("Pictures/Logo/Logo_python.svg", width=140)
 
 st.image("Pictures/Logo/Logo_streamlit.svg", width=180)
+
+st.image("Pictures/Logo/Logo_neon.svg")
 
 st.image("Pictures/Logo/Logo_vscode.svg", width=35)
 
