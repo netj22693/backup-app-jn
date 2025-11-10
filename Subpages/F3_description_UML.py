@@ -40,7 +40,8 @@ with tab2:
         - If all good -> try -> the program continues with the next steps""")
     ''
     ''
-    st.image("Pictures/Function_3/F3_UML_ Activity diagram_extended.svg")
+    # st.image("Pictures/Function_3/F3_UML_ Activity diagram_extended.svg")
+    st.image("Pictures/Function_3/F3_UML_ Activity diagram_extended_2.svg")
     ''
     with st.expander(
         "Application context",

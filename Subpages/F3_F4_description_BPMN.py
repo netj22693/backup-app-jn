@@ -17,7 +17,6 @@ with tab1:
     st.write("#### Function 3 process flow:")
     ''
     ''
-    # st.image("Pictures/Function_3/Function_3_BPMN process_5.png")
     st.image("Pictures/Function_3/Function_3_BPMN process_5.svg")
     ''
     '''
@@ -37,7 +36,6 @@ with tab1:
     st.write("##### Application calculation process:")
     ''
     ''
-    # st.image("Pictures/Function_3/Function_3_BPMN_calculation process_2.png")
     st.image("Pictures/Function_3/Function_3_BPMN_calculation process_3.svg")
     ''
     '''
@@ -45,7 +43,6 @@ with tab1:
     '''
     ''
     ''
-    # st.image("Pictures/Function_3/Function_3_BPMN_calculation process_tables_2.png")
     st.image("Pictures/Function_3/Function_3_BPMN_calculation process_tables_2.svg")
     ''
     ''
@@ -63,34 +60,63 @@ with tab1:
     ''
     ''
     st.write("##### DB & ERD:")
-    ''
-    st.write("- This shows the **DB structure** to be able to maintain data and get **transport price** value **based on user inputs**")
-    ''
-    st.image("Pictures/Function_3/F3_ERD_transport_price.svg")
-    ''
 
-    currency = 'euro'
-    c_code = 'cz'
-    company = 'DHL'
-    size = 'small'
-
-    query = f"""
-    SELECT {currency} 
-
-    FROM f3.company a
-        INNER JOIN f3.country_{c_code} b ON (a.comp_id = b.c_comp_id)
-        INNER JOIN f3.parcel_size c ON (b.size = c.size_id)
-        
-    WHERE
-        a.name = '{company}' AND
-        c.name = '{size}'
-    """
-
-    st.write("- Dynamic SQL query:")
-    st.code(query, language="sql")
+    tab_erd_1, tab_erd_2 = st.tabs([
+        "DB ERD - Transport price",
+        "DB ERD - Invoice storing"
+        ])  
     
+    with tab_erd_1:
+        ''
+        st.write("- This shows the **DB structure** to be able to maintain data and get **transport price** value **based on user inputs**")
+        ''
+        st.image("Pictures/Function_3/F3_ERD_transport_price.svg")
+        ''
+
+        currency = 'euro'
+        c_code = 'cz'
+        company = 'DHL'
+        size = 'small'
+
+        query = f"""
+SELECT {currency} 
+
+FROM f3.company a
+    INNER JOIN f3.country_{c_code} b ON (a.comp_id = b.c_comp_id)
+    INNER JOIN f3.parcel_size c ON (b.size = c.size_id)
+    
+WHERE
+    a.name = '{company}' AND
+    c.name = '{size}'"""
+
+        st.write("- Dynamic SQL query:")
+        st.code(query, language="sql")
+    
+    with tab_erd_2:
+        ''
+        st.write("""
+            - **DB structure** for **invoice/data** created based on user input
+            - **Process**: User to provede about purches (app screen) -> file invoice created (XML or JSON) -> **data inserted into DB**
+            - The DB is designed to be **scalable** in case business growth in the future
+            """) 
+        
+        ''
+        st.image("Pictures/Function_3/F3_ERD_invoice.svg")
 
 
+        query_2 = """
+SELECT *
+FROM f4b.invoice a
+    INNER JOIN f4b.category_list b ON (a.category = b.category_id)
+    INNER JOIN f4b.extra_service_list c ON (a.extra_service_type = c.service_id) 
+    INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
+    INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
+    INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
+    INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id);"""
+
+        ''
+        st.write("- Visibility of relations through INNER JOIN:")
+        st.code(query_2, language="sql")
 
 #Tab 2
 with tab2:
