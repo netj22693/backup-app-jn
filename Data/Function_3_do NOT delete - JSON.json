@@ -1,18 +1,18 @@
 {
     "header": {
-        "order_number": "12",
-        "customer": "v",
-        "invoice_number": "INV-725426",
+        "order_number": "14",
+        "customer": "cssc",
+        "invoice_number": "INV-892405",
         "date": "2025-11-10",
         "price": {
-            "total_sum": 12.61,
+            "total_sum": 22.17,
             "currency": "US dollar"
         }
     },
     "detail": {
-        "category": "Households",
-        "product_name": "v",
-        "price_amount": 10.0,
+        "category": "TV",
+        "product_name": "sscs",
+        "price_amount": 20.0,
         "additional_service": {
             "service": "N",
             "service_type": "None",
@@ -20,9 +20,9 @@
         }
     },
     "transportation": {
-        "transporter": "Fedex",
+        "transporter": "DHL",
         "country": "Czech Republic",
         "size": "small",
-        "transport_price": 2.61
+        "transport_price": 2.17
     }
 }

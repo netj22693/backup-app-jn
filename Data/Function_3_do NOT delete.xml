@@ -1,19 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <invoice>
   <header>
-    <order_number>12</order_number>
-    <customer>v</customer>
-    <invoice_number>INV-725426</invoice_number>
+    <order_number>14</order_number>
+    <customer>cssc</customer>
+    <invoice_number>INV-892405</invoice_number>
     <date>2025-11-10</date>
     <price>
-      <total_sum>12.61</total_sum>
+      <total_sum>22.17</total_sum>
       <currency>US dollar</currency>
   </price>
   </header>
   <detail>
-    <category>Households</category>
-    <product_name>v</product_name>
-    <price_amount>10.0</price_amount>
+    <category>TV</category>
+    <product_name>sscs</product_name>
+    <price_amount>20.0</price_amount>
     <additional_service>
       <service>N</service>
       <service_type>None</service_type>
@@ -21,9 +21,9 @@
   </additional_service>
   </detail>
   <transportation>
-    <transporter>Fedex</transporter>
+    <transporter>DHL</transporter>
     <country>Czech Republic</country>
     <size>small</size>
-    <transport_price>2.61</transport_price>
+    <transport_price>2.17</transport_price>
   </transportation>
 </invoice>
