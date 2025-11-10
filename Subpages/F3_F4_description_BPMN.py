@@ -105,14 +105,29 @@ WHERE
 
 
         query_2 = """
-SELECT *
+SELECT 
+  a.order_number, 
+  a.date,
+  a.customer,
+  b.name,
+  a.product_name,
+  a.product_price,
+  c.name, 
+  a.extra_service_price,
+  d.name,
+  e.name,
+  a.tr_price,
+  f.name,
+  a.total_price,
+  g.name
+  
 FROM f4b.invoice a
-    INNER JOIN f4b.category_list b ON (a.category = b.category_id)
-    INNER JOIN f4b.extra_service_list c ON (a.extra_service_type = c.service_id) 
-    INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
-    INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
-    INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
-    INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id);"""
+  INNER JOIN f4b.category_list b ON (a.category = b.category_id)
+  INNER JOIN f4b.extra_service_list c ON (a.extra_service_type = c.service_id) 
+  INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
+  INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
+  INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
+  INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id);"""
 
         ''
         st.write("- Visibility of relations through INNER JOIN:")
