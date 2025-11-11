@@ -13,11 +13,12 @@ def db_connection_fail():
 def db_connection():
 
     # Load secrets
-    db = st.secrets["neon"]
+    password = st.secrets["neon"]["password"]
+    endpoint = st.secrets["neon"]["endpoint"]
 
     # connection string
     try: 
-        conn_string = f"postgresql+psycopg2://neondb_owner:{db['password']}@ep-lucky-bar-a9hww36i-pooler.gwc.azure.neon.tech/neondb?sslmode=require"
+        conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.gwc.azure.neon.tech/neondb?sslmode=require"
 
 
         engine = create_engine(conn_string)

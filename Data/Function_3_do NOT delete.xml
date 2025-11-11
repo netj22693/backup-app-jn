@@ -1,29 +1,29 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <invoice>
   <header>
-    <order_number>132</order_number>
-    <customer>ahoj</customer>
-    <invoice_number>INV-427206</invoice_number>
+    <order_number>138</order_number>
+    <customer>gg</customer>
+    <invoice_number>INV-140357</invoice_number>
     <date>2025-11-11</date>
     <price>
-      <total_sum>13.17</total_sum>
+      <total_sum>38.22</total_sum>
       <currency>US dollar</currency>
   </price>
   </header>
   <detail>
-    <category>TV</category>
-    <product_name>ahoj</product_name>
-    <price_amount>10.0</price_amount>
+    <category>Mobile phones</category>
+    <product_name>ggg</product_name>
+    <price_amount>30.0</price_amount>
     <additional_service>
       <service>Y</service>
       <service_type>extended warranty</service_type>
-      <service_price>1.0</service_price>
+      <service_price>3.0</service_price>
   </additional_service>
   </detail>
   <transportation>
-    <transporter>DHL</transporter>
-    <country>Czech Republic</country>
-    <size>small</size>
-    <transport_price>2.17</transport_price>
+    <transporter>Fedex</transporter>
+    <country>Slovakia</country>
+    <size>medium</size>
+    <transport_price>5.22</transport_price>
   </transportation>
 </invoice>
