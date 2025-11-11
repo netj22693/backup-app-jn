@@ -60,11 +60,6 @@ branch_type_info_df = pd.read_sql("""
 
 
 
-
-
-
-
-
 with tab1:
     country_list = ["AT","CZ","DE","PL","SK"]
     country_list.sort()
@@ -106,7 +101,18 @@ with tab1:
     if submit_button:
 
         engine = db_connection()
-        
+
+        # Mapping for dynamic query
+        def mapping_country_table(input_country):
+
+            mapping = {
+                    "at": "country_at",
+                    "cz": "country_cz",
+                    "de": "country_de",
+                    "pl": "country_pl",
+                    "sk" : "country_sk"
+                }
+            return mapping.get(input_country)        
 
         def determin_transport_for_db_query(transport):
 
@@ -116,14 +122,26 @@ with tab1:
                     "airplane": 7
                 }
             return mapping.get(transport, 0)
+        
+
+        def mapping_transport_type(transport):
+
+            mapping = {
+                    "truck": "truck",
+                    "train": "train",
+                    "airplane": "airplane"
+                }
+            return mapping.get(transport)
 
 
-        # preparation of inputs/for dynamic SQL query
+        # preparation of inputs/for dynamic SQL query using mapping
         transport_type_code = determin_transport_for_db_query(transport_type)
 
         branch_codes_display = f"'1','2','3','4','{transport_type_code}'"
 
-        country_table = f"country_{country_from}"
+        country_table = mapping_country_table(country_from)
+
+        transport_type_mapped = mapping_transport_type(transport_type)
 
 
         query_international = f"""
@@ -142,7 +160,7 @@ with tab1:
                 INNER JOIN branch ON (branch_type = type_code)
 
             WHERE
-                {transport_type} = TRUE AND 
+                {transport_type_mapped} = TRUE AND 
                 international_transport != FALSE AND
                 type_code IN({branch_codes_display})
 
@@ -167,7 +185,7 @@ with tab1:
                 company INNER JOIN {country_table} ON (comp_id = c_comp_id)
                 INNER JOIN branch ON (branch_type = type_code)
             WHERE
-                {transport_type} = TRUE AND
+                {transport_type_mapped} = TRUE AND
                 type_code IN({branch_codes_display})
                         
             ORDER BY
