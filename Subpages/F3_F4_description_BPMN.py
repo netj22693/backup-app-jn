@@ -56,7 +56,7 @@ with tab1:
     - And then **specific costs** for transport depending on **Country, Transporting Company, Size of package** - **stored in DB**
     '''
     ''
-    st.image("Pictures/Function_3/Price_list.png")
+    st.image("Pictures/Function_3/F3_Price_list.svg")
     ''
     ''
     st.write("##### DB & ERD:")

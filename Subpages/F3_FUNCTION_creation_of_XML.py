@@ -188,11 +188,11 @@ with st.expander("Transportation", icon = ":material/directions_bus:"):
         key= "k_size"        
         )
     ''
-    st.image("Pictures/Function_3/Sizes.png")
     ''
-    st.write("Pricing table:")
+    st.image("Pictures/Function_3/F3_Parcel_sizes.svg")
     ''
-    st.image("Pictures/Function_3/Price_list.png")
+    ''
+    st.image("Pictures/Function_3/F3_Price_list.svg")
 
 ''
 ''
