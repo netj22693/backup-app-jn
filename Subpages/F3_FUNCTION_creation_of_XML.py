@@ -396,7 +396,7 @@ if  st.button(
         ''
         ''
         st.info(f"""
-                - When Download button used:
+                - When **Download button** used:
                     - A file will be created - **XML** or **JSON**
                     - Data will be stored into **DB** - Order number: **{order_num_generated}** 
                 - If change of data needed:
