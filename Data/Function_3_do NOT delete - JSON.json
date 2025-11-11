@@ -1,22 +1,22 @@
 {
     "header": {
-        "order_number": "14",
-        "customer": "cssc",
-        "invoice_number": "INV-892405",
-        "date": "2025-11-10",
+        "order_number": "131",
+        "customer": "ahoj",
+        "invoice_number": "INV-760229",
+        "date": "2025-11-11",
         "price": {
-            "total_sum": 22.17,
+            "total_sum": 13.17,
             "currency": "US dollar"
         }
     },
     "detail": {
         "category": "TV",
-        "product_name": "sscs",
-        "price_amount": 20.0,
+        "product_name": "ahoj",
+        "price_amount": 10.0,
         "additional_service": {
-            "service": "N",
-            "service_type": "None",
-            "service_price": 0.0
+            "service": "Y",
+            "service_type": "extended warranty",
+            "service_price": 1.0
         }
     },
     "transportation": {

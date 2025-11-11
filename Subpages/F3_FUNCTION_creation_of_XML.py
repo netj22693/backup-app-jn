@@ -79,20 +79,25 @@ st.write("# Delivery details:")
 
 st.write("Please provide details about order...")
 ''
-with st. expander("Buyer", icon=":material/tag_faces:"):
+with st.expander("Buyer", icon=":material/tag_faces:"):
+    
     customer_input = st.text_input(
         "Customer/Company name:",
         help = "Write a customer name/company name",
         key= "k_customer"
         )
 
-with st. expander("Product", icon=":material/devices:"):
+    customer_input = customer_input.strip()
+
+with st.expander("Product", icon=":material/devices:"):
 
     product_name_inp = st.text_input(
         "Product name:",
         help = "Write a product name",
         key= "k_product"
         )
+
+    product_name_inp = product_name_inp.strip()
 
     category_selb = st.selectbox(
         "Category:" ,
@@ -103,7 +108,7 @@ with st. expander("Product", icon=":material/devices:"):
         key= "k_category"
          )
 
-with st. expander("Price", icon = ":material/euro_symbol:"):
+with st.expander("Price", icon = ":material/euro_symbol:"):
     currency_selb = st.selectbox(
         "Currency:" ,
         index = None,
@@ -390,9 +395,12 @@ if  st.button(
 
         ''
         ''
-        st.info("""
-                - If this is what you expect, you can proceed with Download button which will create a file (XML or JSON). 
-                - If not, you can go up and change your inputs.""")
+        st.info(f"""
+                - When Download button used:
+                    - A file will be created - **XML** or **JSON**
+                    - Data will be stored into **DB** - Order number: **{order_num_generated}** 
+                - If change of data needed:
+                    - Go up > Change data > Push Submit button again""")
         
         # Change of data type
         calc_transport_price_str = str(calc_transport_price)
