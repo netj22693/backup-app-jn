@@ -67,7 +67,8 @@ with tab1:
             INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id) 
 
         ORDER BY 
-            a.date DESC
+            a.date DESC,
+            a.order_number DESC
         LIMIT 15  
             ;""", db_engine)
 
