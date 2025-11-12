@@ -59,7 +59,7 @@ with tab1:
 with tab2:
 	st.write("###### UML - Overview of the functions:")
 	''
-	st.image("Pictures/Overall_UML_F1 and F2.svg")
+	st.image("Pictures/Overall_UML_F1 and F2_v2.svg")
 	''
 	st.image("Pictures/Overall_UML_F3 and F4_v2.svg")
 	''
@@ -69,7 +69,7 @@ with tab2:
 	''
 	st.image("Pictures/Overall_UML_F7.svg")
 	''
-	st.image("Pictures/Overall_UML_F8.svg")
+	st.image("Pictures/Overall_UML_F8_v2.svg")
 
 with tab3:
 	st.write("###### Architecture landscape:")
