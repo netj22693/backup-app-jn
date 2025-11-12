@@ -30,7 +30,7 @@ def connection_db():
 st.write("# Find your invoice:")
 ''
 
-st.write("Based on invoices created in Function 3...")
+st.write("- Simple view into DB. Based on invoices created in Function 3...")
 ''
 
 tab1, tab2 = st.tabs([
@@ -82,7 +82,7 @@ with tab1:
 
     df_styled = df.style.format({
         "Price": "{:,.2f}",
-        "Price - Extra service": "{:,.2f}",
+        "Extra service price": "{:,.2f}",
         "Transport price": "{:,.2f}",
         "Total price": "{:,.2f}",
         "Date": lambda d: d.strftime("%d-%m-%Y")
