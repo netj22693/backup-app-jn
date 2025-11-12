@@ -288,19 +288,19 @@ with tab2:
             ''
             ''
             st.write(f"- Invoice was originally produced in **{file_format}** format")
-
-            st.write("- **Invoice overview:**")
+            ''
+            st.write("- Invoice overview:")
             st.dataframe(df_overview_styled, hide_index=True)
 
             ''
-            st.write("- **Product overview:**")
+            st.write("- Product overview:")
             st.dataframe(df_product_styled, hide_index=True)
 
             ''
-            st.write("- **Extra service overview:**")
+            st.write("- Extra service overview:")
             st.dataframe(df_extra_service_styled, hide_index=True)
 
             ''
-            st.write("- **Transport overview**")
+            st.write("- Transport overview:")
             st.image(logo, width= size_logo)
             st.dataframe(df_transport_styled, hide_index=True)

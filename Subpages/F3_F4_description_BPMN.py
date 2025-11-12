@@ -1,7 +1,7 @@
 import streamlit as st
 
 
-st.write("# BPMN diagrams:")
+st.write("# BPMN diagrams & DB ERD:")
 st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
 
 
@@ -17,7 +17,7 @@ with tab1:
     st.write("#### Function 3 process flow:")
     ''
     ''
-    st.image("Pictures/Function_3/Function_3_BPMN process_5.svg")
+    st.image("Pictures/Function_3/Function_3_BPMN process_6.svg")
     ''
     '''
     - Inputs to be entered by **user** and submited:
@@ -68,7 +68,10 @@ with tab1:
     
     with tab_erd_1:
         ''
-        st.write("- This shows the **DB structure** to be able to maintain data and get **transport price** value **based on user inputs**")
+        st.write("""
+        - **DB structure** used by **Function 3** - READ
+        - To get **transport price** value **based on user inputs**
+        """)
         ''
         st.image("Pictures/Function_3/F3_ERD_transport_price.svg")
         ''
@@ -95,14 +98,25 @@ WHERE
     with tab_erd_2:
         ''
         st.write("""
-            - **DB structure** for **invoice/data** created based on user input
-            - **Process**: User to provede about purches (app screen) -> file invoice created (XML or JSON) -> **data inserted into DB**
-            - The DB is designed to be **scalable** in case business growth in the future
+            - **DB structure** for **invoice/data** created based on **user input**
             """) 
         
-        ''
-        st.image("Pictures/Function_3/F3_ERD_invoice.svg")
+        st.write("""
+            - **Functional intent:**
+                - **Function 3** - Inserts data (invoice) - WRITE
+                - **Function 3B** - Visualizes data (invoices) - READ
+            """) 
 
+        st.write("""
+            - **Process**:
+                - User provides inputs about purchase (F3 screen) -> file invoice created - XML or JSON (F3) -> **data inserted into DB** (F3) -> data visualized based on the DB (F3B)
+            """)     
+
+        st.write("""
+            - The DB is designed to be **scalable** in case of growth of options in the future
+            """)    
+        ''
+        st.image("Pictures/Function_3/F3_ERD_invoice_2.svg")
 
         query_2 = """
 SELECT 
@@ -120,6 +134,7 @@ SELECT
   f.name,
   a.total_price,
   g.name
+  h.name
   
 FROM f4b.invoice a
   INNER JOIN f4b.category_list b ON (a.category = b.category_id)
@@ -127,7 +142,8 @@ FROM f4b.invoice a
   INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
   INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
   INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
-  INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id);"""
+  INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id)
+  INNER JOIN f4b.format_list h ON (a.file_format = h.format_id);"""
 
         ''
         st.write("- Visibility of relations through INNER JOIN:")

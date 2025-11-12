@@ -54,14 +54,14 @@ tab1,tab2, tab3 = st.tabs([
 with tab1:
 	st.write("###### ArchiMate - Overview of the functions:")
 	''
-	st.image("Pictures/Archimate_functions_overview_8.svg")
+	st.image("Pictures/Archimate_functions_overview_9.svg")
 	
 with tab2:
 	st.write("###### UML - Overview of the functions:")
 	''
 	st.image("Pictures/Overall_UML_F1 and F2.svg")
 	''
-	st.image("Pictures/Overall_UML_F3 and F4.svg")
+	st.image("Pictures/Overall_UML_F3 and F4_v2.svg")
 	''
 	st.image("Pictures/Overall_UML_F5.svg")
 	''
@@ -74,7 +74,7 @@ with tab2:
 with tab3:
 	st.write("###### Architecture landscape:")
 	''
-	st.image("Pictures/App_landscape_architecture_v2.svg")
+	st.image("Pictures/App_landscape_architecture_v3.svg")
 
 ''
 ''
