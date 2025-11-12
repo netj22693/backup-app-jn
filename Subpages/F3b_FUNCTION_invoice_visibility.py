@@ -56,7 +56,8 @@ with tab1:
             a.tr_price as "Transport price",
             f.name as "Parcel size",
             a.total_price as "Total price", 
-            g.name as "Currency"                                            
+            g.name as "Currency",
+            h.name as "File format"                                            
         
         FROM f4b.invoice a
             INNER JOIN f4b.category_list b ON (a.category = b.category_id)
@@ -65,6 +66,7 @@ with tab1:
             INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
             INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
             INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id) 
+            INNER JOIN f4b.format_list h ON (a.file_format = h.format_id)
 
         ORDER BY 
             a.date DESC,
@@ -146,7 +148,18 @@ with tab2:
         WHERE 
             a.order_number = :order
             ;"""
+
+        sql_file_format = """
+        SELECT 
+            h.name                                        
         
+        FROM f4b.invoice a
+            INNER JOIN f4b.format_list h ON (a.file_format = h.format_id)
+
+        WHERE 
+            a.order_number = :order
+            ;"""
+
         sql_product = """
         SELECT 
             a.product_name as "Product",
@@ -219,13 +232,15 @@ with tab2:
 
         with db_engine.connect() as conn:
             params = {"order": order_input}
+            df_file_format = pd.read_sql_query(sql=text(sql_file_format), con=conn, params=params)
             df_overview = pd.read_sql_query(sql=text(sql_overview), con=conn, params=params)
             df_product = pd.read_sql_query(sql=text(sql_product), con=conn, params=params)
             df_extra_service = pd.read_sql_query(sql=text(sql_extra_service), con=conn, params=params)
             df_transport = pd.read_sql_query(sql=text(sql_transport), con=conn, params=params)
             df_transport_company = pd.read_sql_query(sql=text(sql_transport_company), con=conn, params=params)
       
-
+        # Making variables extracting them from dataframes
+        file_format = df_file_format['name'].iloc[0]
         transport_company = df_transport_company['name'].iloc[0]
 
         #df styling
@@ -272,6 +287,8 @@ with tab2:
         else:
             ''
             ''
+            st.write(f"- Invoice was originally produced in **{file_format}** format")
+
             st.write("- **Invoice overview:**")
             st.dataframe(df_overview_styled, hide_index=True)
 

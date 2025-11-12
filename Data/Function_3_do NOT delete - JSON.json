@@ -1,28 +1,28 @@
 {
     "header": {
-        "order_number": "142",
-        "customer": "Jan Novotny",
-        "invoice_number": "INV-393816",
+        "order_number": "148",
+        "customer": "Marcela Augustova",
+        "invoice_number": "INV-724446",
         "date": "2025-11-12",
         "price": {
-            "total_sum": 235.5,
-            "currency": "euro"
+            "total_sum": 474.35,
+            "currency": "US dollar"
         }
     },
     "detail": {
-        "category": "Gaming",
-        "product_name": "Playstation 5 Pro",
-        "price_amount": 202.0,
+        "category": "TV",
+        "product_name": "Philips The One Special",
+        "price_amount": 470.0,
         "additional_service": {
-            "service": "Y",
-            "service_type": "insurance",
-            "service_price": 30.3
+            "service": "N",
+            "service_type": "None",
+            "service_price": 0.0
         }
     },
     "transportation": {
         "transporter": "DHL",
-        "country": "Czech Republic",
+        "country": "Slovakia",
         "size": "medium",
-        "transport_price": 3.2
+        "transport_price": 4.35
     }
 }

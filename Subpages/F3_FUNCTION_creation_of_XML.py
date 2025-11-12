@@ -628,6 +628,16 @@ if  st.button(
                 "Kč" : 3,
             }
             return mapping.get(input) 
+
+
+        def mapping_file_format(input):
+
+            mapping = {
+                "XML" : 1,
+                "JSON" : 2,
+            }
+            return mapping.get(input) 
+        
         
 
         # Mapping for DB insert purposes (to follow the ERD / Relation design principle)
@@ -656,11 +666,14 @@ if  st.button(
         "parcel_size": mapped_size,
         "total_price": float(final_price_fl),
         "currency": mapped_currency,
+        # + "file_format": mapped_file_format - by which this is extended bellow, once one of download buttons pushed
         }
 
 
         def sql_insert_function(engine, data):
             
+            print(data_for_insert)
+
             Base = declarative_base()
 
             class Invoice(Base):
@@ -683,6 +696,7 @@ if  st.button(
                 parcel_size = Column(String)
                 total_price = Column(Float)
                 currency = Column(String)
+                file_format = Column(String)
 
             with Session(engine) as session:
                 new_invoice = Invoice(**data)
@@ -692,7 +706,13 @@ if  st.button(
 
             
             
-        def on_download_click():
+        def on_download_click(file_format):
+
+            print(file_format)
+            mapped_file_format = mapping_file_format(file_format)
+
+            data_for_insert.update({"file_format": mapped_file_format})
+
             try:
                 sql_insert_function(db_engine, data_for_insert)
                 process_done()
@@ -709,7 +729,7 @@ if  st.button(
                 file_name=file_name_xml_fstring,
                 use_container_width=True,
                 icon=":material/download:",
-                on_click=on_download_click
+                on_click=lambda: on_download_click("XML")
             )
 
         
@@ -720,7 +740,7 @@ if  st.button(
                 j, file_name = file_name_json_fstring,
                 use_container_width=True,
                 icon = ":material/download:",
-                on_click=on_download_click
+                on_click=lambda: on_download_click("JSON")
             )
 
             
