@@ -56,6 +56,12 @@ function_3 = st.Page(
     icon = ":material/play_circle:"
     )
 
+function_3b = st.Page(
+    "Subpages/F3b_FUNCTION_invoice_visibility.py",
+    title="3B. Invoice visibility",
+    icon = ":material/play_circle:"
+    )
+
 function_3_xml = st.Page(
     "Subpages/F3_description_XML.py",
     title="Description - XSD, XML Schema",
@@ -227,6 +233,7 @@ pg = st.navigation(
             function_3_xml,
             fun_3_json,
             function_3,
+            function_3b,
             fun_4
             ],
         "Function 5": [
