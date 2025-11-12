@@ -493,13 +493,21 @@ if  st.button(
             st.write("**Go to:**")
 
             st.page_link(
+                label = "Function 3B - Invoice visibility",
+                page="Subpages/F3b_FUNCTION_invoice_visibility.py",
+                help="The button will redirect to the relevant page within this app.",
+                use_container_width=True,
+                icon=":material/play_circle:",
+                )
+            
+            st.page_link(
                 label = "Function 4 - Mapping",
                 page="Subpages/F4_FUNCTION_translation_mapping.py",
                 help="The button will redirect to the relevant page within this app.",
                 use_container_width=True,
                 icon=":material/play_circle:",
                 )
-            
+
             st.page_link(
                 label = "Function 5 - Description - API",
                 page="Subpages/F5_description_API.py",

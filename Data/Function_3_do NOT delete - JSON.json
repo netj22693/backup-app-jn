@@ -1,28 +1,28 @@
 {
     "header": {
-        "order_number": "138",
-        "customer": "gg",
-        "invoice_number": "INV-140357",
-        "date": "2025-11-11",
+        "order_number": "142",
+        "customer": "Jan Novotny",
+        "invoice_number": "INV-393816",
+        "date": "2025-11-12",
         "price": {
-            "total_sum": 38.22,
-            "currency": "US dollar"
+            "total_sum": 235.5,
+            "currency": "euro"
         }
     },
     "detail": {
-        "category": "Mobile phones",
-        "product_name": "ggg",
-        "price_amount": 30.0,
+        "category": "Gaming",
+        "product_name": "Playstation 5 Pro",
+        "price_amount": 202.0,
         "additional_service": {
             "service": "Y",
-            "service_type": "extended warranty",
-            "service_price": 3.0
+            "service_type": "insurance",
+            "service_price": 30.3
         }
     },
     "transportation": {
-        "transporter": "Fedex",
-        "country": "Slovakia",
+        "transporter": "DHL",
+        "country": "Czech Republic",
         "size": "medium",
-        "transport_price": 5.22
+        "transport_price": 3.2
     }
 }

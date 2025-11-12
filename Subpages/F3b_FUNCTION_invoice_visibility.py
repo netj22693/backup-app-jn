@@ -125,8 +125,6 @@ with tab2:
         input_validation(order_input)
         input_safety_validation(order_input)
 
-
-
         # Queries
         sql_overview = """
         SELECT 
@@ -238,7 +236,7 @@ with tab2:
             "Date": lambda d: d.strftime("%d-%m-%Y")
             })
 
-        df_product_sytled = df_product.style.format({
+        df_product_styled = df_product.style.format({
             "Price": "{:,.2f}"
             })
         
@@ -280,7 +278,7 @@ with tab2:
 
             ''
             st.write("- **Product overview:**")
-            st.dataframe(df_product_sytled, hide_index=True)
+            st.dataframe(df_product_styled, hide_index=True)
 
             ''
             st.write("- **Extra service overview:**")

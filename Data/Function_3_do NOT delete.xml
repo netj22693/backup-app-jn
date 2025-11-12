@@ -1,29 +1,29 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <invoice>
   <header>
-    <order_number>138</order_number>
-    <customer>gg</customer>
-    <invoice_number>INV-140357</invoice_number>
-    <date>2025-11-11</date>
+    <order_number>142</order_number>
+    <customer>Jan Novotny</customer>
+    <invoice_number>INV-393816</invoice_number>
+    <date>2025-11-12</date>
     <price>
-      <total_sum>38.22</total_sum>
-      <currency>US dollar</currency>
+      <total_sum>235.5</total_sum>
+      <currency>euro</currency>
   </price>
   </header>
   <detail>
-    <category>Mobile phones</category>
-    <product_name>ggg</product_name>
-    <price_amount>30.0</price_amount>
+    <category>Gaming</category>
+    <product_name>Playstation 5 Pro</product_name>
+    <price_amount>202.0</price_amount>
     <additional_service>
       <service>Y</service>
-      <service_type>extended warranty</service_type>
-      <service_price>3.0</service_price>
+      <service_type>insurance</service_type>
+      <service_price>30.3</service_price>
   </additional_service>
   </detail>
   <transportation>
-    <transporter>Fedex</transporter>
-    <country>Slovakia</country>
+    <transporter>DHL</transporter>
+    <country>Czech Republic</country>
     <size>medium</size>
-    <transport_price>5.22</transport_price>
+    <transport_price>3.2</transport_price>
   </transportation>
 </invoice>
