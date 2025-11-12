@@ -200,6 +200,7 @@ with tab2:
         sql_transport = """
         SELECT 
             e.name as "Transport Company",
+            d.name as "Country",
             f.name as "Parcel size",
             a.tr_price as "Transport price",
             g.name as "Currency"                         
