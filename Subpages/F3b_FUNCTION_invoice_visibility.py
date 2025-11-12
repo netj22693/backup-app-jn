@@ -253,12 +253,12 @@ with tab2:
         def bring_logo_screen(input_company):
 
             if input_company == 'DHL':
-                image = 'Pictures/Function_3/Logo_DHL_v2.svg'
-                size = 280
+                image = 'Pictures/Function_3/Logo_DHL_v3.svg'
+                size = 150
             
             if input_company == 'Fedex':
-                image = 'Pictures/Function_3/Logo_Fedex_v2.svg'
-                size = 150
+                image = 'Pictures/Function_3/Logo_Fedex_v3.svg'
+                size = 95
             
             return image, size
 
@@ -271,8 +271,6 @@ with tab2:
 
         else:
             ''
-            ''
-            st.image(logo, width= size_logo)
             ''
             st.write("- **Invoice overview:**")
             st.dataframe(df_overview_styled, hide_index=True)
@@ -287,4 +285,5 @@ with tab2:
 
             ''
             st.write("- **Transport overview**")
+            st.image(logo, width= size_logo)
             st.dataframe(df_transport_styled, hide_index=True)
