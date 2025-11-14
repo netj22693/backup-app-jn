@@ -4,11 +4,137 @@ import json
 import pandas as pd
 import sys
 
+# ================= API 1 For test ============================
 
- 
+# FOR TESTINGS - to do not call API, if not neccessary - test dict response
+
+def TEST_get_request_1(city,country):
+
+    json_data_api_1 ={
+            "query": {
+                "city": city,
+                "state": "null",
+                "country": country
+            },
+            "results": [
+                "251 63",
+                "110 00",
+                "140 21",
+                "140 78",
+                "144 00",
+            ]
+        }
+    
+    return json_data_api_1
 
 
-# ================= App Screen ============================
+# ================= API 1 main logic in split into defs =================
+
+# For PROD purposes 
+# https://app.zipcodebase.com/ - Bug: 1 api call is counted like 6
+def get_api_1(city,country):
+
+    try:
+        api_key_1 = st.secrets["F6_api_1"]["password_1"]
+        
+        headers = { 
+        "apikey": api_key_1}
+
+        params = (
+        ("city", city),
+        ("country", country),
+        );
+
+        response = requests.get(f'https://app.zipcodebase.com/api/v1/code/city?apikey={api_key_1}', headers=headers, params=params, timeout=2);
+
+        response = response.text
+
+        #Very important step to make for data type
+        response = json.loads(response) 
+
+        return response
+    
+    except:
+        st.warning("The API is currently not available - connection was not established") 
+        response = False
+        return response
+
+
+def api_1_data_parsing(data_json):
+
+    # There can be only 2 types of JSON sent from source system
+    # 1) regular response -> try will pass
+    # 2) JSON with message note that limit reached -> goes to except
+    try:
+        # Data parsing from JSON
+        ds = data_json['results']
+        ds = list(map(str, ds))
+        
+        # logic for validation of income: if len = 0 -> no record in the JSON - "results":[]
+        b = len(ds)
+        
+        if b == 0:
+            st.warning("Your City is not related to the selected country or doesn't exist in DB")
+            return False
+
+        else:
+            return ds
+    
+    except:
+        st.warning("API limit has been reached - API not available")
+        return False
+    
+
+def api_1_adjusting_data_for_visualization(parsed_data_api_1):
+
+    data_serie = pd.Series(parsed_data_api_1, name="ZIP codes",)
+    data_serie.index += 1
+
+    string_ap1 = ",".join(data_serie)
+
+    return data_serie, string_ap1
+
+
+def api_1_result_visualization(result_data_serie,result_string):
+
+    # Result visualization on screen
+    ''
+    st.write(result_data_serie)
+    ''
+    st.write("- Here **you can take the string** and put it into the box below (the second API/Search):")
+    st.write(result_string)
+    ''
+    '' 
+    st.write("- **(!) Important note:**")
+    st.info("Because the API 2 (below) is a different application/works with different data -> it can happen that some of these ZIP codes might not be neccessary matching and the API 2 will NOT have the same data/ZIP codes")
+
+
+def submit_run_api_1(city, country):
+
+    if not city:
+        st.warning("Please provide City")
+        return
+
+    data_json_api_1 = get_api_1(city, country)
+    if not data_json_api_1:
+        print("API 1 returned no data")
+        return
+
+    parsed_data_api_1 = api_1_data_parsing(data_json_api_1)
+    if not parsed_data_api_1:
+        print("API 1 parsing failed")
+        return
+    
+
+    data_serie, string_ap1 = api_1_adjusting_data_for_visualization(parsed_data_api_1)
+
+    api_1_result_visualization(data_serie, string_ap1)
+
+    return
+
+
+
+# ================= SCREEN USER ============================
 
 st.write("# ZIP Code search:")
 ''
@@ -19,13 +145,11 @@ st.write("""
 - **Note:** Because it is about 2 differnt applications sending the data, it can happen that sometimes there will not be 100% match 
 """)
 
+
 ''
 ''
 ''
 st.write("#### (1) ZIP code(s) based on City:")
-
-# ================== Rules for users ======================
-
 
 ''
 with st.expander("How to use this function",
@@ -46,9 +170,8 @@ with st.expander("How to use this function",
     ''
     ''
     st.write("- Secondly - Fill in the name of city:  can and cannot use capital leter: Prague/prague")
-    # st.image("Pictures/Function_6/F6_menu2_city.svg")
     st.write("- There can be **only 1 city per request**")
-    # st.image("Pictures/Function_6/F6_menu2_city.svg")
+
 
 with st.expander("Some examples of Cities you can use",
     icon=":material/help:"
@@ -84,59 +207,7 @@ with st.expander("Known limitation",
     """
     )
 
-# ================= API ============================
-
-# FOR TESTINGS - to do not call API, if not neccessary
-
-def TEST_get_request_2(city,country):
-
-    json_data_api_2 ={
-            "query": {
-                "city": city,
-                "state": "null",
-                "country": country
-            },
-            "results": [
-                "251 63",
-                "110 00",
-                "140 21",
-                "140 78",
-                "144 00",
-            ]
-        }
-    
-    return json_data_api_2
-
-
-# For PROD purposes 
-# https://app.zipcodebase.com/ - Bug: 1 api call is counted like 6
-def get_api_2(city,country):
-
-    api_key_1 = st.secrets["F6_api_1"]["password_1"]
-    
-    headers = { 
-    "apikey": api_key_1}
-
-    params = (
-    ("city", city),
-    ("country", country),
-    );
-
-    
-    response = requests.get(f'https://app.zipcodebase.com/api/v1/code/city?apikey={api_key_1}', headers=headers, params=params, timeout=2);
-
-    # st.write(f" write před return {response.text}")
-    response = response.text
-    # st.write(f" po response.text {response}")
-
-    #Very important step to make for data type
-    response = json.loads(response) 
-    return response
-
-        
-
-
-# ================== User inputs ==========================
+# ================== SCREEN User inputs API 1 FORM ==========================
 
 ''
 ''
@@ -157,66 +228,13 @@ with st.form("List of ZIP codes"):
         icon = ":material/apps:",
         )
     
-    ''
-    ''
+    # API 1 logic trigger
+    # The 'if' is nested -> to keep results in the form box
     if submit_button_1:
-        
-        # Firstly a validation that inputs provided -> if not, API will not be called
-        if city == "":
-                st.warning("Please provide City")
-                
-        else:
-                
-            try:
-                # This is for PROD   /////////////////////////////////////////////// API 1
-                f_data_json_2 = get_api_2(city,country)
+        submit_run_api_1(city, country)
 
 
-                
-                # This for TESTING
-                # f_data_json_2 = TEST_get_request_2(city,country)
-                # st.write(f" here data should be for parsing: {f_data_json_2}")
-                
-            except:
-                st.warning("Apologies - The API is currently not available - connection timeout (2 seconds). Try again in 10-20 minutes.")
-        
-            # Data parsing from JSON
-            ds = f_data_json_2['results']
-            ds = list(map(str, ds))
-            
 
-            # logic for validation of income 
-            b = len(ds)
-            b = b - 1
-            # st.write(b)
-            
-
-            if b == -1:
-                st.warning("Your City is not related to the selected country or doesn't exist in DB")
-                
-            else:
-                # data visualization APP
-                data_serie = pd.Series(ds, name="ZIP codes",)
-                data_serie.index += 1
-                ''
-                ''
-                st.write(data_serie)
-                
-
-                # data translation into string with coma , for the (1) API
-                string_for_api_1 = ",".join(ds)
-                
-
-                ''
-                st.write("- Here **you can take the string** and put it into the box below (the second API/Search):")
-                st.write(string_for_api_1)
-                ''
-                '' 
-                st.write("- **(!) Important note:**")
-                st.info("Because the API 2 (below) is a different application/works with different data -> it can happen that some of these ZIP codes might not be neccessary matching and the API 2 will NOT have the same data/ZIP codes")
-
-
-                 
 
 # ==========================================================================
 # //////////////////////////////////////////////////////////////////////////
