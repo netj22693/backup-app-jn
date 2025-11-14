@@ -2,30 +2,6 @@ import streamlit as st
 import requests
 import json
 import pandas as pd
-import sys
-
-# ================= API 1 For test ============================
-
-# FOR TESTINGS - to do not call API, if not neccessary - test dict response
-
-def TEST_get_request_1(city,country):
-
-    json_data_api_1 ={
-            "query": {
-                "city": city,
-                "state": "null",
-                "country": country
-            },
-            "results": [
-                "251 63",
-                "110 00",
-                "140 21",
-                "140 78",
-                "144 00",
-            ]
-        }
-    
-    return json_data_api_1
 
 
 # ================= API 1 main logic in split into defs =================
@@ -48,14 +24,13 @@ def get_api_1(city,country):
         response = requests.get(f'https://app.zipcodebase.com/api/v1/code/city?apikey={api_key_1}', headers=headers, params=params, timeout=2);
 
         response = response.text
-
         #Very important step to make for data type
         response = json.loads(response) 
-
         return response
     
-    except:
-        st.warning("The API is currently not available - connection was not established") 
+    except Exception as e:
+        print(e)
+        st.warning("The API 1 is currently not available - connection was not established") 
         response = False
         return response
 
@@ -63,8 +38,9 @@ def get_api_1(city,country):
 def api_1_data_parsing(data_json):
 
     # There can be only 2 types of JSON sent from source system
-    # 1) regular response -> try will pass
-    # 2) JSON with message note that limit reached -> goes to except
+    # 1) API response - regular response -> try will pass
+    # 2) API response - JSON with message note that limit reached -> goes to except
+
     try:
         # Data parsing from JSON
         ds = data_json['results']
@@ -80,8 +56,9 @@ def api_1_data_parsing(data_json):
         else:
             return ds
     
-    except:
-        st.warning("API limit has been reached - API not available")
+    except Exception as e:
+        print(e)
+        st.warning("API 1 limit has been reached - It will be **renewed by 1st next month**")
         return False
     
 
@@ -112,7 +89,7 @@ def api_1_result_visualization(result_data_serie,result_string):
 def submit_run_api_1(city, country):
 
     if not city:
-        st.warning("Please provide City")
+        st.warning("Missing input - Please provide City")
         return
 
     data_json_api_1 = get_api_1(city, country)
@@ -230,111 +207,12 @@ with st.form("List of ZIP codes"):
     
     # API 1 logic trigger
     # The 'if' is nested -> to keep results in the form box
-    if submit_button_1:
-        submit_run_api_1(city, country)
+    if submit_button_1: submit_run_api_1(city, country)
 
 
 
 
-# ==========================================================================
-# //////////////////////////////////////////////////////////////////////////
-# ==========================================================================
-# for testign purposes to do not call api 
-def TEST_get_request(codes,country):
-
-    data_json = {
-	"query": {
-		"codes": [
-			codes
-		],
-		"country": country
-	},
-	"results": {
-		"110007": [
-			{
-				"postal_code": "110 008888",
-				"country_code": "CZ",
-				"latitude": 50.3667,
-				"longitude": 16.0417,
-				"city": "Praha 1-Josefov",
-				"state": "Hlavní město Praha",
-				"city_en": "Praha 1-Josefov",
-				"state_en": "Hlavní město Praha",
-				"state_code": "52"
-			},
-			{
-				"postal_code": "110 007777",
-				"country_code": "CZ",
-				"latitude": 50.3333,
-				"longitude": 15.9167,
-				"city": "Josefov",
-				"state": "Hlavní město Praha",
-				"city_en": "Josefov",
-				"state_en": "Hlavní město Praha",
-				"state_code": "52"
-			}
-		],
-        "9999": [
-			{
-				"postal_code": "123",
-				"country_code": "CZ",
-				"latitude": 50.3667,
-				"longitude": 16.0417,
-				"city": "Praha 1-Josefov",
-				"state": "Hlavní město Praha",
-				"city_en": "Praha 1-Josefov",
-				"state_en": "Hlavní město Praha",
-				"state_code": "52"
-			},
-			{
-				"postal_code": "456",
-				"country_code": "CZ",
-				"latitude": 50.3333,
-				"longitude": 15.9167,
-				"city": "Josefov",
-				"state": "Hlavní město Praha",
-				"city_en": "Josefov",
-				"state_en": "Hlavní město Praha",
-				"state_code": "52"
-			}
-		]
-	}
-}
-  
-
-    return data_json
- 
-
-
-
-# ============= Real API - GET request ===================== 
-
-def  get_request(codes, country):
-
-    # API ZIPCODESTACK
-    api_url = "https://api.zipcodestack.com/v1/search"
-
-    api_key_2 = st.secrets["F6_api_2"]["password_2"]
-
-    headers = { 
-    "apikey": api_key_2}
-
-    params = (
-    ("codes",codes),
-    ("country",country),
-    );
-
-    # get reguest
-    
-    api_1 = requests.get(api_url, headers=headers, params=params,  verify=False, timeout=2).text
-    
-    f_data_json = json.loads(api_1)
-    return f_data_json
-    
-
-
-
-# ================= App Scree ============================
+# ================= API 2 - App Screen ============================
 
 ''
 ''
@@ -342,9 +220,6 @@ def  get_request(codes, country):
 st.write("#### (2) Validation of city based on ZIP code:")
 ''
 ''
-
-# ================== Rules for users ======================
-
 
 with st.expander("How to use this function",
     icon=":material/help:"
@@ -408,7 +283,116 @@ with st.expander("Known limitation",
     """
     )
     
-# ================== User inputs ==========================
+
+# ================= API 2 ============================
+
+def  get_request(codes, country):
+
+    try:
+        # API ZIPCODESTACK
+        api_url = st.secrets["F6_api_2"]["url"]
+        api_key_2 = st.secrets["F6_api_2"]["password_2"]
+
+        headers = { 
+        "apikey": api_key_2}
+
+        params = (
+        ("codes",codes),
+        ("country",country),
+        );
+
+        # get reguest
+        api_1 = requests.get(api_url, headers=headers, params=params,  verify=False, timeout=2).text      
+        f_data_json = json.loads(api_1)
+        return f_data_json
+    
+    except Exception as e:
+        print(e)
+        st.warning("The API 2 is currently not available - connection was not established")
+        return False
+
+
+def parsing_api_2(input_data_json):
+
+    # There can be only 2 types of JSON sent from source system
+    # 1) API response - regular response -> try will pass
+    # 2) API response - JSON with message note that limit reached -> goes to except
+
+    try:
+        result_val = []
+        
+        for result_jsn in input_data_json["results"]:
+            result_jsn = str(result_jsn)
+            result_val.append(result_jsn)
+    
+    except Exception as e:
+        print(e) 
+        st.warning("The API 2 limit has been reached - It will be **renewed by 1st next month**")
+        return False
+
+    result_val = list(map(str, result_val))
+
+    num = len(result_val)    
+    if num == 0:
+        st.warning("Your ZIP code(s) is not related to the selected country or doesn't exist in DB")
+        return False
+    
+    return result_val
+
+
+
+def result_visualization(data_list, data_json):
+
+    st.write("##### Results:")
+            
+    tab1,tab2 = st.tabs(["Table","Raw data"])
+
+    for result_val_single in data_list:
+
+        postal_code_list = []
+        city_list = []
+        state_list = []
+
+        for result in data_json["results"][result_val_single]:
+            tab2.write(f"- ZIP code: {result['postal_code']}")
+            tab2.write(f"- City name: {result['city_en']}")
+            tab2.write(f"- State: {result['state_en']}")
+            tab2.write(f"=====================================")
+
+            postal_code_list.append(result['postal_code'])
+            city_list.append(result['city_en'])
+            state_list.append(result['state_en'])
+
+        # DF creation
+        result_dict = pd.DataFrame({
+            "ZIP code": postal_code_list,
+            "City name": city_list,
+            "State": state_list
+        })
+
+        result_dict.index += 1
+        tab1.write(result_dict)      
+
+
+def submit_run_api_2(codes_input, country_input):
+
+    if not codes_input:
+        st.warning("Missing input - ZIP code(s)")
+        return
+
+    data_json_api_2 = get_request(codes_input, country_input)
+    if data_json_api_2 == False:
+        return
+
+    list_values_parsed = parsing_api_2(data_json_api_2)  
+    if list_values_parsed == False:
+        return
+
+    result_visualization(list_values_parsed, data_json_api_2)
+
+
+
+# ================== API 2 - USER SCREEN  ==========================
 
 ''
 ''
@@ -423,131 +407,14 @@ with st.form("Get city based on ZIP code(s)"):
         help = "You can put 1 or more ZIP codes. If more the format is: ZIPcode,ZIPcode,ZIPcode... To do not overwhelm the API, put MAX 10 ZIP codes in one search."
         )
     
-    ''
-    ''
-    if st.form_submit_button(
+    submit_button_api_2 = st.form_submit_button(
         label="Submit",
         use_container_width=True,
         icon = ":material/apps:",
-        ):
+        )
 
-        
-		# if/else logic for validation of input -> to do not call API  if no codes provided
-		# Reason: if no ZIP code sprovided it will send 300+ ZIP codes (propably all under CZ or SK). BUT - 10 ZIP codes is charge as 1 API call -> this one single call would costs 30+ calls.
-          
-        if codes == "":
-             st.warning("Please provide ZIP code(s)")
-             st.stop()
+    if submit_button_api_2: submit_run_api_2(codes, country)
 
 
-        # 06-July-25: Bug fix/but also LIMITATION of this part of code 
-        # Might not look that clean as there is multiple try-except and if conditions + nested while and for loops in them. Reason: this is only way I found how the streamlit is able to cover multiple happy/unhappy scenarios/states of the app and specifically for unhappy paths/scenarios completelly stop the script (specifically when get requests of api happens). I tried to split it under def() functions ended with exit() but the exit() function is not completelly stoping the streamlit and st.stop() is too big hard stop. 
-        try: 
-            # PROD /////////////////////////////////////////////// API 2
-            f_data_json = get_request(codes, country)
-            
-            # For TEST purposes 
-            #  f_data_json = TEST_get_request(codes, country)
-            # st.write(f_data_json)
-
-        except:
-            st.warning("Apologies - The API is currently not available - connection timeout (2 seconds) stopped the request")
-            st.stop()
-
-        # ============ Data parsing from JSON ================
-        #03-July-2025 - I am trying try/except for principle of not enought API requests 
-        # {"message":"You used all your monthly requests. Please upgrade your plan at https://app.zipcodestack.com/subscription"}  -> try except block
-            
-        try:
-            # ==== Parsing of the ZIP codes from JSON =======
-            # Those are the same ZIP CODES as entered in user input
-            # But in case that user will put a ZIP code which is not existing on the API side -> this mechanism will prevent from failing and just simply, will not get any response to show from the API. 
-            # the JSON structure is built on dynamic value principle in segment
-            # "results": { "11000": [{}],"12300": [{}]}   - the numbers (in string type) are the dynamic ones -> yes, those are the inputs from user -> JSON reflects that in the message
-            
-            # step 1 - the dynamic values to be parsed into list
-            result_val = []
-            
-            # step 2 - number of items in the list 
-            for result_jsn in f_data_json["results"]:
-                result_jsn = str(result_jsn)
-                result_val.append(result_jsn)
-                
-                #mapping into string
-                result_val = list(map(str, result_val))
-                #    st.write(f"after mapping into string: {result_val}")
-                
-
-            # step 2 - number of items in the list
-            a = len(result_val)
-            
-            # step 3 - the number of items - 1 => we get number of indexes
-            a = a - 1
-            # st.write(a)
-            
-
-            if a == -1:
-                st.warning("Your ZIP code(s) is not related to the selected country or doesn't exist in DB")
-                
-            else:
-                # ---- inserted steps of visualization on the user screen ------
-                # why here in the code? Because if the upper conditions passed visualization is needed, not earlier
-                ''
-                ''
-                
-                
-                st.write("##### Results:")
-                
-                # split into tabs
-                tab1,tab2 = st.tabs(["Table","Raw data"])
-
-                # --------------------------------------------------------------
-                
-                # step 4 - setting a default index for for loop as O (to take the first dynamic number from the list as variable)
-                index = 0
-                
-                # step 5 - while loop - to run until all the indexes checked/run
-                while index <= a:
-                        
-                        # parsing of other values on the another JSON level
-                        # the dynamic value are run based on the index number
-                        result_val_single = result_val[index]
-                        
-                        #empty variables -> to be filled by data from the foor loop
-                        postal_code_list = []
-                        city_list = []
-                        state_list = []
-                        
-                        for result in f_data_json["results"][result_val_single]:
-                            tab2.write(f"- ZIP code: {result['postal_code']}")
-                            tab2.write(f"- City name: {result['city_en']}")
-                            tab2.write(f"- State: {result['state_en']}")
-                            tab2.write(f"=====================================")
-                            
-                            postal_code_list.append(result['postal_code'])
-                            city_list.append(result['city_en'])
-                            state_list.append(result['state_en'])
-
-                        # this increases the index number/move to the next item in the list
-                        index = index + 1
 
 
-                        # Note: important to keep this DF after the for loop -> to have the lists already filled with values (from the for loop)
-                        result_dict = pd.DataFrame ({
-                            "ZIP code" : postal_code_list,
-                            "City name" : city_list,
-                            "State" :  state_list                                
-                        })
-                        
-
-                        # Tables - data visualization on the screen
-                        
-                        result_dict.index += 1	 
-                                                
-                        tab1.write(result_dict)                              
-                            
-                    
-                    
-        except:
-            st.warning("Apologies, the limit of the API calls per month has been reached. It will be **renewed by 1st next month**. THIS PART OF APPLICATION IS CURRENTLY NOT AVAILABLE.")
-            
