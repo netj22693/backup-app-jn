@@ -38,6 +38,8 @@ tab1, tab2 = st.tabs([
     "Search for specific invoice",
 ])
 
+
+# =================  Tab 1  ======================
 with tab1:
     db_engine = connection_db()
 
@@ -93,159 +95,136 @@ with tab1:
     
     st.dataframe(df_styled, width = "stretch", height=562)
 
-with tab2: 
+# =================  Tab 2 - main logic put in def ======================
 
-    with st.form(key="user_form"):
-        order_input = st.text_input(label="Order number:", help="Insert **Order number** of invoice you would like to see. It is based on invoices created in **Function 3**.")
-
-        order_input=order_input.strip()
-        
-        submit_button = st.form_submit_button(label= "Submit", width="stretch")
+def tab_2_logic_run():
     
-    if submit_button:
-
-        def input_validation(input):
-
-            if input == '':
-                st.warning("**Missing input** - Please provide **Order number**")
-                st.stop()
-            
-            else:
-                pass
-        
-        # helps to prevent SQL injection to limit inputs to integer only
-        def input_safety_validation(input):
-            
-            try: 
-                input = int(input)
-                pass
-
-            except:
-                st.warning("**Format issue** - The provide Order number is not in correct format")
-                st.stop()
-                
-        
-        input_validation(order_input)
-        input_safety_validation(order_input)
-
-        # Queries
-        sql_overview = """
-        SELECT 
-            a.order_number as "Order no.",
-            a.date as "Date",
-            a.customer as "Customer",
-            a.total_price as "Total price",
-            g.name as "Currency"                                            
-        
-        FROM f4b.invoice a
-            INNER JOIN f4b.category_list b ON (a.category = b.category_id)
-            INNER JOIN f4b.extra_service_list c ON (a.extra_service_type = c.service_id) 
-            INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
-            INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
-            INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
-            INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id) 
-
-        WHERE 
-            a.order_number = :order
-            ;"""
-
-        sql_file_format = """
-        SELECT 
-            h.name                                        
-        
-        FROM f4b.invoice a
-            INNER JOIN f4b.format_list h ON (a.file_format = h.format_id)
-
-        WHERE 
-            a.order_number = :order
-            ;"""
-
-        sql_product = """
-        SELECT 
-            a.product_name as "Product",
-            b.name as "Category",
-            a.product_price as "Price",
-            g.name as "Currency"                                       
-        
-        FROM f4b.invoice a
-            INNER JOIN f4b.category_list b ON (a.category = b.category_id)
-            INNER JOIN f4b.extra_service_list c ON (a.extra_service_type = c.service_id) 
-            INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
-            INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
-            INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
-            INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id) 
-        
-        WHERE 
-            a.order_number = :order
-        ;"""   
-
-        sql_extra_service = """
-        SELECT 
-            c.name as "Extra service",
-            a.extra_service_price as "Extra service price",
-            g.name as "Currency"                          
-        
-        FROM f4b.invoice a
-            INNER JOIN f4b.category_list b ON (a.category = b.category_id)
-            INNER JOIN f4b.extra_service_list c ON (a.extra_service_type = c.service_id) 
-            INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
-            INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
-            INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
-            INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id) 
-        
-        WHERE 
-            a.order_number = :order
-        ;"""   
+    # Queries
+    sql_overview = """
+    SELECT 
+        a.order_number as "Order no.",
+        a.date as "Date",
+        a.customer as "Customer",
+        a.total_price as "Total price",
+        g.name as "Currency"                                            
     
-        sql_transport = """
-        SELECT 
-            e.name as "Transport Company",
-            d.name as "Country",
-            f.name as "Parcel size",
-            a.tr_price as "Transport price",
-            g.name as "Currency"                         
-        
-        FROM f4b.invoice a
-            INNER JOIN f4b.category_list b ON (a.category = b.category_id)
-            INNER JOIN f4b.extra_service_list c ON (a.extra_service_type = c.service_id) 
-            INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
-            INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
-            INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
-            INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id) 
-        
-        WHERE 
-            a.order_number = :order
-        ;""" 
+    FROM f4b.invoice a
+        INNER JOIN f4b.category_list b ON (a.category = b.category_id)
+        INNER JOIN f4b.extra_service_list c ON (a.extra_service_type = c.service_id) 
+        INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
+        INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
+        INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
+        INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id) 
 
-
-        sql_transport_company = """
-        SELECT 
-            e.name                   
-        
-        FROM f4b.invoice a
-            INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
-        
-        WHERE 
-            a.order_number = :order
+    WHERE 
+        a.order_number = :order
         ;"""
 
-        db_engine = connection_db()
+    sql_file_format = """
+    SELECT 
+        h.name                                        
+    
+    FROM f4b.invoice a
+        INNER JOIN f4b.format_list h ON (a.file_format = h.format_id)
 
-        with db_engine.connect() as conn:
-            params = {"order": order_input}
-            df_file_format = pd.read_sql_query(sql=text(sql_file_format), con=conn, params=params)
-            df_overview = pd.read_sql_query(sql=text(sql_overview), con=conn, params=params)
-            df_product = pd.read_sql_query(sql=text(sql_product), con=conn, params=params)
-            df_extra_service = pd.read_sql_query(sql=text(sql_extra_service), con=conn, params=params)
-            df_transport = pd.read_sql_query(sql=text(sql_transport), con=conn, params=params)
-            df_transport_company = pd.read_sql_query(sql=text(sql_transport_company), con=conn, params=params)
-      
+    WHERE 
+        a.order_number = :order
+        ;"""
+
+    sql_product = """
+    SELECT 
+        a.product_name as "Product",
+        b.name as "Category",
+        a.product_price as "Price",
+        g.name as "Currency"                                       
+    
+    FROM f4b.invoice a
+        INNER JOIN f4b.category_list b ON (a.category = b.category_id)
+        INNER JOIN f4b.extra_service_list c ON (a.extra_service_type = c.service_id) 
+        INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
+        INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
+        INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
+        INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id) 
+    
+    WHERE 
+        a.order_number = :order
+    ;"""   
+
+    sql_extra_service = """
+    SELECT 
+        c.name as "Extra service",
+        a.extra_service_price as "Extra service price",
+        g.name as "Currency"                          
+    
+    FROM f4b.invoice a
+        INNER JOIN f4b.category_list b ON (a.category = b.category_id)
+        INNER JOIN f4b.extra_service_list c ON (a.extra_service_type = c.service_id) 
+        INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
+        INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
+        INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
+        INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id) 
+    
+    WHERE 
+        a.order_number = :order
+    ;"""   
+
+    sql_transport = """
+    SELECT 
+        e.name as "Transport Company",
+        d.name as "Country",
+        f.name as "Parcel size",
+        a.tr_price as "Transport price",
+        g.name as "Currency"                         
+    
+    FROM f4b.invoice a
+        INNER JOIN f4b.category_list b ON (a.category = b.category_id)
+        INNER JOIN f4b.extra_service_list c ON (a.extra_service_type = c.service_id) 
+        INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
+        INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
+        INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
+        INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id) 
+    
+    WHERE 
+        a.order_number = :order
+    ;""" 
+
+
+    sql_transport_company = """
+    SELECT 
+        e.name                   
+    
+    FROM f4b.invoice a
+        INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
+    
+    WHERE 
+        a.order_number = :order
+    ;"""
+
+
+    # DB connection + +ueries run
+    db_engine = connection_db()
+
+    with db_engine.connect() as conn:
+        params = {"order": order_input}
+        df_file_format = pd.read_sql_query(sql=text(sql_file_format), con=conn, params=params)
+        df_overview = pd.read_sql_query(sql=text(sql_overview), con=conn, params=params)
+        df_product = pd.read_sql_query(sql=text(sql_product), con=conn, params=params)
+        df_extra_service = pd.read_sql_query(sql=text(sql_extra_service), con=conn, params=params)
+        df_transport = pd.read_sql_query(sql=text(sql_transport), con=conn, params=params)
+        df_transport_company = pd.read_sql_query(sql=text(sql_transport_company), con=conn, params=params)
+
+
+    # Key if/else logic - in case that no match in DB with Order number -> tab_2 logic doesn't continue
+    if df_overview.empty or df_file_format.empty:
+        st.info(f"**No invoice** found with this **Order number: {order_input}**")
+    
+    else: 
         # Making variables extracting them from dataframes
         file_format = df_file_format['name'].iloc[0]
         transport_company = df_transport_company['name'].iloc[0]
 
-        #df styling
 
+        #df styling
         df_overview["Date"] = pd.to_datetime(df_overview["Date"])
 
         df_overview_styled = df_overview.style.format({
@@ -282,26 +261,68 @@ with tab2:
 
 
         # Visualization on user screen
-        if df_overview.empty:
-            st.info(f"**No invoice** found with this **Order number: {order_input}**")
+        ''
+        ''
+        st.write(f"- Invoice was originally produced in **{file_format}** format")
+        ''
+        st.write("- Invoice overview:")
+        st.dataframe(df_overview_styled, hide_index=True)
 
+        ''
+        st.write("- Product overview:")
+        st.dataframe(df_product_styled, hide_index=True)
+
+        ''
+        st.write("- Extra service overview:")
+        st.dataframe(df_extra_service_styled, hide_index=True)
+
+        ''
+        st.write("- Transport overview:")
+        st.image(logo, width= size_logo)
+        st.dataframe(df_transport_styled, hide_index=True)
+
+
+with tab2: 
+
+    with st.form(key="user_form"):
+        order_input = st.text_input(label="Order number:", help="Insert **Order number** of invoice you would like to see. It is based on invoices created in **Function 3**.")
+
+        order_input=order_input.strip()
+        
+        submit_button = st.form_submit_button(label= "Submit", width="stretch")
+    
+    if submit_button:
+
+        def input_validation(input):
+
+            if input == '':
+                st.warning("**Missing input** - Please provide **Order number**")
+                return False
+            
+            return True
+        
+        # helps to prevent SQL injection to limit inputs to integer only
+        def input_safety_validation(input):
+            
+            try: 
+                input = int(input)
+                return True
+
+            except:
+                st.warning("**Format issue** - The provide Order number is not in correct format")
+                return False
+                
+                
+        
+        # if/else logic block - if not preventing for triggering main logic due to wrong input
+        if not input_validation(order_input) or not input_safety_validation(order_input):
+            pass
+
+
+        # Tab 2 main being triggered here
         else:
-            ''
-            ''
-            st.write(f"- Invoice was originally produced in **{file_format}** format")
-            ''
-            st.write("- Invoice overview:")
-            st.dataframe(df_overview_styled, hide_index=True)
+            tab_2_logic_run()
+            
 
-            ''
-            st.write("- Product overview:")
-            st.dataframe(df_product_styled, hide_index=True)
+# ======================= Tab 2 END ====================
 
-            ''
-            st.write("- Extra service overview:")
-            st.dataframe(df_extra_service_styled, hide_index=True)
-
-            ''
-            st.write("- Transport overview:")
-            st.image(logo, width= size_logo)
-            st.dataframe(df_transport_styled, hide_index=True)

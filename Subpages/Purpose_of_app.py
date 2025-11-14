@@ -351,6 +351,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 3:
+		- **v42.9** - F3B - Refactoring into better code blocks, reson: bug - 14-Nov-2025
 		- **v42.7** - F3B - developed (Find your invoice) - 12-Nov-2025
 		- **v42.0** - End of process: invoice is inserted into DB - 10-Nov-2025
 		- **v41.0** - Connected to DB to get transport price - 10-Nov-2025
