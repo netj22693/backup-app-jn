@@ -216,7 +216,7 @@ def tab_2_logic_run():
     a.order_number = :order
 
     ORDER BY 
-    i.date DESC
+    i.date ASC
     ;"""
 
 

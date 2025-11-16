@@ -61,7 +61,7 @@ with tab2:
 	''
 	st.image("Pictures/Overall_UML_F1 and F2_v2.svg")
 	''
-	st.image("Pictures/Overall_UML_F3 and F4_v2.svg")
+	st.image("Pictures/Overall_UML_F3 and F4_v3.svg")
 	''
 	st.image("Pictures/Overall_UML_F5.svg")
 	''

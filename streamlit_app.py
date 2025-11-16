@@ -70,7 +70,13 @@ function_3_xml = st.Page(
 
 function_3_BPMN = st.Page(
     "Subpages/F3_F4_description_BPMN.py",
-    title="Description - BPMN & DB",
+    title="Description - BPMN",
+    icon= ":material/code:"
+    )
+
+function_3_erd = st.Page(
+    "Subpages/F3_ERD.py",
+    title="Description - DB & ERD",
     icon= ":material/code:"
     )
 
@@ -232,6 +238,7 @@ pg = st.navigation(
             fun_3_archm,
             function_3_xml,
             fun_3_json,
+            function_3_erd,
             function_3,
             function_3b,
             fun_4

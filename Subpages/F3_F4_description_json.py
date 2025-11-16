@@ -281,11 +281,11 @@ if st.download_button("Download",
 st.write("-------")
 
 st.page_link(
-	label = "Go to: Function 3",
-	page="Subpages/F3_FUNCTION_creation_of_XML.py",
+	label = "Next page",
+	page="Subpages/F3_ERD.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
-	icon=":material/play_circle:",
+	icon=":material/east:",
 	) 
 
 st.page_link(
