@@ -69,7 +69,7 @@ with tab2:
 	''
 	st.image("Pictures/Overall_UML_F7.svg")
 	''
-	st.image("Pictures/Overall_UML_F8_v2.svg")
+	st.image("Pictures/Overall_UML_F8_v3.svg")
 
 with tab3:
 	st.write("###### Architecture landscape:")
