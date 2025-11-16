@@ -103,7 +103,7 @@ with tab2:
         icon= ":material/help_outline:"
         ):
         
-        st.image("Pictures/Function_3/unique IDs_2.png")
+        st.image("Pictures/Function_3/F3_unique_order_id.png")
         ''
         ''
         st.write("If needed to keep the IDs and change the file format, mapping XML <-> JSON:")

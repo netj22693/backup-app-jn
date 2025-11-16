@@ -272,7 +272,8 @@ In the application user provides key inputs about the product through input fiel
 '' 
 ''
 ''
-st.image("Pictures/Function_3/XML produced.png")
+# st.image("Pictures/Function_3/XML produced.png")
+st.image("Pictures/Function_3/F3_XML_produced_v2.png")
 '' 
 ''
 '''
