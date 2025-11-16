@@ -20,7 +20,7 @@ with tab0:
     - **Simple overview of use-cases** and which **function to use**
         - Create invoice - F3
         - See invoice(s) - F3B
-        - Change file format of invoice created in F3 - F4
+        - Change file format of created invoice - F4
     """)
 
     ''
@@ -43,7 +43,7 @@ with tab1:
     ''
     '''
     - Then application/function makes the calculation. 
-    - In case of all inputs are okay, user can push download button for generating of an invoice either in XML format or JSON. 
+    - In case of all inputs are okay, user can push download button for generating of invoice either in XML or JSON format. 
     - In case that user wants to change something in the original inputs, he can rewrite/change the inputs and then push Submit button again...
     '''
 
@@ -83,11 +83,11 @@ with tab2:
     '''
     - If user wants to **change a file format** of the invoice generated in F3, there is a possibility to **use F4**
     - Mapping into the other format than has been selected
-    - **Reason** why to do this and not generate new one:
-        - When file produced in F3, the data/ivoice was stored in DB under **uniquie Order number**
-        - So to keep the **Order number** mapping in F4 will keep it
-        - This **file format/mapping change will be kept in DB as a change log**
-        - User will see **this record** if will be looking for inovice information in **F3B**
+    '''
+    '''
+    - **Reason** - Why to use F4 and not to generate new invoice:
+        - When file produced in F3, the data/ivoice was stored in DB under **unique Order number** -> to keep it, mapping in F4
+        - Information about the mapping will be put into DB as **a log record with timestamp** -> this record will be visible in F3B when search for the invoice
     '''
     ''
     ''
@@ -99,7 +99,7 @@ with tab2:
     ''
     ''
     with st.expander(
-        "Unique Order number and Invoice ID",
+        "Unique Order number",
         icon= ":material/help_outline:"
         ):
         
