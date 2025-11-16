@@ -54,7 +54,7 @@ tab1,tab2, tab3 = st.tabs([
 with tab1:
 	st.write("###### ArchiMate - Overview of the functions:")
 	''
-	st.image("Pictures/Archimate_functions_overview_9.svg")
+	st.image("Pictures/Archimate_functions_overview_10.svg")
 	
 with tab2:
 	st.write("###### UML - Overview of the functions:")
