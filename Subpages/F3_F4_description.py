@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.write("# Functions 3, 3B and 4")
+st.write("# Functions 3 and 4")
 ''
 ''
 st.write("""
