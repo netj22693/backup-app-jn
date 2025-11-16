@@ -200,6 +200,25 @@ def tab_2_logic_run():
         a.order_number = :order
     ;"""
 
+    sql_mapping_log = """
+    SELECT 
+        i.date as "Date",
+        i.change as "Description",
+        f_from.name as "From",
+        f_to.name as "To"
+
+    FROM f4b.change_log i
+    INNER JOIN f4b.format_list f_from ON f_from.format_id = i.mapping_from
+    INNER JOIN f4b.format_list f_to   ON f_to.format_id   = i.mapping_to
+    INNER JOIN f4b.invoice a ON (a.order_number = i.order_number_log)
+
+    WHERE 
+    a.order_number = :order
+
+    ORDER BY 
+    i.date DESC
+    ;"""
+
 
     # DB connection + +ueries run
     db_engine = connection_db()
@@ -212,6 +231,7 @@ def tab_2_logic_run():
         df_extra_service = pd.read_sql_query(sql=text(sql_extra_service), con=conn, params=params)
         df_transport = pd.read_sql_query(sql=text(sql_transport), con=conn, params=params)
         df_transport_company = pd.read_sql_query(sql=text(sql_transport_company), con=conn, params=params)
+        df_mapping_logs = pd.read_sql_query(sql=text(sql_mapping_log), con=conn, params=params)
 
 
     # Key if/else logic - in case that no match in DB with Order number -> tab_2 logic doesn't continue
@@ -243,6 +263,17 @@ def tab_2_logic_run():
         df_transport_styled = df_transport.style.format({
             "Transport price": "{:,.2f}"
             })
+
+        if not df_mapping_logs.empty:
+            # This makes index + 1 -> by adding new column which is based on index number + 1 (normal df_styled.index = df_styled.index + 1 here doesn't work due to the style. - ing)
+            df_mapping_logs[" "] = df_mapping_logs.index + 1
+            df_mapping_logs = df_mapping_logs.set_index(" ")
+
+            df_mapping_logs["Date"] = pd.to_datetime(df_mapping_logs["Date"])
+
+            df_mapping_logs_styled = df_mapping_logs.style.format({
+                "Date": lambda d: d.strftime("%d-%m-%Y - %H:%M:%S")
+                })
 
 
         def bring_logo_screen(input_company):
@@ -280,6 +311,14 @@ def tab_2_logic_run():
         st.write("- Transport overview:")
         st.image(logo, width= size_logo)
         st.dataframe(df_transport_styled, hide_index=True)
+
+        ''
+        if df_mapping_logs.empty:
+            st.write("- Logs - Invoice mapped to differnet format: **no mapping**")
+            st.dataframe(df_mapping_logs)
+        else:
+            st.write("- Logs - Invoice mapped to differnet format:")
+            st.dataframe(df_mapping_logs_styled)
 
 
 with tab2: 
