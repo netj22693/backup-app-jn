@@ -58,7 +58,7 @@ function_3 = st.Page(
 
 function_3b = st.Page(
     "Subpages/F3b_FUNCTION_invoice_visibility.py",
-    title="3B. Invoice visibility",
+    title="3B. Invoice - Visibility",
     icon = ":material/play_circle:"
     )
 
