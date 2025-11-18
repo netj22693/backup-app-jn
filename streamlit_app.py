@@ -52,7 +52,7 @@ parsing = st.Page(
 
 function_3 = st.Page(
     "Subpages/F3_FUNCTION_creation_of_XML.py",
-    title="3. Invoice - Creation of XML or JSON",
+    title="3. Invoice - Creation - XML/JSON",
     icon = ":material/play_circle:"
     )
 
@@ -99,7 +99,7 @@ fun_3_archm = st.Page(
 
 fun_4 = st.Page(
     "Subpages/F4_FUNCTION_translation_mapping.py",
-    title="4. Mapping XML to JSON, JSON to XML",
+    title="4. Invoice - Mapping - XML/JSON",
     icon = ":material/play_circle:"
 )
 
