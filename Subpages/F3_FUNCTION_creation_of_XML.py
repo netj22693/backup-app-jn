@@ -303,12 +303,12 @@ if  st.button(
             
             query = f"""
             SELECT {currency} 
-                FROM f3.company a
-                INNER JOIN f3.country_{c_code} b ON (a.comp_id = b.c_comp_id)
-                INNER JOIN f3.parcel_size c ON (b.size = c.size_id)
+                FROM shared.transport_company e
+                INNER JOIN transport.country_{c_code} x ON (e.comp_id = x.c_comp_id)
+                INNER JOIN shared.parcel_size f ON (x.size = f.size_id)
                 WHERE
-                a.name = '{company}' AND
-                c.name = '{size}'
+                e.name = '{company}' AND
+                f.name = '{size}'
             """
 
             df_query_result = pd.read_sql(query, engine)
@@ -320,7 +320,7 @@ if  st.button(
 
             query = f"""
             SELECT MAX(order_number) AS order_number
-            FROM f4b.invoice
+            FROM billing.invoice
             """
 
             df_query_result = pd.read_sql(query, engine)
@@ -678,7 +678,7 @@ if  st.button(
 
             class Invoice(Base):
                 __tablename__ = "invoice"
-                __table_args__ = {"schema": "f4b"}
+                __table_args__ = {"schema": "billing"}
 
                 record_id = Column(Integer, primary_key=True)
                 order_number = Column(String)

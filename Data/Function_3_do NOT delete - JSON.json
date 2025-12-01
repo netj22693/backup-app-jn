@@ -1,18 +1,18 @@
 {
     "header": {
-        "order_number": "148",
-        "customer": "Marcela Augustova",
-        "invoice_number": "INV-724446",
-        "date": "2025-11-12",
+        "order_number": "164",
+        "customer": "TEST",
+        "invoice_number": "INV-911024",
+        "date": "2025-12-01",
         "price": {
-            "total_sum": 474.35,
-            "currency": "US dollar"
+            "total_sum": 12.0,
+            "currency": "euro"
         }
     },
     "detail": {
-        "category": "TV",
-        "product_name": "Philips The One Special",
-        "price_amount": 470.0,
+        "category": "PC",
+        "product_name": "TEST_name",
+        "price_amount": 10.0,
         "additional_service": {
             "service": "N",
             "service_type": "None",
@@ -21,8 +21,8 @@
     },
     "transportation": {
         "transporter": "DHL",
-        "country": "Slovakia",
-        "size": "medium",
-        "transport_price": 4.35
+        "country": "Czech Republic",
+        "size": "small",
+        "transport_price": 2.0
     }
 }
