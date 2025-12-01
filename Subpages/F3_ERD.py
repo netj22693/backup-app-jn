@@ -27,7 +27,7 @@ with tab_erd_1:
 
     ''
     ''
-    st.image("Pictures/Function_3/F3_F3B_F4_ERD_landscape_context.svg")
+    st.image("Pictures/Function_3/F3_F3B_F4_ERD_landscape_context_v2.svg")
 
 
 with tab_erd_2:
@@ -37,7 +37,7 @@ with tab_erd_2:
     - To get **transport price** value **based on user inputs**
     """)
     ''
-    st.image("Pictures/Function_3/F3_ERD_transport_price.svg")
+    st.image("Pictures/Function_3/F3_ERD_transport_price_v2.svg")
     ''
 
     currency = 'euro'
@@ -48,13 +48,12 @@ with tab_erd_2:
     query = f"""
 SELECT {currency} 
 
-FROM f3.company a
-    INNER JOIN f3.country_{c_code} b ON (a.comp_id = b.c_comp_id)
-    INNER JOIN f3.parcel_size c ON (b.size = c.size_id)
-    
+FROM shared.transport_company e
+    INNER JOIN transport.country_{c_code} x ON (e.comp_id = x.c_comp_id)
+    INNER JOIN shared.parcel_size f ON (x.size = f.size_id)
 WHERE
-    a.name = '{company}' AND
-    c.name = '{size}'"""
+    e.name = '{company}' AND
+    f.name = '{size}'"""
 
     st.write("- Dynamic SQL query:")
     st.code(query, language="sql")
@@ -82,38 +81,38 @@ with tab_erd_3:
         - The DB is designed to be **scalable** in case of growth of options in the future
         """)    
     ''
-    st.image("Pictures/Function_3/F3_ERD_invoice_3.svg")
+    st.image("Pictures/Function_3/F3_ERD_invoice_v4.svg")
 
     query_2 = """
 SELECT 
-  a.order_number, 
-  a.date,
-  a.customer,
-  b.name,
-  a.product_name,
-  a.product_price,
-  c.name, 
-  a.extra_service_price,
-  d.name,
-  e.name,
-  a.tr_price,
-  f.name,
-  a.total_price,
-  g.name
-  h.name
-  
-FROM f4b.invoice a
-  INNER JOIN f4b.category_list b ON (a.category = b.category_id)
-  INNER JOIN f4b.extra_service_list c ON (a.extra_service_type = c.service_id) 
-  INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
-  INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
-  INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
-  INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id)
-  INNER JOIN f4b.format_list h ON (a.file_format = h.format_id)
+    a.order_number as "Order no.",
+    a.date as "Date",
+    a.customer as "Customer",
+    b.name as "Category",
+    a.product_name as "Product",
+    a.product_price as "Price",
+    c.name as "Extra service",
+    a.extra_service_price as "Extra service price",
+    d.name as "Country",
+    e.name as "Transport Company",
+    a.tr_price as "Transport price",
+    f.name as "Parcel size",
+    a.total_price as "Total price", 
+    g.name as "Currency",
+    h.name as "File format"                                            
+
+FROM billing.invoice a
+    INNER JOIN billing.category_list b ON (a.category = b.category_id)
+    INNER JOIN billing.extra_service_list c ON (a.extra_service_type = c.service_id) 
+    INNER JOIN billing.country_list d ON (a.country = d.country_id) 
+    INNER JOIN shared.transport_company e ON (a.tr_company = e.comp_id) 
+    INNER JOIN shared.parcel_size f ON (a.parcel_size = f.size_id) 
+    INNER JOIN billing.currency_list g ON (a.currency = g.currency_id) 
+    INNER JOIN billing.format_list h ON (a.file_format = h.format_id)
 
 /*
 -- JOIN for connecting 'change_log' table
-INNER JOIN f4b.invoice a ON (a.order_number = i.order_number_log)
+    INNER JOIN billing.invoice a ON (a.order_number = i.order_number_log)
 */;"""
 
 
