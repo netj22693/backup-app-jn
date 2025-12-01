@@ -61,14 +61,14 @@ with tab1:
             g.name as "Currency",
             h.name as "File format"                                            
         
-        FROM f4b.invoice a
-            INNER JOIN f4b.category_list b ON (a.category = b.category_id)
-            INNER JOIN f4b.extra_service_list c ON (a.extra_service_type = c.service_id) 
-            INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
-            INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
-            INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
-            INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id) 
-            INNER JOIN f4b.format_list h ON (a.file_format = h.format_id)
+        FROM billing.invoice a
+            INNER JOIN billing.category_list b ON (a.category = b.category_id)
+            INNER JOIN billing.extra_service_list c ON (a.extra_service_type = c.service_id) 
+            INNER JOIN billing.country_list d ON (a.country = d.country_id) 
+            INNER JOIN shared.transport_company e ON (a.tr_company = e.comp_id) 
+            INNER JOIN shared.parcel_size f ON (a.parcel_size = f.size_id) 
+            INNER JOIN billing.currency_list g ON (a.currency = g.currency_id) 
+            INNER JOIN billing.format_list h ON (a.file_format = h.format_id)
 
         ORDER BY 
             a.date DESC,
@@ -108,13 +108,13 @@ def tab_2_logic_run():
         a.total_price as "Total price",
         g.name as "Currency"                                            
     
-    FROM f4b.invoice a
-        INNER JOIN f4b.category_list b ON (a.category = b.category_id)
-        INNER JOIN f4b.extra_service_list c ON (a.extra_service_type = c.service_id) 
-        INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
-        INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
-        INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
-        INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id) 
+    FROM billing.invoice a
+        INNER JOIN billing.category_list b ON (a.category = b.category_id)
+        INNER JOIN billing.extra_service_list c ON (a.extra_service_type = c.service_id) 
+        INNER JOIN billing.country_list d ON (a.country = d.country_id) 
+        INNER JOIN shared.transport_company e ON (a.tr_company = e.comp_id) 
+        INNER JOIN shared.parcel_size f ON (a.parcel_size = f.size_id) 
+        INNER JOIN billing.currency_list g ON (a.currency = g.currency_id) 
 
     WHERE 
         a.order_number = :order
@@ -124,8 +124,8 @@ def tab_2_logic_run():
     SELECT 
         h.name                                        
     
-    FROM f4b.invoice a
-        INNER JOIN f4b.format_list h ON (a.file_format = h.format_id)
+    FROM billing.invoice a
+        INNER JOIN billing.format_list h ON (a.file_format = h.format_id)
 
     WHERE 
         a.order_number = :order
@@ -138,13 +138,13 @@ def tab_2_logic_run():
         a.product_price as "Price",
         g.name as "Currency"                                       
     
-    FROM f4b.invoice a
-        INNER JOIN f4b.category_list b ON (a.category = b.category_id)
-        INNER JOIN f4b.extra_service_list c ON (a.extra_service_type = c.service_id) 
-        INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
-        INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
-        INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
-        INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id) 
+    FROM billing.invoice a
+        INNER JOIN billing.category_list b ON (a.category = b.category_id)
+        INNER JOIN billing.extra_service_list c ON (a.extra_service_type = c.service_id) 
+        INNER JOIN billing.country_list d ON (a.country = d.country_id) 
+        INNER JOIN shared.transport_company e ON (a.tr_company = e.comp_id) 
+        INNER JOIN shared.parcel_size f ON (a.parcel_size = f.size_id) 
+        INNER JOIN billing.currency_list g ON (a.currency = g.currency_id) 
     
     WHERE 
         a.order_number = :order
@@ -156,13 +156,13 @@ def tab_2_logic_run():
         a.extra_service_price as "Extra service price",
         g.name as "Currency"                          
     
-    FROM f4b.invoice a
-        INNER JOIN f4b.category_list b ON (a.category = b.category_id)
-        INNER JOIN f4b.extra_service_list c ON (a.extra_service_type = c.service_id) 
-        INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
-        INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
-        INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
-        INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id) 
+    FROM billing.invoice a
+        INNER JOIN billing.category_list b ON (a.category = b.category_id)
+        INNER JOIN billing.extra_service_list c ON (a.extra_service_type = c.service_id) 
+        INNER JOIN billing.country_list d ON (a.country = d.country_id) 
+        INNER JOIN shared.transport_company e ON (a.tr_company = e.comp_id) 
+        INNER JOIN shared.parcel_size f ON (a.parcel_size = f.size_id) 
+        INNER JOIN billing.currency_list g ON (a.currency = g.currency_id) 
     
     WHERE 
         a.order_number = :order
@@ -176,13 +176,13 @@ def tab_2_logic_run():
         a.tr_price as "Transport price",
         g.name as "Currency"                         
     
-    FROM f4b.invoice a
-        INNER JOIN f4b.category_list b ON (a.category = b.category_id)
-        INNER JOIN f4b.extra_service_list c ON (a.extra_service_type = c.service_id) 
-        INNER JOIN f4b.country_list d ON (a.country = d.country_id) 
-        INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
-        INNER JOIN f4b.size_list f ON (a.parcel_size = f.size_id) 
-        INNER JOIN f4b.currency_list g ON (a.currency = g.currency_id) 
+    FROM billing.invoice a
+        INNER JOIN billing.category_list b ON (a.category = b.category_id)
+        INNER JOIN billing.extra_service_list c ON (a.extra_service_type = c.service_id) 
+        INNER JOIN billing.country_list d ON (a.country = d.country_id) 
+        INNER JOIN shared.transport_company e ON (a.tr_company = e.comp_id) 
+        INNER JOIN shared.parcel_size f ON (a.parcel_size = f.size_id) 
+        INNER JOIN billing.currency_list g ON (a.currency = g.currency_id) 
     
     WHERE 
         a.order_number = :order
@@ -193,8 +193,8 @@ def tab_2_logic_run():
     SELECT 
         e.name                   
     
-    FROM f4b.invoice a
-        INNER JOIN f4b.transport_company e ON (a.tr_company = e.comp_id) 
+    FROM billing.invoice a
+        INNER JOIN shared.transport_company e ON (a.tr_company = e.comp_id) 
     
     WHERE 
         a.order_number = :order
@@ -204,19 +204,19 @@ def tab_2_logic_run():
     SELECT 
         i.date as "Date",
         i.change as "Description",
-        f_from.name as "From",
-        f_to.name as "To"
+        h_from.name as "From",
+        h_to.name as "To"
 
-    FROM f4b.change_log i
-    INNER JOIN f4b.format_list f_from ON f_from.format_id = i.mapping_from
-    INNER JOIN f4b.format_list f_to   ON f_to.format_id   = i.mapping_to
-    INNER JOIN f4b.invoice a ON (a.order_number = i.order_number_log)
+    FROM billing.change_log i
+        INNER JOIN billing.format_list h_from ON h_from.format_id = i.mapping_from
+        INNER JOIN billing.format_list h_to   ON h_to.format_id   = i.mapping_to
+        INNER JOIN billing.invoice a ON (a.order_number = i.order_number_log)
 
     WHERE 
-    a.order_number = :order
+        a.order_number = :order
 
     ORDER BY 
-    i.date ASC
+        i.date ASC
     ;"""
 
 
