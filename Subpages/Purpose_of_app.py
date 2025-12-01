@@ -345,7 +345,7 @@ with st.expander(
 	st.write("""
 	- Function 4:
 		- **v52.2** - New DB schema - SQL queries refactored - 01-Dec-2025
-		- **50.1** - Log about mapping put into DB as a record about this activity - 16-Nov-2025	
+		- **v50.1** - Log about mapping put into DB as a record about this activity - 16-Nov-2025	
 		- **v7.2** - Try/Except - Error handling, if wrong file uploaded - 18-Jun-2025	
 		- **v0.7** - F4 released - 23-March-2025
 	""")
