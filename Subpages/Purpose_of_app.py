@@ -344,6 +344,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 4:
+		- **v52.2** - New DB schema - SQL queries refactored - 01-Dec-2025
 		- **50.1** - Log about mapping put into DB as a record about this activity - 16-Nov-2025	
 		- **v7.2** - Try/Except - Error handling, if wrong file uploaded - 18-Jun-2025	
 		- **v0.7** - F4 released - 23-March-2025
@@ -353,6 +354,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 3:
+		- **v52.2** - New DB schema - SQL queries refactored - 01-Dec-2025
 		- **v51.1** - F3B - Invoice overview now provides logs, if any mapping using F4 function - 16-Nov-2025
 		- **v42.9** - F3B - Refactoring into better code blocks, reson: bug - 14-Nov-2025
 		- **v42.7** - F3B - developed (Find your invoice) - 12-Nov-2025
