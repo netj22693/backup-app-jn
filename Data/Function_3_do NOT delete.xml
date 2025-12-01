@@ -1,29 +1,29 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <invoice>
   <header>
-    <order_number>164</order_number>
-    <customer>TEST</customer>
-    <invoice_number>INV-911024</invoice_number>
+    <order_number>166</order_number>
+    <customer>TEST_3</customer>
+    <invoice_number>INV-892068</invoice_number>
     <date>2025-12-01</date>
     <price>
-      <total_sum>12.0</total_sum>
-      <currency>euro</currency>
+      <total_sum>14.04</total_sum>
+      <currency>US dollar</currency>
   </price>
   </header>
   <detail>
     <category>PC</category>
-    <product_name>TEST_name</product_name>
+    <product_name>TEST_3</product_name>
     <price_amount>10.0</price_amount>
     <additional_service>
-      <service>N</service>
-      <service_type>None</service_type>
-      <service_price>0.0</service_price>
+      <service>Y</service>
+      <service_type>extended warranty</service_type>
+      <service_price>1.0</service_price>
   </additional_service>
   </detail>
   <transportation>
     <transporter>DHL</transporter>
-    <country>Czech Republic</country>
+    <country>Slovakia</country>
     <size>small</size>
-    <transport_price>2.0</transport_price>
+    <transport_price>3.04</transport_price>
   </transportation>
 </invoice>

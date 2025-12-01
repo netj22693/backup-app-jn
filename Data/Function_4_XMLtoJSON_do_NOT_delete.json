@@ -1,28 +1,28 @@
 {
     "header": {
-        "order_number": "157",
-        "customer": "Martina Novotn\u00e1",
-        "invoice_number": "INV-052924",
-        "date": "2025-11-16",
+        "order_number": "166",
+        "customer": "TEST_3",
+        "invoice_number": "INV-892068",
+        "date": "2025-12-01",
         "price": {
-            "total_sum": 12148.9,
-            "currency": "K\u010d"
+            "total_sum": 14.04,
+            "currency": "US dollar"
         }
     },
     "detail": {
-        "category": "Gaming",
-        "product_name": "Playstation 5 Pro",
-        "price_amount": 10999.0,
+        "category": "PC",
+        "product_name": "TEST_3",
+        "price_amount": 10.0,
         "additional_service": {
             "service": "Y",
             "service_type": "extended warranty",
-            "service_price": 1099.9
+            "service_price": 1.0
         }
     },
     "transportation": {
         "transporter": "DHL",
-        "country": "Czech Republic",
+        "country": "Slovakia",
         "size": "small",
-        "transport_price": 50.0
+        "transport_price": 3.04
     }
 }

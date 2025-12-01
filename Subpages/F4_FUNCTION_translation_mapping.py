@@ -27,7 +27,7 @@ Base = declarative_base()
 
 class Change_log(Base):
 	__tablename__ = "change_log"
-	__table_args__ = {"schema": "f4b"}
+	__table_args__ = {"schema": "billing"}
 
 	log_id = Column(Integer, primary_key=True)
 	date = Column(String)
