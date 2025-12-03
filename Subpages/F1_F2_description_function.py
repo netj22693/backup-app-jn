@@ -31,7 +31,7 @@ st.write("""
 ''
 with st.expander("Video guide", icon= ":material/youtube_activity:"):
     try:
-        st.video("Video/F2_videoguide_v1.mp4")
+        st.video("Video/F2_videoguide_v2.mp4")
     except:
         st.warning("Apologies, the video is not available at this moment.")
 
