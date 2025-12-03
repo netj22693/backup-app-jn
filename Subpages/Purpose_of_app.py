@@ -370,6 +370,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 2:
+		- **v52.3** - Function description extended by Video Guide - 03-Dec-2025
 		- **v35.4** - Plotly() arguments adjusted, deprication will happen end of 2025  - 20-Oct-2025
 		- **v16.4** - Better visualization in dataframes - 2 decimals always - 22-July-2025
 		- **v16.2** - New expander (SQL 4 - average values) - 22-July-2025
@@ -386,6 +387,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 1:
+		- **v52.3** - Function description extended by Video Guide - 03-Dec-2025
 		- **v0.1** - F1 released (together with F2) - 20-Feb-2025
 	""")
 
