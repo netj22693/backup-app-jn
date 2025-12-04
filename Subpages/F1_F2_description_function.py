@@ -11,8 +11,16 @@ st.write("""
     """
     )
 
-st.write(" ")
+''
+with st.expander("Video guide", icon= ":material/youtube_activity:"):
+    try:
+        st.video("Video/F2_videoguide_v2.mp4")
+    except:
+        st.warning("Apologies, the video was not loaded.")
 
+
+''
+''
 st.write("##### Business scenario:") 
 st.write(
     "Simplified version of case when a company does a purchase from other company/e-shop on frequent bases. That is why there is XML invoice defined for invoicing. This parsing function could be seen like very small ERP system/ERP program :)."
@@ -28,12 +36,7 @@ st.write("""
     """
     )
 
-''
-with st.expander("Video guide", icon= ":material/youtube_activity:"):
-    try:
-        st.video("Video/F2_videoguide_v2.mp4")
-    except:
-        st.warning("Apologies, the video is not available at this moment.")
+
 
 # ===== Page navigation at the bottom ======
 ''

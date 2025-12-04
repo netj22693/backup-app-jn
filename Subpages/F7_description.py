@@ -75,6 +75,13 @@ st.write("""
     - **Function 7:** Transport calculation - API provides input
     """
     )
+
+''
+with st.expander("Video guide", icon= ":material/youtube_activity:"):
+    try:
+        st.video("Video/F7_videoguide_v1.mp4")
+    except:
+        st.warning("Apologies, the video was not loaded.")
 ''
 ''
 st.write("##### Business scenario:") 

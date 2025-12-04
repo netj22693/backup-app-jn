@@ -9,6 +9,14 @@ st.write("""
     - **Function 4**: Mapping of the same invoice ; XML -> JSON or JSON -> XML
     """
     )
+
+''
+with st.expander("Video guide", icon= ":material/youtube_activity:"):
+    try:
+        st.video("Video/F3_videoguide_v1.mp4")
+    except:
+        st.warning("Apologies, the video was not loaded.")
+
 ''
 ''
 st.write("##### Business scenario:") 
@@ -27,12 +35,7 @@ st.write("""
     """
     )
 
-''
-with st.expander("Video guide", icon= ":material/youtube_activity:"):
-    try:
-        st.video("Video/F3_videoguide_v1.mp4")
-    except:
-        st.warning("Apologies, the video is not available at this moment.")
+
 
 # ===== Page navigation at the bottom ======
 ''

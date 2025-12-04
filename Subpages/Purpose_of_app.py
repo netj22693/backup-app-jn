@@ -307,6 +307,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v52.4** - Function description extended by Video Guide - 04-Dec-2025
 		- **v35.0** - Plotly() arguments adjusted, deprication will happen end of 2025  - 20-Oct-2025
 		- **v33.5** - 'Delivery at' also added to TAB2 -> available in analytics for other transports - 16-Sep-2025
 		- **v33.4** - 'Offer to be approved till' option added -> influences 'delivery at' date & time - 15-Sep-2025
