@@ -299,6 +299,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 8:
+		- **v52.5** - Function description extended by Video Guide - 05-Dec-2025
 		- **v36.9** - 'branch' table introduced -> SQL results better customized - 05-Nov-2025
 		- **v36.7** - 2 more SQLs - num. of companies & num. of branches - 04-Nov-2025
 		- **v36.2** - F8 released - 31-Oct-2025

@@ -8,6 +8,13 @@ st.write("""
     - **Function 8:** Company Book - provides visibility of transport companies - **DB on cloud**
     """
     )
+
+''
+with st.expander("Video guide", icon= ":material/youtube_activity:"):
+    try:
+        st.video("Video/F8_videoguide_v1.mp4")
+    except:
+        st.warning("Apologies, the video was not loaded.")
 ''
 ''
 
