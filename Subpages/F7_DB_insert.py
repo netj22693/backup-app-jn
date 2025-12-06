@@ -138,7 +138,7 @@ def insert_variables_delivery(engine, data):
         __tablename__ = "delivery"
         __table_args__ = {"schema": "function7"}
 
-        offer_id = Column(Integer, primary_key=True)
+        offer_id = Column(String, primary_key=True)
         from_country = Column(String)
         from_city = Column(String)
         from_dtd = Column(Integer)
@@ -156,8 +156,118 @@ def insert_variables_delivery(engine, data):
         session.commit()
 
 
-# def save_to_db_main_stream(variables_delivery):
-def save_to_db_main_stream(variables_offer, variables_delivery):
+# TEST
+
+# offer_number_generated = "F1-555"
+# mapped_currency = 1
+# price = 111111.11
+# door_from_result = 22.11
+# door_to_result = 33.11
+# shipment_value = 444.55
+# money_insurance = 666.66
+# money_fragile = 777.77
+# money_danger = 888.88
+
+
+
+# variables_costs_dict = {
+#     "offer_id" : offer_number_generated,
+#     "currency" : mapped_currency,
+#     "distance_cost" : price,
+#     "dtd_from" : door_from_result,
+#     "dtd_to" : door_to_result,
+#     "shipment_value" : shipment_value,
+#     "insurance" : money_insurance,
+#     "fragile" : money_fragile,
+#     "danger" : money_danger,
+# }
+
+def insert_variables_costs(engine, data):
+
+    mapped_data = {
+    "offer_id": data["offer_id"],
+    "currency": data["currency"],
+    "distance_cost": data["distance_cost"],
+    "dtd_from" : data["dtd_from"],
+    "dtd_to" : data["dtd_to"],
+    "shipment_value": data["shipment_value"],
+    "insurance" : data["insurance"],
+    "fragile" : data["fragile"],
+    "danger" : data["danger"],
+    }
+
+    Base = declarative_base()
+
+    class Costs(Base):
+        __tablename__ = "costs"
+        __table_args__ = {"schema": "function7"}
+
+        offer_id = Column(String, primary_key=True)
+        currency = Column(Integer)
+        distance_cost = Column(Float)
+        dtd_from = Column(Float)
+        dtd_to = Column(Float)
+        shipment_value = Column(Float)
+        insurance = Column(Float)
+        fragile = Column(Float)
+        danger = Column(Float)
+
+
+    with Session(engine) as session:
+        new_offer = Costs(**mapped_data)
+        session.add(new_offer)
+        session.commit()
+
+
+
+# TEST
+# offer_number_generated = "F1-121"
+# time_break = 1.17
+# transfer_time_from = 1
+# transfer_time_to = 2
+# truck_time_dtd_air_train_from = 3
+# truck_time_dtd_air_train_to = 4
+
+
+# variables_extra_steps_time_dict = {
+#     "offer_id" : offer_number_generated,
+#     "truck_breaks" : time_break,
+#     "shipment_transfer_dtd_from" : transfer_time_from,
+#     "shipment_transfer_dtd_to" : transfer_time_to,
+#     "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to),
+# }
+
+def insert_variables_extra_steps_time(engine, data):
+
+    mapped_data = {
+    "offer_id": data["offer_id"],
+    "truck_breaks": data["truck_breaks"],
+    "shipment_transfer_dtd_from": data["shipment_transfer_dtd_from"],
+    "shipment_transfer_dtd_to" : data["shipment_transfer_dtd_to"],
+    "dtd_truck_if_not_truck_main" : data["dtd_truck_if_not_truck_main"],
+    }
+
+    Base = declarative_base()
+
+    class Extra_steps_time(Base):
+        __tablename__ = "extra_steps_time"
+        __table_args__ = {"schema": "function7"}
+
+        offer_id = Column(String, primary_key=True)
+        truck_breaks = Column(Float)
+        shipment_transfer_dtd_from = Column(Float)
+        shipment_transfer_dtd_to = Column(Float)
+        dtd_truck_if_not_truck_main = Column(Float)
+
+
+    with Session(engine) as session:
+        new_offer = Extra_steps_time(**mapped_data)
+        session.add(new_offer)
+        session.commit()
+
+
+# def save_to_db_main_stream(variables_extra_steps_time):
+def save_to_db_main_stream(variables_offer, variables_delivery, variables_costs, variables_extra_steps_time):
 
 
     # tady bych dělla PDF ještě
@@ -166,10 +276,12 @@ def save_to_db_main_stream(variables_offer, variables_delivery):
     # Query_offer 
     insert_variables_offer(db_engine, variables_offer)
     insert_variables_delivery(db_engine, variables_delivery)
+    insert_variables_costs(db_engine, variables_costs)
+    insert_variables_extra_steps_time(db_engine, variables_extra_steps_time)
 
 
 
-# save_to_db_main_stream(variables_delivery_dict)
+# save_to_db_main_stream(variables_extra_steps_time_dict)
 
 
 

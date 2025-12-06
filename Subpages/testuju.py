@@ -2721,6 +2721,12 @@ if st.button("Submit", width="stretch"):
 
         time_break = calcul_time_break(time_journy_incl_dtd)
 
+        # For DB purposes to cover if scenario 'Train' and 'Air' to have values
+        transfer_time_from = 0.00
+        transfer_time_to = 0.00
+        truck_time_dtd_air_train_from = 0.00
+        truck_time_dtd_air_train_to = 0.00
+
 
     
 
@@ -2733,6 +2739,9 @@ if st.button("Submit", width="stretch"):
         time_dtd = time_dtd_from + time_dtd_to
     
         time_journy_incl_dtd = time_journey + time_dtd_from + time_dtd_to
+
+        # For DB purposes to cover if scenario 'Truck' to have values
+        time_break = 0.00
 
 
 
@@ -3215,7 +3224,6 @@ if st.button("Submit", width="stretch"):
             }
 
         # 2) DELIVERY table 
-        
         # Dictionary for INSERT
         variables_delivery_dict = {
             "offer_id" : offer_number_generated,
@@ -3230,13 +3238,35 @@ if st.button("Submit", width="stretch"):
             "dtd_time" : time_dtd
         }
 
+        # 3) COSTS table 
+        # Dictionary for INSERT
+        variables_costs_dict = {
+            "offer_id" : offer_number_generated,
+            "currency" : mapped_currency,
+            "distance_cost" : price,
+            "dtd_from" : door_from_result,
+            "dtd_to" : door_to_result,
+            "shipment_value" : shipment_value,
+            "insurance" : money_insurance,
+            "fragile" : money_fragile,
+            "danger" : money_danger,
+        }
 
+        # 4) EXTRA_STEPS_TIME table 
+        # Dictionary for INSERT
+        variables_extra_steps_time_dict = {
+            "offer_id" : offer_number_generated,
+            "truck_breaks" : time_break,
+            "shipment_transfer_dtd_from" : transfer_time_from,
+            "shipment_transfer_dtd_to" : transfer_time_to,
+            "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to),
+        }
 
         st.button(
             "Close Function 2",
             width="stretch",
             icon=":material/close:",
-            on_click=lambda: save_to_db_main_stream(variables_offer_dict, variables_delivery_dict)
+            on_click=lambda: save_to_db_main_stream(variables_offer_dict, variables_delivery_dict, variables_costs_dict, variables_extra_steps_time_dict)
         )
 
 
