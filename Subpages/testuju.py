@@ -3266,7 +3266,7 @@ if st.button("Submit", width="stretch"):
             "Close Function 2",
             width="stretch",
             icon=":material/close:",
-            on_click=lambda: save_to_db_main_stream(variables_offer_dict, variables_delivery_dict, variables_costs_dict, variables_extra_steps_time_dict)
+            on_click=lambda: save_to_db_main_stream(offer_number_generated, variables_offer_dict, variables_delivery_dict, variables_costs_dict, variables_extra_steps_time_dict)
         )
 
 

@@ -3,6 +3,38 @@ from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float
 from sqlalchemy.orm import declarative_base, Session
 
 
+
+def final_dialogs_goto():
+    ''
+    st.write("**Go to:**")
+
+    st.page_link(
+    label = "Function F8 - Description",
+    page="Subpages/F8_description.py",
+    help="The button will redirect to the relevant page within this app.",
+    use_container_width=True,
+    icon=":material/code:",
+    )
+
+
+@st.dialog("Complete!")
+def process_done(offer_number_input):
+    st.write(f"""
+        - The offer **{offer_number_input}** was inserted into DB -> :green[**Complete**]
+        """)
+    ''
+    final_dialogs_goto()
+
+
+@st.dialog("Insert into DB failed") 
+def insert_db_not_complete():
+    st.write("""
+        - But the offer **was not** inserted into DB -> :red[**Technical issue**]
+        """)
+    ''
+    final_dialogs_goto()
+
+
 # TEST 
 # europe_date_part = "06-Dec-25"
 # europe_time_part = "12:04"
@@ -267,18 +299,25 @@ def insert_variables_extra_steps_time(engine, data):
 
 
 # def save_to_db_main_stream(variables_extra_steps_time):
-def save_to_db_main_stream(variables_offer, variables_delivery, variables_costs, variables_extra_steps_time):
+def save_to_db_main_stream(offer_number, variables_offer, variables_delivery, variables_costs, variables_extra_steps_time):
 
 
     # tady bych dělla PDF ještě
     db_engine = db_connection()
 
     # Query_offer 
-    insert_variables_offer(db_engine, variables_offer)
-    insert_variables_delivery(db_engine, variables_delivery)
-    insert_variables_costs(db_engine, variables_costs)
-    insert_variables_extra_steps_time(db_engine, variables_extra_steps_time)
 
+    try:
+        insert_variables_offer(db_engine, variables_offer)
+        insert_variables_delivery(db_engine, variables_delivery)
+        insert_variables_costs(db_engine, variables_costs)
+        insert_variables_extra_steps_time(db_engine, variables_extra_steps_time)
+
+        process_done(offer_number)
+
+    except Exception as e:
+        print(f"DB insert failed: {e}")
+        insert_db_not_complete()
 
 
 # save_to_db_main_stream(variables_extra_steps_time_dict)
@@ -286,23 +325,3 @@ def save_to_db_main_stream(variables_offer, variables_delivery, variables_costs,
 
 
 
-@st.dialog("Go to:")
-def db_py():
-
-
-    ''
-    st.page_link(
-        label = "Function 3 - Description",
-        page="Subpages/F3_F4_description.py",
-        help="The button will redirect to the relevant page within this app.",
-        width="stretch",
-        icon=":material/code:",
-        )
-
-    st.page_link(
-        label = "Function 3",
-        page="Subpages/F3_FUNCTION_creation_of_XML.py",
-        help="The button will redirect to the relevant page within this app.",
-        width="stretch",
-        icon=":material/play_circle:",
-        )
