@@ -64,7 +64,6 @@ def db_connection():
         conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.gwc.azure.neon.tech/neondb?sslmode=require"
 
         engine = create_engine(conn_string)
-        st.success("DB connected - ahoj z insert.py")
         return engine
 
     except:
@@ -305,7 +304,6 @@ def save_to_db_main_stream(offer_number, variables_offer, variables_delivery, va
     # tady bych dělla PDF ještě
     db_engine = db_connection()
 
-    # Query_offer 
 
     try:
         insert_variables_offer(db_engine, variables_offer)

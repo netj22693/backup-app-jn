@@ -8,6 +8,9 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 import time
+from sqlalchemy import create_engine
+from Subpages.F7_DB_insert import save_to_db_main_stream
+from Subpages.F7_DB_mapping import mapping_transport_type, mapping_service, mapping_time_zone, mapping_currency, mapping_agreed_till
 
 
 
@@ -2718,6 +2721,12 @@ if st.button("Submit", width="stretch"):
 
         time_break = calcul_time_break(time_journy_incl_dtd)
 
+        # For DB purposes to cover if scenario 'Train' and 'Air' to have values
+        transfer_time_from = 0.00
+        transfer_time_to = 0.00
+        truck_time_dtd_air_train_from = 0.00
+        truck_time_dtd_air_train_to = 0.00
+
 
     
 
@@ -2730,6 +2739,9 @@ if st.button("Submit", width="stretch"):
         time_dtd = time_dtd_from + time_dtd_to
     
         time_journy_incl_dtd = time_journey + time_dtd_from + time_dtd_to
+
+        # For DB purposes to cover if scenario 'Truck' to have values
+        time_break = 0.00
 
 
 
@@ -2906,6 +2918,54 @@ if st.button("Submit", width="stretch"):
     tab2_door_from_result_truck, tab2_door_from_result_train, tab2_door_from_result_air = tab2_dtd_costs_to(selected_currency, checkbox_list_from)
 
 
+    def make_offer_number(engine):
+
+        query = f"""
+        SELECT MAX(offer_id) AS offer_id
+        FROM function7.offer
+        """
+
+        df_query_result = pd.read_sql(query, engine)
+
+        query_result_str = df_query_result['offer_id'].iloc[0]
+
+        prefix = query_result_str[0:3]
+        number = int(query_result_str[3:])
+        
+        
+        next_number = str(number + 1)
+
+
+        next_offer_number = prefix + next_number
+        next_offer_number = str(next_offer_number)
+
+        return next_offer_number
+
+
+    def db_connection():
+
+        # Load secrets
+        password = st.secrets["neon"]["password"]
+        endpoint = st.secrets["neon"]["endpoint"]
+
+        # connection string
+        try: 
+            conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.gwc.azure.neon.tech/neondb?sslmode=require"
+
+            engine = create_engine(conn_string)
+            return engine
+
+        except:
+            st.warning("DB not connected - the function will not function fully.")
+            return None
+        
+    db_engine = db_connection()
+
+    if db_engine != None:
+        offer_number_generated = make_offer_number(db_engine)
+    
+    if db_engine == None:
+        offer_number_generated = "Error - Not possible to generate"
 
     # ////////////////////    Final result - SCREEN    ///////////////////////////////////////
     ''
@@ -2926,6 +2986,9 @@ if st.button("Submit", width="stretch"):
             # (round(time_journey, 2) here rounding allowed, because upper |f"- Time to cover the distance {from_city} - {to_city} is: **{time_journey:.2f} hour(s)**."| there is already rounding rounding as part of visualiztion of :.2f
             overall_time_truck = (round(time_journey, 2) + time_break + extra_time + time_dtd)
 
+            #overall_time_db - for DB purpose unified variable (the same will have train and truck)
+            overall_time_db = overall_time_truck 
+
 
             delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time = delivery_date_time(overall_time_truck,agreed_till)
 
@@ -2936,6 +2999,7 @@ if st.button("Submit", width="stretch"):
 
             ''
             st.write(f"""
+                - Offer number: **{offer_number_generated}**
                 - Offer created: **{europe_date_part} - {europe_time_part} {cet_cest_now}**
                 - Customer to approve till: **{customer_approve_date} - {customer_approve_time} {cet_cest_now}** ({agreed_till_str})
             """)
@@ -3020,6 +3084,9 @@ if st.button("Submit", width="stretch"):
             # (round(time_journey, 2) here rounding allowed, because upper |f"- Time to cover the distance {from_city} - {to_city} is: **{time_journey:.2f} hour(s)**."| there is already rounding rounding as part of visualiztion of :.2f
             overall_time_train_air = (round(time_journey,2) + extra_time + time_dtd)
 
+            #overall_time_db - for DB purpose unified variable (the same will have train and truck)
+            overall_time_db = overall_time_train_air
+
             delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time = delivery_date_time(overall_time_train_air,agreed_till)
 
             cet_cest_delivery = determin_cet_cest(delivery_dt)
@@ -3029,6 +3096,7 @@ if st.button("Submit", width="stretch"):
 
             ''
             st.write(f"""
+                - Offer number: **{offer_number_generated}**
                 - Offer created: **{europe_date_part} - {europe_time_part} {cet_cest_now}**
                 - Customer to approve till: **{customer_approve_date} - {customer_approve_time} {cet_cest_now}** ({agreed_till_str})
             """)
@@ -3122,9 +3190,92 @@ if st.button("Submit", width="stretch"):
         ''
         st.write("- **Final price:**")
         with st.container(border=True):
-            st.write(f"**{(price + money_insurance + money_fragile + money_danger + door_to_result + door_from_result):,.2f} {selected_currency}**")
 
+            final_price = price + money_insurance + money_fragile + money_danger + door_to_result + door_from_result
 
+            st.write(f"**{final_price:,.2f} {selected_currency}**")
+
+        # ==================== DB data preparations + calling insert ==============
+
+        # 1) OFFER table
+        # Mapping      
+        mapped_selected_transport = mapping_transport_type(selected_transport)
+        mapped_service =  mapping_service(urgency)
+        mapped_time_zone =  mapping_time_zone(cet_cest_now)
+        mapped_currency =  mapping_currency(selected_currency)
+        mapped_agreed_till = mapping_agreed_till(agreed_till_str)
+
+        # Dictionary for INSERT
+        variables_offer_dict = {
+            "offer_id" : offer_number_generated,
+            "europe_date_part" : europe_date_part, # 06-Dec-25
+            "europe_time_part" : europe_time_part, # 12:04
+            "customer_approve_date":customer_approve_date,
+            "customer_approve_time" : customer_approve_time,
+            "agreed_till_str": mapped_agreed_till,
+            "selected_transport" : mapped_selected_transport,
+            "service" : mapped_service,
+            "time_zone" : mapped_time_zone,
+            "time_overall" : overall_time_db,
+            "expected_delivery" : delivery_dt_formated,
+            "final_price" : final_price,
+            "currency" : mapped_currency
+            }
+
+        # 2) DELIVERY table 
+        # Dictionary for INSERT
+        variables_delivery_dict = {
+            "offer_id" : offer_number_generated,
+            "from_country" : country_code_from,
+            "from_city" : from_city,
+            "from_dtd" : from_city_extra_doortdoor,
+            "to_country" : country_code_to,
+            "to_city" : to_city,
+            "to_dtd" : to_city_extra_doortdoor,
+            "distance_length" : distance,
+            "distance_time" : time_journey,
+            "dtd_time" : time_dtd
+        }
+
+        # 3) COSTS table 
+        # Dictionary for INSERT
+        variables_costs_dict = {
+            "offer_id" : offer_number_generated,
+            "currency" : mapped_currency,
+            "distance_cost" : price,
+            "dtd_from" : door_from_result,
+            "dtd_to" : door_to_result,
+            "shipment_value" : shipment_value,
+            "insurance" : money_insurance,
+            "fragile" : money_fragile,
+            "danger" : money_danger,
+        }
+
+        # 4) EXTRA_STEPS_TIME table 
+        # Dictionary for INSERT
+        variables_extra_steps_time_dict = {
+            "offer_id" : offer_number_generated,
+            "truck_breaks" : time_break,
+            "shipment_transfer_dtd_from" : transfer_time_from,
+            "shipment_transfer_dtd_to" : transfer_time_to,
+            "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to),
+        }
+
+        ''
+        ''
+        st.info("""
+        - Note:
+            - If you want to check the **Analytics tab**, do it before this button
+            - This button will **close the results**
+            - **It is final step to confirm the offer -> closing the function**
+            """)
+        
+        st.button(
+            "Save the offer into DB",
+            width="stretch",
+            icon=":material/sports_score:",
+            on_click=lambda: save_to_db_main_stream(offer_number_generated, variables_offer_dict, variables_delivery_dict, variables_costs_dict, variables_extra_steps_time_dict)
+        )
 
 
     # TAB 2

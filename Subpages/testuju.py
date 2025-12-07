@@ -228,7 +228,7 @@ def api_get_rate():
     )
 
         # MAIN - Testing rate for my documentation is 
-        usd_to_czk_rate = 21.94
+        usd_to_czk_rate = 20.78
         usd_to_eur_rate = 0.86
 
         # For actual alignment with API
@@ -2953,11 +2953,10 @@ if st.button("Submit", width="stretch"):
             conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.gwc.azure.neon.tech/neondb?sslmode=require"
 
             engine = create_engine(conn_string)
-            st.success("DB connected - ahoj z (F7)testuju.py")
             return engine
 
         except:
-            st.warning("DB not connected")
+            st.warning("DB not connected - the function will not function fully.")
             return None
         
     db_engine = db_connection()
@@ -3262,8 +3261,17 @@ if st.button("Submit", width="stretch"):
             "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to),
         }
 
+        ''
+        ''
+        st.info("""
+        - Note:
+            - If you want to check the **Analytics tab**, do it before this button
+            - This button will **close the results**
+            - **It is final step to confirm the offer -> closing the function**
+            """)
+        
         st.button(
-            "Close Function 2",
+            "Save the offer into DB",
             width="stretch",
             icon=":material/close:",
             on_click=lambda: save_to_db_main_stream(offer_number_generated, variables_offer_dict, variables_delivery_dict, variables_costs_dict, variables_extra_steps_time_dict)
