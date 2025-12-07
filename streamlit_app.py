@@ -81,8 +81,8 @@ function_3_erd = st.Page(
     )
 
 testuju_stsession = st.Page(
-    "Subpages/F7_DB_insert.py",
-    title="F7_DB_TEST"
+    "Subpages/sessionstate.py",
+    title="session"
 )
 
 fun_1and2_descrip = st.Page(
