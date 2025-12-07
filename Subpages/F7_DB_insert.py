@@ -72,9 +72,6 @@ def db_connection():
 
 def insert_variables_offer(engine, data):
 
-    # parsing
-    st.write(data)
-
     mapped_data = {
     "offer_id": data["offer_id"],
     "created_date": data["europe_date_part"],
