@@ -27,7 +27,7 @@ st.write("""
     )
 ''
 st.write("""
-    - **Function 7:** Transport calculation - **API** provides input (:green[**my favorit function**])
+    - **Function 7:** Transport calculation - **API** provides input & **DB on cloud** (:green[**my favorit function**])
     """
     )
 ''
@@ -74,7 +74,7 @@ with tab2:
 with tab3:
 	st.write("###### Architecture landscape:")
 	''
-	st.image("Pictures/App_landscape_architecture_v3.svg")
+	st.image("Pictures/App_landscape_architecture_v4.svg")
 
 ''
 ''
