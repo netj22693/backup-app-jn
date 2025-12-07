@@ -308,6 +308,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v54.1** - Function now produces also PDF offer - 07-Dec-2025
 		- **v54.0** - DB connected - Offers can be stored in DB - 07-Dec-2025
 		- **v52.4** - Function description extended by Video Guide - 04-Dec-2025
 		- **v35.0** - Plotly() arguments adjusted, deprication will happen end of 2025  - 20-Oct-2025

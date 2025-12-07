@@ -4,6 +4,7 @@ from sqlalchemy.orm import declarative_base, Session
 
 
 
+
 def final_dialogs_goto():
     ''
     st.write("**Go to:**")
@@ -20,6 +21,7 @@ def final_dialogs_goto():
 @st.dialog("Complete!")
 def process_done(offer_number_input):
     st.write(f"""
+        - PDF offer was generated -> :green[**Complete**]
         - The offer **{offer_number_input}** was inserted into DB -> :green[**Complete**]
         """)
     ''
@@ -29,6 +31,7 @@ def process_done(offer_number_input):
 @st.dialog("Insert into DB failed") 
 def insert_db_not_complete():
     st.write("""
+        - PDF offer was generated -> :green[**Complete**]
         - But the offer **was not** inserted into DB -> :red[**Technical issue**]
         """)
     ''

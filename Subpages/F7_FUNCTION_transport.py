@@ -11,6 +11,7 @@ import time
 from sqlalchemy import create_engine
 from Subpages.F7_DB_insert import save_to_db_main_stream
 from Subpages.F7_DB_mapping import mapping_transport_type, mapping_service, mapping_time_zone, mapping_currency, mapping_agreed_till
+from Subpages.F7_PDF import create_pdf
 
 
 
@@ -3195,7 +3196,7 @@ if st.button("Submit", width="stretch"):
 
             st.write(f"**{final_price:,.2f} {selected_currency}**")
 
-        # ==================== DB data preparations + calling insert ==============
+        # ==================== DB and PDF data preparations + calling mapping ==============
 
         # 1) OFFER table
         # Mapping      
@@ -3261,6 +3262,47 @@ if st.button("Submit", width="stretch"):
             "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to),
         }
 
+        # PDF 
+        data_for_pdf = {
+            "offer_id" : offer_number_generated,
+            "europe_date_part" : europe_date_part, 
+            "europe_time_part" : europe_time_part, 
+            "customer_approve_date":customer_approve_date,
+            "customer_approve_time" : customer_approve_time,
+            "agreed_till_str": agreed_till_str,
+            "selected_transport" : selected_transport,
+            "service" : urgency,
+            "service_time": extra_time,
+            "time_zone" : cet_cest_now,
+            "time_overall" : overall_time_db,
+            "expected_delivery" : delivery_dt_formated,
+            "final_price" : final_price,
+            "currency" : selected_currency,
+            "from_country" : country_code_from,
+            "from_city" : from_city,
+            "from_dtd" : from_city_extra_doortdoor,
+            "to_country" : country_code_to,
+            "to_city" : to_city,
+            "to_dtd" : to_city_extra_doortdoor,
+            "distance_length" : distance,
+            "distance_time" : time_journey,
+            "dtd_time" : time_dtd,
+            "distance_cost" : price,
+            "dtd_from" : door_from_result,
+            "dtd_to" : door_to_result,
+            "shipment_value" : shipment_value,
+            "insurance" : money_insurance,
+            "fragile" : money_fragile,
+            "danger" : money_danger,
+            "truck_breaks" : time_break,
+            "shipment_transfer_dtd_from" : transfer_time_from,
+            "shipment_transfer_dtd_to" : transfer_time_to,
+            "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to)
+        }
+
+        # PDF creation
+        data_pdf = create_pdf(data_for_pdf, selected_transport)
+
         ''
         ''
         st.info("""
@@ -3270,10 +3312,13 @@ if st.button("Submit", width="stretch"):
             - **It is final step to confirm the offer -> closing the function**
             """)
         
-        st.button(
-            "Save the offer into DB",
+        st.download_button(
+            "Generate PDF file & Save the offer into DB",
             width="stretch",
             icon=":material/sports_score:",
+            data = data_pdf,
+            file_name=f"Offer_{offer_number_generated}.pdf",
+            mime="application/pdf",
             on_click=lambda: save_to_db_main_stream(offer_number_generated, variables_offer_dict, variables_delivery_dict, variables_costs_dict, variables_extra_steps_time_dict)
         )
 
