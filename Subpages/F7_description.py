@@ -79,7 +79,7 @@ st.write("""
 ''
 with st.expander("Video guide", icon= ":material/youtube_activity:"):
 
-    st.info("The video will be updated - currently the function offers **also generating of PDF file & inserting values inot DB** - NOT in the video yet.")
+    st.info("The video will be updated - currently the function offers **also generating of PDF file & inserting values into DB** - NOT in the video yet.")
     try:
         st.video("Video/F7_videoguide_v1.mp4")
     except:

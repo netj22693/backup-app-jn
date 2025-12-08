@@ -10,16 +10,19 @@ st.write("""
         - **Paradigm:** Procedural & Functional programming
         """)
 
-st.image("Pictures/Function_7/F7_desc_function_diagram.svg")
+st.image("Pictures/Function_7/F7_desc_function_diagram_v6.svg")
+
 
 ''
 st.write("""
-        - **5 main segments**:
+        - **7 main segments**:
             - Data (split into multiple data sets)  
             - API (dynamic part which influences price)
             - User Input screen (what user sees and what he selects)
             - Processing after Submit button (creating of outputs)
             - User Output screen (visualization of results calculated by the app)
+            - PDF file creation
+            - Mapping of data (accordingly to lookup tables) & Insert into DB
         """)
 
 ''
@@ -38,6 +41,13 @@ st.write("""
             5) The app then calls relevant functions in the code to calculate and get results
             6) The app also gets actuall time & date CET/CEST to put the results into context of real time
             7) Visualization of the results on the User Output screen 
+            8) Build/creation of PDF file
+            9) If users confirm the calculation/offer - pushing button for that
+            10) Producing PDF file - the offer in PDF format
+            11) Data mapping (accordingly to lookup tables)
+            12) Insert of the offer values into DB
+
+            
         """)
 
 
@@ -51,7 +61,7 @@ st.write("-------")
 
 st.page_link(
 	label = "Next page",
-	page="Subpages/F7_description_dtd.py",
+	page="Subpages/F7_description_ERD_DB.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/east:"

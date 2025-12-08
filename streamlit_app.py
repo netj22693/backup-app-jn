@@ -190,6 +190,12 @@ function_7_desc_variables = st.Page(
     icon= ":material/code:"
 )
 
+function_7_desc_erd_db = st.Page(
+    "Subpages/F7_description_ERD_DB.py",
+    title="Description - DB & ERD",
+    icon= ":material/code:"
+)
+
 function_8_company_book = st.Page(
     "Subpages/F8_FUNCTION_company_book.py",
     title="8. Company Book",
@@ -254,6 +260,7 @@ pg = st.navigation(
         "Function 7": [
             function_7_desc,
             function_7_desc_variables,
+            function_7_desc_erd_db,
             function_7_desc_dtd,
             function_7_desc_metrics,
             function_7_transport,
