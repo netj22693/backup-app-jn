@@ -54,7 +54,7 @@ tab1,tab2, tab3 = st.tabs([
 with tab1:
 	st.write("###### ArchiMate - Overview of the functions:")
 	''
-	st.image("Pictures/Archimate_functions_overview_10.svg")
+	st.image("Pictures/Archimate_functions_overview_v11.svg")
 	
 with tab2:
 	st.write("###### UML - Overview of the functions:")
@@ -67,7 +67,7 @@ with tab2:
 	''
 	st.image("Pictures/Overall_UML_F6.svg")
 	''
-	st.image("Pictures/Overall_UML_F7.svg")
+	st.image("Pictures/Overall_UML_F7_v2.svg")
 	''
 	st.image("Pictures/Overall_UML_F8_v3.svg")
 
@@ -207,13 +207,16 @@ st.page_link(
 ''
 ''
 ''
+#secrets
+email_address = st.secrets["address"]["email"]
+
 with st.expander("Have you seen a bug? Report it here.",icon= ":material/pest_control:"):
 
     ''
     st.write("Please provide details:")
-
-    contact_form ="""
-        <form action="https://formsubmit.co/honza.ne@seznam.cz" method="POST">
+	
+    contact_form =f"""
+        <form action="https://formsubmit.co/{email_address}" method="POST">
             <input type="hidden" name="_captcha" value="false">
             <input type="text" name="subject" placeholder= "Subject" required>
             <textarea name="message" placeholder="Description..."></textarea>
