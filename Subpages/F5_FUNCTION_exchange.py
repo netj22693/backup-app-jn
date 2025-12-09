@@ -1,78 +1,113 @@
 import requests
 import json
 import streamlit as st
+from typing import Optional
+
+# =================== API functions ===================
+@st.cache_data(ttl=3600)
+def api_GET_request(url_string: str) -> Optional[str]: 
+
+    try:
+        api_response = requests.get(url_string, verify=False, timeout=5).text
+        return api_response
+
+    except Exception as e:
+        print(f"Error GET request: {e}")
+        return None
 
 
-# Try except logic - in case that any of the APIs will not work how it should
-try:
-  
-  # ========================= API 1 ====================
-  # API kurzy.cz 
-  api_kurzy = "https://data.kurzy.cz/json/meny/b[1].json"
+def api_1_kurzy_parsing(data_input: str) -> Optional[float]:
 
-  # get reguest
-  @st.cache_data(ttl=3600)
-  def get_response_api_1(api_kurzy):
-      api_1 = requests.get(api_kurzy, verify=False, timeout=5).text
-      return api_1
+    try:
+        data_json = json.loads(data_input)
 
-  api_1 = get_response_api_1(api_kurzy)
+        # Search for data in the API defined format - JSON
+        eur_rate_parsed = data_json['kurzy']['EUR']['dev_stred']
+        usd_rate_parsed = data_json['kurzy']['USD']['dev_stred']
 
-  # JSON format creation
-  api_1_json = json.loads(api_1)
+        eur_rate_parsed = round(eur_rate_parsed, 3)
+        usd_rate_parsed = round(usd_rate_parsed, 3)
 
-  # Search for data in the API defined format - JSON
-  eur_rate = api_1_json['kurzy']['EUR']['dev_stred']
-  usd_rate = api_1_json['kurzy']['USD']['dev_stred']
+        return eur_rate_parsed, usd_rate_parsed
 
-  eur_rate = round(eur_rate, 3)
-  usd_rate = round(usd_rate, 3)
+    except Exception as e:
+        print(f"Error parsing API 1: {e}")
+
+        eur_rate_parsed = None
+        usd_rate_parsed = None
+        return eur_rate_parsed, usd_rate_parsed
 
 
-  # ========================= API 2 ====================
+def api_2_freecurrency_parsing(data_input: str) -> Optional[float]:
 
-  secrets_api_2 = st.secrets["F5_api_2"]["password"]
+    try:
+        data_json = json.loads(data_input)
 
-  api_freecurrency_api = f"https://api.freecurrencyapi.com/v1/latest?apikey={secrets_api_2}&currencies=USD&base_currency=EUR"
+        # Search for data in the API defined format - JSON
+        eur_to_usd_rate_parsed = data_json['data']['USD']
+        eur_to_usd_rate_parsed = round(eur_to_usd_rate_parsed, 3)
 
-  #get reguest
-  @st.cache_data(ttl=3600)
-  def get_response_api_2(api_freecurrency_api):
-      api_2 = requests.get(api_freecurrency_api, verify=False, timeout=5).text
-      return api_2
+        return eur_to_usd_rate_parsed
 
-  api_2 = get_response_api_2(api_freecurrency_api)
+    except Exception as e:
+        print(f"Error parsing API 2: {e}")
+
+        eur_to_usd_rate_parsed = None
+        return eur_to_usd_rate_parsed
+
+# =================== Connection string build ===================
+api_1_kurzy_url_string = "https://data.kurzy.cz/json/meny/b[1].json"
+
+secrets_api_2 = st.secrets["F5_api_2"]["password"]
+api_2_freecurrency_url_string = f"https://api.freecurrencyapi.com/v1/latest?apikey={secrets_api_2}&currencies=USD&base_currency=EUR"
 
 
-  # JSON format creation
-  api_2_json = json.loads(api_2)
+# =================== API call ===================
+api_1_kurzy = api_GET_request(api_1_kurzy_url_string)
+api_2_freecurrency = api_GET_request(api_2_freecurrency_url_string)
 
-  # Search for data in the API defined format - JSON
-  eur_to_usd_rate = api_2_json['data']['USD']
-  eur_to_usd_rate = round(eur_to_usd_rate, 3)
 
-except:
-  st.warning("""
-  - Apologies, one of the APIs refused to make a connection. So to see the function, there are temporary values:
+# =================== Parsing ===================
+if api_1_kurzy != None:
+    eur_rate, usd_rate = api_1_kurzy_parsing(api_1_kurzy)
+
+if api_1_kurzy == None  or eur_rate == None or usd_rate == None:
+
+    st.warning("""
+    API Kurzy.cz was not connected - there are temporary values used:
     - CZK to EUR = 24
     - CZK to USD = 21
+    """)
+
+    eur_rate = 24
+    usd_rate = 21
+
+
+if api_2_freecurrency != None:
+    eur_to_usd_rate = api_2_freecurrency_parsing(api_2_freecurrency)
+
+if api_2_freecurrency == None or eur_to_usd_rate == None:
+
+    st.warning("""
+    API Freecurrency.com was not connected - there is temporary value used:
     - EUR to USD = 1.14
-  """
-  )
+    """)
 
-  eur_rate = 24
-  usd_rate = 21
-  eur_to_usd_rate = 1.14
-
-# ======= Values for testing purposed to do not call/utilize API
-# # API 1
-# eur_rate = 24
-# usd_rate = 21
-# # API 2
-# eur_to_usd_rate = 1.14
+    eur_to_usd_rate = 1.14
 
 
-# ============== App screen part ===================
+# =================== Calculating functions ===================
+
+def get_result_division(a: float,b: float) -> float:
+    result = a / b
+    return result
+    
+def get_result_multiply(a: float,b: float) -> float:
+    result = a * b
+    return result
+
+
+# =================== App screen part ===================
 st.write("# Exchange rate:")
 ''
 ''
@@ -125,48 +160,12 @@ with st.form(key="calculation form"):
         help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
         )
 
-    # Functions for calculation
-
-    def f1_czk_to_eur(czk_obj, eur_rate):
-        result = czk_obj / eur_rate
-        return result
-
-
-    f1_result = round(f1_czk_to_eur(czk_obj,eur_rate), 2)
-
-
-    def f2_czk_to_usd(czk_obj, usd_rate):
-        result = czk_obj / usd_rate
-        return result
-
-    f2_result = round(f2_czk_to_usd(czk_obj, usd_rate), 2)
-
-
-    def f3_eur_to_czk(eur_obj, eur_rate):
-        result = eur_obj * eur_rate
-        return result
-
-    f3_result = round(f3_eur_to_czk(eur_obj, eur_rate), 2)
-
-    def f4_usd_to_czk(usd_obj, usd_rate):
-        result = usd_obj * usd_rate
-        return result
-
-    f4_result = round(f4_usd_to_czk(usd_obj, usd_rate), 2)
-
-
-    def f5_eur_to_usd(eur_obj, eur_to_usd_rate):
-        result = eur_obj * eur_to_usd_rate
-        return result
-
-    f5_result = round(f5_eur_to_usd(eur_obj, eur_to_usd_rate), 2)
-
-
-    def f6_usd_to_eur(usd_obj, eur_to_usd_rate):
-        result = usd_obj / eur_to_usd_rate
-        return result
-
-    f6_result = round(f6_usd_to_eur(usd_obj, eur_to_usd_rate), 2)
+    r1_czk_to_eur = get_result_division(czk_obj, eur_rate)
+    r2_czk_to_usd = get_result_division(czk_obj, usd_rate)
+    r3_eur_to_czk = get_result_multiply(eur_obj, eur_rate)
+    r4_usd_to_czk = get_result_multiply(usd_obj, usd_rate)
+    r5_eur_to_usd = get_result_multiply(eur_obj, eur_to_usd_rate)
+    r6_usd_to_eur = get_result_division(usd_obj, eur_to_usd_rate)
 
 # ----- Buttons ------
 
@@ -176,17 +175,15 @@ with st.form(key="calculation form"):
     sub_butt_all = st.form_submit_button(
     label="To show all conversions",
     use_container_width=True,
-    icon = ":material/apps:"
-    )
+    icon = ":material/apps:")
 
     if sub_butt_all:
-        st.write(f"{czk_obj:.2f} CZK = {f1_result:.2f} EUR")
-        st.write(f"{czk_obj:.2f} CZK = {f2_result:.2f} USD")
-        st.write(f"{eur_obj:.2f} EUR = {f3_result:.2f} CZK")
-        st.write(f"{usd_obj:.2f} USD = {f4_result:.2f} CZK")
-        st.write(f"{eur_obj:.2f} EUR = {f5_result:.2f} USD")
-        st.write(f"{usd_obj:.2f} USD = {f6_result:.2f} EUR")
-
+        st.write(f"{czk_obj:.2f} CZK = {r1_czk_to_eur:.2f} EUR")
+        st.write(f"{czk_obj:.2f} CZK = {r2_czk_to_usd:.2f} USD")
+        st.write(f"{eur_obj:.2f} EUR = {r3_eur_to_czk:.2f} CZK")
+        st.write(f"{usd_obj:.2f} USD = {r4_usd_to_czk:.2f} CZK")
+        st.write(f"{eur_obj:.2f} EUR = {r5_eur_to_usd:.2f} USD")
+        st.write(f"{usd_obj:.2f} USD = {r6_usd_to_eur:.2f} EUR")
 
     # CZK -> EUR
     ''
@@ -198,9 +195,7 @@ with st.form(key="calculation form"):
     )
 
     if sub_butt_1:
-        st.write(f"{czk_obj:.2f} CZK = {f1_result:.2f} EUR")
-
-
+        st.write(f"{czk_obj:.2f} CZK = {r1_czk_to_eur:.2f} EUR")
 
     # CZK -> USD
     sub_butt_2 = st.form_submit_button(
@@ -209,9 +204,7 @@ with st.form(key="calculation form"):
     )
 
     if sub_butt_2:
-        st.write(f"{czk_obj:.2f} CZK = {f2_result:.2f} USD")
-
-
+        st.write(f"{czk_obj:.2f} CZK = {r2_czk_to_usd:.2f} USD")
 
     # EUR -> CZK
     ''
@@ -222,7 +215,7 @@ with st.form(key="calculation form"):
     )
 
     if sub_butt_3:
-        st.write(f"{eur_obj:.2f} EUR = {f3_result:.2f} CZK")
+        st.write(f"{eur_obj:.2f} EUR = {r3_eur_to_czk:.2f} CZK")
 
 
     # USD -> CZK
@@ -232,7 +225,7 @@ with st.form(key="calculation form"):
     )
 
     if sub_butt_4:
-        st.write(f"{usd_obj:.2f} USD = {f4_result:.2f} CZK")
+        st.write(f"{usd_obj:.2f} USD = {r4_usd_to_czk:.2f} CZK")
 
     
     
@@ -245,19 +238,14 @@ with st.form(key="calculation form"):
     )
 
     if sub_butt_5:
-        st.write(f"{eur_obj:.2f} EUR = {f5_result:.2f} USD")
+        st.write(f"{eur_obj:.2f} EUR = {r5_eur_to_usd:.2f} USD")
 
     
     # USD -> EUR
-
     sub_butt_6 = st.form_submit_button(
     label="USD -> EUR",
     use_container_width=True
     )
 
     if sub_butt_6:
-        st.write(f"{usd_obj:.2f} USD = {f6_result:.2f} EUR")
-
-
-
-
+        st.write(f"{usd_obj:.2f} USD = {r6_usd_to_eur:.2f} EUR")

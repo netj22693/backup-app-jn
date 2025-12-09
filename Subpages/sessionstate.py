@@ -1,151 +1,251 @@
+import requests
+import json
 import streamlit as st
-from io import BytesIO
+from typing import Optional
 
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import mm
+# =================== API functions ===================
+@st.cache_data(ttl=3600)
+def api_GET_request(url_string: str) -> Optional[str]: 
 
-styles = getSampleStyleSheet()
+    try:
+        api_response = requests.get(url_string, verify=False, timeout=5).text
+        return api_response
 
-# Styly
-title_style = ParagraphStyle(
-    'TitleStyle',
-    parent=styles['Heading1'],
-    fontSize=14,
-    leading=20,
-    spaceAfter=10,
-)
+    except Exception as e:
+        print(f"Error GET request: {e}")
+        return None
 
-summary_style = ParagraphStyle(
-    'TitleStyle',
-    parent=styles['Heading1'],
-    fontSize=13,
-    leading=20,
-    spaceAfter=4,
-)
 
-bold_style = ParagraphStyle(
-    'BoldStyle',
-    parent=styles['Normal'],
-    fontSize=11,
-    leading=16,
-    spaceAfter=4,
-)
+def api_1_kurzy_parsing(data_input: str) -> Optional[float]:
 
-normal_style = styles['Normal']
+    try:
+        data_json = json.loads(data_input)
 
-spaced_style = ParagraphStyle(
-    'SpacedStyle',
-    parent=normal_style,
-    fontSize=11,
-    leading=14,
-    spaceAfter=3
-)
+        # Search for data in the API defined format - JSON
+        eur_rate_parsed = data_json['kurzy']['EUR']['dev_stred']
+        usd_rate_parsed = data_json['kurzy']['USD']['dev_stred']
 
-spaced_style_detail = ParagraphStyle(
-    'SpacedStyle',
-    parent=normal_style,
-    fontSize=10,
-    leading=14,
-    spaceAfter=2
-)
+        eur_rate_parsed = round(eur_rate_parsed, 3)
+        usd_rate_parsed = round(usd_rate_parsed, 3)
 
-# Vytvoření PDF bufferu
-buffer = BytesIO()
-doc = SimpleDocTemplate(buffer, pagesize=A4)
+        return eur_rate_parsed, usd_rate_parsed
 
-content = []
+    except Exception as e:
+        print(f"Error parsing API 1: {e}")
 
-# --- Logo vedle "Offer Summary" ---
-logo = Image("Pictures/Function_7/F7_pdf_logo_png/F7_pdf_logo_train_v3.png", width=20, height=20)
+        eur_rate_parsed = None
+        usd_rate_parsed = None
+        return eur_rate_parsed, usd_rate_parsed
 
-header_table = Table(
-    [[Paragraph("Offer Summary", title_style), logo]],
-    colWidths=[160*mm, 20*mm]
-)
-header_table.setStyle(TableStyle([
-    ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),  # vertikální zarovnání na střed
-    ('ALIGN', (1,0), (1,0), 'RIGHT'),      # logo doprava
-    ('BOTTOMPADDING', (0,0), (-1,-1), 0)
-]))
-content.append(header_table)
-content.append(Spacer(1, 5*mm))
 
-# --- Zbytek obsahu ---
-content.append(Paragraph("<b>Offer number:</b> F7-143", spaced_style))
-content.append(Paragraph("<b>Offer created:</b> 07-Dec-25 - 10:07 CET", spaced_style))
-content.append(Paragraph("<b>Customer to approve till:</b> 09-Dec-25 - 10:07 CET (2 days)", spaced_style))
+def api_2_freecurrency_parsing(data_input: str) -> Optional[float]:
 
-content.append(Spacer(1, 4*mm))
+    try:
+        data_json = json.loads(data_input)
 
-# Oddělovací čára
-table = Table([[""]], colWidths=[180*mm], rowHeights=[1])
-table.setStyle(TableStyle([('BACKGROUND', (0,0), (-1,-1), colors.black)]))
-content.append(table)
-content.append(Spacer(1, 4*mm))
+        # Search for data in the API defined format - JSON
+        eur_to_usd_rate_parsed = data_json['data']['USD']
+        eur_to_usd_rate_parsed = round(eur_to_usd_rate_parsed, 3)
 
-# Sekce logistika
-content.append(Paragraph("<b>Delivery from Graz (AT) to Augsburg (DE):</b>", bold_style))
-content.append(Paragraph("• Costs: 1,052.36 euro", spaced_style_detail))
-content.append(Paragraph("• Distance: 526.18 km", spaced_style_detail))
-content.append(Paragraph("• Time to cover the distance: 7.52 hour(s)", spaced_style_detail))
-content.append(Paragraph("• Transport type: Truck", spaced_style_detail))
+        return eur_to_usd_rate_parsed
 
-content.append(Spacer(1, 4*mm))
+    except Exception as e:
+        print(f"Error parsing API 2: {e}")
 
-content.append(Paragraph("<b>Door-to-Door:</b>", bold_style))
-content.append(Paragraph("• Additional: 0 km", spaced_style_detail))
-content.append(Paragraph("• Time to cover the Door-to-Door: 0.00 hour(s)", spaced_style_detail))
+        eur_to_usd_rate_parsed = None
+        return eur_to_usd_rate_parsed
 
-content.append(Spacer(1, 4*mm))
+# =================== Connection string build ===================
+api_1_kurzy_url_string = "https://data.kurzy.cz/json/meny/b[1].json"
 
-content.append(Paragraph("<b>Truck details:</b>", bold_style))
-content.append(Paragraph("• Standard service requires 32.00 hours for administration and loading.", spaced_style_detail))
-content.append(Paragraph("• Mandatory breaks: 0.75 hour(s)", spaced_style_detail))
+secrets_api_2 = st.secrets["F5_api_2"]["password"]
+api_2_freecurrency_url_string = f"https://api.freecurrencyapi.com/v1/latest?apikey={secrets_api_2}&currencies=USD&base_currency=EUR"
 
-content.append(Spacer(1, 4*mm))
-content.append(Paragraph("<b>Overall time end-to-end:</b> 40.27 hours", bold_style))
 
-content.append(Spacer(1, 2*mm))
-content.append(Paragraph("<b>Expected delivery:</b> Thursday - 11-Dec-25 by 07:00 CET", summary_style))
+# =================== API call ===================
+api_1_kurzy = api_GET_request(api_1_kurzy_url_string)
+api_2_freecurrency = api_GET_request(api_2_freecurrency_url_string)
 
-content.append(Spacer(1, 4*mm))
 
-# Oddělovací čára
-table2 = Table([[""]], colWidths=[180*mm], rowHeights=[1])
-table2.setStyle(TableStyle([('BACKGROUND', (0,0), (-1,-1), colors.black)]))
-content.append(table2)
+# =================== Parsing ===================
+if api_1_kurzy != None:
+    eur_rate, usd_rate = api_1_kurzy_parsing(api_1_kurzy)
 
-content.append(Spacer(1, 4*mm))
+if api_1_kurzy == None  or eur_rate == None or usd_rate == None:
 
-# Sekce 3 — ceny
-content.append(Paragraph("<b>Additional services - costs:</b>", bold_style))
-content.append(Paragraph("• Insurance: 0.00 euro", spaced_style_detail))
-content.append(Paragraph("• Fragile goods: 0.00 euro", spaced_style_detail))
-content.append(Paragraph("• Danger goods: 0.00 euro", spaced_style_detail))
-content.append(Paragraph("• Door-To-Door Graz: 0.00 euro", spaced_style_detail))
-content.append(Paragraph("• Door-To-Door Augsburg: 0.00 euro", spaced_style_detail))
+    st.warning("""
+    API Kurzy.cz was not connected - there are temporary values used:
+    - CZK to EUR = 24
+    - CZK to USD = 21
+    """)
 
-content.append(Spacer(1, 4*mm))
+    eur_rate = 24
+    usd_rate = 21
 
-# Oddělovací čára
-table2 = Table([[""]], colWidths=[180*mm], rowHeights=[1])
-table2.setStyle(TableStyle([('BACKGROUND', (0,0), (-1,-1), colors.black)]))
-content.append(table2)
 
-content.append(Spacer(1, 4*mm))
-content.append(Paragraph("<b>Final price:</b> 1,052.36 euro", summary_style))
+if api_2_freecurrency != None:
+    eur_to_usd_rate = api_2_freecurrency_parsing(api_2_freecurrency)
 
-# Uložení PDF do bufferu
-doc.build(content)
-pdf_bytes = buffer.getvalue()
+if api_2_freecurrency == None or eur_to_usd_rate == None:
 
-# Download button ve Streamlitu
-st.download_button(
-    label="Stáhnout PDF",
-    data=pdf_bytes,
-    file_name="offer.pdf",
-    mime="application/pdf"
-)
+    st.warning("""
+    API Freecurrency.com was not connected - there is temporary value used:
+    - EUR to USD = 1.14
+    """)
+
+    eur_to_usd_rate = 1.14
+
+
+# =================== Calculating functions ===================
+
+def get_result_division(a: float,b: float) -> float:
+    result = a / b
+    return result
+    
+def get_result_multiply(a: float,b: float) -> float:
+    result = a * b
+    return result
+
+
+# =================== App screen part ===================
+st.write("# Exchange rate:")
+''
+''
+st.write("""
+- The exchange rate is API based 
+- The information comes from https://www.kurzy.cz/ and https://app.freecurrencyapi.com/
+""")
+
+
+''
+''
+''
+st.metric(label="CZK to EUR", value= eur_rate)
+
+st.metric(label="CZK to USD", value= usd_rate)
+
+st.metric(label="EUR to USD", value= eur_to_usd_rate)
+
+
+''
+''
+''
+''
+
+# =============== Form ==============================
+
+st.write("#### Calculation: ")
+# User inputs
+with st.form(key="calculation form"):
+    czk_obj = st.number_input(
+        "CZK",
+        step=10.00,
+        min_value=0.00,
+        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
+        )
+    
+
+    eur_obj = st.number_input(
+        "EUR",
+        step=10.00,
+        min_value=0.00,
+        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
+        )
+    
+
+    usd_obj = st.number_input(
+        "USD",
+        step=10.00,
+        min_value=0.00,
+        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
+        )
+
+    r1_czk_to_eur = get_result_division(czk_obj, eur_rate)
+    r2_czk_to_usd = get_result_division(czk_obj, usd_rate)
+    r3_eur_to_czk = get_result_multiply(eur_obj, eur_rate)
+    r4_usd_to_czk = get_result_multiply(usd_obj, usd_rate)
+    r5_eur_to_usd = get_result_multiply(eur_obj, eur_to_usd_rate)
+    r6_usd_to_eur = get_result_division(usd_obj, eur_to_usd_rate)
+
+# ----- Buttons ------
+
+    # ALL exchanges button 
+    ''
+    ''
+    sub_butt_all = st.form_submit_button(
+    label="To show all conversions",
+    use_container_width=True,
+    icon = ":material/apps:")
+
+    if sub_butt_all:
+        st.write(f"{czk_obj:.2f} CZK = {r1_czk_to_eur:.2f} EUR")
+        st.write(f"{czk_obj:.2f} CZK = {r2_czk_to_usd:.2f} USD")
+        st.write(f"{eur_obj:.2f} EUR = {r3_eur_to_czk:.2f} CZK")
+        st.write(f"{usd_obj:.2f} USD = {r4_usd_to_czk:.2f} CZK")
+        st.write(f"{eur_obj:.2f} EUR = {r5_eur_to_usd:.2f} USD")
+        st.write(f"{usd_obj:.2f} USD = {r6_usd_to_eur:.2f} EUR")
+
+    # CZK -> EUR
+    ''
+    ''
+    ''
+    sub_butt_1 = st.form_submit_button(
+    label="CZK -> EUR",
+    use_container_width=True
+    )
+
+    if sub_butt_1:
+        st.write(f"{czk_obj:.2f} CZK = {r1_czk_to_eur:.2f} EUR")
+
+    # CZK -> USD
+    sub_butt_2 = st.form_submit_button(
+    label="CZK -> USD",
+    use_container_width=True
+    )
+
+    if sub_butt_2:
+        st.write(f"{czk_obj:.2f} CZK = {r2_czk_to_usd:.2f} USD")
+
+    # EUR -> CZK
+    ''
+    ''
+    sub_butt_3 = st.form_submit_button(
+    label="EUR -> CZK",
+    use_container_width=True
+    )
+
+    if sub_butt_3:
+        st.write(f"{eur_obj:.2f} EUR = {r3_eur_to_czk:.2f} CZK")
+
+
+    # USD -> CZK
+    sub_butt_4 = st.form_submit_button(
+    label="USD -> CZK",
+    use_container_width=True
+    )
+
+    if sub_butt_4:
+        st.write(f"{usd_obj:.2f} USD = {r4_usd_to_czk:.2f} CZK")
+
+    
+    
+    # EUR -> USD
+    ''
+    ''
+    sub_butt_5 = st.form_submit_button(
+    label="EUR -> USD",
+    use_container_width=True
+    )
+
+    if sub_butt_5:
+        st.write(f"{eur_obj:.2f} EUR = {r5_eur_to_usd:.2f} USD")
+
+    
+    # USD -> EUR
+    sub_butt_6 = st.form_submit_button(
+    label="USD -> EUR",
+    use_container_width=True
+    )
+
+    if sub_butt_6:
+        st.write(f"{usd_obj:.2f} USD = {r6_usd_to_eur:.2f} EUR")
