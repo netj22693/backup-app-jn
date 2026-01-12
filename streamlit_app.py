@@ -196,6 +196,12 @@ function_7_desc_erd_db = st.Page(
     icon= ":material/code:"
 )
 
+function_7b = st.Page(
+    "Subpages/F7b_FUNCTION_offer_visibility.py",
+    title="7B. Offer - Visibility",
+    icon= ":material/play_circle:"
+)
+
 function_8_company_book = st.Page(
     "Subpages/F8_FUNCTION_company_book.py",
     title="8. Company Book",
@@ -264,6 +270,7 @@ pg = st.navigation(
             function_7_desc_dtd,
             function_7_desc_metrics,
             function_7_transport,
+            function_7b,
         ],
         "Function 8" : [
             function_8_desc,
