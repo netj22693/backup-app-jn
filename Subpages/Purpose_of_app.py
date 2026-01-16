@@ -187,6 +187,14 @@ st.page_link(
 	icon=":material/play_circle:"
 	) 
 
+st.page_link(
+	label = "Function 7B",
+	page="Subpages/F7b_FUNCTION_offer_visibility.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+	icon=":material/play_circle:"
+	) 
+
 ''
 st.page_link(
     label = "Description about F8",
@@ -253,15 +261,16 @@ with st.expander(
 # No AI - expander
 
 with st.expander(
-	"No AI used in the code",
+	"No vibe-coding",
 	icon=":material/block:"
 ):	
 
 	''
 	st.write("""
-	- **NO** vibe-coding/AI used in this app 
+	- **NO** vibe-coding used in this app 
 	- I build this app as a hobby to train my brain
 	- The code is written by me with help of Python documentation, Google, Stack Overflow and other forums in case I get stuck :)
+	- Sometimes I use ChatGPT for research
 	""")
 	''
 
