@@ -10,8 +10,24 @@ def final_dialogs_goto():
     st.write("**Go to:**")
 
     st.page_link(
+    label = "Function F7B - Offer visibility",
+    page="Subpages/F7b_FUNCTION_offer_visibility.py",
+    help="The button will redirect to the relevant page within this app.",
+    use_container_width=True,
+    icon=":material/play_circle:",
+    )
+
+    st.page_link(
     label = "Function F8 - Description",
     page="Subpages/F8_description.py",
+    help="The button will redirect to the relevant page within this app.",
+    use_container_width=True,
+    icon=":material/code:",
+    )
+
+    st.page_link(
+    label = "Home page",
+    page="Subpages/Purpose_of_app.py",
     help="The button will redirect to the relevant page within this app.",
     use_container_width=True,
     icon=":material/code:",
