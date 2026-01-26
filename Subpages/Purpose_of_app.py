@@ -77,140 +77,6 @@ with tab3:
 	''
 	st.image("Pictures/App_landscape_architecture_v5.svg")
 
-''
-''
-# Buttons for redirectiong to the relevant Functions
-st.write("### Go to:")
-st.write("**Recommendation:** To firstly read the description chapters (the application navigation bar) to understand how the functions/application work.")
-''
-st.page_link(
-    label = "Description about F1 and F2",
-	page="Subpages/F1_F2_description_function.py",
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-    icon=":material/code:",
-	) 
-st.page_link(
-	label = "Function 1",
-	page="Subpages/F1_FUNCTION_XML_dowload.py",
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/play_circle:"
-	) 
-
-st.page_link(
-	label = "Function 2",
-	page="Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/play_circle:"
-	) 
-''
-st.page_link(
-    label = "Description about F3 and F4",
-	page="Subpages/F3_F4_description.py",
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-    icon=":material/code:",
-	) 
-
-st.page_link(
-	label = "Function 3",
-	page="Subpages/F3_FUNCTION_creation_of_XML.py",
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/play_circle:"
-	) 
-
-st.page_link(
-	label = "Function 3B",
-	page="Subpages/F3b_FUNCTION_invoice_visibility.py",
-	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
-	icon=":material/play_circle:",
-	)
-
-st.page_link(
-	label = "Function 4",
-	page="Subpages/F4_FUNCTION_translation_mapping.py",
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/play_circle:"
-	) 
-''
-st.page_link(
-    label = "Description about F5",
-	page="Subpages/F5_description_API.py",
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-    icon=":material/code:",
-	)
-
-st.page_link(
-	label = "Function 5",
-	page="Subpages/F5_FUNCTION_exchange.py",
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/play_circle:"
-	)
-''
-st.page_link(
-    label = "Description about F6",
-	page="Subpages/F6_description_API.py",
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-    icon=":material/code:",
-	)
-
-st.page_link(
-	label = "Function 6",
-	page="Subpages/F6_FUNCTION_zip_code.py",
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/play_circle:"
-	) 
-
-''
-st.page_link(
-    label = "Description about F7",
-	page="Subpages/F7_description.py",
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-    icon=":material/code:",
-	)
-
-st.page_link(
-	label = "Function 7",
-	page="Subpages/F7_FUNCTION_transport.py",
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/play_circle:"
-	) 
-
-st.page_link(
-	label = "Function 7B",
-	page="Subpages/F7b_FUNCTION_offer_visibility.py",
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/play_circle:"
-	) 
-
-''
-st.page_link(
-    label = "Description about F8",
-	page="Subpages/F8_description.py",
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-    icon=":material/code:",
-	)
-
-st.page_link(
-	label = "Function 8",
-	page="Subpages/F8_FUNCTION_company_book.py",
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/play_circle:"
-	) 
 
 # Bug - expander
 ''
@@ -415,4 +281,137 @@ with st.expander(
 	''
 	''
 
+''
+''
+# Buttons for redirectiong to the relevant Functions
+st.write("### Go to:")
+st.write("**Recommendation:** To firstly read the description chapters (the application navigation bar) to understand how the functions/application work.")
+''
+st.page_link(
+    label = "Description about F1 and F2",
+	page="Subpages/F1_F2_description_function.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+    icon=":material/code:",
+	) 
+st.page_link(
+	label = "Function 1",
+	page="Subpages/F1_FUNCTION_XML_dowload.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+	icon=":material/play_circle:"
+	) 
 
+st.page_link(
+	label = "Function 2",
+	page="Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+	icon=":material/play_circle:"
+	) 
+''
+st.page_link(
+    label = "Description about F3 and F4",
+	page="Subpages/F3_F4_description.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+    icon=":material/code:",
+	) 
+
+st.page_link(
+	label = "Function 3",
+	page="Subpages/F3_FUNCTION_creation_of_XML.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+	icon=":material/play_circle:"
+	) 
+
+st.page_link(
+	label = "Function 3B",
+	page="Subpages/F3b_FUNCTION_invoice_visibility.py",
+	help="The button will redirect to the relevant page within this app.",
+	use_container_width=True,
+	icon=":material/play_circle:",
+	)
+
+st.page_link(
+	label = "Function 4",
+	page="Subpages/F4_FUNCTION_translation_mapping.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+	icon=":material/play_circle:"
+	) 
+''
+st.page_link(
+    label = "Description about F5",
+	page="Subpages/F5_description_API.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+    icon=":material/code:",
+	)
+
+st.page_link(
+	label = "Function 5",
+	page="Subpages/F5_FUNCTION_exchange.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+	icon=":material/play_circle:"
+	)
+''
+st.page_link(
+    label = "Description about F6",
+	page="Subpages/F6_description_API.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+    icon=":material/code:",
+	)
+
+st.page_link(
+	label = "Function 6",
+	page="Subpages/F6_FUNCTION_zip_code.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+	icon=":material/play_circle:"
+	) 
+
+''
+st.page_link(
+    label = "Description about F7",
+	page="Subpages/F7_description.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+    icon=":material/code:",
+	)
+
+st.page_link(
+	label = "Function 7",
+	page="Subpages/F7_FUNCTION_transport.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+	icon=":material/play_circle:"
+	) 
+
+st.page_link(
+	label = "Function 7B",
+	page="Subpages/F7b_FUNCTION_offer_visibility.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+	icon=":material/play_circle:"
+	) 
+
+''
+st.page_link(
+    label = "Description about F8",
+	page="Subpages/F8_description.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+    icon=":material/code:",
+	)
+
+st.page_link(
+	label = "Function 8",
+	page="Subpages/F8_FUNCTION_company_book.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+	icon=":material/play_circle:"
+	) 
