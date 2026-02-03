@@ -1,250 +1,132 @@
 import streamlit as st
-from io import BytesIO
+from sqlalchemy import create_engine
+import pandas as pd
+from typing import Optional
 
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import mm
+@st.dialog("Error: DB not connected")
+def db_connection_fail():
 
-def create_pdf(data):
+    st.warning("Application is not able to establish connection with DB server -> **This 7B Function is currently not available**")
+    st.stop()
+
+
+def connection_db():
+
+    try: 
+        # Load secrets
+        password = st.secrets["neon"]["password"]
+        endpoint = st.secrets["neon"]["endpoint"]
+
+        # connection string
+        conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.gwc.azure.neon.tech/neondb?sslmode=require"
+
+        engine = create_engine(conn_string)
+        return engine
+
+    except Exception as e:
+        print(f"DB connection failed: {e}")
+        db_connection_fail()
+
+
+# ================ Application Screen - INPUT Buttons ========================
+st.write("# Find your offer:")
+''
+
+st.write("- Simple view into DB. Based on offers created in Function 7...")
+''
+
+tab1, tab2 = st.tabs([
+    "Last 15 offers",
+    "Search for specific offer",
+])
+
+#Connection can be used across tabs
+db_engine = connection_db()
+
+with tab1:
+
+    df = pd.read_sql("""
+        SELECT 
+            a.offer_id as "Offer id",
+            f.label as "Transport",
+            b.from_city "From",
+            b.to_city as "To",
+            a.created_date as "Created day",
+            a.created_time as "Created time",
+            i.label as "Time zone",
+            a.expected_delivery as "Expected delivery",
+            a.final_price as "Final price",
+            j.label as "Currency"                    
+                     
+        FROM function7.offer a
+            INNER JOIN function7.delivery b ON (a.offer_id = b.offer_id)
+            INNER JOIN function7.transport_type f ON (a.transport = f.transport_id)
+            INNER JOIN function7.time_zone i ON (a.time_zone = i.zone_id)
+            INNER JOIN function7.currency_detail j ON (a.currency = j.currency_id)
+                     
+        ORDER BY a.offer_id DESC
+        LIMIT 15
+        ;""",db_engine)
+
+
+    df[" "] = df.index + 1
+    df = df.set_index(" ")
+
+    df_styled = df.style.format({
+        "Final price": "{:,.2f}",
+        })
+        
+    # Styled DF visualization
+    st.dataframe(df_styled, width = "stretch", height=562)
+
+
+
+# ====================== main logic for tab2 + relevant def functions ======================
+
+def input_validation(input: str) -> Optional[str]:
+    '''  
+    Simple logic to have correct format of 'offer_id' before query to DB
+
+    Covers basic scenarios:
+    1) user input is correct F7-number  - e.g. F7-123
+    2) user input is "lazy" number format e.g. 123 -> adjustment F7-123
+    3) user input is wrong generically - e.g. f123 -> return False
+
+    '''
+    if input.startswith("F7-"):
+        return input
+
+    if input.isdigit():
+        input = "F7-" + input
+        return input
     
-    styles = getSampleStyleSheet()
+    if input == "":
+        st.warning("**Missing input** - Please provide **Offer number**")
+        return None
 
-    # Styly
-    title_style = ParagraphStyle(
-        'TitleStyle',
-        parent=styles['Heading1'],
-        fontSize=14,
-        leading=20,
-        spaceAfter=10,
-    )
-
-    summary_style = ParagraphStyle(
-        'TitleStyle',
-        parent=styles['Heading1'],
-        fontSize=13,
-        leading=20,
-        spaceAfter=4,
-    )
-
-    bold_style = ParagraphStyle(
-        'BoldStyle',
-        parent=styles['Normal'],
-        fontSize=11,
-        leading=16,
-        spaceAfter=4,
-    )
-
-    normal_style = styles['Normal']
-
-    spaced_style = ParagraphStyle(
-        'SpacedStyle',
-        parent=normal_style,
-        fontSize=11,
-        leading=14,
-        spaceAfter=3
-    )
-
-    spaced_style_detail = ParagraphStyle(
-        'SpacedStyle',
-        parent=normal_style,
-        fontSize=10,
-        leading=14,
-        spaceAfter=2
-    )
-
-    spaced_style_detail_sub = ParagraphStyle(
-        'Sub', 
-        parent=normal_style,
-        fontSize=10,
-        leading=14,
-        spaceAfter=2,
-        leftIndent=10, 
-        firstLineIndent=0)
-
-    # Vytvoření PDF bufferu
-    buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=A4)
-
-    content = []
-
-    # --- Logo vedle "Offer Summary" ---
-    logo = Image("Pictures/Function_7/F7_pdf_logo_png/F7_pdf_logo_train_v3.png", width=20, height=20)
-
-    header_table = Table(
-        [[Paragraph("Offer Summary", title_style), logo]],
-        colWidths=[160*mm, 20*mm]
-    )
-    header_table.setStyle(TableStyle([
-        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),  # vertikální zarovnání na střed
-        ('ALIGN', (1,0), (1,0), 'RIGHT'),      # logo doprava
-        ('BOTTOMPADDING', (0,0), (-1,-1), 0)
-    ]))
-    content.append(header_table)
-    content.append(Spacer(1, 5*mm))
-
-    # --- Zbytek obsahu ---
-    content.append(Paragraph(f"<b>Offer number:</b> {data['offer_id']}", spaced_style))
-    content.append(Paragraph(f"<b>Offer created:</b> {data['europe_date_part']} - {data['europe_time_part']} - {data['time_zone']}", spaced_style))
-    content.append(Paragraph(f"<b>Customer to approve till:</b> {data['customer_approve_date']} - {data['customer_approve_time']} - {data['time_zone']} ({data['agreed_till_str']})", spaced_style))
-
-    content.append(Spacer(1, 4*mm))
-
-    # Oddělovací čára
-    table = Table([[""]], colWidths=[180*mm], rowHeights=[1])
-    table.setStyle(TableStyle([('BACKGROUND', (0,0), (-1,-1), colors.black)]))
-    content.append(table)
-    content.append(Spacer(1, 4*mm))
-
-    # Sekce logistika
-    content.append(Paragraph(f"<b>Delivery from {data['from_city']} ({data['from_country']}) to {data['to_city']} ({data['to_country']}):</b>", bold_style))
-    content.append(Paragraph(f"• Costs: {data['distance_cost']} {data['currency']}", spaced_style_detail))
-    content.append(Paragraph(f"• Distance: {data['distance_length']} km", spaced_style_detail))
-    content.append(Paragraph(f"• Time to cover the distance: {data['distance_time']} hour(s)", spaced_style_detail))
-    content.append(Paragraph(f"• Transport type: {data['selected_transport']}", spaced_style_detail))
-
-    content.append(Spacer(1, 4*mm))
-
-    content.append(Paragraph("<b>Door-to-Door:</b>", bold_style))
-    content.append(Paragraph("• Additional: 0 km", spaced_style_detail))
-    content.append(Paragraph("• Time to cover the Door-to-Door: 0.00 hour(s)", spaced_style_detail))
-
-    if selected_transport == 'Train' or selected_transport == 'Airplane':
-        content.append(Paragraph(f"• Transfer {data['selected_transport']} ↔ Truck: {data['shipment_transfer_dtd_from']} + {data['shipment_transfer_dtd_to']} hour(s)", spaced_style_detail_sub))      
-        content.append(Paragraph(f"• Time for Truck ride: {data['dtd_truck_if_not_truck_main']} hour(s)", spaced_style_detail_sub))  
-
-    content.append(Spacer(1, 4*mm))
-
-    content.append(Paragraph(f"<b>{data['selected_transport']}:</b>", bold_style))
-    content.append(Paragraph(f"• Standard service requires {data['service_time']} hours for administration and loading.", spaced_style_detail))
-    
-    if selected_transport == 'Truck':
-        content.append(Paragraph(f"• Mandatory breaks: {data['truck_breaks']} hour(s)", spaced_style_detail))
-    
-    content.append(Spacer(1, 4*mm))
-    content.append(Paragraph(f"<b>Overall time end-to-end delivery:</b> {data['time_overall']} hours", bold_style))
-
-    content.append(Spacer(1, 2*mm))
-    content.append(Paragraph(f"<b>Expected delivery:</b> {data['expected_delivery']} - {data['time_zone']}", summary_style))
-
-    content.append(Spacer(1, 4*mm))
-
-    # Oddělovací čára
-    table2 = Table([[""]], colWidths=[180*mm], rowHeights=[1])
-    table2.setStyle(TableStyle([('BACKGROUND', (0,0), (-1,-1), colors.black)]))
-    content.append(table2)
-
-    content.append(Spacer(1, 4*mm))
-
-    # Sekce 3 — ceny
-    content.append(Paragraph("<b>Additional services - costs:</b>", bold_style))
-    content.append(Paragraph(f"• Insurance: {data['insurance']} {data['currency']}", spaced_style_detail))
-    content.append(Paragraph(f"• Fragile goods: {data['fragile']} {data['currency']}", spaced_style_detail))
-    content.append(Paragraph(f"• Danger goods: {data['danger']} {data['currency']}", spaced_style_detail))
-    content.append(Paragraph(f"• Door-To-Door {data['from_city']}: {data['dtd_from']} {data['currency']}", spaced_style_detail))
-    content.append(Paragraph(f"• Door-To-Door {data['to_city']}: {data['dtd_to']} {data['currency']}", spaced_style_detail))
-
-    content.append(Spacer(1, 4*mm))
-
-    # Oddělovací čára
-    table2 = Table([[""]], colWidths=[180*mm], rowHeights=[1])
-    table2.setStyle(TableStyle([('BACKGROUND', (0,0), (-1,-1), colors.black)]))
-    content.append(table2)
-
-    content.append(Spacer(1, 4*mm))
-    content.append(Paragraph(f"<b>Final price:</b> {data['final_price']} {data['currency']}", summary_style))
-
-    # Uložení PDF do bufferu
-    doc.build(content)
-    pdf_file = buffer.getvalue()
-
-    return pdf_file
+    else:
+        st.error(f"Invalid Offer format inserted - **{input}** is not valid. Valid format: F7-XXX")
+        return None
 
 
-# TEST 
-offer_number_generated = "F7-5555555"
-europe_date_part = "06-Dec-25"
-europe_time_part = "12:04"
-cet_cest_now= "CET"
-offer_id = "F7-101"
-customer_approve_date = "11-Dec-25"
-customer_approve_time = "12:05"
-agreed_till_str = "5 days"
-selected_transport = "Train"
-urgency = "Standard"
-cet_cest_now = "CET"
-overall_time_truck = 38.42
-delivery_dt_formated = "Monday - 15-Dec-25 by 10:00"
-final_price = 27513.23
-selected_currency = "korunka"
-overall_time_db = 25.67
-country_code_from = "AT"
-from_city = "Prahahaha"
-from_city_extra_doortdoor = 10
-country_code_to = "DE"
-to_city = "Würzburg"
-to_city_extra_doortdoor = 20
-distance = 888.88
-time_journey = 12.12
-time_dtd = 14
-price = 111111.11
-door_from_result = 22.11
-door_to_result = 33.11
-shipment_value = 444.55
-money_insurance = 666.66
-money_fragile = 777.77
-money_danger = 888.88
-time_break = 1.17
-transfer_time_from = 1
-transfer_time_to = 2
-truck_time_dtd_air_train_from = 3
-truck_time_dtd_air_train_to = 4
-extra_time = 32
+with tab2:
+    st.info("This section is under build - to be available soon")
 
-data_for_pdf = {
-    "offer_id" : offer_number_generated,
-    "europe_date_part" : europe_date_part, 
-    "europe_time_part" : europe_time_part, 
-    "customer_approve_date":customer_approve_date,
-    "customer_approve_time" : customer_approve_time,
-    "agreed_till_str": agreed_till_str,
-    "selected_transport" : selected_transport,
-    "service" : urgency,
-    "service_time": extra_time,
-    "time_zone" : cet_cest_now,
-    "time_overall" : overall_time_db,
-    "expected_delivery" : delivery_dt_formated,
-    "final_price" : final_price,
-    "currency" : selected_currency,
-    "from_country" : country_code_from,
-    "from_city" : from_city,
-    "from_dtd" : from_city_extra_doortdoor,
-    "to_country" : country_code_to,
-    "to_city" : to_city,
-    "to_dtd" : to_city_extra_doortdoor,
-    "distance_length" : distance,
-    "distance_time" : time_journey,
-    "dtd_time" : time_dtd,
-    "distance_cost" : price,
-    "dtd_from" : door_from_result,
-    "dtd_to" : door_to_result,
-    "shipment_value" : shipment_value,
-    "insurance" : money_insurance,
-    "fragile" : money_fragile,
-    "danger" : money_danger,
-    "truck_breaks" : time_break,
-    "shipment_transfer_dtd_from" : transfer_time_from,
-    "shipment_transfer_dtd_to" : transfer_time_to,
-    "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to)
-}
+    with st.form(key="user_form"):
+            offer_input_user = st.text_input(label="Offer number:", help="Insert **Offer number** of invoice you would like to see. It is based on invoices created in **Function 3**.")
+           
+            submit_button = st.form_submit_button(label= "Submit", width="stretch")
 
-pdf = create_pdf(data_for_pdf)
 
-# Download button ve Streamlitu
-st.download_button(
-    label="Stáhnout PDF",
-    data=pdf,
-    file_name="offer.pdf",
-    mime="application/pdf"
-)
+    if submit_button:
+       
+        offer_input_user = offer_input_user.strip().upper()
+        result_validation = input_validation(offer_input_user)
+
+        st.write("result validation II:", result_validation)
+
+        if result_validation is not None:
+            st.write("ready for query")
+            # readz to build functions to run queries and visualize data
+
+
