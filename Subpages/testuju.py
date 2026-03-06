@@ -1,7 +1,8 @@
 import streamlit as st
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 import pandas as pd
 from typing import Optional
+from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla
 
 @st.dialog("Error: DB not connected")
 def db_connection_fail():
@@ -45,29 +46,8 @@ db_engine = connection_db()
 
 with tab1:
 
-    df = pd.read_sql("""
-        SELECT 
-            a.offer_id as "Offer id",
-            f.label as "Transport",
-            b.from_city "From",
-            b.to_city as "To",
-            a.created_date as "Created day",
-            a.created_time as "Created time",
-            i.label as "Time zone",
-            a.expected_delivery as "Expected delivery",
-            a.final_price as "Final price",
-            j.label as "Currency"                    
-                     
-        FROM function7.offer a
-            INNER JOIN function7.delivery b ON (a.offer_id = b.offer_id)
-            INNER JOIN function7.transport_type f ON (a.transport = f.transport_id)
-            INNER JOIN function7.time_zone i ON (a.time_zone = i.zone_id)
-            INNER JOIN function7.currency_detail j ON (a.currency = j.currency_id)
-                     
-        ORDER BY a.offer_id DESC
-        LIMIT 15
-        ;""",db_engine)
-
+    # Query into DB + DF styling
+    df = pd.read_sql(sql_query_table_overview,db_engine)
 
     df[" "] = df.index + 1
     df = df.set_index(" ")
@@ -79,8 +59,7 @@ with tab1:
     # Styled DF visualization
     st.dataframe(df_styled, width = "stretch", height=562)
 
-
-
+# ====================== TAB 2 ======================
 # ====================== main logic for tab2 + relevant def functions ======================
 
 def input_validation(input: str) -> Optional[str]:
@@ -121,12 +100,84 @@ with tab2:
     if submit_button:
        
         offer_input_user = offer_input_user.strip().upper()
-        result_validation = input_validation(offer_input_user)
+        offer_input_validated = input_validation(offer_input_user)
 
-        st.write("result validation II:", result_validation)
+        st.write("result validation II:", offer_input_validated)
 
-        if result_validation is not None:
+        if offer_input_validated is not None:
             st.write("ready for query")
-            # readz to build functions to run queries and visualize data
 
+            # Queries into DB           
+            with db_engine.connect() as conn:
+                params = {"offer_id": offer_input_validated}
+
+                offer_id_exists = pd.read_sql_query(sql=text(sql_offer_exists), con=conn, params=params)
+                
+                # Validation if inserted offer_id by user exists in DB 
+                if offer_id_exists.empty:
+                    st.warning(f"Offer id **{offer_input_validated}** does not exist.")
+
+                else:
+                    offer_id_exists = offer_id_exists["offer_id"].iloc[0]
+
+                    # a.OFFER
+                    df_table_offer = pd.read_sql_query(sql=text(sql_table_offer), con=conn, params=params)
+                    
+                    # Extracting data from DF -> variables
+                    offer_created_date = df_table_offer["created_date"].iloc[0]
+                    offer_created_time = df_table_offer["created_time"].iloc[0]
+                    offer_need_approve_date = df_table_offer["need_approve_date"].iloc[0]
+                    offer_need_approve_time = df_table_offer["need_approve_time"].iloc[0]
+                    offer_need_approve_days = df_table_offer["need_approve_days"].iloc[0]
+                    offer_transport = df_table_offer["transport"].iloc[0]
+                    offer_service = df_table_offer["service"].iloc[0]
+                    offer_time_zone = df_table_offer["time_zone"].iloc[0]
+                    offer_time_overall = df_table_offer["time_overall"].iloc[0]
+                    offer_expected_delivery = df_table_offer["expected_delivery"].iloc[0]
+                    offer_final_price = df_table_offer["final_price"].iloc[0]
+                    offer_currency = df_table_offer["currency"].iloc[0]
+
+                    # b.DELIVERY
+                    df_table_delivery = pd.read_sql_query(sql=text(sql_table_delivery), con=conn, params=params)
+
+                    # Extracting data from DF -> variables
+                    delivery_from_country = df_table_delivery["from_country"].iloc[0]
+                    delivery_from_city = df_table_delivery["from_city"].iloc[0]
+                    delivery_from_dtd = df_table_delivery["from_dtd"].iloc[0]
+                    delivery_to_country = df_table_delivery["to_country"].iloc[0]
+                    delivery_to_city = df_table_delivery["to_city"].iloc[0]
+                    delivery_to_dtd = df_table_delivery["to_dtd"].iloc[0]
+                    delivery_distance_length = df_table_delivery["distance_length"].iloc[0]
+                    delivery_dtd_time = df_table_delivery["dtd_time"].iloc[0]
+
+                    # c.COSTS
+                    df_table_costs = pd.read_sql_query(sql=text(sql_table_costs), con=conn, params=params)
+
+                    # Extracting data from DF -> variables
+                    costs_distance_cost = df_table_costs["distance_cost"].iloc[0]
+                    costs_dtd_from = df_table_costs["dtd_from"].iloc[0]
+                    costs_dtd_to = df_table_costs["dtd_to"].iloc[0]
+                    costs_shipment_value = df_table_costs["shipment_value"].iloc[0]
+                    costs_insurance = df_table_costs["insurance"].iloc[0]
+                    costs_fragile = df_table_costs["fragile"].iloc[0]
+                    costs_danger = df_table_costs["danger"].iloc[0]
+
+                    # e.EXTRA_STEPS_TIME
+                    df_table_extra_steps_time = pd.read_sql_query(sql=text(sql_table_extra_steps_time), con=conn, params=params)  
+
+                    # Extracting data from DF -> variables    
+                    extra_steps_time_truck_breaks = df_table_extra_steps_time["truck_breaks"].iloc[0]
+                    extra_steps_time_shipment_transfer_dtd_from = df_table_extra_steps_time["shipment_transfer_dtd_from"].iloc[0]
+                    extra_steps_time_shipment_transfer_dtd_to = df_table_extra_steps_time["shipment_transfer_dtd_to"].iloc[0]
+                    extra_steps_time_dtd_truck_if_not_truck_main = df_table_extra_steps_time["dtd_truck_if_not_truck_main"].iloc[0]
+
+                    # e.SLA
+                    df_table_sla = pd.read_sql_query(sql=text(sql_table_sla), con=conn, params=params)  
+
+                    # Extracting data from DF -> variables  
+                    sla_distance_cost = df_table_sla["time_sla"].iloc[0]
+
+
+                    # NEXT STEP: variables to be put into UI visualization -> Offer 
+                    # NEXT STEP: Add diagrams/pictures svg per selected transport DTD A B Transport types...
 
