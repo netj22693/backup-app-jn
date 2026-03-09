@@ -89,7 +89,6 @@ def input_validation(input: str) -> Optional[str]:
 
 
 with tab2:
-    st.info("This section is under build - to be available soon")
 
     with st.form(key="user_form"):
             offer_input_user = st.text_input(label="Offer number:", help="Insert **Offer number** of invoice you would like to see. It is based on invoices created in **Function 3**.")
@@ -102,10 +101,7 @@ with tab2:
         offer_input_user = offer_input_user.strip().upper()
         offer_input_validated = input_validation(offer_input_user)
 
-        st.write("result validation II:", offer_input_validated)
-
         if offer_input_validated is not None:
-            st.write("ready for query")
 
             # Queries into DB           
             with db_engine.connect() as conn:
@@ -113,71 +109,178 @@ with tab2:
 
                 offer_id_exists = pd.read_sql_query(sql=text(sql_offer_exists), con=conn, params=params)
                 
-                # Validation if inserted offer_id by user exists in DB 
+                # Validation if inserted offer_id by user exists in DB to trigger the main logic 
                 if offer_id_exists.empty:
                     st.warning(f"Offer id **{offer_input_validated}** does not exist.")
 
                 else:
-                    offer_id_exists = offer_id_exists["offer_id"].iloc[0]
+                    offer_id = offer_id_exists["offer_id"].iloc[0]
 
                     # a.OFFER
                     df_table_offer = pd.read_sql_query(sql=text(sql_table_offer), con=conn, params=params)
                     
                     # Extracting data from DF -> variables
-                    offer_created_date = df_table_offer["created_date"].iloc[0]
-                    offer_created_time = df_table_offer["created_time"].iloc[0]
-                    offer_need_approve_date = df_table_offer["need_approve_date"].iloc[0]
-                    offer_need_approve_time = df_table_offer["need_approve_time"].iloc[0]
-                    offer_need_approve_days = df_table_offer["need_approve_days"].iloc[0]
-                    offer_transport = df_table_offer["transport"].iloc[0]
-                    offer_service = df_table_offer["service"].iloc[0]
-                    offer_time_zone = df_table_offer["time_zone"].iloc[0]
-                    offer_time_overall = df_table_offer["time_overall"].iloc[0]
-                    offer_expected_delivery = df_table_offer["expected_delivery"].iloc[0]
-                    offer_final_price = df_table_offer["final_price"].iloc[0]
-                    offer_currency = df_table_offer["currency"].iloc[0]
+                    row_offer = df_table_offer.iloc[0]
+
+                    offer_created_date = row_offer["created_date"]
+                    offer_created_time = row_offer["created_time"]
+                    offer_need_approve_date = row_offer["need_approve_date"]
+                    offer_need_approve_time = row_offer["need_approve_time"]
+                    offer_need_approve_days = row_offer["need_approve_days"]
+                    offer_transport = row_offer["transport"]
+                    offer_service = row_offer["service"]
+                    offer_time_zone = row_offer["time_zone"]
+                    offer_time_overall = row_offer["time_overall"]
+                    offer_expected_delivery = row_offer["expected_delivery"]
+                    offer_final_price = row_offer["final_price"]
+                    offer_currency = row_offer["currency"]
 
                     # b.DELIVERY
                     df_table_delivery = pd.read_sql_query(sql=text(sql_table_delivery), con=conn, params=params)
 
                     # Extracting data from DF -> variables
-                    delivery_from_country = df_table_delivery["from_country"].iloc[0]
-                    delivery_from_city = df_table_delivery["from_city"].iloc[0]
-                    delivery_from_dtd = df_table_delivery["from_dtd"].iloc[0]
-                    delivery_to_country = df_table_delivery["to_country"].iloc[0]
-                    delivery_to_city = df_table_delivery["to_city"].iloc[0]
-                    delivery_to_dtd = df_table_delivery["to_dtd"].iloc[0]
-                    delivery_distance_length = df_table_delivery["distance_length"].iloc[0]
-                    delivery_dtd_time = df_table_delivery["dtd_time"].iloc[0]
+                    row_delivery = df_table_delivery.iloc[0]
+
+                    delivery_from_country = row_delivery["from_country"]
+                    delivery_from_city = row_delivery["from_city"]
+                    delivery_from_dtd = row_delivery["from_dtd"]
+                    delivery_to_country = row_delivery["to_country"]
+                    delivery_to_city = row_delivery["to_city"]
+                    delivery_to_dtd = row_delivery["to_dtd"]
+                    delivery_distance_length = row_delivery["distance_length"]
+                    delivery_distance_time = row_delivery["distance_time"]
+                    delivery_dtd_time = row_delivery["dtd_time"]
 
                     # c.COSTS
                     df_table_costs = pd.read_sql_query(sql=text(sql_table_costs), con=conn, params=params)
 
                     # Extracting data from DF -> variables
-                    costs_distance_cost = df_table_costs["distance_cost"].iloc[0]
-                    costs_dtd_from = df_table_costs["dtd_from"].iloc[0]
-                    costs_dtd_to = df_table_costs["dtd_to"].iloc[0]
-                    costs_shipment_value = df_table_costs["shipment_value"].iloc[0]
-                    costs_insurance = df_table_costs["insurance"].iloc[0]
-                    costs_fragile = df_table_costs["fragile"].iloc[0]
-                    costs_danger = df_table_costs["danger"].iloc[0]
+                    row_costs = df_table_costs.iloc[0]
+
+                    costs_distance_cost = row_costs["distance_cost"]
+                    costs_dtd_from = row_costs["dtd_from"]
+                    costs_dtd_to = row_costs["dtd_to"]
+                    costs_shipment_value = row_costs["shipment_value"]
+                    costs_insurance = row_costs["insurance"]
+                    costs_fragile = row_costs["fragile"]
+                    costs_danger = row_costs["danger"]
 
                     # e.EXTRA_STEPS_TIME
                     df_table_extra_steps_time = pd.read_sql_query(sql=text(sql_table_extra_steps_time), con=conn, params=params)  
 
-                    # Extracting data from DF -> variables    
-                    extra_steps_time_truck_breaks = df_table_extra_steps_time["truck_breaks"].iloc[0]
-                    extra_steps_time_shipment_transfer_dtd_from = df_table_extra_steps_time["shipment_transfer_dtd_from"].iloc[0]
-                    extra_steps_time_shipment_transfer_dtd_to = df_table_extra_steps_time["shipment_transfer_dtd_to"].iloc[0]
-                    extra_steps_time_dtd_truck_if_not_truck_main = df_table_extra_steps_time["dtd_truck_if_not_truck_main"].iloc[0]
+                    # Extracting data from DF -> variables   
+                    row_extra_steps_time = df_table_extra_steps_time.iloc[0]
+                      
+                    extra_steps_time_truck_breaks = row_extra_steps_time["truck_breaks"]
+                    extra_steps_time_shipment_transfer_dtd_from = row_extra_steps_time["shipment_transfer_dtd_from"]
+                    extra_steps_time_shipment_transfer_dtd_to = row_extra_steps_time["shipment_transfer_dtd_to"]
+                    extra_steps_time_dtd_truck_if_not_truck_main = row_extra_steps_time["dtd_truck_if_not_truck_main"]
 
                     # e.SLA
                     df_table_sla = pd.read_sql_query(sql=text(sql_table_sla), con=conn, params=params)  
 
                     # Extracting data from DF -> variables  
-                    sla_distance_cost = df_table_sla["time_sla"].iloc[0]
+                    row_sla = df_table_sla.iloc[0]
+
+                    sla_time_sla = row_sla["time_sla"]
 
 
-                    # NEXT STEP: variables to be put into UI visualization -> Offer 
+                    # ========== TAB 2 UI ========================================
+
+
+                    # Function to determin day/days and hour/hoursfor UI purposes
+                    def singular_or_plural(input: int) -> str:
+                        if input <= 1:
+                            return ""
+                        
+                        else:
+                            return "s"
+                    
+                    # Determin singular or plural for UI
+                    day_days_str = singular_or_plural(offer_need_approve_days)
+                    hour_hours_str = singular_or_plural(offer_time_overall)
+
+
+                    # UI 
+
+                    ''
+                    ''
+                    st.write(f"""
+                        - Offer number: **{offer_id}**
+                        - Offer created: **{offer_created_date} - {offer_created_time} {offer_time_zone}**
+                        - Customer to approve till: **{offer_need_approve_date} {offer_need_approve_time} - {offer_time_zone}** ({offer_need_approve_days} day{day_days_str})
+                    """)
+
+                    ''
+                    st.write(f"""
+                        - Delivery from **{delivery_from_city} ({delivery_from_country})** to **{delivery_to_city} ({delivery_to_country}):**
+                            - Costs: **{costs_distance_cost:,.2f} {offer_currency}**
+                            - Distance: **{delivery_distance_length:,.2f} km**
+                            - Time to cover the distance: **{delivery_distance_time:.2f} hour(s)**
+                            - Transport type: **{offer_transport}**
+                    """)
+
+
+                    # Different UI for Truck and Train or Airplane
+                    if offer_transport == 'Truck':
+
+                        ''
+                        st.write(f"""
+                            - **Door-to-Door**:
+                                - Additional: **{delivery_from_dtd + delivery_to_dtd} km** to the distance
+                                    - {delivery_from_city}: {delivery_from_dtd} km
+                                    - {delivery_to_city}: {delivery_to_dtd} km
+                                - Time to cover the Door-to-Door: **{delivery_dtd_time:.2f} hours(s)**
+                        """)
+
+                    if offer_transport in ('Train','Airplane'):
+                        ''
+                        st.write(f"""
+                            - **Door-to-Door**:
+                                - Additional: **{delivery_from_dtd + delivery_to_dtd} km** to the distance for which **Truck is needed**
+                                    - {delivery_from_city}: {delivery_from_dtd} km
+                                    - {delivery_to_city}: {delivery_to_dtd} km
+                                - Time to cover the Door-to-Door: **{delivery_dtd_time:.2f} hours(s)**
+                                    - Transfer {offer_transport} <-> Truck: {extra_steps_time_shipment_transfer_dtd_from + extra_steps_time_shipment_transfer_dtd_to} hour(s)
+                                    - Time for Truck ride: {extra_steps_time_dtd_truck_if_not_truck_main} hour(s)
+                        """)
+
+                    # This UI same for all types of transport
+                    ''
+                    st.write(f"""
+                        - **{offer_transport}**:
+                            - Selected service **{offer_service}** requires **{sla_time_sla:.2f} hours** for administration, load, etc. - **the SLA**  
+                    """)
+
+                    ''
+                    st.write("- **Overall time end-to-end delivery:**")
+
+                    with st.container(border=True):
+                        st.write(f"**{offer_time_overall:.2f} hour{hour_hours_str}**")
+                
+
+                    st.write("- **Expected delivery:**")
+                    with st.container(border=True):
+                        st.write(f"**{offer_expected_delivery} - {offer_time_zone}**")
+
+
+                    ''
+                    ''
+                    st.write(f"""
+                    - **Additional services - costs**:
+                        - Insurance extra costs: **{costs_insurance:,.2f} {offer_currency}**
+                        - Fregile goods costs: **{costs_fragile:,.2f} {offer_currency}**
+                        - Danger goods costs: **{costs_danger:,.2f} {offer_currency}**
+                        - Door-To-Door - {delivery_from_city} ({delivery_from_country}):  **{costs_dtd_from:,.2f} {offer_currency}** - ({delivery_from_dtd} km)
+                        - Door-To-Door - {delivery_to_city} ({delivery_to_country}):  **{costs_dtd_to:,.2f} {offer_currency}** - ({delivery_to_dtd} km)
+                    """)
+
+
+                    ''
+                    ''
+                    st.write("- **Final price:**")
+                    with st.container(border=True):
+                        st.write(f"**{offer_final_price:,.2f} {offer_currency}**")
+
                     # NEXT STEP: Add diagrams/pictures svg per selected transport DTD A B Transport types...
 

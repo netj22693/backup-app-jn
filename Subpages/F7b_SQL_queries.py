@@ -62,10 +62,10 @@ WHERE a.offer_id = :offer_id
 sql_table_delivery = """
 SELECT
     b.offer_id,
-    d.name as "from_country",
+    b.from_country,
     b.from_city,
     b.from_dtd,
-    dd.name as "to_country",
+    b.to_country,
     b.to_city,
     b.to_dtd,
     b.distance_length,
@@ -74,8 +74,6 @@ SELECT
 
 FROM 
     function7.delivery b
-    INNER JOIN function7.country d ON (b.from_country = d.country_id)
-    INNER JOIN function7.country dd ON (b.to_country = dd.country_id)
 
 WHERE b.offer_id = :offer_id
 ;"""
