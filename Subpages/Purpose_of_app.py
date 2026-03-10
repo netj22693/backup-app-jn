@@ -187,6 +187,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v54.9** - F7B - Search for specific offer released - 10-Mar-2026
 		- **v54.6** - F7B introduced - simple view into DB - 12-Jan-2026
 		- **v54.1** - Function now produces also PDF offer - 07-Dec-2025
 		- **v54.0** - DB connected - Offers can be stored in DB - 07-Dec-2025

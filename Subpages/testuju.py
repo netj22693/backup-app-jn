@@ -2,6 +2,7 @@ import streamlit as st
 from sqlalchemy import create_engine, text
 import pandas as pd
 from typing import Optional
+from Subpages.F7_UI_image_generator import provide_ui_image_path
 from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla
 
 @st.dialog("Error: DB not connected")
@@ -200,8 +201,13 @@ with tab2:
                     day_days_str = singular_or_plural(offer_need_approve_days)
                     hour_hours_str = singular_or_plural(offer_time_overall)
 
+                    # Get UI image for the particular offer 
+                    ui_image_path = provide_ui_image_path(offer_transport, delivery_from_dtd, delivery_to_dtd, extra_steps_time_truck_breaks)
+
 
                     # UI 
+                    with st.expander("Transfer process - Color-coding", icon= ":material/help:"):
+                        st.image("Pictures/Function_7/F7_transport_flow_images/F7B_color_coding.svg")
 
                     ''
                     ''
@@ -210,6 +216,15 @@ with tab2:
                         - Offer created: **{offer_created_date} - {offer_created_time} {offer_time_zone}**
                         - Customer to approve till: **{offer_need_approve_date} {offer_need_approve_time} - {offer_time_zone}** ({offer_need_approve_days} day{day_days_str})
                     """)
+
+                    # UI transport workflow image
+                    ''
+                    try:
+                        st.image(ui_image_path)
+
+                    except Exception as e:
+                        print(e)
+                        st.warning("Failed to load image")
 
                     ''
                     st.write(f"""
@@ -233,6 +248,13 @@ with tab2:
                                 - Time to cover the Door-to-Door: **{delivery_dtd_time:.2f} hours(s)**
                         """)
 
+                        ''
+                        st.write(f"""
+                        - **{offer_transport}**:
+                            - Selected service **{offer_service}** requires **{sla_time_sla:.2f} hours** for administration, load, etc. - **the SLA**  
+                            - If longer distance (including Door-to-Door time), **mandatory breaks** for driver: **{extra_steps_time_truck_breaks} hour(s)**
+                        """)
+
                     if offer_transport in ('Train','Airplane'):
                         ''
                         st.write(f"""
@@ -245,13 +267,13 @@ with tab2:
                                     - Time for Truck ride: {extra_steps_time_dtd_truck_if_not_truck_main} hour(s)
                         """)
 
-                    # This UI same for all types of transport
-                    ''
-                    st.write(f"""
-                        - **{offer_transport}**:
-                            - Selected service **{offer_service}** requires **{sla_time_sla:.2f} hours** for administration, load, etc. - **the SLA**  
-                    """)
+                        ''
+                        st.write(f"""
+                            - **{offer_transport}**:
+                                - Selected service **{offer_service}** requires **{sla_time_sla:.2f} hours** for administration, load, etc. - **the SLA**  
+                        """)
 
+                    # This UI same for all types of transport
                     ''
                     st.write("- **Overall time end-to-end delivery:**")
 
