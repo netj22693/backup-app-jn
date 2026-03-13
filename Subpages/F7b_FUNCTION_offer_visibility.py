@@ -2,7 +2,7 @@ import streamlit as st
 from sqlalchemy import create_engine, text
 import pandas as pd
 from typing import Optional
-from Subpages.F7_UI_image_generator import provide_ui_image_path
+from Subpages.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
 from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla
 
 @st.dialog("Error: DB not connected")
@@ -204,11 +204,10 @@ with tab2:
                     # Get UI image for the particular offer 
                     ui_image_path = provide_ui_image_path(offer_transport, delivery_from_dtd, delivery_to_dtd, extra_steps_time_truck_breaks)
 
+                    ui_color_coding_image_path = provide_ui_color_coding_image(offer_transport, delivery_from_dtd, delivery_to_dtd, extra_steps_time_truck_breaks)
 
-                    # UI 
-                    with st.expander("Transfer process - Color-coding", icon= ":material/help:"):
-                        st.image("Pictures/Function_7/F7_transport_flow_images/F7B_color_coding.svg")
 
+                    # UI
                     ''
                     ''
                     st.write(f"""
@@ -225,7 +224,31 @@ with tab2:
                     except Exception as e:
                         print(e)
                         st.warning("Failed to load image")
+                    
+                    # Expander 
+                    with st.expander("Transfer process", icon= ":material/help:"):
+                        try:
+                            st.image(ui_color_coding_image_path)
 
+                        except Exception as e:
+                            print(e)
+                            st.warning("Failed to load image")
+                        
+
+                        # To show DTD button or not
+                        if delivery_from_dtd > 0 or delivery_to_dtd > 0:
+
+                            st.write("- More info about DTD:")
+                            
+                            st.link_button(
+                                label = "Go to Door-to-Door page",
+                                url="https://dataparsing.streamlit.app/F7_description_dtd",
+                                help="The button will redirect to the relevant page within this app for download.",
+                                width="stretch",
+                                icon=":material/launch:"
+                            )                       
+
+                    ''
                     ''
                     st.write(f"""
                         - Delivery from **{delivery_from_city} ({delivery_from_country})** to **{delivery_to_city} ({delivery_to_country}):**

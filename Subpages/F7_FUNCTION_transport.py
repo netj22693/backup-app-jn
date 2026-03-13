@@ -12,6 +12,7 @@ from sqlalchemy import create_engine
 from Subpages.F7_DB_insert import save_to_db_main_stream
 from Subpages.F7_DB_mapping import mapping_transport_type, mapping_service, mapping_time_zone, mapping_currency, mapping_agreed_till
 from Subpages.F7_PDF import create_pdf
+from Subpages.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
 
 
 
@@ -2981,6 +2982,31 @@ if st.button("Submit", width="stretch"):
     ])
 
 
+    # Get UI image for the particular offer 
+    ui_image_path = provide_ui_image_path(selected_transport, from_city_extra_doortdoor, to_city_extra_doortdoor, time_break)
+    ui_color_coding_image_path = provide_ui_color_coding_image(selected_transport, from_city_extra_doortdoor, to_city_extra_doortdoor, time_break)
+
+    # UI transport workflow image
+    ''
+
+    def show_ui_transport_flow():
+        try:
+            st.image(ui_image_path)
+
+        except Exception as e:
+            print(e)
+            st.warning("Failed to load image")
+        
+        ''
+        with st.expander("Transfer process", icon= ":material/help:"):
+            try:
+                st.image(ui_color_coding_image_path)
+
+            except Exception as e:
+                print(e)
+                st.warning("Failed to load image")
+
+
     with tab_final_1:
         if selected_transport == 'Truck':
 
@@ -3004,6 +3030,11 @@ if st.button("Submit", width="stretch"):
                 - Offer created: **{europe_date_part} - {europe_time_part} {cet_cest_now}**
                 - Customer to approve till: **{customer_approve_date} - {customer_approve_time} {cet_cest_now}** ({agreed_till_str})
             """)
+
+
+            # UI transport workflow image
+            ''
+            show_ui_transport_flow()
 
 
             ''
@@ -3101,6 +3132,10 @@ if st.button("Submit", width="stretch"):
                 - Offer created: **{europe_date_part} - {europe_time_part} {cet_cest_now}**
                 - Customer to approve till: **{customer_approve_date} - {customer_approve_time} {cet_cest_now}** ({agreed_till_str})
             """)
+
+            # UI transport workflow image
+            ''
+            show_ui_transport_flow()
 
             ''
             st.write(f"""
