@@ -122,13 +122,13 @@
 		</g>
 		<g id="shape1053-18" v:mID="1053" v:groupContext="shape" transform="translate(38.25,-10.125)">
 			<title>Sheet.1053</title>
-			<desc>Shipment transfer Truck &#60;-&#62; Airplane for DTD</desc>
+			<desc>Shipment transfer Airplane -&#62; Truck for DTD</desc>
 			<v:userDefs>
 				<v:ud v:nameU="visNavOrder" v:val="VT0(35000):26"/>
 			</v:userDefs>
 			<v:textBlock v:margins="rect(4,4,4,4)"/>
 			<v:textRect cx="99" cy="56.25" width="198" height="13.5"/>
 			<rect x="0" y="49.5" width="198" height="13.5" class="st2"/>
-			<text x="4" y="60.45" class="st3" v:langID="1029"><v:paragraph/><v:tabList/>Shipment transfer Truck &#60;-&#62; Airplane for DTD</text>		</g>
+			<text x="4" y="60.45" class="st3" v:langID="1029"><v:paragraph/><v:tabList/>Shipment transfer Airplane -&#62; Truck for DTD</text>		</g>
 	</g>
 </svg>
