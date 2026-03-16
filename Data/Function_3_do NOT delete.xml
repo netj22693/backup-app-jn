@@ -1,29 +1,29 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <invoice>
   <header>
-    <order_number>166</order_number>
-    <customer>TEST_3</customer>
-    <invoice_number>INV-892068</invoice_number>
-    <date>2025-12-01</date>
+    <order_number>172</order_number>
+    <customer>Antonin Novotny</customer>
+    <invoice_number>INV-010697</invoice_number>
+    <date>2026-03-16</date>
     <price>
-      <total_sum>14.04</total_sum>
+      <total_sum>465.21</total_sum>
       <currency>US dollar</currency>
   </price>
   </header>
   <detail>
-    <category>PC</category>
-    <product_name>TEST_3</product_name>
-    <price_amount>10.0</price_amount>
+    <category>Gaming</category>
+    <product_name>Playstation 5 Pro</product_name>
+    <price_amount>399.99</price_amount>
     <additional_service>
       <service>Y</service>
-      <service_type>extended warranty</service_type>
-      <service_price>1.0</service_price>
+      <service_type>insurance</service_type>
+      <service_price>60.0</service_price>
   </additional_service>
   </detail>
   <transportation>
-    <transporter>DHL</transporter>
+    <transporter>Fedex</transporter>
     <country>Slovakia</country>
-    <size>small</size>
-    <transport_price>3.04</transport_price>
+    <size>medium</size>
+    <transport_price>5.22</transport_price>
   </transportation>
 </invoice>

@@ -6,6 +6,45 @@ from sqlalchemy.orm import declarative_base, Session
 from datetime import datetime
 import pytz
 
+def final_dialogs_goto():
+    ''
+    st.write("**Go to:**")
+
+    st.page_link(
+    label = "Function F3B - Invoice visibility",
+    page="Subpages/F3b_FUNCTION_invoice_visibility.py",
+    help="The button will redirect to the relevant page within this app.",
+    use_container_width=True,
+    icon=":material/play_circle:",
+    )
+
+    st.page_link(
+    label = "Function F5 - Description",
+    page="Subpages/F5_description_API.py",
+    help="The button will redirect to the relevant page within this app.",
+    use_container_width=True,
+    icon=":material/code:",
+    )
+
+    st.page_link(
+    label = "Function F5 - Exchange Rate",
+    page="Subpages/F5_FUNCTION_exchange.py",
+    help="The button will redirect to the relevant page within this app.",
+    use_container_width=True,
+    icon=":material/play_circle:",
+    )
+
+    st.page_link(
+    label = "Home page",
+    page="Subpages/Purpose_of_app.py",
+    help="The button will redirect to the relevant page within this app.",
+    use_container_width=True,
+    icon=":material/code:",
+    )
+
+
+
+
 # Final Dialog boxes
 @st.dialog("Insert into DB failed") 
 def insert_db_not_complete():
@@ -13,6 +52,9 @@ def insert_db_not_complete():
 		- Mapping complete -> :green[**Complete**]
 		- But log about this change was not inserted into DB -> :red[**Technical issue**]
 		""")
+	
+	final_dialogs_goto()
+
 
 @st.dialog("Complete!")
 def process_done():
@@ -21,6 +63,8 @@ def process_done():
 		- Log about this change was inserted into DB -> :green[**Complete**]
 		""")
 	
+	final_dialogs_goto()
+
 
 # Creation of Class based on Base - SQLAlchemy/PostgreSQL 
 Base = declarative_base()
