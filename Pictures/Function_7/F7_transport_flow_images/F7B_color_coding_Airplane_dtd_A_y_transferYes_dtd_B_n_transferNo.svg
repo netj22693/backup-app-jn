@@ -73,14 +73,14 @@
 		</g>
 		<g id="shape1049-3" v:mID="1049" v:groupContext="shape" transform="translate(37.125,-26.4375)">
 			<title>Sheet.1049</title>
-			<desc>Door-to-Door pick up/delivery (if customer orders the service)</desc>
+			<desc>Door-to-Door pick up</desc>
 			<v:userDefs>
 				<v:ud v:nameU="visNavOrder" v:val="VT0(31000):26"/>
 			</v:userDefs>
 			<v:textBlock v:margins="rect(4,4,4,4)"/>
 			<v:textRect cx="123.188" cy="56.25" width="246.38" height="13.5"/>
 			<rect x="0" y="49.5" width="246.375" height="13.5" class="st2"/>
-			<text x="4" y="60.45" class="st3" v:langID="1029"><v:paragraph/><v:tabList/>Door-to-Door pick up/delivery (if customer orders the service)</text>		</g>
+			<text x="4" y="60.45" class="st3" v:langID="1029"><v:paragraph/><v:tabList/>Door-to-Door pick up  </text>		</g>
 		<g id="shape1050-6" v:mID="1050" v:groupContext="shape" v:layerMember="0" transform="translate(6.75,-43.875)">
 			<title>Process.1050</title>
 			<v:custProps>

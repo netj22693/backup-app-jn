@@ -58,7 +58,7 @@
 	]]>
 	</style>
 
-	<g v:mID="55" v:index="29" v:groupContext="foregroundPage">
+	<g v:mID="55" v:index="33" v:groupContext="foregroundPage">
 		<v:userDefs>
 			<v:ud v:nameU="msvThemeOrder" v:val="VT0(0):26"/>
 			<v:ud v:nameU="visNavType" v:val="VT0(1):26"/>
@@ -517,14 +517,14 @@
 			<text x="5.43" y="292.2" class="st16" v:langID="1029"><v:paragraph v:horizAlign="1"/><v:tabList/>Shipment transfer Truck &#60;-&#62; Train/Airplane for DTD</text>		</g>
 		<g id="shape1044-94" v:mID="1044" v:groupContext="shape" transform="translate(37.125,-83.8125)">
 			<title>Sheet.1044</title>
-			<desc>Mandatory breaks for Truck driver (when longer distance)</desc>
+			<desc>Mandatory breaks for Truck driver (longer distance)</desc>
 			<v:userDefs>
 				<v:ud v:nameU="visNavOrder" v:val="VT0(26000):26"/>
 			</v:userDefs>
 			<v:textBlock v:margins="rect(4,4,4,4)"/>
 			<v:textRect cx="115.313" cy="288" width="230.63" height="13.5"/>
 			<rect x="0" y="281.25" width="230.625" height="13.5" class="st4"/>
-			<text x="4" y="292.2" class="st16" v:langID="1029"><v:paragraph/><v:tabList/>Mandatory breaks for Truck driver (when longer distance)</text>		</g>
+			<text x="4" y="292.2" class="st16" v:langID="1029"><v:paragraph/><v:tabList/>Mandatory breaks for Truck driver (longer distance)</text>		</g>
 		<g id="shape1045-97" v:mID="1045" v:groupContext="shape" v:layerMember="0" transform="translate(6.75,-67.5)">
 			<title>Process.1045</title>
 			<v:custProps>
@@ -625,14 +625,14 @@
 		</g>
 		<g id="shape1053-121" v:mID="1053" v:groupContext="shape" transform="translate(37.125,-47.8125)">
 			<title>Sheet.1053</title>
-			<desc>Physical move of the shipment</desc>
+			<desc>Physical transport of the shipment</desc>
 			<v:userDefs>
 				<v:ud v:nameU="visNavOrder" v:val="VT0(35000):26"/>
 			</v:userDefs>
 			<v:textBlock v:margins="rect(4,4,4,4)"/>
 			<v:textRect cx="115.313" cy="288" width="230.63" height="13.5"/>
 			<rect x="0" y="281.25" width="230.625" height="13.5" class="st4"/>
-			<text x="4" y="290.7" class="st16" v:langID="1029"><v:paragraph/><v:tabList/>Physical move of the shipment</text>		</g>
+			<text x="4" y="290.7" class="st16" v:langID="1029"><v:paragraph/><v:tabList/>Physical transport of the shipment</text>		</g>
 		<g id="shape1037-124" v:mID="1037" v:groupContext="shape" v:layerMember="0" transform="translate(443.25,-257.531)">
 			<title>Process.1618</title>
 			<v:custProps>
