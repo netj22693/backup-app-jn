@@ -220,6 +220,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 5:
+		- **v55.3** - Adjustment of format of results - 17-Mar-2026
 		- **v54.5** - Major code refactoring -> cleaner code & better modularity - 09-Dec-2025
 		- **v11.0** - try-except logic added + timeout 5 secs, to cover unavailability of APIs - 04-July-2025
 		- **v4.1** - API 3 added (status/monitoring of API 2 get requests) - 16-Jun-2025

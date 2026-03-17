@@ -106,6 +106,11 @@ def get_result_multiply(a: float,b: float) -> float:
     result = a * b
     return result
 
+# =================== Formatting for UI ===================
+
+def get_value_formated(input: float) -> str:
+    result = f"{input:,.2f}". replace(",", " ")
+    return result
 
 # =================== App screen part ===================
 st.write("# Exchange rate:")
@@ -120,11 +125,11 @@ st.write("""
 ''
 ''
 ''
-st.metric(label="CZK to EUR", value= eur_rate)
+st.metric(label="CZK to EUR", value= f"{eur_rate:.3f}")
 
-st.metric(label="CZK to USD", value= usd_rate)
+st.metric(label="CZK to USD", value= f"{usd_rate:.3f}")
 
-st.metric(label="EUR to USD", value= eur_to_usd_rate)
+st.metric(label="EUR to USD", value= f"{eur_to_usd_rate:.3f}")
 
 
 ''
@@ -160,12 +165,25 @@ with st.form(key="calculation form"):
         help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
         )
 
+    # Calculation
     r1_czk_to_eur = get_result_division(czk_obj, eur_rate)
     r2_czk_to_usd = get_result_division(czk_obj, usd_rate)
     r3_eur_to_czk = get_result_multiply(eur_obj, eur_rate)
     r4_usd_to_czk = get_result_multiply(usd_obj, usd_rate)
     r5_eur_to_usd = get_result_multiply(eur_obj, eur_to_usd_rate)
     r6_usd_to_eur = get_result_division(usd_obj, eur_to_usd_rate)
+
+    # Formatting 
+    czk_obj_formatted = get_value_formated(czk_obj)
+    eur_obj_formatted = get_value_formated(eur_obj)
+    usd_obj_formatted = get_value_formated(usd_obj)
+
+    r1_czk_to_eur_formatted = get_value_formated(r1_czk_to_eur)
+    r2_czk_to_usd_formatted = get_value_formated(r2_czk_to_usd)
+    r3_eur_to_czk_formatted = get_value_formated(r3_eur_to_czk)
+    r4_usd_to_czk_formatted = get_value_formated(r4_usd_to_czk)
+    r5_eur_to_usd_formatted = get_value_formated(r5_eur_to_usd)
+    r6_usd_to_eur_formatted = get_value_formated(r6_usd_to_eur)
 
 # ----- Buttons ------
 
@@ -178,12 +196,13 @@ with st.form(key="calculation form"):
     icon = ":material/apps:")
 
     if sub_butt_all:
-        st.write(f"{czk_obj:.2f} CZK = {r1_czk_to_eur:.2f} EUR")
-        st.write(f"{czk_obj:.2f} CZK = {r2_czk_to_usd:.2f} USD")
-        st.write(f"{eur_obj:.2f} EUR = {r3_eur_to_czk:.2f} CZK")
-        st.write(f"{usd_obj:.2f} USD = {r4_usd_to_czk:.2f} CZK")
-        st.write(f"{eur_obj:.2f} EUR = {r5_eur_to_usd:.2f} USD")
-        st.write(f"{usd_obj:.2f} USD = {r6_usd_to_eur:.2f} EUR")
+        st.write(f"{czk_obj_formatted} CZK = {r1_czk_to_eur_formatted} EUR")
+        st.write(f"{czk_obj_formatted} CZK = {r2_czk_to_usd_formatted} USD")
+        st.write(f"{eur_obj_formatted} EUR = {r3_eur_to_czk_formatted} CZK")
+        st.write(f"{usd_obj_formatted} USD = {r4_usd_to_czk_formatted} CZK")
+        st.write(f"{eur_obj_formatted} EUR = {r5_eur_to_usd_formatted} USD")
+        st.write(f"{usd_obj_formatted} USD = {r6_usd_to_eur_formatted} EUR")
+
 
     # CZK -> EUR
     ''
@@ -195,7 +214,7 @@ with st.form(key="calculation form"):
     )
 
     if sub_butt_1:
-        st.write(f"{czk_obj:.2f} CZK = {r1_czk_to_eur:.2f} EUR")
+        st.write(f"{czk_obj_formatted} CZK = {r1_czk_to_eur_formatted} EUR")
 
     # CZK -> USD
     sub_butt_2 = st.form_submit_button(
@@ -204,7 +223,7 @@ with st.form(key="calculation form"):
     )
 
     if sub_butt_2:
-        st.write(f"{czk_obj:.2f} CZK = {r2_czk_to_usd:.2f} USD")
+        st.write(f"{czk_obj_formatted} CZK = {r2_czk_to_usd_formatted} USD")
 
     # EUR -> CZK
     ''
@@ -215,7 +234,7 @@ with st.form(key="calculation form"):
     )
 
     if sub_butt_3:
-        st.write(f"{eur_obj:.2f} EUR = {r3_eur_to_czk:.2f} CZK")
+        st.write(f"{eur_obj_formatted} EUR = {r3_eur_to_czk_formatted} CZK")
 
 
     # USD -> CZK
@@ -225,7 +244,7 @@ with st.form(key="calculation form"):
     )
 
     if sub_butt_4:
-        st.write(f"{usd_obj:.2f} USD = {r4_usd_to_czk:.2f} CZK")
+        st.write(f"{usd_obj_formatted} USD = {r4_usd_to_czk_formatted} CZK")
 
     
     
@@ -238,7 +257,7 @@ with st.form(key="calculation form"):
     )
 
     if sub_butt_5:
-        st.write(f"{eur_obj:.2f} EUR = {r5_eur_to_usd:.2f} USD")
+        st.write(f"{eur_obj_formatted} EUR = {r5_eur_to_usd_formatted} USD")
 
     
     # USD -> EUR
@@ -248,4 +267,4 @@ with st.form(key="calculation form"):
     )
 
     if sub_butt_6:
-        st.write(f"{usd_obj:.2f} USD = {r6_usd_to_eur:.2f} EUR")
+        st.write(f"{usd_obj_formatted} USD = {r6_usd_to_eur_formatted} EUR")
