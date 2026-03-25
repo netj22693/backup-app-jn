@@ -4,37 +4,38 @@ import streamlit as st
 st.write("# Welcome!")
 ''
 st.write(
-    "Purpose of this application is to play with **data structures/objects (XML, JSON, dictionary, dataframes)** and implement them into **smaller versions of real business cases**. The application has **8 functions**:"
+    "Purpose of this application is to play with **data structures/objects (XML, JSON, dictionary, dataframes)** and implement them into **smaller versions of real business cases**. The application has **8 functions**."
     )
 ''
-st.write("""
-    - **Function 1:** Download of few predefined types of XML for Function 2
-    - **Function 2:** Parsing of data from XML -> their visualization -> producing of simple .txt file as summary      
-    """)
-''
-st.write("""
-    - **Function 3:** Creation of XML (slightly different one than used in F1 and F2) or JSON, through the application screen (manual inputs) - **DB on cloud**
-    - **Function 4:** Mapping/change of file format XML -> JSON or JSON -> XML 
-    """)
-''
-st.write("""
-    - **Function 5:** Exchange rate/calculation (CZK, EUR, USD) - **API based** with actual exchange rate
-    """)
-''
-st.write("""
-    - **Function 6:** ZIP code - (1) Get ZIP code(s) based on City, (2) Get City based on ZIP code - **API based**
-    """
-    )
-''
-st.write("""
-    - **Function 7:** Transport calculation - **API** provides input & **DB on cloud** (:green[**my favorit function**])
-    """
-    )
-''
-st.write("""
-    - **Function 8:** Company Book - provides visibility of transport companies - **DB on cloud**
-    """
-    )
+with st.expander("Overview of functions", icon= ":material/list:"):
+	st.write("""
+		- **Function 1:** Download of few predefined types of XML for Function 2
+		- **Function 2:** Parsing of data from XML -> their visualization -> producing of simple .txt file as summary      
+		""")
+	''
+	st.write("""
+		- **Function 3:** Creation of XML (slightly different one than used in F1 and F2) or JSON, through the application screen (manual inputs) - **DB on cloud**
+		- **Function 4:** Mapping/change of file format XML -> JSON or JSON -> XML 
+		""")
+	''
+	st.write("""
+		- **Function 5:** Exchange rate/calculation (CZK, EUR, USD) - **API based** with actual exchange rate
+		""")
+	''
+	st.write("""
+		- **Function 6:** ZIP code - (1) Get ZIP code(s) based on City, (2) Get City based on ZIP code - **API based**
+		"""
+		)
+	''
+	st.write("""
+		- **Function 7:** Transport calculation - **API** provides input & **DB on cloud** (:green[**my favorit function**])
+		"""
+		)
+	''
+	st.write("""
+		- **Function 8:** Company Book - provides visibility of transport companies - **DB on cloud**
+		"""
+		)
 ''
 ''
 "More details about the functions can be seen in the subpages - what the functions do, what data structures are used, etc."
