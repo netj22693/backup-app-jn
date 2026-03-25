@@ -188,6 +188,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v55.4** - F7 Input data moved into separate .py to be used by F7B later 25-Mar-2026
 		- **v55.0** - F7 & F7B - Graphical illustration of transport flow - 13-Mar-2026
 		- **v54.9** - F7B - Search for specific offer released - 10-Mar-2026
 		- **v54.6** - F7B introduced - simple view into DB - 12-Jan-2026
