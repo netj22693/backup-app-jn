@@ -10,8 +10,7 @@ st.write("""
         - **Paradigm:** Procedural & Functional programming
         """)
 
-st.image("Pictures/Function_7/F7_desc_function_diagram_v6.svg")
-
+st.image("Pictures/Function_7/F7_desc_function_diagram_v7.svg")
 
 ''
 st.write("""
