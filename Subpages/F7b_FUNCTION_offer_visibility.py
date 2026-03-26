@@ -97,7 +97,7 @@ def input_validation(input: str) -> Optional[str]:
 with tab2:
 
     with st.form(key="user_form"):
-            offer_input_user = st.text_input(label="Offer number:", help="Insert **Offer number** of invoice you would like to see. It is based on invoices created in **Function 7**.")
+            offer_input_user = st.text_input(label="Offer number:", help="Insert **Offer number** you would like to see. It is based on offers created in **Function 7**.")
            
             submit_button = st.form_submit_button(label= "Submit", width="stretch", icon = ":material/apps:",)
 
