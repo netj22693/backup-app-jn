@@ -108,26 +108,38 @@ WHERE a.offer_id = :offer_id
 
 
 # ==== TAB 3 ====
-sql_query_tab_3 = """
-SELECT 
-    a.offer_id as "Offer id",
-    f.label as "Transport",
-    b.from_city "From",
-    b.to_city as "To",
-    a.created_date as "Created day",
-    a.created_time as "Created time",
-    i.label as "Time zone",
-    a.expected_delivery as "Expected delivery",
-    a.final_price as "Final price",
-    j.label as "Currency"                    
-                
-FROM function7.offer a
-    INNER JOIN function7.delivery b ON (a.offer_id = b.offer_id)
-    INNER JOIN function7.transport_type f ON (a.transport = f.transport_id)
-    INNER JOIN function7.time_zone i ON (a.time_zone = i.zone_id)
-    INNER JOIN function7.currency_detail j ON (a.currency = j.currency_id)
-                
-ORDER BY a.offer_id DESC
-LIMIT 15
 
+def get_sql_query_tab_3(input_number_rows, input_transport, input_currency, input_country_from, input_country_to):
+
+    sql_query_tab_3 = f"""
+    SELECT 
+        a.offer_id as "Offer id",
+        f.label as "Transport",
+        b.from_country "Country from",
+        b.from_city "From",
+        b.to_country "Country to",
+        b.to_city as "To",
+        a.created_date as "Created day",
+        a.created_time as "Created time",
+        i.label as "Time zone",
+        a.expected_delivery as "Expected delivery",
+        a.final_price as "Final price",
+        j.label as "Currency"                    
+                    
+    FROM function7.offer a
+        INNER JOIN function7.delivery b ON (a.offer_id = b.offer_id)
+        INNER JOIN function7.transport_type f ON (a.transport = f.transport_id)
+        INNER JOIN function7.time_zone i ON (a.time_zone = i.zone_id)
+        INNER JOIN function7.currency_detail j ON (a.currency = j.currency_id)
+
+    WHERE 
+        f.label IN({input_transport}) AND
+        j.label IN({input_currency}) AND
+        b.from_country IN ({input_country_from}) AND
+        b.to_country IN ({input_country_to})
+                    
+    ORDER BY a.offer_id DESC
+    LIMIT {input_number_rows}
 """
+    
+    return sql_query_tab_3

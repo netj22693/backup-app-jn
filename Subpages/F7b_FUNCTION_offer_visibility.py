@@ -1,9 +1,10 @@
 import streamlit as st
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, bindparam
 import pandas as pd
 from typing import Optional
 from Subpages.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
-from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla
+from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, get_sql_query_tab_3
+from Subpages.F7_input_data import tranport_types_list, dataset_test
 
 @st.dialog("Error: DB not connected")
 def db_connection_fail():
@@ -34,12 +35,13 @@ def connection_db():
 st.write("# Find your offer:")
 ''
 
-st.write("- Simple view into DB. Based on offers created in Function 7...")
+st.write("- View into DB. Based on offers created in Function 7...")
 ''
 
-tab1, tab2 = st.tabs([
+tab1, tab2, tab3 = st.tabs([
     "Last 15 offers",
     "Search for specific offer",
+    "Customized search"
 ])
 
 #Connection can be used across tabs
@@ -47,18 +49,21 @@ db_engine = connection_db()
 
 with tab1:
 
-    # Query into DB + DF styling
-    df = pd.read_sql(sql_query_table_overview,db_engine)
+    ''
+    if st.button("Show last 15 offers", width="stretch", icon=":material/table:"):
+        ''
+        # Query into DB + DF styling
+        df = pd.read_sql(sql_query_table_overview,db_engine)
 
-    df[" "] = df.index + 1
-    df = df.set_index(" ")
+        df[" "] = df.index + 1
+        df = df.set_index(" ")
 
-    df_styled = df.style.format({
-        "Final price": "{:,.2f}",
-        })
-        
-    # Styled DF visualization
-    st.dataframe(df_styled, width = "stretch", height=562)
+        df_styled = df.style.format({
+            "Final price": "{:,.2f}",
+            })
+            
+        # Styled DF visualization
+        st.dataframe(df_styled, width = "stretch", height=562)
 
 # ====================== TAB 2 ======================
 # ====================== main logic for tab2 + relevant def functions ======================
@@ -94,7 +99,7 @@ with tab2:
     with st.form(key="user_form"):
             offer_input_user = st.text_input(label="Offer number:", help="Insert **Offer number** of invoice you would like to see. It is based on invoices created in **Function 3**.")
            
-            submit_button = st.form_submit_button(label= "Submit", width="stretch")
+            submit_button = st.form_submit_button(label= "Submit", width="stretch", icon = ":material/apps:",)
 
 
     if submit_button:
@@ -327,3 +332,164 @@ with tab2:
                     with st.container(border=True):
                         st.write(f"**{offer_final_price:,.2f} {offer_currency}**")
 
+
+# ====================== TAB 3 ======================
+# ====================== main logic for tab3 + relevant def functions ======================
+
+def reset_filters():
+    st.session_state["key_mlts_country_from"] = list_countries_upper
+    st.session_state["key_mlts_country_to"] = list_countries_upper
+    st.session_state["key_mlts_transport"] = tranport_types_list
+    st.session_state["key_mlts_currency"] = currency_list
+    st.session_state["key_sld_number_rows"] = 20
+
+
+
+def create_parameters_for_sql(input, param_letter):
+    '''
+    Context: Parametrized queries using IN() in SQL are horribly slowing down returning result from PostgreSQL back to the code. Thus:
+
+    THIS FUNCTION DOES DYNAMIC MAPPING to avoid SQL injection as the SQL query is built on f-string principle
+
+    1) build of unique parameter e.g. t0, t1, t2 (depends on the param_letter)
+    2) Creation of list [":t0", ":t1", ":t2"] -> list_params_keys[] filled with values
+    3) Adding "key":"value" into dict params {} -> {"t0":"Airplane", "t1":"Train", "t2":"Truck"}
+    4) Creation of string for sql ":t0, :t1, :t2" -> string_for_sql_in
+    '''
+    list_params_keys = []
+    params = {}
+
+    i = 0
+    for value in input:
+        param_name = param_letter + str(i)
+        list_params_keys.append(":" + param_name)
+        params[param_name] = value
+        i = i + 1
+    
+    string_for_sql_in = ", ".join(list_params_keys)
+    return params, string_for_sql_in
+
+
+
+with tab3: 
+
+    #From the dataset -> parse keys -> create list of countries for multiselect
+    list_countries = dataset_test.keys()
+
+    list_countries_upper = []
+    for country in list_countries:
+        upper = country.upper()
+        list_countries_upper.append(upper)
+
+    # Preparation of lists for multiselects
+    list_countries_upper.sort()
+    tranport_types_list.sort()
+
+    currency_list = ['euro','koruna']
+    currency_list.sort()
+
+    # Initiating session states for purpose/possibility of reseting filters
+    if "key_mlts_country_from" not in st.session_state:
+        st.session_state["key_mlts_country_from"] = list_countries_upper
+
+    if "key_mlts_country_to" not in st.session_state:
+        st.session_state["key_mlts_country_to"] = list_countries_upper
+
+    if "key_mlts_transport" not in st.session_state:
+        st.session_state["key_mlts_transport"] = tranport_types_list
+
+    if "key_mlts_currency" not in st.session_state:
+        st.session_state["key_mlts_currency"] = currency_list
+
+    if "key_sld_number_rows" not in st.session_state:
+        st.session_state["key_sld_number_rows"] = 20
+
+    # Multiselect - Country from
+    ''
+    selected_coutry_from = st.multiselect("Country from", options=list_countries_upper, key="key_mlts_country_from")
+
+    if len(selected_coutry_from) == 0:
+        st.warning("At least 1 country needs to be selected")
+
+    # Multiselect - Country to
+    selected_coutry_to = st.multiselect("Country to", options=list_countries_upper, key="key_mlts_country_to")
+
+    if len(selected_coutry_to) == 0:
+        st.warning("At least 1 country needs to be selected")
+    
+    # Multiselect - Transport type
+    selected_transport = st.multiselect("Transport", options=tranport_types_list, key="key_mlts_transport")
+
+    if len(selected_transport) == 0:
+        st.warning("At least 1 transport needs to be selected")
+
+    # Multiselect - Currency
+    selected_currency = st.multiselect("Currency", options=currency_list, key="key_mlts_currency")
+
+    if len(selected_currency) == 0:
+        st.warning("At least 1 currency needs to be selected")
+
+    # Slider - number of rows
+    number_rows = st.slider("Number of records to be shown", min_value=5, max_value=50, step=5, label_visibility="visible", key="key_sld_number_rows")
+
+
+    # ===== Reset button =====
+    ''
+    st.button("Reset filters", on_click=reset_filters, width="stretch", icon= ":material/delete:")
+    ''
+    st.write("-" *10)
+
+
+    # ===== Submit button -> triggering query into DB =====
+
+    if any(not x for x in [
+        selected_coutry_from,
+        selected_coutry_to,
+        selected_transport,
+        selected_currency
+    ]):
+        submit_button_tab3 = st.button("Submit", width= "stretch", icon=":material/apps:", disabled=True)
+
+    else:   
+        submit_button_tab3 = st.button("Submit", width= "stretch", icon=":material/apps:")
+
+
+    if submit_button_tab3:
+        
+        # Creation of parameter for SQL query 
+        # The query uses IN() and stadard parametrization approach horribly slowed the query down -> this approach with f-string in query works better (parametrization like this prevents from SQL injestion)
+        params_transport, str_for_sql_in_transport = create_parameters_for_sql(selected_transport, "t")
+        params_currency, str_for_sql_in_currency = create_parameters_for_sql(selected_currency, "c")
+        params_country_from, str_for_sql_in_country_from = create_parameters_for_sql(selected_coutry_from, "cf")
+        params_country_to, str_for_sql_in_country_to = create_parameters_for_sql(selected_coutry_to, "ct")
+
+        # Marging of the dictionaries to have 1 dictionary with all parameters
+        params_full = params_transport | params_currency | params_country_from | params_country_to
+
+        # Gettign SQL query with inserted variables (variables = keys in paramters to be able to match "key" : "value" when query into DB triggered)
+        sql_query_tab_3 = get_sql_query_tab_3(number_rows, str_for_sql_in_transport, str_for_sql_in_currency, str_for_sql_in_country_from, str_for_sql_in_country_to)
+
+        with db_engine.connect() as conn:
+            df_table_tab_3 = pd.read_sql_query(sql=text(sql_query_tab_3), con=conn, params=params_full)
+
+            if df_table_tab_3.empty == True:
+                st.info("There was no record found in DB.")
+
+            else:
+                # Dataframe styling 
+                df_table_tab_3[" "] = df_table_tab_3.index + 1
+                df_table_tab_3 = df_table_tab_3.set_index(" ")
+
+                df_table_tab_3_styled = df_table_tab_3.style.format({
+                "Final price": "{:,.2f}",
+                })
+
+                # Info message to the user that there is not that many records as expected
+                rows_from_db = df_table_tab_3.index
+                rows_from_db = rows_from_db[-1]
+                
+                ''
+                if rows_from_db != number_rows:
+                    st.info(f"There is only **{rows_from_db} records** matching the selected criteria")
+
+                st.dataframe(df_table_tab_3_styled)
