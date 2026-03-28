@@ -1,7 +1,8 @@
 import streamlit as st
 from sqlalchemy import create_engine, text, bindparam
 import pandas as pd
-from typing import Optional
+from datetime import date, timedelta
+from typing import Optional,Dict, Tuple
 from Subpages.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
 from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, get_sql_query_tab_3
 from Subpages.F7_input_data import tranport_types_list, dataset_test
@@ -97,7 +98,7 @@ def input_validation(input: str) -> Optional[str]:
 with tab2:
 
     with st.form(key="user_form"):
-            offer_input_user = st.text_input(label="Offer number:", help="Insert **Offer number** of invoice you would like to see. It is based on invoices created in **Function 3**.")
+            offer_input_user = st.text_input(label="Offer number:", help="Insert **Offer number** you would like to see. It is based on offers created in **Function 7**.")
            
             submit_button = st.form_submit_button(label= "Submit", width="stretch", icon = ":material/apps:",)
 
@@ -341,11 +342,12 @@ def reset_filters():
     st.session_state["key_mlts_country_to"] = list_countries_upper
     st.session_state["key_mlts_transport"] = tranport_types_list
     st.session_state["key_mlts_currency"] = currency_list
+    st.session_state["key_checkbox_date"] = False
     st.session_state["key_sld_number_rows"] = 20
 
 
 
-def create_parameters_for_sql(input, param_letter):
+def create_parameters_for_sql(input: list, param_letter: str) -> Tuple[Dict[str, str], str]:
     '''
     Context: Parametrized queries using IN() in SQL are horribly slowing down returning result from PostgreSQL back to the code. Thus:
 
@@ -403,6 +405,9 @@ with tab3:
 
     if "key_sld_number_rows" not in st.session_state:
         st.session_state["key_sld_number_rows"] = 20
+    
+    if "key_checkbox_date"  not in st.session_state:
+        st.session_state["key_checkbox_date"] = False
 
     # Multiselect - Country from
     ''
@@ -429,19 +434,65 @@ with tab3:
     if len(selected_currency) == 0:
         st.warning("At least 1 currency needs to be selected")
 
+    # Date picker
+    ''
+    checkbox_state = st.checkbox("Filtering based on date", key="key_checkbox_date")
+
+    if checkbox_state == True:
+        
+        col1, col2 = st.columns(2)
+
+        # Min date allowed
+        min_date = date(2025, 1, 1)
+
+        # default = today - 30 days
+        default_date = date.today() - timedelta(days=30)
+        max_date = date.today()
+
+        
+        picked_date_from = col1.date_input(
+            "From",
+            value=default_date,
+            min_value = min_date,
+            max_value = max_date,
+            format ="DD/MM/YYYY",
+            key = "key_date_input_1"
+        )
+
+        picked_date_to = col2.date_input(
+            "To",
+            value = max_date,
+            format = "DD/MM/YYYY",
+            min_value = min_date,
+            max_value = max_date,
+            key ="key_date_input_2")
+        
+        # Extending SQL query date filter
+        date_query_string = f"""
+        AND
+        TO_DATE(a.created_date, 'DD-Mon-YY') BETWEEN DATE '{picked_date_from}' AND DATE '{picked_date_to}'
+        """
+
+        # Fallback info 
+        if picked_date_from > picked_date_to:
+            st.warning("Date **To** is farther in the past than **From** -> search will not work. Please change it.")
+
+    
+    if checkbox_state == False:
+
+        # Extending SQL -> no extension, no additional filter
+        date_query_string = ""
+        
+
     # Slider - number of rows
+    ''
     number_rows = st.slider("Number of records to be shown", min_value=5, max_value=50, step=5, label_visibility="visible", key="key_sld_number_rows")
-
-
-    # ===== Reset button =====
-    ''
-    st.button("Reset filters", on_click=reset_filters, width="stretch", icon= ":material/delete:")
-    ''
-    st.write("-" *10)
 
 
     # ===== Submit button -> triggering query into DB =====
 
+    ''
+    ''
     if any(not x for x in [
         selected_coutry_from,
         selected_coutry_to,
@@ -452,6 +503,10 @@ with tab3:
 
     else:   
         submit_button_tab3 = st.button("Submit", width= "stretch", icon=":material/apps:")
+
+    # ===== Reset button =====
+    st.write("-" *10)
+    st.button("Reset filters", on_click=reset_filters, width="stretch", icon= ":material/delete:")
 
 
     if submit_button_tab3:
@@ -467,7 +522,7 @@ with tab3:
         params_full = params_transport | params_currency | params_country_from | params_country_to
 
         # Gettign SQL query with inserted variables (variables = keys in paramters to be able to match "key" : "value" when query into DB triggered)
-        sql_query_tab_3 = get_sql_query_tab_3(number_rows, str_for_sql_in_transport, str_for_sql_in_currency, str_for_sql_in_country_from, str_for_sql_in_country_to)
+        sql_query_tab_3 = get_sql_query_tab_3(number_rows, date_query_string, str_for_sql_in_transport, str_for_sql_in_currency, str_for_sql_in_country_from, str_for_sql_in_country_to)
 
         with db_engine.connect() as conn:
             df_table_tab_3 = pd.read_sql_query(sql=text(sql_query_tab_3), con=conn, params=params_full)

@@ -109,7 +109,7 @@ WHERE a.offer_id = :offer_id
 
 # ==== TAB 3 ====
 
-def get_sql_query_tab_3(input_number_rows, input_transport, input_currency, input_country_from, input_country_to):
+def get_sql_query_tab_3(input_number_rows, date_filter, input_transport, input_currency, input_country_from, input_country_to):
 
     sql_query_tab_3 = f"""
     SELECT 
@@ -137,6 +137,9 @@ def get_sql_query_tab_3(input_number_rows, input_transport, input_currency, inpu
         j.label IN({input_currency}) AND
         b.from_country IN ({input_country_from}) AND
         b.to_country IN ({input_country_to})
+
+        -- part of the query built in the code based on if conditions
+        {date_filter} 
                     
     ORDER BY a.offer_id DESC
     LIMIT {input_number_rows}

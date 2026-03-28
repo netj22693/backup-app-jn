@@ -188,6 +188,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v55.6** - F7B Customized search - filtering by date released - 28-Mar-2026
 		- **v55.5** - F7B Customized search option released - 26-Mar-2026
 		- **v55.4** - F7 Input data moved into separate .py to be used by F7B later - 25-Mar-2026
 		- **v55.0** - F7 & F7B - Graphical illustration of transport flow - 13-Mar-2026
