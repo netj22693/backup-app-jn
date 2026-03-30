@@ -109,7 +109,7 @@ WHERE a.offer_id = :offer_id
 
 # ==== TAB 3 ====
 
-def get_sql_query_tab_3(input_number_rows, date_filter, input_transport, input_currency, input_country_from, input_country_to):
+def get_sql_query_tab_3(input_number_rows: int, date_filter: str, input_transport: str, input_currency: str, input_country_from: str, input_country_to: str) -> str:
 
     sql_query_tab_3 = f"""
     SELECT 
@@ -146,3 +146,94 @@ def get_sql_query_tab_3(input_number_rows, date_filter, input_transport, input_c
 """
     
     return sql_query_tab_3
+
+
+# ==== TAB 4 ====
+
+def get_sql_query_transport(date_filter: str) -> str:
+    
+    query = f"""
+    SELECT f.label, count(a.transport)
+    FROM function7.offer a
+    INNER JOIN function7.transport_type f ON (a.transport = f.transport_id)
+    {date_filter}
+    GROUP BY a.transport, f.label
+    ORDER BY count(a.transport) DESC
+    """
+    return query
+
+def get_sql_query_service(date_filter: str) -> str:
+
+    query = f"""
+    SELECT g.label, count(a.service)
+    FROM function7.offer a
+    INNER JOIN function7.service g ON (a.service = g.service_id)
+    {date_filter}
+    GROUP BY a.service, g.label
+    ORDER BY count(a.service) DESC
+    """
+    return query
+
+def get_sql_query_from_country(date_filter: str) -> str:
+    
+    query = f"""
+    SELECT b.from_country, count(b.from_country)
+    FROM function7.delivery b
+    INNER JOIN function7.offer a ON (a.offer_id = b.offer_id)
+    {date_filter}
+    GROUP BY b.from_country
+    ORDER BY count(b.from_country) DESC
+    """
+    return query
+
+def get_sql_query_to_country(date_filter: str) -> str:
+
+    query = f"""
+    SELECT b.to_country, count(b.to_country)
+    FROM function7.delivery b
+    INNER JOIN function7.offer a ON (a.offer_id = b.offer_id)
+    {date_filter}
+    GROUP BY b.to_country
+    ORDER BY count(b.to_country) DESC
+    """
+    return query
+
+def get_sql_query_from_to_country(date_filter: str, query_country: str, country_from:str) -> str:
+
+    query = f"""
+    SELECT b.from_country, b.to_country, count(b.to_country)
+    FROM function7.delivery b
+    INNER JOIN function7.offer a ON (a.offer_id = b.offer_id)
+    {date_filter}
+    {query_country}'{country_from}'
+    GROUP BY b.from_country, b.to_country
+    ORDER BY count(b.to_country) DESC, from_country ASC
+    """
+    print(query)
+    return query
+
+def get_sql_query_dtd_with_without(date_filter: str) -> str:
+
+    query = f"""
+    SELECT
+    COUNT(*) FILTER (WHERE c.dtd_from != 0 OR c.dtd_to != 0) AS "With DTD",
+    COUNT(*) FILTER (WHERE c.dtd_from = 0 AND c.dtd_to = 0) AS "Without DTD"
+    FROM function7.costs c 
+    INNER JOIN function7.offer a ON (a.offer_id = c.offer_id)
+
+    {date_filter}
+    """
+    return query
+
+
+def get_sql_query_currency(date_filter: str) -> str:
+
+    query = f"""
+    SELECT j.label, count(a.currency)
+    FROM function7.offer a
+    INNER JOIN function7.currency_detail j ON (a.currency = j.currency_id)
+    {date_filter}
+    GROUP BY j.label
+    ORDER BY count(a.currency) DESC
+    """
+    return query

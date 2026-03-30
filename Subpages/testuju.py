@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import date, timedelta
 from typing import Optional,Dict, Tuple
 from Subpages.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
-from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, get_sql_query_tab_3
+from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country
 from Subpages.F7_input_data import tranport_types_list, dataset_test
 
 @st.dialog("Error: DB not connected")
@@ -39,10 +39,11 @@ st.write("# Find your offer:")
 st.write("- View into DB. Based on offers created in Function 7...")
 ''
 
-tab1, tab2, tab3 = st.tabs([
+tab1, tab2, tab3, tab4 = st.tabs([
     "Last 15 offers",
     "Search for specific offer",
-    "Customized search"
+    "Customized search",
+    "Analytics"
 ])
 
 #Connection can be used across tabs
@@ -548,3 +549,130 @@ with tab3:
                     st.info(f"There is only **{rows_from_db} records** matching the selected criteria")
 
                 st.dataframe(df_table_tab_3_styled)
+
+
+with tab4: 
+   
+    # Date picker
+    ''
+    radio_state_tb4 = st.radio("Filter",options=["All offers - no specific date","Date range"])
+
+    if radio_state_tb4 == "All offers - no specific date":
+
+        # Extending SQL -> no extension, no additional filter
+        date_query_string_tab4 = ""
+
+        country_query_string = "WHERE b.from_country ="
+
+
+    if radio_state_tb4 == "Date range":
+        
+        col1_tab4, col2_tab4 = st.columns(2)
+
+        # Min date allowed
+        min_date = date(2025, 1, 1)
+
+        # default = today - 30 days
+        default_date = date.today() - timedelta(days=30)
+        max_date = date.today()
+
+        
+        picked_date_from_tab4 = col1_tab4.date_input(
+            "From",
+            value=default_date,
+            min_value = min_date,
+            max_value = max_date,
+            format ="DD/MM/YYYY",
+            key = "key_date_input_tab4_1"
+        )
+
+        picked_date_to_tab4 = col2_tab4.date_input(
+            "To",
+            value = max_date,
+            format = "DD/MM/YYYY",
+            min_value = min_date,
+            max_value = max_date,
+            key ="key_date_input_tab4_2")
+        
+        # Extending SQL query date filter
+        date_query_string_tab4 = f"""
+        WHERE
+        TO_DATE(a.created_date, 'DD-Mon-YY') BETWEEN DATE '{picked_date_from_tab4}' AND DATE '{picked_date_to_tab4}'
+        """
+
+        country_query_string = "AND b.from_country ="
+
+        # Fallback info 
+        if picked_date_from_tab4 > picked_date_to_tab4:
+            st.warning("Date **To** is farther in the past than **From** -> search will not work. Please change it.")
+  
+
+    ''
+    ''
+    submit_button_tab4 = st.button("Submit", width= "stretch", icon=":material/apps:", key="key_submit_button_tab4")
+
+    if submit_button_tab4:
+
+        with db_engine.connect() as conn:
+
+            
+            sql_query_transport = get_sql_query_transport(date_query_string_tab4)
+            sql_query_service = get_sql_query_service(date_query_string_tab4)
+            sql_query_from_country = get_sql_query_from_country(date_query_string_tab4)
+            sql_query_to_country = get_sql_query_to_country(date_query_string_tab4)
+            sql_query_dtd_with_without = get_sql_query_dtd_with_without(date_query_string_tab4)
+            sql_query_currency = get_sql_query_currency(date_query_string_tab4)
+
+            sql_query_from_to_country_at = get_sql_query_from_to_country(date_query_string_tab4, country_query_string, "AT")
+            sql_query_from_to_country_cz = get_sql_query_from_to_country(date_query_string_tab4, country_query_string, "CZ")
+            sql_query_from_to_country_de = get_sql_query_from_to_country(date_query_string_tab4, country_query_string, "DE")
+            sql_query_from_to_country_pl = get_sql_query_from_to_country(date_query_string_tab4, country_query_string, "PL")
+            sql_query_from_to_country_sk = get_sql_query_from_to_country(date_query_string_tab4, country_query_string, "SK")
+
+            df_transport_grouped = pd.read_sql_query(sql=text(sql_query_transport), con = conn)
+
+            df_service_grouped = pd.read_sql_query(sql=text(sql_query_service), con = conn)
+
+            df_country_from_grouped = pd.read_sql_query(sql=text(sql_query_from_country), con = conn)
+
+            df_country_to_grouped = pd.read_sql_query(sql=text(sql_query_to_country), con = conn)
+
+            df_dtd_with_without = pd.read_sql_query(sql=text(sql_query_dtd_with_without), con = conn)
+
+            df_currency_grouped = pd.read_sql_query(sql=text(sql_query_currency), con = conn)
+
+            df_at = pd.read_sql_query(sql=text(sql_query_from_to_country_at), con = conn)
+            df_cz = pd.read_sql_query(sql=text(sql_query_from_to_country_cz), con = conn)
+            df_de = pd.read_sql_query(sql=text(sql_query_from_to_country_de), con = conn)
+            df_pl = pd.read_sql_query(sql=text(sql_query_from_to_country_pl), con = conn)
+            df_sk = pd.read_sql_query(sql=text(sql_query_from_to_country_sk), con = conn)
+
+
+            with st.container(border = True):
+                col_tab4_1, col_tab4_2 = st.columns(2)
+                col_tab4_1.dataframe(df_transport_grouped)
+            
+            with st.container(border = True):
+                col_tab4_1, col_tab4_2 = st.columns(2)
+                col_tab4_1.dataframe(df_service_grouped)
+            
+            with st.container(border = True):
+                col_tab4_1, col_tab4_2 = st.columns(2)
+                col_tab4_1.dataframe(df_dtd_with_without)
+            
+            with st.container(border = True):
+                col_tab4_1, col_tab4_2 = st.columns(2)
+                col_tab4_1.dataframe(df_currency_grouped)
+            
+            with st.container(border = True):
+                col_tab4_1, col_tab4_2 = st.columns(2)
+                col_tab4_1.dataframe(df_country_from_grouped)
+                col_tab4_1.dataframe(df_country_to_grouped)
+
+                with st.expander("Details"):
+                    col_tab4_1, col_tab4_2 = st.columns(2)
+                    col_tab4_1.dataframe(df_at)
+                    col_tab4_1.dataframe(df_cz)
+                    col_tab4_1.dataframe(df_de)
+                    col_tab4_1.dataframe(df_pl)
+                    col_tab4_1.dataframe(df_sk)
