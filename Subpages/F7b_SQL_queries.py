@@ -150,90 +150,138 @@ def get_sql_query_tab_3(input_number_rows: int, date_filter: str, input_transpor
 
 # ==== TAB 4 ====
 
-def get_sql_query_transport(date_filter: str) -> str:
+# Function returning WHERE statement if user filtering based on date
+def get_sql_part_where_date(date_filter: bool) -> str | None:
+
+    if date_filter == True:
+        query = """
+        WHERE
+        TO_DATE(a.created_date, 'DD-Mon-YY') BETWEEN DATE :date_from AND DATE :date_to"""
     
-    query = f"""
+    else: query = None
+    
+    return query
+
+
+def get_sql_query_transport(date_filter: bool, where_condition: str | None ) -> str:
+    
+    query = """
     SELECT f.label, count(a.transport)
     FROM function7.offer a
-    INNER JOIN function7.transport_type f ON (a.transport = f.transport_id)
-    {date_filter}
+    INNER JOIN function7.transport_type f ON (a.transport = f.transport_id)"""
+
+    # User filtering based on date
+    if date_filter == True:
+        query += where_condition
+    
+    query +="""
     GROUP BY a.transport, f.label
-    ORDER BY count(a.transport) DESC
-    """
+    ORDER BY count(a.transport) DESC;"""
+
     return query
 
-def get_sql_query_service(date_filter: str) -> str:
+def get_sql_query_service(date_filter: bool, where_condition: str | None ) -> str:
 
-    query = f"""
+    query = """
     SELECT g.label, count(a.service)
     FROM function7.offer a
-    INNER JOIN function7.service g ON (a.service = g.service_id)
-    {date_filter}
+    INNER JOIN function7.service g ON (a.service = g.service_id)"""
+    
+    # User filtering based on date
+    if date_filter == True:
+        query += where_condition
+
+    query +="""
     GROUP BY a.service, g.label
-    ORDER BY count(a.service) DESC
-    """
+    ORDER BY count(a.service) DESC;"""
     return query
 
-def get_sql_query_from_country(date_filter: str) -> str:
+def get_sql_query_from_country(date_filter: bool, where_condition: str | None ) -> str:
     
-    query = f"""
+    query = """
     SELECT b.from_country, count(b.from_country)
     FROM function7.delivery b
-    INNER JOIN function7.offer a ON (a.offer_id = b.offer_id)
-    {date_filter}
+    INNER JOIN function7.offer a ON (a.offer_id = b.offer_id)"""
+
+    # User filtering based on date
+    if date_filter == True:
+        query += where_condition
+
+    query += """
     GROUP BY b.from_country
-    ORDER BY count(b.from_country) DESC
-    """
+    ORDER BY count(b.from_country) DESC;"""
     return query
 
-def get_sql_query_to_country(date_filter: str) -> str:
+def get_sql_query_to_country(date_filter: bool, where_condition: str | None ) -> str:
 
-    query = f"""
+    query = """
     SELECT b.to_country, count(b.to_country)
     FROM function7.delivery b
-    INNER JOIN function7.offer a ON (a.offer_id = b.offer_id)
-    {date_filter}
+    INNER JOIN function7.offer a ON (a.offer_id = b.offer_id)"""
+    
+    # User filtering based on date
+    if date_filter == True:
+        query += where_condition
+
+    query += """
     GROUP BY b.to_country
-    ORDER BY count(b.to_country) DESC
-    """
+    ORDER BY count(b.to_country) DESC;"""
+
     return query
 
-def get_sql_query_from_to_country(date_filter: str, query_country: str, country_from:str) -> str:
+def get_sql_query_from_to_country(date_filter: bool, where_condition: str | None, country_from: str ) -> str:
 
-    query = f"""
+    query = """
     SELECT b.from_country, b.to_country, count(b.to_country)
     FROM function7.delivery b
-    INNER JOIN function7.offer a ON (a.offer_id = b.offer_id)
-    {date_filter}
-    {query_country}'{country_from}'
+    INNER JOIN function7.offer a ON (a.offer_id = b.offer_id)"""
+
+    # User filtering based on date
+    if date_filter == True:
+        query += where_condition
+
+        query += f"""
+        AND b.from_country = :{country_from}"""
+    
+    elif date_filter == False:
+        query += f"""
+        WHERE b.from_country = :{country_from}"""
+
+    query += """
     GROUP BY b.from_country, b.to_country
-    ORDER BY count(b.to_country) DESC, from_country ASC
-    """
-    print(query)
+    ORDER BY count(b.to_country) DESC, from_country ASC"""
+
     return query
 
-def get_sql_query_dtd_with_without(date_filter: str) -> str:
+def get_sql_query_dtd_with_without(date_filter: bool, where_condition: str | None ) -> str:
 
     query = f"""
     SELECT
     COUNT(*) FILTER (WHERE c.dtd_from != 0 OR c.dtd_to != 0) AS "With DTD",
     COUNT(*) FILTER (WHERE c.dtd_from = 0 AND c.dtd_to = 0) AS "Without DTD"
     FROM function7.costs c 
-    INNER JOIN function7.offer a ON (a.offer_id = c.offer_id)
+    INNER JOIN function7.offer a ON (a.offer_id = c.offer_id)"""
 
-    {date_filter}
-    """
+    # User filtering based on date
+    if date_filter == True:
+        query += where_condition
+
     return query
 
 
-def get_sql_query_currency(date_filter: str) -> str:
+def get_sql_query_currency(date_filter: bool, where_condition: str | None ) -> str:
 
     query = f"""
     SELECT j.label, count(a.currency)
     FROM function7.offer a
-    INNER JOIN function7.currency_detail j ON (a.currency = j.currency_id)
-    {date_filter}
+    INNER JOIN function7.currency_detail j ON (a.currency = j.currency_id)"""
+
+    # User filtering based on date
+    if date_filter == True:
+        query += where_condition
+
+    query += """
     GROUP BY j.label
-    ORDER BY count(a.currency) DESC
-    """
+    ORDER BY count(a.currency) DESC;"""
+    
     return query
