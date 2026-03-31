@@ -3,6 +3,7 @@ from sqlalchemy import create_engine, text, bindparam
 import pandas as pd
 from datetime import date, timedelta
 from typing import Optional,Dict, Tuple
+import plotly.express as px
 from Subpages.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
 from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date
 from Subpages.F7_input_data import tranport_types_list, dataset_test
@@ -622,7 +623,6 @@ with tab4:
                     params_list.append(param)
                     params_dict[param] = item
 
-                st.write(params_dict)
                 return params_dict
 
             # Build of parameters countries
@@ -671,27 +671,81 @@ with tab4:
             df_pl = pd.read_sql_query(sql=text(sql_query_from_to_country_pl), con = conn, params=params)
             df_sk = pd.read_sql_query(sql=text(sql_query_from_to_country_sk), con = conn, params=params)
 
+            dtd_with = df_dtd_with_without["With DTD"].iloc[0]
+            dtd_without = df_dtd_with_without["Without DTD"].iloc[0]
+
+
+            # DF adjustment 
+            df_dtd_with_without_adj = {
+                "label" : ["With DTD","Without DTD"],
+                "count" : [dtd_with, dtd_without]
+            }
+
+
+            # Charts def
+            def create_pie_chart(df_input, x_data, y_data):
+                
+                chart = px.pie(
+                df_input, 
+                names = df_input[f"{x_data}"],
+                values = df_input[f"{y_data}"]
+                )
+
+                # Adjustment to see 2 decimals always in the chart
+                chart.update_traces(texttemplate="%{percent:.2%}")
+
+                return chart
+                
+            # # Charts
+            chart_transport = create_pie_chart(df_transport_grouped, "label","count")
+            chart_service = create_pie_chart(df_service_grouped, "label","count")
+            chart_country_from = create_pie_chart(df_country_from_grouped, "from_country","count")
+            chart_country_to = create_pie_chart(df_country_to_grouped, "to_country","count")
+            chart_currency = create_pie_chart(df_currency_grouped, "label","count")
+            chart_dtd = create_pie_chart(df_dtd_with_without_adj, "label","count")
+
+
             # UI visualization
-            with st.container(border = True):
-                col_tab4_1, col_tab4_2 = st.columns(2)
+
+            ''
+            ''
+            tab4_tab1, tab4_tab2, tab4_tab3, tab4_tab4, tab4_tab5 = st.tabs([
+                "Transport type",
+                "Service type",
+                "With/without DTD",
+                "Currency type",
+                "Country From & To",
+            ])
+
+            with tab4_tab1:
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns([1.5,0.3,2])
                 col_tab4_1.dataframe(df_transport_grouped)
+                col_tab4_3.plotly_chart(chart_transport)
             
-            with st.container(border = True):
-                col_tab4_1, col_tab4_2 = st.columns(2)
+            with tab4_tab2:
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns([1.5,0.3,2])
                 col_tab4_1.dataframe(df_service_grouped)
+                col_tab4_3.plotly_chart(chart_service)
             
-            with st.container(border = True):
-                col_tab4_1, col_tab4_2 = st.columns(2)
-                col_tab4_1.dataframe(df_dtd_with_without)
+            with tab4_tab3:
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns([1.5,0.3,2])
+                col_tab4_1.dataframe(df_dtd_with_without_adj)
+                col_tab4_3.plotly_chart(chart_dtd)
             
-            with st.container(border = True):
-                col_tab4_1, col_tab4_2 = st.columns(2)
+            with tab4_tab4:
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns([1.5,0.3,2])
                 col_tab4_1.dataframe(df_currency_grouped)
+                col_tab4_3.plotly_chart(chart_currency)
             
-            with st.container(border = True):
-                col_tab4_1, col_tab4_2 = st.columns(2)
+            with tab4_tab5:
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns([1.5,0.3,2])
                 col_tab4_1.dataframe(df_country_from_grouped)
+                col_tab4_3.plotly_chart(chart_country_from)
+            
+                st.write("Ahojda")
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns([1.5,0.3,2])
                 col_tab4_1.dataframe(df_country_to_grouped)
+                col_tab4_3.plotly_chart(chart_country_to)
 
                 with st.expander("Details"):
                     col_tab4_1, col_tab4_2 = st.columns(2)
