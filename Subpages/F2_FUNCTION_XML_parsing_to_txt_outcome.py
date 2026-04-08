@@ -88,7 +88,7 @@ st.write("# Upload XML:")
 ''
 
 # type = ".xml" - allows to upload only xml files
-object_from_upload = st.file_uploader("Upload your XML file", type=".xml", label_visibility="collapsed")
+object_from_upload = st.file_uploader("Upload your XML file", type=".xml", label_visibility="collapsed",accept_multiple_files=False)
 
 if object_from_upload is None:
     st.info("When a file uploaded, the application will start")
