@@ -6,3 +6,4 @@ pandasql
 psycopg2-binary
 sqlalchemy
 reportlab
+pytz
