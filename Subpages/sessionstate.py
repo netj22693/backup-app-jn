@@ -5,7 +5,7 @@ from datetime import date, timedelta
 from typing import Optional,Dict, Tuple
 import plotly.express as px
 from Subpages.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
-from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date
+from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes
 from Subpages.F7_input_data import tranport_types_list, dataset_test
 
 @st.dialog("Error: DB not connected")
@@ -649,12 +649,17 @@ with tab4:
             sql_query_to_country = get_sql_query_to_country(date_query_applicable, sql_date_query_where_part)
             sql_query_dtd_with_without = get_sql_query_dtd_with_without(date_query_applicable, sql_date_query_where_part)
             sql_query_currency = get_sql_query_currency(date_query_applicable, sql_date_query_where_part)
+            sql_query_routes = get_sql_query_routes (date_query_applicable, sql_date_query_where_part)
 
             sql_query_from_to_country_at = get_sql_query_from_to_country(date_query_applicable, sql_date_query_where_part, "at")
             sql_query_from_to_country_cz = get_sql_query_from_to_country(date_query_applicable, sql_date_query_where_part, "cz")
             sql_query_from_to_country_de = get_sql_query_from_to_country(date_query_applicable, sql_date_query_where_part, "de")
             sql_query_from_to_country_pl = get_sql_query_from_to_country(date_query_applicable, sql_date_query_where_part, "pl")
             sql_query_from_to_country_sk = get_sql_query_from_to_country(date_query_applicable, sql_date_query_where_part, "sk")
+
+            sql_query_top_city_from = get_sql_query_city(date_query_applicable, sql_date_query_where_part, "from_city","from_country")
+            sql_query_top_city_to = get_sql_query_city(date_query_applicable, sql_date_query_where_part, "to_city","to_country")
+
 
             # Dataframes creation
             df_transport_grouped = pd.read_sql_query(sql=text(sql_query_transport), con = conn, params=params)
@@ -663,7 +668,7 @@ with tab4:
             df_country_to_grouped = pd.read_sql_query(sql=text(sql_query_to_country), con = conn, params=params)
             df_dtd_with_without = pd.read_sql_query(sql=text(sql_query_dtd_with_without), con = conn, params=params)
             df_currency_grouped = pd.read_sql_query(sql=text(sql_query_currency), con = conn, params=params)
-
+            df_routes = pd.read_sql_query(sql=text(sql_query_routes), con = conn, params=params)
 
             df_at = pd.read_sql_query(sql=text(sql_query_from_to_country_at), con = conn, params=params)
             df_cz = pd.read_sql_query(sql=text(sql_query_from_to_country_cz), con = conn, params=params)
@@ -671,15 +676,56 @@ with tab4:
             df_pl = pd.read_sql_query(sql=text(sql_query_from_to_country_pl), con = conn, params=params)
             df_sk = pd.read_sql_query(sql=text(sql_query_from_to_country_sk), con = conn, params=params)
 
+            df_top_city_from = pd.read_sql_query(sql=text(sql_query_top_city_from), con = conn, params=params)
+            df_top_city_to = pd.read_sql_query(sql=text(sql_query_top_city_to), con = conn, params=params)
+
             dtd_with = df_dtd_with_without["With DTD"].iloc[0]
             dtd_without = df_dtd_with_without["Without DTD"].iloc[0]
 
 
             # DF adjustment 
             df_dtd_with_without_adj = {
-                "label" : ["With DTD","Without DTD"],
-                "count" : [dtd_with, dtd_without]
+                "Label" : ["With DTD","Without DTD"],
+                "Count" : [dtd_with, dtd_without]
             }
+
+            def df_change_column_name(input_df: pd.DataFrame) -> pd.DataFrame:
+                
+                dict_names = {
+                    "from_country" : "From country",
+                    "from_city" : "From city",
+                    "to_country" : "To country",
+                    "to_city" : "To city",
+                    "count" : "Count",
+                    "label" : "Label"
+                }
+
+                output_df = input_df.rename(columns=dict_names)
+
+                return output_df
+
+
+            df_transport_grouped_renamed = df_change_column_name(df_transport_grouped)
+            df_service_grouped_renamed = df_change_column_name(df_service_grouped)
+            df_currency_grouped_renamed = df_change_column_name(df_currency_grouped)
+            df_country_from_grouped_renamed = df_change_column_name(df_country_from_grouped)
+            df_country_to_grouped_renamed = df_change_column_name(df_country_to_grouped)
+            df_top_city_from_renamed = df_change_column_name(df_top_city_from)
+            df_top_city_to_columns_renamed = df_change_column_name(df_top_city_to)
+            df_routes_columns_renamed = df_change_column_name(df_routes)
+
+            def df_styling_index_set_1(input_df: pd.DataFrame) -> pd.DataFrame:
+
+                input_df[" "] = input_df.index + 1
+                input_df = input_df.set_index(" ")
+
+                return input_df
+            
+            df_country_from_grouped_styled = df_styling_index_set_1(df_country_from_grouped_renamed)
+            df_country_to_grouped_styled = df_styling_index_set_1(df_country_to_grouped_renamed)
+            df_top_city_from_styled = df_styling_index_set_1(df_top_city_from_renamed)
+            df_top_city_to_styled = df_styling_index_set_1(df_top_city_to_columns_renamed)
+            df_routes_styled = df_styling_index_set_1(df_routes_columns_renamed)
 
 
             # Charts def
@@ -702,55 +748,98 @@ with tab4:
             chart_country_from = create_pie_chart(df_country_from_grouped, "from_country","count")
             chart_country_to = create_pie_chart(df_country_to_grouped, "to_country","count")
             chart_currency = create_pie_chart(df_currency_grouped, "label","count")
-            chart_dtd = create_pie_chart(df_dtd_with_without_adj, "label","count")
+            chart_dtd = create_pie_chart(df_dtd_with_without_adj, "Label","Count") #This follows column names already assigned when DF created
+
+
+            # UI fallback - for case when dataframes are empty (no data following search criteria)
+            def data_empty_fallback_info(input_df: pd.DataFrame):
+
+                if input_df.empty:
+                    st.warning("No data in DB related to the select date range")
+
+                else:
+                    pass
 
 
             # UI visualization
-
             ''
             ''
-            tab4_tab1, tab4_tab2, tab4_tab3, tab4_tab4, tab4_tab5 = st.tabs([
+            tab4_tab1, tab4_tab2, tab4_tab3, tab4_tab4, tab4_tab5, tab4_tab6 = st.tabs([
                 "Transport type",
                 "Service type",
                 "With/without DTD",
                 "Currency type",
                 "Country From & To",
+                "City From & To",
             ])
 
+            col_layout_1 = [1.5,0.3,2]
+            col_layout_2 = [1.5,0.3,1.5]
+
             with tab4_tab1:
-                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns([1.5,0.3,2])
-                col_tab4_1.dataframe(df_transport_grouped)
-                col_tab4_3.plotly_chart(chart_transport)
+                data_empty_fallback_info(df_transport_grouped)
+                st.write("- Split based on selected **transport** type:")
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                col_tab4_1.dataframe(df_transport_grouped_renamed, hide_index=True)
+                col_tab4_3.plotly_chart(chart_transport, key="chart_transport")
             
             with tab4_tab2:
-                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns([1.5,0.3,2])
-                col_tab4_1.dataframe(df_service_grouped)
-                col_tab4_3.plotly_chart(chart_service)
+                data_empty_fallback_info(df_service_grouped)
+                st.write("- Split based on selected **delivery service** type:")
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                col_tab4_1.dataframe(df_service_grouped_renamed, hide_index=True)
+                col_tab4_3.plotly_chart(chart_service, key="chart_service")
             
             with tab4_tab3:
-                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns([1.5,0.3,2])
+                # For the fallback I use different DF than df_dtd_with_without_adj. Reason: It doesn't work on .empty principle like other DFs
+                data_empty_fallback_info(df_transport_grouped) 
+                st.write("- How many times **door-to-door** was ordered:")
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
                 col_tab4_1.dataframe(df_dtd_with_without_adj)
-                col_tab4_3.plotly_chart(chart_dtd)
+                col_tab4_3.plotly_chart(chart_dtd, key="chart_dtd")
             
             with tab4_tab4:
-                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns([1.5,0.3,2])
-                col_tab4_1.dataframe(df_currency_grouped)
-                col_tab4_3.plotly_chart(chart_currency)
+                data_empty_fallback_info(df_currency_grouped)
+                st.write("- Split based on **currency**:")
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                col_tab4_1.dataframe(df_currency_grouped_renamed, hide_index=True)
+                col_tab4_3.plotly_chart(chart_currency, key="chart_currency")
             
             with tab4_tab5:
-                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns([1.5,0.3,2])
-                col_tab4_1.dataframe(df_country_from_grouped)
-                col_tab4_3.plotly_chart(chart_country_from)
-            
-                st.write("Ahojda")
-                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns([1.5,0.3,2])
-                col_tab4_1.dataframe(df_country_to_grouped)
-                col_tab4_3.plotly_chart(chart_country_to)
+                data_empty_fallback_info(df_country_from_grouped_styled)
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_2)
+                col_tab4_1.write("- Most frequent **origin** country:")
+                col_tab4_1.dataframe(df_country_from_grouped_styled)
+                col_tab4_1.plotly_chart(chart_country_from, key="chart_country_from")
+                
+                col_tab4_3.write("- Most frequent **destination** country:")
+                col_tab4_3.dataframe(df_country_to_grouped_styled)
+                col_tab4_3.plotly_chart(chart_country_to, key="chart_country_to")
 
-                with st.expander("Details"):
-                    col_tab4_1, col_tab4_2 = st.columns(2)
-                    col_tab4_1.dataframe(df_at)
-                    col_tab4_1.dataframe(df_cz)
-                    col_tab4_1.dataframe(df_de)
-                    col_tab4_1.dataframe(df_pl)
-                    col_tab4_1.dataframe(df_sk)
+                # with st.expander("Ahojda"):
+                #     col_tab4_1, col_tab4_2 = st.columns(2)
+                #     col_tab4_1.dataframe(df_at)
+                #     col_tab4_1.dataframe(df_cz)
+                #     col_tab4_1.dataframe(df_de)
+                #     col_tab4_1.dataframe(df_pl)
+                #     col_tab4_1.dataframe(df_sk)
+
+            with tab4_tab6:
+                data_empty_fallback_info(df_top_city_from_styled)
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_2)
+                col_tab4_1.write("- Most frequent **origin** city:")
+                col_tab4_1.dataframe(df_top_city_from_styled)
+                col_tab4_3.write("- Most frequent **destination** city:")
+                col_tab4_3.dataframe(df_top_city_to_styled)
+
+                st.write("- Top 20 routes:")
+                
+                #Fallback warning - if not enough routes 
+                number_rows_route = df_routes.count().iloc[0]
+
+                if 0 < number_rows_route < 20:
+                    st.info(f"There has been only **{number_rows_route} routes** following the selected date criteria")
+
+                st.dataframe(df_routes_styled)
+
+                # Před commitem do PRODU - PŘIDAT JEŠTĚ SOUČET ZÁZNAMŮ, ZE KETERÝCH JSOU ANALYTICS

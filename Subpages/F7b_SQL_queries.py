@@ -285,3 +285,59 @@ def get_sql_query_currency(date_filter: bool, where_condition: str | None ) -> s
     ORDER BY count(a.currency) DESC;"""
     
     return query
+
+def get_sql_query_city(date_filter: bool, where_condition: str | None, direction_city: str,direction_country: str) -> str:
+
+    # mapping to prevent injections
+    db_columns = {
+    "from_city": "b.from_city",
+    "to_city": "b.to_city",
+    "from_country": "b.from_country",
+    "to_country": "b.to_country"
+}
+
+    col1 = db_columns[direction_city]
+    col2 = db_columns[direction_country]
+
+    query = f"""
+    SELECT {col1}, {col2}, count(*)
+    FROM function7.offer a
+    INNER JOIN function7.delivery b ON (a.offer_id = b.offer_id)"""
+
+    # User filtering based on date
+    if date_filter == True:
+        query += where_condition
+
+    query += f"""
+    GROUP BY {col1}, {col2}
+    ORDER BY count(*) DESC
+    LIMIT 5;"""
+    
+    return query
+
+def get_sql_query_routes(date_filter: bool, where_condition: str | None ) -> str:
+
+    query = f"""
+    SELECT 
+    b.from_city,
+    b.from_country,
+    b.to_city, 
+    b.to_country,
+    count(*)
+    FROM function7.offer a
+    INNER JOIN function7.delivery b ON (a.offer_id = b.offer_id)"""
+
+    # User filtering based on date
+    if date_filter == True:
+        query += where_condition
+
+    query += """
+    GROUP BY 
+    b.from_city,
+    b.from_country,
+    b.to_city,
+    b.to_country
+    ORDER BY count(*) DESC
+    LIMIT 20;"""
+    
+    return query
