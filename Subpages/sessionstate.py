@@ -682,6 +682,9 @@ with tab4:
             dtd_with = df_dtd_with_without["With DTD"].iloc[0]
             dtd_without = df_dtd_with_without["Without DTD"].iloc[0]
 
+            # DF extract how many records -> for UI purposes
+            number_rows_transport = df_transport_grouped["count"].sum()
+
 
             # DF adjustment 
             df_dtd_with_without_adj = {
@@ -703,7 +706,6 @@ with tab4:
                 output_df = input_df.rename(columns=dict_names)
 
                 return output_df
-
 
             df_transport_grouped_renamed = df_change_column_name(df_transport_grouped)
             df_service_grouped_renamed = df_change_column_name(df_service_grouped)
@@ -778,14 +780,14 @@ with tab4:
 
             with tab4_tab1:
                 data_empty_fallback_info(df_transport_grouped)
-                st.write("- Split based on selected **transport** type:")
+                st.write(f"- Split based on selected **transport** type - total: **{number_rows_transport}**:")
                 col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
                 col_tab4_1.dataframe(df_transport_grouped_renamed, hide_index=True)
                 col_tab4_3.plotly_chart(chart_transport, key="chart_transport")
             
             with tab4_tab2:
                 data_empty_fallback_info(df_service_grouped)
-                st.write("- Split based on selected **delivery service** type:")
+                st.write(f"- Split based on selected **delivery service** type - total: **{number_rows_transport}**:")
                 col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
                 col_tab4_1.dataframe(df_service_grouped_renamed, hide_index=True)
                 col_tab4_3.plotly_chart(chart_service, key="chart_service")
@@ -793,20 +795,21 @@ with tab4:
             with tab4_tab3:
                 # For the fallback I use different DF than df_dtd_with_without_adj. Reason: It doesn't work on .empty principle like other DFs
                 data_empty_fallback_info(df_transport_grouped) 
-                st.write("- How many times **door-to-door** was ordered:")
+                st.write(f"- How many times **door-to-door** was ordered - total: **{number_rows_transport}**:")
                 col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
                 col_tab4_1.dataframe(df_dtd_with_without_adj)
                 col_tab4_3.plotly_chart(chart_dtd, key="chart_dtd")
             
             with tab4_tab4:
                 data_empty_fallback_info(df_currency_grouped)
-                st.write("- Split based on **currency**:")
+                st.write(f"- Split based on **currency** - total: **{number_rows_transport}**:")
                 col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
                 col_tab4_1.dataframe(df_currency_grouped_renamed, hide_index=True)
                 col_tab4_3.plotly_chart(chart_currency, key="chart_currency")
             
             with tab4_tab5:
                 data_empty_fallback_info(df_country_from_grouped_styled)
+                st.write(f"- Total number: **{number_rows_transport}**:")
                 col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_2)
                 col_tab4_1.write("- Most frequent **origin** country:")
                 col_tab4_1.dataframe(df_country_from_grouped_styled)
@@ -826,6 +829,7 @@ with tab4:
 
             with tab4_tab6:
                 data_empty_fallback_info(df_top_city_from_styled)
+                st.write(f"- Total number: **{number_rows_transport}**:")
                 col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_2)
                 col_tab4_1.write("- Most frequent **origin** city:")
                 col_tab4_1.dataframe(df_top_city_from_styled)
