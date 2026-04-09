@@ -5,12 +5,12 @@ st.write("# Variables:")
 
 ''
 st.write("""
-        - **Mind map** of the Function 7 code
+        - **Mind map** of the **Function 7** code
         - **Simplified overview** to help to understand the **dependencies/relationships in the code** -> which can be beneficial for new development and testing/troubleshooting
         - **Paradigm:** Procedural & Functional programming
         """)
 
-st.image("Pictures/Function_7/F7_desc_function_diagram_v7.svg")
+st.image("Pictures/Function_7/F7_desc_function_diagram_v8.svg")
 
 ''
 st.write("""
