@@ -3212,7 +3212,7 @@ if st.button("Submit", width="stretch"):
 
 
         df_tab2_transport = pd.DataFrame({
-            "Transport type" : ['Truck','Traine','Airplane'],
+            "Transport type" : ['Truck','Train','Airplane'],
             "Distance (km)" : [tab2_distance_truck_r2, tab2_distance_train_r2, tab2_distance_air_r2],
             "Time (hours)" : [tab2_time_journey_truck_r2, tab2_time_journey_train_r2, tab2_time_journey_air_r2],
             f"Price ({selected_currency})" : [tab2_price_truck_r2, tab2_price_train_r2, tab2_price_air_r2],
@@ -3241,7 +3241,7 @@ if st.button("Submit", width="stretch"):
 
 
         df_tab2_dtd = pd.DataFrame({
-            "Transport type" : ['Truck','Traine','Airplane'],
+            "Transport type" : ['Truck','Train','Airplane'],
             "Time (hours)**" : [tab2_time_dtd_truck, tab2_time_dtd_train_adj, tab2_time_dtd_air_adj],
             f"Price ({selected_currency})" : [tab2_door_result_truck, tab2_door_result_train, tab2_door_result_air],
         })
@@ -3379,7 +3379,7 @@ if st.button("Submit", width="stretch"):
         extra_time_tab2_train_adj, extra_time_tab2_air_adj = tab2_transport_available_yn_table(transport_options_list, extra_time_tab2_train, extra_time_tab2_air)
 
         df_tab2_service = pd.DataFrame({
-            "Transport type" : ['Truck','Traine','Airplane'],
+            "Transport type" : ['Truck','Train','Airplane'],
             "Time (hours)" : [extra_time_tab2_truck, extra_time_tab2_train_adj, extra_time_tab2_air_adj]
         })
 
