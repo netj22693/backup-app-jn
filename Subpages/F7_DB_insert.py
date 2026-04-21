@@ -312,9 +312,40 @@ def insert_variables_extra_steps_time(engine, data):
         session.add(new_offer)
         session.commit()
 
+def insert_variables_go_green(engine, data):
+
+    mapped_data = {
+        "offer_id": data["offer_id"],
+        "main_route": data["main_route"],
+        "from_dtd": data["from_dtd"],
+        "to_dtd": data["to_dtd"],
+        "transfer": data["transfer"],
+        "total": data["total"]
+    }
+
+    Base = declarative_base()
+
+    class Costs(Base):
+        __tablename__ = "go_green"
+        __table_args__ = {"schema": "function7"}
+
+        offer_id = Column(String, primary_key=True)
+        main_route = Column(Float)
+        from_dtd = Column(Float)
+        to_dtd = Column(Float)
+        transfer = Column(Float)
+        total = Column(Float)
+
+    with Session(engine) as session:
+        new_offer = Costs(**mapped_data)
+        session.add(new_offer)
+        session.commit()
+
+
+
 
 # def save_to_db_main_stream(variables_extra_steps_time):
-def save_to_db_main_stream(offer_number, variables_offer, variables_delivery, variables_costs, variables_extra_steps_time):
+def save_to_db_main_stream(offer_number, variables_offer, variables_delivery, variables_costs, variables_extra_steps_time, variables_go_green_dict):
 
 
     # tady bych dělla PDF ještě
@@ -326,6 +357,7 @@ def save_to_db_main_stream(offer_number, variables_offer, variables_delivery, va
         insert_variables_delivery(db_engine, variables_delivery)
         insert_variables_costs(db_engine, variables_costs)
         insert_variables_extra_steps_time(db_engine, variables_extra_steps_time)
+        insert_variables_go_green(db_engine, variables_go_green_dict)
 
         process_done(offer_number)
 

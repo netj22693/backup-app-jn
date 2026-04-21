@@ -2870,7 +2870,7 @@ if st.button("Submit", width="stretch"):
     tab_final_1, tab_final_2,tab_final_3 = st.tabs([
         f"Offer - {selected_transport}",
         "Analytics & Other transports",
-        "Go Green"
+        "Go Green - CO₂"
     ])
 
 
@@ -3123,131 +3123,131 @@ if st.button("Submit", width="stretch"):
 
             st.write(f"**{final_price:,.2f} {selected_currency}**")
 
-        # ==================== DB and PDF data preparations + calling mapping ==============
+        # # ==================== DB and PDF data preparations + calling mapping ==============
 
-        # 1) OFFER table
-        # Mapping      
-        mapped_selected_transport = mapping_transport_type(selected_transport)
-        mapped_service =  mapping_service(urgency)
-        mapped_time_zone =  mapping_time_zone(cet_cest_now)
-        mapped_currency =  mapping_currency(selected_currency)
-        mapped_agreed_till = mapping_agreed_till(agreed_till_str)
+        # # 1) OFFER table
+        # # Mapping      
+        # mapped_selected_transport = mapping_transport_type(selected_transport)
+        # mapped_service =  mapping_service(urgency)
+        # mapped_time_zone =  mapping_time_zone(cet_cest_now)
+        # mapped_currency =  mapping_currency(selected_currency)
+        # mapped_agreed_till = mapping_agreed_till(agreed_till_str)
 
-        # Dictionary for INSERT
-        variables_offer_dict = {
-            "offer_id" : offer_number_generated,
-            "europe_date_part" : europe_date_part, # 06-Dec-25
-            "europe_time_part" : europe_time_part, # 12:04
-            "customer_approve_date":customer_approve_date,
-            "customer_approve_time" : customer_approve_time,
-            "agreed_till_str": mapped_agreed_till,
-            "selected_transport" : mapped_selected_transport,
-            "service" : mapped_service,
-            "time_zone" : mapped_time_zone,
-            "time_overall" : overall_time_db,
-            "expected_delivery" : delivery_dt_formated,
-            "final_price" : final_price,
-            "currency" : mapped_currency
-            }
+        # # Dictionary for INSERT
+        # variables_offer_dict = {
+        #     "offer_id" : offer_number_generated,
+        #     "europe_date_part" : europe_date_part, # 06-Dec-25
+        #     "europe_time_part" : europe_time_part, # 12:04
+        #     "customer_approve_date":customer_approve_date,
+        #     "customer_approve_time" : customer_approve_time,
+        #     "agreed_till_str": mapped_agreed_till,
+        #     "selected_transport" : mapped_selected_transport,
+        #     "service" : mapped_service,
+        #     "time_zone" : mapped_time_zone,
+        #     "time_overall" : overall_time_db,
+        #     "expected_delivery" : delivery_dt_formated,
+        #     "final_price" : final_price,
+        #     "currency" : mapped_currency
+        #     }
 
-        # 2) DELIVERY table 
-        # Dictionary for INSERT
-        variables_delivery_dict = {
-            "offer_id" : offer_number_generated,
-            "from_country" : country_code_from,
-            "from_city" : from_city,
-            "from_dtd" : from_city_extra_doortdoor,
-            "to_country" : country_code_to,
-            "to_city" : to_city,
-            "to_dtd" : to_city_extra_doortdoor,
-            "distance_length" : distance,
-            "distance_time" : time_journey,
-            "dtd_time" : time_dtd
-        }
+        # # 2) DELIVERY table 
+        # # Dictionary for INSERT
+        # variables_delivery_dict = {
+        #     "offer_id" : offer_number_generated,
+        #     "from_country" : country_code_from,
+        #     "from_city" : from_city,
+        #     "from_dtd" : from_city_extra_doortdoor,
+        #     "to_country" : country_code_to,
+        #     "to_city" : to_city,
+        #     "to_dtd" : to_city_extra_doortdoor,
+        #     "distance_length" : distance,
+        #     "distance_time" : time_journey,
+        #     "dtd_time" : time_dtd
+        # }
 
-        # 3) COSTS table 
-        # Dictionary for INSERT
-        variables_costs_dict = {
-            "offer_id" : offer_number_generated,
-            "currency" : mapped_currency,
-            "distance_cost" : price,
-            "dtd_from" : door_from_result,
-            "dtd_to" : door_to_result,
-            "shipment_value" : shipment_value,
-            "insurance" : money_insurance,
-            "fragile" : money_fragile,
-            "danger" : money_danger,
-        }
+        # # 3) COSTS table 
+        # # Dictionary for INSERT
+        # variables_costs_dict = {
+        #     "offer_id" : offer_number_generated,
+        #     "currency" : mapped_currency,
+        #     "distance_cost" : price,
+        #     "dtd_from" : door_from_result,
+        #     "dtd_to" : door_to_result,
+        #     "shipment_value" : shipment_value,
+        #     "insurance" : money_insurance,
+        #     "fragile" : money_fragile,
+        #     "danger" : money_danger,
+        # }
 
-        # 4) EXTRA_STEPS_TIME table 
-        # Dictionary for INSERT
-        variables_extra_steps_time_dict = {
-            "offer_id" : offer_number_generated,
-            "truck_breaks" : time_break,
-            "shipment_transfer_dtd_from" : transfer_time_from,
-            "shipment_transfer_dtd_to" : transfer_time_to,
-            "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to),
-        }
+        # # 4) EXTRA_STEPS_TIME table 
+        # # Dictionary for INSERT
+        # variables_extra_steps_time_dict = {
+        #     "offer_id" : offer_number_generated,
+        #     "truck_breaks" : time_break,
+        #     "shipment_transfer_dtd_from" : transfer_time_from,
+        #     "shipment_transfer_dtd_to" : transfer_time_to,
+        #     "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to),
+        # }
 
-        # PDF 
-        data_for_pdf = {
-            "offer_id" : offer_number_generated,
-            "europe_date_part" : europe_date_part, 
-            "europe_time_part" : europe_time_part, 
-            "customer_approve_date":customer_approve_date,
-            "customer_approve_time" : customer_approve_time,
-            "agreed_till_str": agreed_till_str,
-            "selected_transport" : selected_transport,
-            "service" : urgency,
-            "service_time": extra_time,
-            "time_zone" : cet_cest_now,
-            "time_overall" : overall_time_db,
-            "expected_delivery" : delivery_dt_formated,
-            "final_price" : final_price,
-            "currency" : selected_currency,
-            "from_country" : country_code_from,
-            "from_city" : from_city,
-            "from_dtd" : from_city_extra_doortdoor,
-            "to_country" : country_code_to,
-            "to_city" : to_city,
-            "to_dtd" : to_city_extra_doortdoor,
-            "distance_length" : distance,
-            "distance_time" : time_journey,
-            "dtd_time" : time_dtd,
-            "distance_cost" : price,
-            "dtd_from" : door_from_result,
-            "dtd_to" : door_to_result,
-            "shipment_value" : shipment_value,
-            "insurance" : money_insurance,
-            "fragile" : money_fragile,
-            "danger" : money_danger,
-            "truck_breaks" : time_break,
-            "shipment_transfer_dtd_from" : transfer_time_from,
-            "shipment_transfer_dtd_to" : transfer_time_to,
-            "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to)
-        }
+        # # PDF 
+        # data_for_pdf = {
+        #     "offer_id" : offer_number_generated,
+        #     "europe_date_part" : europe_date_part, 
+        #     "europe_time_part" : europe_time_part, 
+        #     "customer_approve_date":customer_approve_date,
+        #     "customer_approve_time" : customer_approve_time,
+        #     "agreed_till_str": agreed_till_str,
+        #     "selected_transport" : selected_transport,
+        #     "service" : urgency,
+        #     "service_time": extra_time,
+        #     "time_zone" : cet_cest_now,
+        #     "time_overall" : overall_time_db,
+        #     "expected_delivery" : delivery_dt_formated,
+        #     "final_price" : final_price,
+        #     "currency" : selected_currency,
+        #     "from_country" : country_code_from,
+        #     "from_city" : from_city,
+        #     "from_dtd" : from_city_extra_doortdoor,
+        #     "to_country" : country_code_to,
+        #     "to_city" : to_city,
+        #     "to_dtd" : to_city_extra_doortdoor,
+        #     "distance_length" : distance,
+        #     "distance_time" : time_journey,
+        #     "dtd_time" : time_dtd,
+        #     "distance_cost" : price,
+        #     "dtd_from" : door_from_result,
+        #     "dtd_to" : door_to_result,
+        #     "shipment_value" : shipment_value,
+        #     "insurance" : money_insurance,
+        #     "fragile" : money_fragile,
+        #     "danger" : money_danger,
+        #     "truck_breaks" : time_break,
+        #     "shipment_transfer_dtd_from" : transfer_time_from,
+        #     "shipment_transfer_dtd_to" : transfer_time_to,
+        #     "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to)
+        # }
 
-        # PDF creation
-        data_pdf = create_pdf(data_for_pdf, selected_transport)
+        # # PDF creation
+        # data_pdf = create_pdf(data_for_pdf, selected_transport)
 
-        ''
-        ''
-        st.info("""
-        - Note:
-            - If you want to check the **Analytics tab**, do it before this button
-            - This button will **close the results**
-            - **It is final step to confirm the offer -> closing the function**
-            """)
+        # ''
+        # ''
+        # st.info("""
+        # - Note:
+        #     - If you want to check the **Analytics tab**, do it before this button
+        #     - This button will **close the results**
+        #     - **It is final step to confirm the offer -> closing the function**
+        #     """)
         
-        st.download_button(
-            "Generate PDF file & Save the offer into DB",
-            width="stretch",
-            icon=":material/sports_score:",
-            data = data_pdf,
-            file_name=f"Offer_{offer_number_generated}.pdf",
-            mime="application/pdf",
-            on_click=lambda: save_to_db_main_stream(offer_number_generated, variables_offer_dict, variables_delivery_dict, variables_costs_dict, variables_extra_steps_time_dict)
-        )
+        # st.download_button(
+        #     "Generate PDF file & Save the offer into DB",
+        #     width="stretch",
+        #     icon=":material/sports_score:",
+        #     data = data_pdf,
+        #     file_name=f"Offer_{offer_number_generated}.pdf",
+        #     mime="application/pdf",
+        #     on_click=lambda: save_to_db_main_stream(offer_number_generated, variables_offer_dict, variables_delivery_dict, variables_costs_dict, variables_extra_steps_time_dict)
+        # )
 
 
     # TAB 2
@@ -3366,7 +3366,7 @@ if st.button("Submit", width="stretch"):
 
 
         df_tab2_dtd = pd.DataFrame({
-            "Transport type" : tranport_types_list,
+            "Transport type" : ['Truck','Traine','Airplane'],
             "Time (hours)**" : [tab2_time_dtd_truck, tab2_time_dtd_train_adj, tab2_time_dtd_air_adj],
             f"Price ({selected_currency})" : [tab2_door_result_truck, tab2_door_result_train, tab2_door_result_air],
         })
@@ -3773,7 +3773,165 @@ if st.button("Submit", width="stretch"):
 
     with tab_final_3:
 
-        df_go_green_main_df = call_go_green(db_engine, from_city_extra_doortdoor, to_city_extra_doortdoor, df_tab2_transport)
+        df_go_green_main_df, df_go_green_main_df_styled, df_emissions_values_db,df_emissions_values_db_styled, variables_go_green_dict_returned = call_go_green(db_engine, from_city_extra_doortdoor, to_city_extra_doortdoor, df_tab2_transport, selected_transport)
 
-        st.write(df_go_green_main_df)
 
+        # UI
+        col1,col2 = st.columns(2)
+
+        col1.image("Pictures/Function_7/F7_Go_green/F7_go_green_environment.svg", width=100)
+
+        st.dataframe(df_go_green_main_df_styled, hide_index=True)
+
+        with st.expander("Emissions", icon=":material/co2:"):
+            
+            st.write("- **Note:** DTD is served by **Truck** -> emissions for Truck")
+            st.dataframe(df_emissions_values_db_styled, hide_index=True)
+            
+
+
+     # ==================== DB and PDF data preparations + calling mapping ==============
+
+        # 1) OFFER table
+        # Mapping      
+        mapped_selected_transport = mapping_transport_type(selected_transport)
+        mapped_service =  mapping_service(urgency)
+        mapped_time_zone =  mapping_time_zone(cet_cest_now)
+        mapped_currency =  mapping_currency(selected_currency)
+        mapped_agreed_till = mapping_agreed_till(agreed_till_str)
+
+        # Dictionary for INSERT
+        variables_offer_dict = {
+            "offer_id" : offer_number_generated,
+            "europe_date_part" : europe_date_part, # 06-Dec-25
+            "europe_time_part" : europe_time_part, # 12:04
+            "customer_approve_date":customer_approve_date,
+            "customer_approve_time" : customer_approve_time,
+            "agreed_till_str": mapped_agreed_till,
+            "selected_transport" : mapped_selected_transport,
+            "service" : mapped_service,
+            "time_zone" : mapped_time_zone,
+            "time_overall" : overall_time_db,
+            "expected_delivery" : delivery_dt_formated,
+            "final_price" : final_price,
+            "currency" : mapped_currency
+            }
+
+        # 2) DELIVERY table 
+        # Dictionary for INSERT
+        variables_delivery_dict = {
+            "offer_id" : offer_number_generated,
+            "from_country" : country_code_from,
+            "from_city" : from_city,
+            "from_dtd" : from_city_extra_doortdoor,
+            "to_country" : country_code_to,
+            "to_city" : to_city,
+            "to_dtd" : to_city_extra_doortdoor,
+            "distance_length" : distance,
+            "distance_time" : time_journey,
+            "dtd_time" : time_dtd
+        }
+
+        # 3) COSTS table 
+        # Dictionary for INSERT
+        variables_costs_dict = {
+            "offer_id" : offer_number_generated,
+            "currency" : mapped_currency,
+            "distance_cost" : price,
+            "dtd_from" : door_from_result,
+            "dtd_to" : door_to_result,
+            "shipment_value" : shipment_value,
+            "insurance" : money_insurance,
+            "fragile" : money_fragile,
+            "danger" : money_danger,
+        }
+
+        # 4) EXTRA_STEPS_TIME table 
+        # Dictionary for INSERT
+        variables_extra_steps_time_dict = {
+            "offer_id" : offer_number_generated,
+            "truck_breaks" : time_break,
+            "shipment_transfer_dtd_from" : transfer_time_from,
+            "shipment_transfer_dtd_to" : transfer_time_to,
+            "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to),
+        }
+
+        # 5) GO_GREEN table
+        # Dictionary for INSERT
+        offer_id = {
+            "offer_id" : offer_number_generated,
+        }
+
+        variables_extra_go_green_dict = offer_id | variables_go_green_dict_returned
+
+        # PDF 
+        data_for_pdf = {
+            "offer_id" : offer_number_generated,
+            "europe_date_part" : europe_date_part, 
+            "europe_time_part" : europe_time_part, 
+            "customer_approve_date":customer_approve_date,
+            "customer_approve_time" : customer_approve_time,
+            "agreed_till_str": agreed_till_str,
+            "selected_transport" : selected_transport,
+            "service" : urgency,
+            "service_time": extra_time,
+            "time_zone" : cet_cest_now,
+            "time_overall" : overall_time_db,
+            "expected_delivery" : delivery_dt_formated,
+            "final_price" : final_price,
+            "currency" : selected_currency,
+            "from_country" : country_code_from,
+            "from_city" : from_city,
+            "from_dtd" : from_city_extra_doortdoor,
+            "to_country" : country_code_to,
+            "to_city" : to_city,
+            "to_dtd" : to_city_extra_doortdoor,
+            "distance_length" : distance,
+            "distance_time" : time_journey,
+            "dtd_time" : time_dtd,
+            "distance_cost" : price,
+            "dtd_from" : door_from_result,
+            "dtd_to" : door_to_result,
+            "shipment_value" : shipment_value,
+            "insurance" : money_insurance,
+            "fragile" : money_fragile,
+            "danger" : money_danger,
+            "truck_breaks" : time_break,
+            "shipment_transfer_dtd_from" : transfer_time_from,
+            "shipment_transfer_dtd_to" : transfer_time_to,
+            "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to)
+        }
+
+        # PDF creation
+        data_pdf = create_pdf(data_for_pdf, selected_transport)
+
+    # Final button moved at the end of the code
+    # Reason: the button calls save to DB function -> I need Go Green data to be saved as well
+    with tab_final_1:
+        ''
+        ''
+        st.info("""
+        - Note:
+            - If you want to check the **Analytics** and **Go Green** tabs , do it before this button
+            - This button will **close the results**
+            - **It is final step to confirm the offer -> closing the function**
+            """)
+        
+        st.download_button(
+            "Generate PDF file & Save the offer into DB",
+            width="stretch",
+            icon=":material/sports_score:",
+            data = data_pdf,
+            file_name=f"Offer_{offer_number_generated}.pdf",
+            mime="application/pdf",
+            on_click=lambda: save_to_db_main_stream(offer_number_generated, variables_offer_dict, variables_delivery_dict, variables_costs_dict, variables_extra_steps_time_dict, variables_extra_go_green_dict),
+            key="key_save_button"
+        )
+
+
+# Next steps:
+# posunout ty DB dicts taky sem dolů možná (ať to mám mám u sebe), abych přidal ještě go green, co budu ukládat do DB
+# Formátovat Go green tabulku 
+# Přidat nějaký logo Go Green 
+# Přidat Graf porovnání transport módů
+# Přidat tabulku emissions na kilometrru (ten DF z DB) do expanderu
