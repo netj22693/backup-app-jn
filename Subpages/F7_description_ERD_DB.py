@@ -4,16 +4,18 @@ st.write("# DB & ERD:")
 
 ''
 st.write("""
-- The **data produced by F7 function** are inserted into **4 operational tables** - offer_id is the main connector
+- The **data produced by F7 function** are inserted into **5 operational tables** - :green[**offer_id**] is the main connector/key
 - The **F7 function does mapping** of the values before insert to follow the **logic of lookup tables**
-- This DB design follows standards of Relational DB concept to be **scalable**
+- The **data are used also by F7B function** for **searching across DB** and **analytics stuff**
+- This DB design follows **standards of relational DB** concept to be **scalable**
 """)
 
 ''
 ''
-st.image("Pictures/Function_7/F7_ERD_landscape_v2.svg")
-''
+st.image("Pictures/Function_7/F7_ERD/F7_ERD_landscape_v3.svg")
 
+''
+''
 
 sql_1 = """
 -- JOIN Operational tables (a., b., c., e.)
@@ -42,6 +44,7 @@ FROM function7.offer a
 
 ''
 ''
+st.write("- Example of few JOIN queries:")
 st.code(sql_1, language="sql")
 st.code(sql_2, language="sql")
 
