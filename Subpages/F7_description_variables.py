@@ -5,51 +5,67 @@ st.write("# Variables:")
 
 ''
 st.write("""
-        - **Mind map** of the **Function 7** code
+        - **Mind map** of the **Functions 7 and 7B** code
         - **Simplified overview** to help to understand the **dependencies/relationships in the code** -> which can be beneficial for new development and testing/troubleshooting
         - **Paradigm:** Procedural & Functional programming
         """)
 
-st.image("Pictures/Function_7/F7_desc_function_diagram_v8.svg")
-
 ''
-st.write("""
-        - **7 main segments**:
-            - Data (split into multiple data sets)  
-            - API (dynamic part which influences price)
-            - User Input screen (what user sees and what he selects)
-            - Processing after Submit button (creating of outputs)
-            - User Output screen (visualization of results calculated by the app)
-            - PDF file creation
-            - Mapping of data (accordingly to lookup tables) & Insert into DB
+var_tab1, var_tab2 = st.tabs([
+    "Function 7",
+    "Function 7B"
+])
+
+with var_tab1:
+    st.image("Pictures/Function_7/F7_Variables/F7_desc_function_diagram_v9.svg")
+
+    ''
+    st.write("""
+            - **7 main segments**:
+                - Data (split into multiple data sets)  
+                - API (dynamic part which influences price)
+                - User Input screen (what user sees and what he selects)
+                - Processing after Submit button (creating of outputs)
+                - User Output screen (visualization of results calculated by the app)
+                - PDF file creation
+                - Mapping of data (accordingly to lookup tables) & Insert into DB
+            """)
+
+    ''
+    st.write("""
+            - The **color-coding** visualizes what influences what -> gives a visibility which parts are impacted -> **helps to recognize the level of testing** which is needed
+            """)
+
+
+    ''
+    st.write("""
+            - **High level processing**:
+                1) API request (or cached data from the API) - actual exchange rate -> influences price
+                2) Data from the data sets parsed and visualize on User Input screen 
+                3) User can select accordingly their needs. The screen dynamically changes the options for user accordingly to choice (e.g. 'From' and 'To' cities selected -> app provides Transport options, currency, etc. accordigly to where the cities are located and what are the transport options defined in the dataset)
+                4) Once the customer's needs reflected in the application -> Submit button can be used
+                5) The app then calls relevant functions in the code to calculate and get results
+                6) The app also gets actuall time & date CET/CEST to put the results into context of real time
+                7) Visualization of the results on the User Output screen 
+                8) Build/creation of PDF file
+                9) If users confirm the calculation/offer - pushing button for that
+                10) Producing PDF file - the offer in PDF format
+                11) Data mapping (accordingly to lookup tables)
+                12) Insert of the offer values into DB
+
+                
+            """)
+
+with var_tab2:
+    st.image("Pictures/Function_7/F7_Variables/F7_desc_function_F7B_diagram_v2.svg")
+
+    ''
+    st.write("""
+    - **High level processing**:
+        1) User screen opened -> UI split into tabs -> load of input data for filtering
+        2) Accrodingly to selected search -> SQL queries to DB are performed
+        3) Results based on data in DB are displayed
         """)
-
-''
-st.write("""
-        - The **color-coding** visualizes what influences what -> gives a visibility which parts are impacted -> **helps to recognize the level of testing** which is needed
-        """)
-
-
-''
-st.write("""
-         - **High level processing**:
-            1) API request (or cached data from the API) - actual exchange rate -> influences price
-            2) Data from the data sets parsed and visualize on User Input screen 
-            3) User can select accordingly their needs. The screen dynamically changes the options for user accordingly to choice (e.g. 'From' and 'To' cities selected -> app provides Transport options, currency, etc. accordigly to where the cities are located and what are the transport options defined in the dataset)
-            4) Once the customer's needs reflected in the application -> Submit button can be used
-            5) The app then calls relevant functions in the code to calculate and get results
-            6) The app also gets actuall time & date CET/CEST to put the results into context of real time
-            7) Visualization of the results on the User Output screen 
-            8) Build/creation of PDF file
-            9) If users confirm the calculation/offer - pushing button for that
-            10) Producing PDF file - the offer in PDF format
-            11) Data mapping (accordingly to lookup tables)
-            12) Insert of the offer values into DB
-
-            
-        """)
-
-
 
 # ===== Page navigation at the bottom ======
 ''
