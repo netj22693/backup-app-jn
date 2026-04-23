@@ -2178,7 +2178,7 @@ if shipment_value is not None:
 
 ''
 st.write("------")
-if st.button("Submit", width="stretch"):
+if st.button("Submit", width="stretch", icon=":material/apps:"):
 
     # Firstly, validation if all inputs are provided properly
     def input_validation(from_city,to_city):
@@ -3787,7 +3787,7 @@ if st.button("Submit", width="stretch"):
         ''
         st.info("""
         - Note:
-            - If you want to check the **Analytics** and **Go Green** tabs , do it before this button
+            - If you want to check the **Analytics** and **Go Green** tabs, do it before this button
             - This button will **close the results**
             - **It is final step to confirm the offer -> closing the function**
             """)
