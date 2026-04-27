@@ -22,6 +22,13 @@ FAQ = [
         "function_id": None
     },
     {
+        "q": "How the application works",
+        "answer_id": "overview",
+        "tags": ["overview", "general"],
+        "keywords": ["app", "functions", "purpose", "do", "application works"],
+        "function_id": None
+    },
+    {
         "q": "How many API this application has",
         "answer_id": "generic_APIs",
         "tags": ["API", "overview", "general"],
