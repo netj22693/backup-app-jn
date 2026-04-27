@@ -26,4 +26,4 @@ class Assets:
         f6_description = "https://dataparsing.streamlit.app/F6_description_API"
         f7_description = "https://dataparsing.streamlit.app/F7_description"
         f7_description_erd = "https://dataparsing.streamlit.app/F7_description_ERD_DB"
-        f8_description = "https://dataparsing.streamlit.app/F8_FUNCTION_company_book"
+        f8_description = "https://dataparsing.streamlit.app/F8_description"
