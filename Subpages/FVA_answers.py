@@ -146,8 +146,8 @@ Tip: You can also use just simple F and number of function you are interested in
 "text": f"""**Function 4**: Mapping of invoice from Function 3 -> change of file format.\n\n
 - XML → JSON 
 - or JSON → XML\n\n
-There is a log stored in DB about the change.\n\n
-More details can be found in the function description [here]({Assets.Links.f5_description}) :point_left:""",
+There is a log about the change stored in DB.\n\n
+More details can be found in the function description [here]({Assets.Links.f3_description}) :point_left:""",
 "image": Assets.Images.uml_f3_f3b_f4
 },
 "function_5" : {
