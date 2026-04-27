@@ -82,12 +82,12 @@ It is described not only by text but also by modeling languages like **BPMN, Arc
 - ...
 \n\n
 
-Or **questions related to particular functions**:
+Or **questions related to specific functions**:
 - What does Function 1 do?
 - How does the Function 1 work?
 - ...
 
-:relaxed:
+Tip: You can also use just simple F and number of function you are interested in -> **F7** :relaxed:
 """,
 "image": None
 },
