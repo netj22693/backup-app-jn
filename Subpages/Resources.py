@@ -1,7 +1,7 @@
 # Purpose: to store image paths and links as variables -> for images used both in APP and Virtual Assistant
 
 
-HELLO_STATEMENT = """👋 Hi! I'm your FAQ bot. Ask me anything about the application.\n\n You can ask:
+HELLO_STATEMENT = """👋 Hi! I'm your FAQ bot. You can ask me:
 
 - Questions about the application 
 - Questions releated to specific functions  
