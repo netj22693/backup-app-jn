@@ -1,4 +1,5 @@
 import streamlit as st
+from Subpages.Resources import Assets
 
 
 st.write("# Welcome!")
@@ -61,22 +62,22 @@ with tab2:
 	st.write("###### UML - Overview of the functions:")
 	''
 	# Border Width: 10
-	st.image("Pictures/Overall_UML_F1 and F2_v2.svg")
+	st.image(Assets.Images.uml_f1_f2)
 	''
-	st.image("Pictures/Overall_UML_F3 and F4_v3.svg")
+	st.image(Assets.Images.uml_f3_f3b_f4)
 	''
-	st.image("Pictures/Overall_UML_F5.svg")
+	st.image(Assets.Images.uml_f5)
 	''
-	st.image("Pictures/Overall_UML_F6.svg")
+	st.image(Assets.Images.uml_f6)
 	''
-	st.image("Pictures/Overall_UML_F7_v3.svg")
+	st.image(Assets.Images.uml_f7_f7b)
 	''
-	st.image("Pictures/Overall_UML_F8_v3.svg")
+	st.image(Assets.Images.uml_f8)
 
 with tab3:
 	st.write("###### Architecture landscape:")
 	''
-	st.image("Pictures/App_landscape_architecture_v5.svg")
+	st.image(Assets.Images.architecture_landscape)
 
 
 # Bug - expander
@@ -175,6 +176,11 @@ with st.expander(
 
 	''
 	st.write("Key highlights (* **vX.X** -> version of application):")
+	''
+	st.write("""
+	- Virtual Assistant (Chatbot):
+		- **v60.2** - VA_V1 pilot released - 27-Apr-2026
+	""")
 
 	''
 	st.write("""

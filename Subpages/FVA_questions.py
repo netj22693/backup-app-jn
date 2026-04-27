@@ -1,6 +1,13 @@
 FAQ = [
     #  ======= General questions =======
     {
+        "q": "Hi, Hello",
+        "answer_id": "hi_hello",
+        "tags": ["hi", "hello"],
+        "keywords": ["hi","hello"],
+        "function_id": None
+    },
+    {
         "q": "What does the application do?",
         "answer_id": "overview",
         "tags": ["overview", "general"],
@@ -28,7 +35,57 @@ FAQ = [
         "keywords": ["functions", "count", "how many", "number"],
         "function_id": None
     },
+    {
+        "q": "What are the functions",
+        "answer_id": "functions_count",
+        "tags": ["functions", "features"],
+        "keywords": ["functions", "what"],
+        "function_id": None
+    },
+    {
+        "q": "What are the principles of this app",
+        "answer_id": "overview",
+        "tags": ["functions", "features", "general"],
+        "keywords": ["principle", "principles"],
+        "function_id": None
+    },
+    {
+        "q": "Where can I get more info/details about the functions",
+        "answer_id": "more_details",
+        "tags": ["functions", "details", "general", "info"],
+        "keywords": ["details", "info", "functions"],
+        "function_id": None
+    },
+    {
+        "q": "What is XSD / XML Schema",
+        "answer_id": "xsd",
+        "tags": ["xsd"],
+        "keywords": ["xsd", "parsing", "xml schema"],
+        "function_id": None
+    },
+    {
+        "q": "Example of questions",
+        "answer_id": "example_questions",
+        "tags": ["questions"],
+        "keywords": ["example", "questions", "question"],
+        "function_id": None
+    },
+    {
+        "q": "When the application was released",
+        "answer_id": "build_app",
+        "tags": ["release", "history"],
+        "keywords": ["release", "released", "history"],
+        "function_id": None
+    },
+    {
+        "q": "How long the application has been built",
+        "answer_id": "build_app",
+        "tags": ["release", "history", "built", "build"],
+        "keywords": ["release", "released", "history", "built", "build", "long"],
+        "function_id": None
+    },
     #  ======= Function related questions =======
+    #  ---- Function 1 ----
     {
         "q": "What does Function 1 do?",
         "answer_id": "function_1",
@@ -37,12 +94,28 @@ FAQ = [
         "function_id": "1"
     },
     {
+        "q": "How does the Function 1 work?",
+        "answer_id": "function_1_insight",
+        "tags": ["function_1", "functions","how it work"],
+        "keywords": ["function", "function 1", "f1", "xml", "how","work","principle","insight"],
+        "function_id": "1"
+    },
+    #  ---- Function 2 ----
+    {
         "q": "What does Function 2 do?",
         "answer_id": "function_2",
         "tags": ["function_2", "functions"],
         "keywords": ["function", "function 2", "f2", "xml", "parsing"],
         "function_id": "2"
     },
+    {
+        "q": "How does the Function 2 work?",
+        "answer_id": "function_2_insight",
+        "tags": ["function_2", "functions"],
+        "keywords": ["function", "function 2", "f2", "xml", "parsing", "how", "work","principle","insight"],
+        "function_id": "2"
+    },
+    #  ---- Function 3 ----
     {
         "q": "What does Function 3 do?",
         "answer_id": "function_3",

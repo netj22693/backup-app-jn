@@ -17,7 +17,7 @@ testing = st.Page(
 app_purpose = st.Page(
     "Subpages/Purpose_of_app.py",
     title="Purpose of this application",
-    icon= ":material/code:"
+    icon= ":material/home:"
     )
 
 app_description_ArM = st.Page(
@@ -214,6 +214,12 @@ function_8_desc = st.Page(
     icon= ":material/code:"
 )
 
+main_virtual_assistant = st.Page(
+    "Subpages/FVA_main_virtual_assistant.py",
+    title="Virtual Assistant",
+    icon= ":material/smart_toy:"
+)
+
 
 
 
@@ -229,6 +235,7 @@ pg = st.navigation(
     {
         "About this application": [
             app_purpose,
+            main_virtual_assistant
             ],
             
         # "TESTING": [testing, testuju_stsession, test_7],
