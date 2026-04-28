@@ -1,6 +1,7 @@
 import streamlit as st
 # import of xsd structure from different file
 from Subpages.F1_F2_xml_structures import xsd_structure
+from Subpages.Resources import Assets
 
 
 # ========================== Screen ============================
@@ -180,7 +181,7 @@ st.write("""
 
 ''
 ''
-st.image("Pictures/Function_2/F2_diagram_xml_xsd_validation.svg")
+st.image(Assets.Images.f2_xml_xsd_validation)
 
 ''
 st.write("------")

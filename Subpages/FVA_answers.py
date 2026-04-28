@@ -4,9 +4,56 @@ from Subpages.Resources import HELLO_STATEMENT
 
 ANSWERS = {
 #  ======= General answers =======
-"hi_hello": {
+"va_hi_hello": {
     "text": f"{HELLO_STATEMENT}",
     "image": None
+},
+
+"va_name": {
+    "text": "I do not have specific name, I am just your virtual assistant :blush:",
+    "image": None
+},
+
+"va_age": {
+"text": """I was born in **April 2026**. Within **v60.2** version of the application :innocent::fire:.\n\n
+If you are interested in releases, go to main page -> Expander: **Release notes** :green_heart:
+""",
+"image": None
+},
+
+"va_mood": {
+    "text": "I am doing good :blush::smirk::green_heart:",
+    "image": None
+},
+
+"va_principle": {
+"text": f"""The chatbot works on the following principle:\n\n
+- **Simply**: The bot mathematically finds the most similar predefined question and returns the corresponding prepared response.\n\n
+- **Detailed**:penguin::
+    - User enters a question
+    - The bot takes all FAQ questions (predefined in the code as dictionary)
+    - Text is split into words and converts questions into numerical vectors - :blue[**TfidfVectorizer()**]
+    - The user input is transformed into a vector using the same logic
+    - Similarity between the user question and all FAQ questions - :blue[**cosine_similarity()**]
+    - Additional custom scoring is applied using (In dictionary):
+        - keywords
+        - tags
+        - function_id
+    - The FAQ item with the highest final score is selected
+    - Responses can contain:
+        - text
+        - images
+        - links\n\n
+
+- :rocket: **LLM** - currently there is **no** LLM behind. The bot use uses only mathematical principle based on functions from sklearn / Scikit-Learn [here]({Assets.Links.sklearn_library}) :point_left:.
+""",
+"image": Assets.Images.va_variables
+},
+
+"llm_principle": {
+"text": f""":rocket: **LLM** - currently there is **no** LLM behind. The bot use uses only mathematical principle based on functions from sklearn / Scikit-Learn [here]({Assets.Links.sklearn_library}) :point_left:.
+""",
+"image": None
 },
 
 
@@ -58,20 +105,6 @@ It is described not only by text but also by modeling languages like **BPMN, Arc
 },
 
 
-# XSD - used by F2 and F3
-"xsd": {
-"text": f"""**XSD** or also known as **XML Schema is:**
-- .xsd file which describes rules of XML file
-- XSD is basically template based on which you can compare, if XML file follows all requirements it should have - defined structure, defined data and their types
-- **If XML is not fully in line with XSD, there is a fallback logic. Reason: it prevents code from crashing. :ok_hand:**
-
-👉 You can find more details:
-- **Function 2**: [here]({Assets.Links.f2_xml_xsd})
-- **Function 3**: [here]({Assets.Links.f3_f4_xml_xsd})
-""",
-"image": None
-},
-
 "example_questions": {
 "text": f"""You can ask **generic questions about the application**, for example:
 - What does the application do?
@@ -103,6 +136,44 @@ Tip: You can also use just simple F and number of function you are interested in
 "image": None
 },
 
+#  ---- What is question ----
+"what_is_xml" : {
+"text": f"""
+**Extensible Markup Language (XML)** is a markup language and file format for storing, transmitting, and reconstructing data. It defines a set of rules for encoding documents in a format that is both human-readable and machine-readable. 
+
+👉 You can find more details how XML is used in this application:
+- **Functions 1 & 2**: [here]({Assets.Links.f2_xml_xsd})
+- **Function 3**: [here]({Assets.Links.f3_f4_xml_xsd})
+""",
+"image": None
+},
+
+# XSD - used by F2 and F3
+"what_is_xsd": {
+"text": f"""**XSD** or also known as **XML Schema is:**
+- .xsd file which describes rules of XML file
+- XSD is basically template based on which you can compare, if XML file follows all requirements it should have - defined structure, defined data and their types
+- **If XML is not fully in line with XSD, there is a fallback logic. Reason: it prevents code from crashing. :ok_hand:**
+
+👉 You can find more details:
+- **Function 1 & 2**: [here]({Assets.Links.f2_xml_xsd}) 
+- **Function 2** XML against XSD validation: [here]({Assets.Links.f2_xml_xsd_validation})
+- **Function 3**: [here]({Assets.Links.f3_f4_xml_xsd})
+""",
+"image": Assets.Images.f2_xml_xsd_validation
+},
+
+"what_is_json" : {
+"text": f"""
+**JSON (JavaScript Object Notation)** is a lightweight, text-based data-interchange format used to store and transport data, often between a server and a web application. It is language-independent, human-readable, and based on **key/value pairs**. It is widely used in **API outputs**, configuration files, and AJAX, serving as a faster, modern alternative to XML. 
+
+👉 You can find more details how JSON is used in this application:
+- **Function 3 and 4**: [here]({Assets.Links.f3_f4_json}) - building our own JSON
+- **Function 5**: [here]({Assets.Links.f5_description}) - JSON used in API from external system
+- **Function 6**: [here]({Assets.Links.f6_description}) - JSON used in API from external system
+""",
+"image": None
+},
 
 
 #  ======= Function related answers =======

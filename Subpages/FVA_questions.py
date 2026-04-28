@@ -1,12 +1,135 @@
 FAQ = [
     #  ======= General questions =======
+    #  ---- Questions to the bot ----
     {
         "q": "Hi, Hello",
-        "answer_id": "hi_hello",
+        "answer_id": "va_hi_hello",
         "tags": ["hi", "hello"],
         "keywords": ["hi","hello"],
         "function_id": None
     },
+    {
+        "q": "What is your name",
+        "answer_id": "va_name",
+        "tags": ["name"],
+        "keywords": ["your","name"],
+        "function_id": None
+    },
+    {
+        "q": "How old are you",
+        "answer_id": "va_age",
+        "tags": ["old"],
+        "keywords": ["old"],
+        "function_id": None
+    },
+    {
+        "q": "How are you, how are you doing",
+        "answer_id": "va_mood",
+        "tags": ["mood"],
+        "keywords": ["how", "are", "doing","mood"],
+        "function_id": None
+    },
+    {
+        "q": "how do you feel",
+        "answer_id": "va_mood",
+        "tags": ["mood"],
+        "keywords": ["how", "feel", "feeling"],
+        "function_id": None
+    },
+    {
+        "q": "How is it going",
+        "answer_id": "va_mood",
+        "tags": ["hi", "hello", "going"],
+        "keywords": ["hi","going","is","it","how"],
+        "function_id": None
+    },
+    {
+        "q": "What is your mood",
+        "answer_id": "va_mood",
+        "tags": ["mood"],
+        "keywords": ["how","doing","mood"],
+        "function_id": None
+    },
+    {
+        "q": "How do you work",
+        "answer_id": "va_principle",
+        "tags": ["you","principle"],
+        "keywords": ["you"],
+        "function_id": None
+    },
+    {
+        "q": "How does the bot work / virtual assistant",
+        "answer_id": "va_principle",
+        "tags": ["bot","virtual assistant","principle"],
+        "keywords": ["bot", "work", "virtual assistant"],
+        "function_id": None
+    },
+    {
+        "q": "What is the principle of the bot / virtual assistant",
+        "answer_id": "va_principle",
+        "tags": ["bot","virtual assistant","principle"],
+        "keywords": ["bot", "work", "virtual assistant"],
+        "function_id": None
+    },
+    {
+        "q": "Is there LLM used",
+        "answer_id": "llm_principle",
+        "tags": ["llm","principle"],
+        "keywords": ["llm", "used"],
+        "function_id": None
+    },
+    {
+        "q": "Do you use LLM",
+        "answer_id": "llm_principle",
+        "tags": ["llm","principle"],
+        "keywords": ["llm", "use"],
+        "function_id": None
+    },
+    {
+        "q": "Do you use AI",
+        "answer_id": "llm_principle",
+        "tags": ["ai"],
+        "keywords": ["ai"],
+        "function_id": None
+    },
+    {
+        "q": "Does the bot / virtual assitant work with LLM",
+        "answer_id": "llm_principle",
+        "tags": ["llm","principle"],
+        "keywords": ["llm", "used", "work"],
+        "function_id": None
+    },
+    #  ---- Generic, what is ----
+    {
+        "q": "What is XSD",
+        "answer_id": "what_is_xsd",
+        "tags": ["xsd"],
+        "keywords": ["xsd"],
+        "function_id": None
+    },
+    {
+        "q": "What is XML Schema",
+        "answer_id": "what_is_xsd",
+        "tags": ["schema", "xml schema"],
+        "keywords": ["schema", "xml", "xml schema"],
+        "function_id": None
+    },
+    {
+        "q": "What is XML",
+        "answer_id": "what_is_xml",
+        "tags": ["xml"],
+        "keywords": ["what", "xml"],
+        "function_id": None
+    },
+    {
+        "q": "What is JSON",
+        "answer_id": "what_is_json",
+        "tags": ["json"],
+        "keywords": ["what", "json"],
+        "function_id": None
+    },
+
+    #  ---- Questions to the application - functioning ----
     {
         "q": "What does the application do?",
         "answer_id": "overview",
@@ -26,6 +149,13 @@ FAQ = [
         "answer_id": "overview",
         "tags": ["overview", "general"],
         "keywords": ["app", "functions", "purpose", "do", "application works"],
+        "function_id": None
+    },
+    {
+        "q": "What is the application architecture",
+        "answer_id": "overview",
+        "tags": ["overview", "general", "architecture"],
+        "keywords": ["app", "application", "architecture"],
         "function_id": None
     },
     {
@@ -64,13 +194,6 @@ FAQ = [
         "function_id": None
     },
     {
-        "q": "What is XSD / XML Schema",
-        "answer_id": "xsd",
-        "tags": ["xsd"],
-        "keywords": ["xsd", "parsing", "xml schema"],
-        "function_id": None
-    },
-    {
         "q": "Example of questions",
         "answer_id": "example_questions",
         "tags": ["questions"],
@@ -90,6 +213,13 @@ FAQ = [
         "tags": ["release", "history", "built", "build"],
         "keywords": ["release", "released", "history", "built", "build", "long"],
         "function_id": None
+    },
+    {
+        "q": "What is the best/biggest function",
+        "answer_id": "function_7",
+        "tags": ["best","function", "bigest"],
+        "keywords": ["best","function","bigest"],
+        "function_id": 7
     },
     #  ======= Function related questions =======
     #  ---- Function 1 ----

@@ -1,4 +1,5 @@
 import streamlit as st
+from Subpages.Resources import Assets
 
 st.write("# UML diagrams:")
 
@@ -211,7 +212,7 @@ with tab4:
 
     ''
     ''
-    st.image("Pictures/Function_2/F2_diagram_xml_xsd_validation.svg")
+    st.image(Assets.Images.f2_xml_xsd_validation)
 
 
 # ===== Page navigation at the bottom ======
