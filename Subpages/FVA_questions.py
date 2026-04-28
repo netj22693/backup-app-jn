@@ -159,6 +159,13 @@ FAQ = [
         "function_id": None
     },
     {
+        "q": "What is the architecture of this app / application",
+        "answer_id": "overview",
+        "tags": ["overview", "general", "architecture"],
+        "keywords": ["app", "application", "architecture"],
+        "function_id": None
+    },
+    {
         "q": "How many API this application has",
         "answer_id": "generic_APIs",
         "tags": ["API", "overview", "general"],
