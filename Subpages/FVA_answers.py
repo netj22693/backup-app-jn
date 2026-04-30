@@ -16,7 +16,7 @@ ANSWERS = {
 
 "va_age": {
 "text": """I was born in **April 2026**. Within **v60.2** version of the application :innocent::fire:.\n\n
-If you are interested in releases, go to main page -> Expander: **Release notes** :green_heart:
+If you are interested in releases, go to main page :house:-> Expander: **Release notes** :green_heart:
 """,
 "image": None
 },
@@ -91,6 +91,18 @@ If you are interested in releases, go to main page -> Expander: **Release notes*
     "image": Assets.Images.architecture_landscape
 },
 
+"db_info": {
+"text": f"""Information about DB:
+- The application uses **PostgreSQL DB** which runs on **NEON DB cloud**.
+- The relations **READ/WRITE** per functions can be seen in **the Archimate diagram**.\n\n
+👉 You can find more details about DB structures:
+- **Functions 3 & 4**: [here]({Assets.Links.f3_f4_description_erd})
+- **Function 7 & 7B**: [here]({Assets.Links.f7_description_erd})
+- **Function 8**: [here]({Assets.Links.f8_descriptin_erd})
+""",
+"image": Assets.Images.archimate_main
+},
+
 
 "more_details": {
 "text": """Each function has subpages called **Description** providing more details/info:
@@ -106,7 +118,13 @@ It is described not only by text but also by modeling languages like **BPMN, Arc
 
 
 "example_questions": {
-"text": f"""You can ask **generic questions about the application**, for example:
+"text": f"""You can ask me and I will answer and explain:\n\n
+Questions **about me (chatbot**), for example:
+- How do you work?
+- How old the chatbot is?
+
+\n\n
+Or **generic questions about the application**, for example:
 - What does the application do?
 - How does the application work?
 - Where can I get more info/details about the functions?
@@ -120,7 +138,7 @@ Or **questions related to specific functions**:
 - How does the Function 1 work?
 - ...
 
-Tip: You can also use just simple F and number of function you are interested in -> **F7** :relaxed:
+**Tip:** You can also use just simple F and number of function you are interested in -> **F7** :relaxed:
 """,
 "image": None
 },
@@ -131,7 +149,15 @@ Tip: You can also use just simple F and number of function you are interested in
 - The application has been built since **February 2025**. 
 - It started as a small project for fun 
 - Function 1 and Function 2 were first and released together 
-- More details can be see on the main page - Expander: **Release notes** :green_heart:
+- More details can be see on the main page :house: - Expander: **Release notes** :green_heart:
+""",
+"image": None
+},
+
+"author" : {
+"text": f"""
+- The application was built by Jan Netolicka. :wave::v:
+- LinkedIn profile [Here]({Assets.Links.linked_in}) :panda_face:
 """,
 "image": None
 },
@@ -157,7 +183,7 @@ Tip: You can also use just simple F and number of function you are interested in
 
 👉 You can find more details:
 - **Function 1 & 2**: [here]({Assets.Links.f2_xml_xsd}) 
-- **Function 2** XML against XSD validation: [here]({Assets.Links.f2_xml_xsd_validation})
+- **Function 2 - XML against XSD validation**: [here]({Assets.Links.f2_xml_xsd_validation})
 - **Function 3**: [here]({Assets.Links.f3_f4_xml_xsd})
 """,
 "image": Assets.Images.f2_xml_xsd_validation
@@ -188,11 +214,13 @@ Tip: You can also use just simple F and number of function you are interested in
 "text": "**Function 1** works on simple principle of download button which downloads selected XML file to user's device (usually Downloads folder). That's it. :wink:",
 "image": None
 },
+
 #  ---- Function 2 ----
 "function_2": {
 "text": "**Function 2** (Parsing, Validation, Visualization) - Upload XML, parse and visualize data.",
 "image": Assets.Images.uml_f1_f2
 },
+
 "function_2_insight": {
 "text": """**Function 2** works on **5 steps** principle:
 
@@ -204,6 +232,15 @@ Tip: You can also use just simple F and number of function you are interested in
 """,
 "image": None
 },
+
+"function_2_xml" : {
+"text": f"""**XML** for **Function 2** can be donwloaded from **Function 1**.\n\n
+
+👉 **Funtion 1**: [here]({Assets.Links.f1_function})
+""",
+"image": None
+},
+
 #  ---- Function 3 ----
 "function_3": {
 "text": "**Function 3**: Creation of invoice based on user inputs (either XML or JSON). Possibility to create your own invoice based on predefined options. Fulfill the UI form and select if to generate XML or JSON. The final data are stored in DB",

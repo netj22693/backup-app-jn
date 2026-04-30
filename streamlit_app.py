@@ -1,4 +1,5 @@
 import streamlit as st
+from Subpages.Resources import Assets
 
 
  # ============= LOGO - SHARED ON ALL PAGES ==========
@@ -292,5 +293,5 @@ pg.run()
 
 # ============= side bar caption ===================
 st.sidebar.caption(
-    "Do you like this app? :) LinkedIn [Here](https://www.linkedin.com/in/jan-netolicka-12209a221/)"
+    f"Do you like this app? :) LinkedIn [Here]({Assets.Links.linked_in})"
 )

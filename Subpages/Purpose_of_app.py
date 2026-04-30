@@ -56,7 +56,7 @@ tab1,tab2, tab3 = st.tabs([
 with tab1:
 	st.write("###### ArchiMate - Overview of the functions:")
 	''
-	st.image("Pictures/Archimate_functions_overview_v12.svg")
+	st.image(Assets.Images.archimate_main)
 	
 with tab2:
 	st.write("###### UML - Overview of the functions:")
@@ -122,7 +122,7 @@ with st.expander(
 ):	
 	''
 	st.image("Pictures/linkedin-logo-2013-1.svg", width=95)
-	st.write("- Do you like this app? :) LinkedIn profile [Here](https://www.linkedin.com/in/jan-netolicka-12209a221/)")
+	st.write(f"- Do you like this app? :) LinkedIn profile [Here]({Assets.Links.linked_in})")
 	st.write("- Author: Jan Netolicka")
 
 
@@ -179,6 +179,7 @@ with st.expander(
 	''
 	st.write("""
 	- Virtual Assistant (Chatbot):
+		- **v60.4** - Extended: more questions to the Chatbot & App - 30-Apr-2026
 		- **v60.3** - Extended: questions related to the Chatbot, XML, XSD, JSON - 28-Apr-2026
 		- **v60.2** - VA pilot released - 27-Apr-2026
 	""")

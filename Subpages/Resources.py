@@ -13,6 +13,7 @@ class Assets:
     class Images:
         va_variables = "Pictures/Virtual_asistant/VA_principle_variables.svg"
         architecture_landscape = "Pictures/App_landscape_architecture_v5.svg"
+        archimate_main = "Pictures/Archimate_functions_overview_v12.svg"
         # UML
         uml_f1_f2 = "Pictures/Overall_UML_F1 and F2_v2.svg"
         uml_f3_f3b_f4 = "Pictures/Overall_UML_F3 and F4_v3.svg"
@@ -25,7 +26,11 @@ class Assets:
 
 
     class Links:
+        linked_in = "https://www.linkedin.com/in/jan-netolicka-12209a221/"
         sklearn_library = "https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html"
+        # Functions
+        f1_function = "https://dataparsing.streamlit.app/F1_FUNCTION_XML_dowload"
+        #Description
         f2_xml_xsd = "https://dataparsing.streamlit.app/~/+/F1_F2_description_XML_XSD#xsd-xml-schema"
         f2_xml_xsd_validation = "https://dataparsing.streamlit.app/~/+/F1_F2_description_XML_XSD#xml-against-xsd-validation"
         f3_f4_xml_xsd = "https://dataparsing.streamlit.app/~/+/F3_description_XML#xsd-xml-schema"
@@ -34,5 +39,8 @@ class Assets:
         f5_description = "https://dataparsing.streamlit.app/F5_description_API"
         f6_description = "https://dataparsing.streamlit.app/F6_description_API"
         f7_description = "https://dataparsing.streamlit.app/F7_description"
-        f7_description_erd = "https://dataparsing.streamlit.app/F7_description_ERD_DB"
         f8_description = "https://dataparsing.streamlit.app/F8_description"
+        # ERD
+        f3_f4_description_erd = "https://dataparsing.streamlit.app/F3_ERD"
+        f7_description_erd = "https://dataparsing.streamlit.app/F7_description_ERD_DB"
+        f8_descriptin_erd = "https://dataparsing.streamlit.app/F8_description#db-structure-erd"

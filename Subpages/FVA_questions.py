@@ -19,21 +19,35 @@ FAQ = [
         "q": "How old are you",
         "answer_id": "va_age",
         "tags": ["old"],
-        "keywords": ["old"],
+        "keywords": ["old", "are", "you"],
         "function_id": None
     },
     {
-        "q": "How are you, how are you doing",
+        "q": "How old the chatbot is",
+        "answer_id": "va_age",
+        "tags": ["old"],
+        "keywords": ["old", "chatbot","bot","is"],
+        "function_id": None
+    },
+    {
+        "q": "How are you",
         "answer_id": "va_mood",
         "tags": ["mood"],
-        "keywords": ["how", "are", "doing","mood"],
+        "keywords": ["how", "are", "you"],
+        "function_id": None
+    },
+    {
+        "q": "How are you doing",
+        "answer_id": "va_mood",
+        "tags": ["mood"],
+        "keywords": ["how", "are", "you", "doing"],
         "function_id": None
     },
     {
         "q": "how do you feel",
         "answer_id": "va_mood",
-        "tags": ["mood"],
-        "keywords": ["how", "feel", "feeling"],
+        "tags": ["feel"],
+        "keywords": ["how","do","you","feel"],
         "function_id": None
     },
     {
@@ -47,14 +61,21 @@ FAQ = [
         "q": "What is your mood",
         "answer_id": "va_mood",
         "tags": ["mood"],
-        "keywords": ["how","doing","mood"],
+        "keywords": ["what","is","your","mood"],
         "function_id": None
     },
     {
         "q": "How do you work",
         "answer_id": "va_principle",
         "tags": ["you","principle"],
-        "keywords": ["you"],
+        "keywords": ["how","you","work"],
+        "function_id": None
+    },
+    {
+        "q": "How are you working",
+        "answer_id": "va_principle",
+        "tags": ["you","principle"],
+        "keywords": ["you","how","working"],
         "function_id": None
     },
     {
@@ -62,6 +83,20 @@ FAQ = [
         "answer_id": "va_principle",
         "tags": ["bot","virtual assistant","principle"],
         "keywords": ["bot", "work", "virtual assistant"],
+        "function_id": None
+    },
+    {
+        "q": "What are you doing",
+        "answer_id": "example_questions",
+        "tags": ["bot","doing"],
+        "keywords": ["what", "are", "you", "doing"],
+        "function_id": None
+    },
+    {
+        "q": "What do you do",
+        "answer_id": "example_questions",
+        "tags": ["bot","do"],
+        "keywords": ["what", "do", "you", "do"],
         "function_id": None
     },
     {
@@ -89,14 +124,14 @@ FAQ = [
         "q": "Do you use AI",
         "answer_id": "llm_principle",
         "tags": ["ai"],
-        "keywords": ["ai"],
+        "keywords": ["do","you", "use", "ai"],
         "function_id": None
     },
     {
-        "q": "Does the bot / virtual assitant work with LLM",
+        "q": "Does the bot / virtual assistant work with LLM",
         "answer_id": "llm_principle",
         "tags": ["llm","principle"],
-        "keywords": ["llm", "used", "work"],
+        "keywords": ["llm","work","bot","virtual","assistant"],
         "function_id": None
     },
     #  ---- Generic, what is ----
@@ -134,21 +169,28 @@ FAQ = [
         "q": "What does the application do?",
         "answer_id": "overview",
         "tags": ["overview", "general"],
-        "keywords": ["app", "functions", "purpose", "do"],
+        "keywords": ["what", "does", "application", "do"],
         "function_id": None
     },
     {
-        "q": "How does the application work",
+        "q": "What does the app do?",
         "answer_id": "overview",
         "tags": ["overview", "general"],
-        "keywords": ["app", "functions", "purpose", "do"],
+        "keywords": ["what", "does", "app", "do"],
         "function_id": None
     },
     {
-        "q": "How the application works",
+        "q": "How the app / application works",
         "answer_id": "overview",
         "tags": ["overview", "general"],
-        "keywords": ["app", "functions", "purpose", "do", "application works"],
+        "keywords": ["how", "app", "application", "works"],
+        "function_id": None
+    },
+    {
+        "q": "How does the app / application work",
+        "answer_id": "overview",
+        "tags": ["overview", "general"],
+        "keywords": ["how", "does", "app", "application", "work"],
         "function_id": None
     },
     {
@@ -166,17 +208,31 @@ FAQ = [
         "function_id": None
     },
     {
+        "q": "What is the architecture",
+        "answer_id": "overview",
+        "tags": ["architecture"],
+        "keywords": ["what", "is", "architecture"],
+        "function_id": None
+    },
+    {
         "q": "How many API this application has",
         "answer_id": "generic_APIs",
         "tags": ["API", "overview", "general"],
-        "keywords": ["api", "apis", "rest", "rest api","rest"],
+        "keywords": ["how","many", "api", "apis", "application"],
+        "function_id": "8"
+    },
+    {
+        "q": "How many API",
+        "answer_id": "generic_APIs",
+        "tags": ["API", "overview", "general"],
+        "keywords": ["how","many", "api", "apis"],
         "function_id": "8"
     },
     {
         "q": "How many functions is there?",
         "answer_id": "functions_count",
         "tags": ["functions", "features"],
-        "keywords": ["functions", "count", "how many", "number"],
+        "keywords": ["functions", "how", "many"],
         "function_id": None
     },
     {
@@ -187,10 +243,17 @@ FAQ = [
         "function_id": None
     },
     {
-        "q": "What are the principles of this app",
+        "q": "What are the principles of this app /application",
         "answer_id": "overview",
         "tags": ["functions", "features", "general"],
-        "keywords": ["principle", "principles"],
+        "keywords": ["principle", "principles", "app", "application"],
+        "function_id": None
+    },
+    {
+        "q": "What is the principle of this app /application",
+        "answer_id": "overview",
+        "tags": ["functions", "features", "general"],
+        "keywords": ["principle", "app", "application"],
         "function_id": None
     },
     {
@@ -208,10 +271,31 @@ FAQ = [
         "function_id": None
     },
     {
-        "q": "When the application was released",
+        "q": "What can you / chatbot help with",
+        "answer_id": "example_questions",
+        "tags": ["questions"],
+        "keywords": ["help","with","you","chatbot"],
+        "function_id": None
+    },
+    {
+        "q": "When the app / application was released",
         "answer_id": "build_app",
         "tags": ["release", "history"],
-        "keywords": ["release", "released", "history"],
+        "keywords": ["release", "released", "app", "application"],
+        "function_id": None
+    },
+    {
+        "q": "When the application was built",
+        "answer_id": "build_app",
+        "tags": ["release", "history"],
+        "keywords": ["when", "built", "app", "application"],
+        "function_id": None
+    },
+    {
+        "q": "What is the history of the app / application",
+        "answer_id": "build_app",
+        "tags": ["release", "history"],
+        "keywords": ["what", "history", "app", "application"],
         "function_id": None
     },
     {
@@ -228,20 +312,63 @@ FAQ = [
         "keywords": ["best","function","bigest"],
         "function_id": 7
     },
+    {
+        "q": "Who made this application / app",
+        "answer_id": "author",
+        "tags": ["made","application","app"],
+        "keywords": ["made","application","app"],
+        "function_id": None
+    },
+    {
+        "q": "Who create this application / app",
+        "answer_id": "author",
+        "tags": ["create","application","app"],
+        "keywords": ["create","application","app"],
+        "function_id": None
+    },
+    {
+        "q": "Who is the author of this application / app",
+        "answer_id": "author",
+        "tags": ["who","author"],
+        "keywords": ["who","author","application","app"],
+        "function_id": None
+    },
+    {
+        "q": "Who built the app / application",
+        "answer_id": "author",
+        "tags": ["who","built"],
+        "keywords": ["who","built","application","app"],
+        "function_id": None
+    },
+    {
+        "q": "What is the DB / database used",
+        "answer_id": "db_info",
+        "tags": ["db","database"],
+        "keywords": ["what","db","database"],
+        "function_id": None
+    },
+    {
+        "q": "PostgreSQL postgre",
+        "answer_id": "db_info",
+        "tags": ["db","database", "postgre", "postgreSQL"],
+        "keywords": ["postgre", "postgreSQL"],
+        "function_id": None
+    },
+
     #  ======= Function related questions =======
     #  ---- Function 1 ----
     {
         "q": "What does Function 1 do?",
         "answer_id": "function_1",
         "tags": ["function_1", "functions"],
-        "keywords": ["function", "function 1", "f1", "xml"],
+        "keywords": ["what","function", "function 1", "1" "f1"],
         "function_id": "1"
     },
     {
         "q": "How does the Function 1 work?",
         "answer_id": "function_1_insight",
         "tags": ["function_1", "functions","how it work"],
-        "keywords": ["function", "function 1", "f1", "xml", "how","work","principle","insight"],
+        "keywords": ["function", "1", "f1", "how","work"],
         "function_id": "1"
     },
     #  ---- Function 2 ----
@@ -249,14 +376,21 @@ FAQ = [
         "q": "What does Function 2 do?",
         "answer_id": "function_2",
         "tags": ["function_2", "functions"],
-        "keywords": ["function", "function 2", "f2", "xml", "parsing"],
+        "keywords": ["what", "function", "function 2", "f2", "2"],
         "function_id": "2"
     },
     {
         "q": "How does the Function 2 work?",
         "answer_id": "function_2_insight",
         "tags": ["function_2", "functions"],
-        "keywords": ["function", "function 2", "f2", "xml", "parsing", "how", "work","principle","insight"],
+        "keywords": ["function", "function 2", "f2", "how", "work"],
+        "function_id": "2"
+    },
+        {
+        "q": "Where can I get the XML for function 2",
+        "answer_id": "function_2_xml",
+        "tags": ["function_2", "functions"],
+        "keywords": ["where", "get", "xml", "function", "function 2", "f2", "2"],
         "function_id": "2"
     },
     #  ---- Function 3 ----
