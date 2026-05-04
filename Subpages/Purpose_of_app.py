@@ -179,7 +179,8 @@ with st.expander(
 	''
 	st.write("""
 	- Virtual Assistant (Chatbot):
-		- **v60.4** - Extended: more questions to the Chatbot & App - 30-Apr-2026
+		- **v60.5** - Extended: by more questions to App - 04-May-2026
+		- **v60.4** - Extended: by more questions to the Chatbot & App - 30-Apr-2026
 		- **v60.3** - Extended: questions related to the Chatbot, XML, XSD, JSON - 28-Apr-2026
 		- **v60.2** - VA pilot released - 27-Apr-2026
 	""")

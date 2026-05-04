@@ -163,6 +163,13 @@ FAQ = [
         "keywords": ["what", "json"],
         "function_id": None
     },
+    {
+        "q": "What is API",
+        "answer_id": "what_is_api",
+        "tags": ["api"],
+        "keywords": ["what", "is", "api"],
+        "function_id": None
+    },
 
     #  ---- Questions to the application - functioning ----
     {
@@ -348,10 +355,31 @@ FAQ = [
         "function_id": None
     },
     {
-        "q": "PostgreSQL postgre",
-        "answer_id": "db_info",
+        "q": "Why postgreSQL postgre",
+        "answer_id": "db_info_postgre",
         "tags": ["db","database", "postgre", "postgreSQL"],
-        "keywords": ["postgre", "postgreSQL"],
+        "keywords": ["why", "postgre", "postgreSQL"],
+        "function_id": None
+    },
+    {
+        "q": "Why neon cloud",
+        "answer_id": "db_info_postgre",
+        "tags": ["neon"],
+        "keywords": ["why", "neon"],
+        "function_id": None
+    },
+    {
+        "q": "What is neon cloud",
+        "answer_id": "db_info_postgre",
+        "tags": ["neon"],
+        "keywords": ["what", "is", "neon", "cloud"],
+        "function_id": None
+    },
+    {
+        "q": "What is streamlit",
+        "answer_id": "streamlit_info",
+        "tags": ["streamlit"],
+        "keywords": ["what", "is", "streamlit"],
         "function_id": None
     },
 

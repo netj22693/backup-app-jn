@@ -45,13 +45,13 @@ If you are interested in releases, go to main page :house:-> Expander: **Release
         - images
         - links\n\n
 
-- :rocket: **LLM** - currently there is **no** LLM behind. The bot use uses only mathematical principle based on functions from sklearn / Scikit-Learn [here]({Assets.Links.sklearn_library}) :point_left:.
+- :rocket: **LLM** - currently there is **no** LLM behind. The bot uses only mathematical principle based on functions from sklearn / Scikit-Learn [here]({Assets.Links.sklearn_library}) :point_left:.
 """,
 "image": Assets.Images.va_variables
 },
 
 "llm_principle": {
-"text": f""":rocket: **LLM** - currently there is **no** LLM behind. The bot use uses only mathematical principle based on functions from sklearn / Scikit-Learn [here]({Assets.Links.sklearn_library}) :point_left:.
+"text": f""":rocket: **LLM** - currently there is **no** LLM behind. The bot uses only mathematical principle based on functions from sklearn / Scikit-Learn [here]({Assets.Links.sklearn_library}) :point_left:.
 """,
 "image": None
 },
@@ -87,13 +87,13 @@ If you are interested in releases, go to main page :house:-> Expander: **Release
 
 
 "generic_APIs": {
-    "text": "There are 7 REST APIs used in the application. See architecture diagram below.",
+    "text": "There are **7 REST APIs** used in the application. See architecture diagram below.",
     "image": Assets.Images.architecture_landscape
 },
 
 "db_info": {
 "text": f"""Information about DB:
-- The application uses **PostgreSQL DB** which runs on **NEON DB cloud**.
+- The application uses **PostgreSQL DB**:elephant: which runs on **NEON DB cloud** :green_heart:.
 - The relations **READ/WRITE** per functions can be seen in **the Archimate diagram**.\n\n
 👉 You can find more details about DB structures:
 - **Functions 3 & 4**: [here]({Assets.Links.f3_f4_description_erd})
@@ -103,6 +103,19 @@ If you are interested in releases, go to main page :house:-> Expander: **Release
 "image": Assets.Images.archimate_main
 },
 
+"db_info_postgre": {
+"text": f"""**NEON cloud & PostgreSQL:**
+- :elephant: **PostgreSQL**:
+    - Open source DBMS
+    - Known for its stability and reliability
+    - Split of tables into schemas
+- :green_heart: **NEON DB cloud**:
+    - Also open source -> **PaaS**
+    - Fast and simple to create account, build and maintain DBs
+    - **Neon runs the PostgreSQL engine in a serverless architecture**
+""",
+"image": None
+},
 
 "more_details": {
 "text": """Each function has subpages called **Description** providing more details/info:
@@ -201,6 +214,24 @@ Or **questions related to specific functions**:
 "image": None
 },
 
+"what_is_api" : {
+"text": f"""
+**API (Application Programming Interface)** is a set of rules and endpoints that allows different software systems to communicate with each other.
+
+- **In simple terms:** An API lets one application request data or actions from another without needing to know how it’s implemented internallysystem
+\n\n
+- **In context of this application:** There are **GET methods** / type of APIs used to get data from other systems.
+""",
+"image": Assets.Images.architecture_landscape
+},
+
+
+"streamlit_info" : {
+"text": f"""
+**Streamlit is an open-source Python framework** that enables to create, deploy, and share interactive web applications using **only Python**:snake::fire:.
+""",
+"image": None
+},
 
 #  ======= Function related answers =======
 #  ---- Function 1 ----
