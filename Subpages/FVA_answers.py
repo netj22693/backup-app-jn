@@ -135,6 +135,7 @@ It is described not only by text but also by modeling languages like **BPMN, Arc
 Questions **about me (chatbot**), for example:
 - How do you work?
 - How old the chatbot is?
+- Does the chatbot use LLM?
 
 \n\n
 Or **generic questions about the application**, for example:
@@ -143,15 +144,23 @@ Or **generic questions about the application**, for example:
 - Where can I get more info/details about the functions?
 - When the application was released?
 - For how long it has been built?
+- How many APIs?
+- What is API?
+- What is the DB used?
+- What is Streamlit
 - ...
 \n\n
 
 Or **questions related to specific functions**:
 - What does Function 1 do?
 - How does the Function 1 work?
+- How does the F7 work?
+- How does the F7B work?
+- What is XSD?
+- What is JSON
 - ...
 
-**Tip:** You can also use just simple F and number of function you are interested in -> **F7** :relaxed:
+:point_right:**Tip:** You can also use just simple F and number of function you are interested in -> **F7** :relaxed:
 """,
 "image": None
 },

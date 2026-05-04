@@ -6,6 +6,7 @@ HELLO_STATEMENT = """👋 Hi! I'm your FAQ chatbot. You can ask me:
 - Questions about the application 
 - Questions releated to specific functions  
 - Questions related to me (chatbot) :sunglasses:
+- :question: For more examples of questions / how to ask, write **What do you do?**
 
 """
 
