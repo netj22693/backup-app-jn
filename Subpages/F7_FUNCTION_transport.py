@@ -3359,7 +3359,7 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
 
 
         df_tab2_overall_time = pd.DataFrame({
-            "Transport type" : tranport_types_list,
+            "Transport type" : ['Truck','Train','Airplane'],
             "Time (hours)" : [tab2_overall_time_truck_r2, tab2_overall_time_train_r2, tab2_overall_time_air_r2],
             f"Price ({selected_currency})" : [tab2_price_overall_truck, tab2_price_overall_train, tab2_price_overall_air],
             f"Expected delivery ({cet_cest_now})" : [tab2_delivery_dt_formated_truck, tab2_delivery_dt_formated_train ,tab2_delivery_dt_formated_air]
