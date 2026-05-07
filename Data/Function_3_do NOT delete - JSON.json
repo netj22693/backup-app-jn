@@ -1,28 +1,28 @@
 {
     "header": {
-        "order_number": "172",
-        "customer": "Antonin Novotny",
-        "invoice_number": "INV-010697",
-        "date": "2026-03-16",
+        "order_number": "173",
+        "customer": "MNO s.r.o.",
+        "invoice_number": "INV-192562",
+        "date": "2026-05-07",
         "price": {
-            "total_sum": 465.21,
-            "currency": "US dollar"
+            "total_sum": 16168.5,
+            "currency": "K\u010d"
         }
     },
     "detail": {
-        "category": "Gaming",
-        "product_name": "Playstation 5 Pro",
-        "price_amount": 399.99,
+        "category": "PC",
+        "product_name": "HP notebook 123",
+        "price_amount": 13990.0,
         "additional_service": {
             "service": "Y",
             "service_type": "insurance",
-            "service_price": 60.0
+            "service_price": 2098.5
         }
     },
     "transportation": {
-        "transporter": "Fedex",
-        "country": "Slovakia",
+        "transporter": "DHL",
+        "country": "Czech Republic",
         "size": "medium",
-        "transport_price": 5.22
+        "transport_price": 80.0
     }
 }

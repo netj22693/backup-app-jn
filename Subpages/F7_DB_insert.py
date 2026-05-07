@@ -30,7 +30,7 @@ def final_dialogs_goto():
     page="Subpages/Purpose_of_app.py",
     help="The button will redirect to the relevant page within this app.",
     use_container_width=True,
-    icon=":material/code:",
+    icon=":material/home:",
     )
 
 

@@ -1525,7 +1525,7 @@ if object_from_upload is not None:
                 page="Subpages/Purpose_of_app.py",
                 help="The button will redirect to the relevant page within this app.",
                 width="stretch",
-                icon=":material/code:",
+                icon=":material/home:",
                 )
             
         
