@@ -8,3 +8,4 @@ sqlalchemy
 reportlab
 pytz
 scikit-learn
+python-dotenv
