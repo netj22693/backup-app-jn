@@ -1,3 +1,4 @@
+# force schedule activation
 name: Exchange Rate Scheduler
 
 on:
