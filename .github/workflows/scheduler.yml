@@ -1,9 +1,8 @@
-# force schedule activation
 name: Exchange Rate Scheduler
 
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "0 12 * * *"
   workflow_dispatch:
 
 jobs:
