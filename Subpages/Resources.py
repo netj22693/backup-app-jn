@@ -6,8 +6,8 @@ HELLO_STATEMENT = """👋 Hi! I'm your FAQ chatbot. You can ask me:
 - Questions about the application 
 - Questions releated to specific functions  
 - Questions related to me (chatbot) :sunglasses:
-- :question: For more examples of questions / how to ask, write **What do you do?**
-
+- :question: For examples of questions / how to ask -> write **What do you do**
+- :bulb: **Please note:** The chatbot may occasionally provide incomplete or inaccurate answers, try reformulating your question to help the chatbot understand better.
 """
 
 class Assets:
