@@ -17,7 +17,7 @@ vectorizer = TfidfVectorizer()
 X = vectorizer.fit_transform(questions)
 
 
-# ADDED: feedback storage (UUID based)
+# Feedback storing into session state - it ises UUID
 if "feedback_log" not in st.session_state:
     st.session_state.feedback_log = []
 
@@ -115,7 +115,6 @@ def get_answer(user_input):
     ans = ANSWERS[FAQ[best_idx]["answer_id"]]
     return ans
 
-
 # For Streamlit session state purposes
 # Note: in the current version of the code it is not that important, I wanted to have this to call this function also when 'Reset chat' button used. But current streamlit version is having the UI quite locked and the button is appearing in the chat -> Waiting for fix of this on Streamlit side.
 def get_welcome_message():
@@ -144,11 +143,15 @@ for msg in st.session_state.messages:
         if msg.get("type", "text") == "text":
             st.markdown(msg["content"])
 
+            # ADDED: image inside same assistant message
+            if msg.get("image") is not None:
+                st.image(msg["image"])
+
         # In case that there is also image in the selected response
         elif msg.get("type") == "image":
             st.image(msg["content"])
 
-        # Thumbs rendering + logging (FIXED)
+        # Thumbs rendering + logging into session state -> to keep the data for the history purposes
         if msg["role"] == "assistant":
             msg_id = msg.get("id")
 
@@ -199,20 +202,25 @@ if user_input:
             "image": None
         }
 
-    # UUID ADDED
+    # UUID as indicator/id for session state and also for DB purposes 
     msg_id = str(uuid.uuid4())
 
-    # Assistant message
+    # Assistant (official streamlit term) - Streamlit to keep session states and what the UI shouls show on the screen
     st.session_state.messages.append({
         "role": "assistant",
         "type": "text",
         "content": answer["text"],
+        "image": answer["image"],   # ADDED
         "id": msg_id,
         "question": user_input   # FIX: stored properly
     })
 
     with st.chat_message("assistant"):
         st.markdown(answer["text"])
+
+        # ADDED: image inside same assistant message
+        if answer["image"] is not None:
+            st.image(answer["image"])
 
         selected = st.feedback("thumbs", key=f"fb_{msg_id}")
 
@@ -231,21 +239,14 @@ if user_input:
 
             st.session_state.feedback_log.append(entry)
 
-            # DB insert ONLY on first valid change
+            # DB insert function
             insert_rating(entry)
 
 
-    # Assistant (official streamlit term) - in case that there is also image in selected response
-    if answer["image"] is not None:
-
-        st.session_state.messages.append({
-            "role": "assistant",
-            "type": "image",
-            "content": answer["image"]
-        })
-
-        with st.chat_message("assistant"):
-            st.image(answer["image"])
+# In the current version of streamlit the button cannot be put under the chat bar
+# if st.button("Clear chat", width= "stretch", icon= ":material/delete:"):
+#     st.session_state.messages = get_welcome_message()
+#     st.rerun()
 
 
 # for debugging 

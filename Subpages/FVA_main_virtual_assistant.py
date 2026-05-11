@@ -143,6 +143,10 @@ for msg in st.session_state.messages:
         if msg.get("type", "text") == "text":
             st.markdown(msg["content"])
 
+            # This puts an image inside same the assistant message 
+            if msg.get("image") is not None:
+                st.image(msg["image"])
+
         # In case that there is also image in the selected response
         elif msg.get("type") == "image":
             st.image(msg["content"])
@@ -206,12 +210,17 @@ if user_input:
         "role": "assistant",
         "type": "text",
         "content": answer["text"],
+        "image": answer["image"],   # For session purposes also image
         "id": msg_id,
         "question": user_input   # FIX: stored properly
     })
 
     with st.chat_message("assistant"):
         st.markdown(answer["text"])
+
+        # This puts an image inside same the assistant message 
+        if answer["image"] is not None:
+            st.image(answer["image"])
 
         selected = st.feedback("thumbs", key=f"fb_{msg_id}")
 
@@ -233,18 +242,6 @@ if user_input:
             # DB insert function
             insert_rating(entry)
 
-
-    # Assistant (official streamlit term) - in case that there is also image in selected response
-    if answer["image"] is not None:
-
-        st.session_state.messages.append({
-            "role": "assistant",
-            "type": "image",
-            "content": answer["image"]
-        })
-
-        with st.chat_message("assistant"):
-            st.image(answer["image"])
 
 # In the current version of streamlit the button cannot be put under the chat bar
 # if st.button("Clear chat", width= "stretch", icon= ":material/delete:"):
