@@ -1,10 +1,12 @@
 import streamlit as st
 import time
+import uuid
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from Subpages.FVA_answers import ANSWERS
 from Subpages.FVA_questions import FAQ
 from Subpages.Resources import HELLO_STATEMENT
+from Subpages.FVA_DB_insert import insert_rating
 
 
 
@@ -13,6 +15,14 @@ questions = [item["q"] for item in FAQ]
 # This part takes the question placed into the chat as sentense and breaks each word into number - TF-IDF
 vectorizer = TfidfVectorizer()
 X = vectorizer.fit_transform(questions)
+
+
+# Feedback storing into session state - it ises UUID
+if "feedback_log" not in st.session_state:
+    st.session_state.feedback_log = []
+
+if "fb_state" not in st.session_state:
+    st.session_state.fb_state = {}
 
 
 # This part helps to get proper results related to specific functions
@@ -137,6 +147,33 @@ for msg in st.session_state.messages:
         elif msg.get("type") == "image":
             st.image(msg["content"])
 
+        # Thumbs rendering + logging into session state -> to keep the data for the history purposes
+        if msg["role"] == "assistant":
+            msg_id = msg.get("id")
+
+            if msg_id:
+                selected = st.feedback("thumbs", key=f"fb_{msg_id}")
+
+                prev = st.session_state.fb_state.get(msg_id)
+
+                if selected is not None and selected != prev:
+
+                    st.session_state.fb_state[msg_id] = selected
+
+                    entry = {
+                        "uuid": msg_id,
+                        "thumb": 1 if selected == 1 else 0,
+                        "question": msg.get("question", ""),   # FIX: no more None
+                        "answer": msg["content"]
+                    }
+
+                    st.session_state.feedback_log.append(entry)
+
+                    # DB insert ONLY on change
+                    insert_rating(entry)
+
+                    st.info("Your feedback was recorded - thank you for rating!")
+
 
 # User input 
 user_input = st.chat_input("Ask your question...")
@@ -161,15 +198,41 @@ if user_input:
             "image": None
         }
 
+    # UUID as indicator/id for session state and also for DB purposes 
+    msg_id = str(uuid.uuid4())
+
     # Assistant (official streamlit term) - Streamlit to keep session states and what the UI shouls show on the screen
     st.session_state.messages.append({
         "role": "assistant",
         "type": "text",
-        "content": answer["text"]
+        "content": answer["text"],
+        "id": msg_id,
+        "question": user_input   # FIX: stored properly
     })
 
     with st.chat_message("assistant"):
         st.markdown(answer["text"])
+
+        selected = st.feedback("thumbs", key=f"fb_{msg_id}")
+
+        prev = st.session_state.fb_state.get(msg_id)
+
+        if selected is not None and selected != prev:
+
+            st.session_state.fb_state[msg_id] = selected
+
+            entry = {
+                "uuid": msg_id,
+                "thumb": 1 if selected == 1 else 0,
+                "question": user_input,
+                "answer": answer["text"]
+            }
+
+            st.session_state.feedback_log.append(entry)
+
+            # DB insert function
+            insert_rating(entry)
+
 
     # Assistant (official streamlit term) - in case that there is also image in selected response
     if answer["image"] is not None:
@@ -188,3 +251,6 @@ if user_input:
 #     st.session_state.messages = get_welcome_message()
 #     st.rerun()
 
+
+# for debugging 
+#st.json(st.session_state.feedback_log)
