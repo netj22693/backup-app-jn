@@ -1,253 +1,273 @@
+import os
+import requests
+import json
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float,DateTime, BigInteger
+from sqlalchemy.orm import declarative_base, Session
+from typing import Optional
+from datetime import datetime, timezone
+from dotenv import load_dotenv
 import streamlit as st
-import time
-import uuid
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-from Subpages.FVA_answers import ANSWERS
-from Subpages.FVA_questions import FAQ
-from Subpages.Resources import HELLO_STATEMENT
-from Subpages.FVA_DB_insert import insert_rating
 
+# Only for local testing - PROD uses Github Actions secrets
+if os.path.exists(".env"):
+    load_dotenv()
 
+# For debbugging
+print("RUN AT:", datetime.now(timezone.utc))
 
-questions = [item["q"] for item in FAQ]
+# DB connection
+def get_db_connection():
+    try: 
 
-# This part takes the question placed into the chat as sentense and breaks each word into number - TF-IDF
-vectorizer = TfidfVectorizer()
-X = vectorizer.fit_transform(questions)
+        password = os.getenv("NEON_DB_PASSWORD")
+        endpoint = os.getenv("NEON_DB_ENDPOINT")
 
+        # connection string
+        conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.gwc.azure.neon.tech/neondb?sslmode=require"
 
-# Feedback storing into session state - it ises UUID
-if "feedback_log" not in st.session_state:
-    st.session_state.feedback_log = []
-
-if "fb_state" not in st.session_state:
-    st.session_state.fb_state = {}
-
-
-# This part helps to get proper results related to specific functions
-# !!!! Note from troubleshooting: for functions having 'B' the 'B' version needs to be in the code upper than 'regular' version. E.g.: 7B followed by 7. If not, then it will nto work properly.
-def extract_function_id(text):
-    text = text.lower().replace(" ", "")
-
-    if "function8" in text or "f8" in text:
-        return "8"
-
-    if "function7b" in text or "f7b" in text:
-        return "7B"
-
-    if "function7" in text or "f7" in text:
-        return "7"
-
-    if "function6" in text or "f6" in text:
-        return "6"
-
-    if "function5" in text or "f5" in text:
-        return "5"
-
-    if "function4" in text or "f4" in text:
-        return "4"
-
-    if "function3b" in text or "f3b" in text:
-        return "3B"
-
-    if "function3" in text or "f3" in text:
-        return "3"
-
-    if "function2" in text or "f2" in text:
-        return "2"
-
-    if "function1" in text or "f1" in text:
-        return "1"
-
-    return None
-
-
-# Score - taken from sklearn documentation 
-def get_score(user_input, item, tfidf_score):
-    user_input_lower = user_input.lower()
-
-    keyword_score = sum(
-        1 for k in item.get("keywords", [])
-        if k.lower() in user_input_lower
-    )
-
-    tag_score = sum(
-        1 for t in item.get("tags", [])
-        if t.lower() in user_input_lower
-    )
-
-    user_fn = extract_function_id(user_input)
-
-    fn_score = 0
-    if user_fn:
-        if item.get("function_id") == user_fn:
-            fn_score = 3.0
-        else:
-            fn_score = -2.0
-
-    return (
-        tfidf_score * 0.4 +
-        keyword_score * 0.2 +
-        tag_score * 0.2 +
-        fn_score
-    )
-
-
-# The main logic - taken from sklearn documentation 
-def get_answer(user_input):
-    user_vec = vectorizer.transform([user_input])
-    sims = cosine_similarity(user_vec, X)[0]
-
-    best_idx = -1
-    best_score = -1e9
-
-    for i, item in enumerate(FAQ):
-        score = get_score(user_input, item, sims[i])
-
-        if score > best_score:
-            best_score = score
-            best_idx = i
-
-    if best_score < 0.3:
-        return None
-
-    ans = ANSWERS[FAQ[best_idx]["answer_id"]]
-    return ans
-
-# For Streamlit session state purposes
-# Note: in the current version of the code it is not that important, I wanted to have this to call this function also when 'Reset chat' button used. But current streamlit version is having the UI quite locked and the button is appearing in the chat -> Waiting for fix of this on Streamlit side.
-def get_welcome_message():
-
-    message = [{
-            "role": "assistant",
-            "content": HELLO_STATEMENT
-        }]
+        engine = create_engine(conn_string)
+        return engine
     
-    return message
+    except Exception as e:
+        print(f"DB connection failed: {e}")
+
+# API calls 
+def api_GET_request(url_string: str, api: str) -> Optional[str]: 
+
+    try:
+        api_response = requests.get(url_string, verify=False, timeout=5).text
+        reason = None
+        state = "SUCCESS"
+
+        return api_response, reason, state
+
+    except Exception as e:
+        print(f"Error GET request: {e}")
+        api_response  = None
+        reason = f"{api} - GET request: {str(e)}"
+        state = "FAIL"
+
+        return api_response, state, reason
 
 
-# application UI
-st.title("🤖 FAQ Chatbot")
+def api_1_kurzy_parsing(data_input: str) -> Optional[float]:
 
-if "messages" not in st.session_state:
-    with st.spinner("Loading..."):
-        time.sleep(2)
-        st.session_state.messages = get_welcome_message()
+    try:
+        data_json = json.loads(data_input)
 
+        # Search for data in the API defined format - JSON
+        eur_rate_parsed = data_json['kurzy']['EUR']['dev_stred']
+        usd_rate_parsed = data_json['kurzy']['USD']['dev_stred']
 
-# Chat history
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
+        eur_rate_parsed = round(eur_rate_parsed, 3)
+        usd_rate_parsed = round(usd_rate_parsed, 3)
 
-        if msg.get("type", "text") == "text":
-            st.markdown(msg["content"])
+        state = "SUCCESS"
+        reason = None
 
-            # ADDED: image inside same assistant message
-            if msg.get("image") is not None:
-                st.image(msg["image"])
+        return eur_rate_parsed, usd_rate_parsed, state, reason
 
-        # In case that there is also image in the selected response
-        elif msg.get("type") == "image":
-            st.image(msg["content"])
+    except Exception as e:
+        print(f"Error parsing API 1: {e}")
 
-        # Thumbs rendering + logging into session state -> to keep the data for the history purposes
-        if msg["role"] == "assistant":
-            msg_id = msg.get("id")
-
-            if msg_id:
-                selected = st.feedback("thumbs", key=f"fb_{msg_id}")
-
-                prev = st.session_state.fb_state.get(msg_id)
-
-                if selected is not None and selected != prev:
-
-                    st.session_state.fb_state[msg_id] = selected
-
-                    entry = {
-                        "uuid": msg_id,
-                        "thumb": 1 if selected == 1 else 0,
-                        "question": msg.get("question", ""),   # FIX: no more None
-                        "answer": msg["content"]
-                    }
-
-                    st.session_state.feedback_log.append(entry)
-
-                    # DB insert ONLY on change
-                    insert_rating(entry)
-
-                    st.info("Your feedback was recorded - thank you for rating!")
+        eur_rate_parsed = None
+        usd_rate_parsed = None
+        state = "FAIL"
+        reason = f"API 1 - parsing: {str(e)}"
+        return eur_rate_parsed, usd_rate_parsed, state, reason
 
 
-# User input 
-user_input = st.chat_input("Ask your question...")
+def api_2_freecurrency_parsing(data_input: str) -> Optional[float]:
 
-if user_input:
-    # User - Streamlit to keep session states and what the UI shouls show on the screen
-    st.session_state.messages.append({
-        "role": "user",
-        "type": "text",
-        "content": user_input
-    })
+    try:
+        data_json = json.loads(data_input)
 
-    with st.chat_message("user"):
-        st.markdown(user_input)
+        # Search for data in the API defined format - JSON
+        eur_to_usd_rate_parsed = data_json['data']['USD']
+        eur_to_usd_rate_parsed = round(eur_to_usd_rate_parsed, 3)
+        
+        state = "SUCCESS"
+        reason = None
 
-    # Call the main logic 
-    answer = get_answer(user_input)
+        return eur_to_usd_rate_parsed, state, reason
 
-    if answer is None:
-        answer = {
-            "text": "Hmm, I don't know this 🤔 Try to rephrase.",
-            "image": None
+    except Exception as e:
+        print(f"Error parsing API 2: {e}")
+
+        eur_to_usd_rate_parsed = None
+        state = "FAIL"
+        reason = f"API 2 - parsing: {str(e)}"
+
+        return eur_to_usd_rate_parsed, state, reason
+
+
+def get_run_context() -> dict:
+    '''
+    Function for logging purposes to be able to track the schedulers run from Github Actions
+    Outcome dict -> values saved into DB
+    '''
+
+    run_id = os.getenv("GITHUB_RUN_ID")
+    repo = os.getenv("GITHUB_REPOSITORY")
+    url_link = f"https://github.com/{repo}/actions/runs/{run_id}"
+
+    # ----- For test purposes ----- 
+    # test = {
+    #     "run_id": "111111112",
+    #     "repo": "https://github.com/netj22693/backup-app-jn/actions/runs/111111111",
+    #     "event": "test_from_codespace",
+    #     }
+
+    prod = {
+        "run_id": run_id,
+        "repo": url_link,
+        "event": os.getenv("GITHUB_EVENT_NAME"),
+    }
+
+    return prod
+
+
+def insert_exchange_rate_data(engine, data, reason_1, reason_2):
+
+    env_logs = get_run_context()
+
+    Base = declarative_base()
+
+    class Rate(Base):
+        __tablename__ = "exchange_rate_data"
+        __table_args__ = {"schema": "function5"}
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+        cz_to_eur = Column(Float)
+        cz_to_eur_state = Column(String)
+
+        cz_to_usd = Column(Float)
+        cz_to_usd_state = Column(String)
+
+        eur_to_usd = Column(Float)
+        eur_to_usd_state = Column(String)
+
+
+    class Failure_api_1(Base):
+        __tablename__ = "api_kurzy_failure"
+        __table_args__ = {"schema": "function5"}
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        exchange_rate_id = Column(Integer)
+        failure = Column(String)
+
+
+    class Failure_api_2(Base):
+        __tablename__ = "api_freecurrency_failure"
+        __table_args__ = {"schema": "function5"}
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        exchange_rate_id = Column(Integer)
+        failure = Column(String)
+    
+    class Scheduler(Base):
+        __tablename__ = "scheduler"
+        __table_args__ = {"schema": "function5"}     
+
+        id = Column(Integer, primary_key=True, autoincrement=True)   
+        exchange_rate_id = Column(Integer)
+        github_run_id = Column(BigInteger)
+        github_run_url = Column(String)
+        event = Column(String)
+
+        
+    with Session(engine) as session:
+
+            new_rate = Rate(**data)
+            session.add(new_rate)
+
+            session.flush()
+            rate_id = new_rate.id
+
+            if reason_1 is not None:
+                session.add(
+                    Failure_api_1(
+                        exchange_rate_id=rate_id,
+                        failure=reason_1
+                    )
+                )
+
+            if reason_2 is not None:
+                session.add(
+                    Failure_api_2(
+                        exchange_rate_id=rate_id,
+                        failure=reason_2
+                    )
+                )
+
+            session.add(
+                Scheduler(
+                    exchange_rate_id=rate_id,
+                    github_run_id=env_logs["run_id"],
+                    github_run_url=env_logs["repo"], 
+                    event=env_logs["event"]
+                )
+            )
+
+            session.commit()
+
+def main():
+
+
+    conn = get_db_connection()
+
+    # =================== Build of API strings =================== 
+    api_1_kurzy_url_string = "https://data.kurzy.cz/json/meny/b[1].json"
+
+    secrets_api_2 = os.getenv("F5_API_2_PASSWORD")
+
+    api_2_freecurrency_url_string = f"https://api.freecurrencyapi.com/v1/latest?apikey={secrets_api_2}&currencies=USD&base_currency=EUR"
+
+
+    # =================== API call ===================
+    api_1_kurzy, api_1_state, api_1_reason  = api_GET_request(api_1_kurzy_url_string, "API 1")
+    api_2_freecurrency, api_2_state, api_2_reason = api_GET_request(api_2_freecurrency_url_string, "API 2")
+
+    if api_1_kurzy is not None:
+        eur_rate, usd_rate, api_1_state, api_1_reason = api_1_kurzy_parsing(api_1_kurzy)
+    
+    if api_1_kurzy is None:
+        eur_rate = None
+        usd_rate = None
+    
+    if api_2_freecurrency is not None:
+        eur_to_usd_rate, api_2_state, api_2_reason = api_2_freecurrency_parsing(api_2_freecurrency)
+    
+    if api_2_freecurrency is None:
+        eur_to_usd_rate = None
+
+
+    # mapping 
+    mapped_data_exhange_rate_table = {
+        "created_at": datetime.now(timezone.utc),
+        "cz_to_eur": eur_rate,
+        "cz_to_eur_state": api_1_state,
+        "cz_to_usd" : usd_rate,
+        "cz_to_usd_state" : api_1_state,
+        "eur_to_usd": eur_to_usd_rate,
+        "eur_to_usd_state" : api_2_state
         }
 
-    # UUID as indicator/id for session state and also for DB purposes 
-    msg_id = str(uuid.uuid4())
-
-    # Assistant (official streamlit term) - Streamlit to keep session states and what the UI shouls show on the screen
-    st.session_state.messages.append({
-        "role": "assistant",
-        "type": "text",
-        "content": answer["text"],
-        "image": answer["image"],   # ADDED
-        "id": msg_id,
-        "question": user_input   # FIX: stored properly
-    })
-
-    with st.chat_message("assistant"):
-        st.markdown(answer["text"])
-
-        # ADDED: image inside same assistant message
-        if answer["image"] is not None:
-            st.image(answer["image"])
-
-        selected = st.feedback("thumbs", key=f"fb_{msg_id}")
-
-        prev = st.session_state.fb_state.get(msg_id)
-
-        if selected is not None and selected != prev:
-
-            st.session_state.fb_state[msg_id] = selected
-
-            entry = {
-                "uuid": msg_id,
-                "thumb": 1 if selected == 1 else 0,
-                "question": user_input,
-                "answer": answer["text"]
-            }
-
-            st.session_state.feedback_log.append(entry)
-
-            # DB insert function
-            insert_rating(entry)
+    try:
+        insert_exchange_rate_data(conn, mapped_data_exhange_rate_table, api_1_reason, api_2_reason)
+        print("All complete")
 
 
-# In the current version of streamlit the button cannot be put under the chat bar
-# if st.button("Clear chat", width= "stretch", icon= ":material/delete:"):
-#     st.session_state.messages = get_welcome_message()
-#     st.rerun()
 
+    except Exception as e:
+        print(f"[DB ERROR]: {e}")
+    
+if __name__ == "__main__":
+    main()
 
-# for debugging 
-#st.json(st.session_state.feedback_log)
+# ----- For test purposes ----- 
+# if st.button("test"):
+#     main()
+    
