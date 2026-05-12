@@ -47,18 +47,23 @@ st.write("enjoy... :)")
 ''
 # split into Tabs 
 tab1,tab2, tab3 = st.tabs([
+    "Architecture landscape",
     "ArchiMate - Overview",
-    "UML - Activity diagram - Overview",
-	"Architecture landscape"
+	"UML - Activity diagram - Overview"
 ])
 
 #Tab 1
 with tab1:
+	st.write("###### Architecture landscape:")
+	''
+	st.image(Assets.Images.architecture_landscape)
+
+with tab2:
 	st.write("###### ArchiMate - Overview of the functions:")
 	''
 	st.image(Assets.Images.archimate_main)
 	
-with tab2:
+with tab3:
 	st.write("###### UML - Overview of the functions:")
 	''
 	# Border Width: 10
@@ -74,10 +79,6 @@ with tab2:
 	''
 	st.image(Assets.Images.uml_f8)
 
-with tab3:
-	st.write("###### Architecture landscape:")
-	''
-	st.image(Assets.Images.architecture_landscape)
 
 
 # Bug - expander
