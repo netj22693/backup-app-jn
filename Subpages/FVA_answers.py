@@ -286,10 +286,14 @@ Or **questions related to specific functions**:
 "text": "**Function 3**: Creation of invoice based on user inputs (either XML or JSON). Possibility to create your own invoice based on predefined options. Fulfill the UI form and select if to generate XML or JSON. The final data are stored in DB",
 "image": Assets.Images.uml_f3_f3b_f4
 },
+
+#  ---- Function 3B ----
 "function_3B": {
 "text": "**Function 3B**: Visibility of already created invoices. Insight into DB to see already created invoices from Function 3.",
 "image": Assets.Images.uml_f3_f3b_f4
 },
+
+#  ---- Function 4 ----
 "function_4" : {
 "text": f"""**Function 4**: Mapping of invoice from Function 3 -> change of file format.\n\n
 - XML → JSON 
@@ -298,6 +302,8 @@ There is a log about the change stored in DB.\n\n
 More details can be found in the function description [here]({Assets.Links.f3_description}) :point_left:""",
 "image": Assets.Images.uml_f3_f3b_f4
 },
+
+#  ---- Function 5 ----
 "function_5" : {
 "text": f"""**Function 5:** Exchange rate/calculation (CZK, EUR, USD).\n\n
 - It is a simple calculator which uses actual conversion rate 
@@ -306,6 +312,15 @@ More details can be found in the function description [here]({Assets.Links.f5_de
 """,
 "image": Assets.Images.uml_f5
 },
+
+#  ---- Function 5B ----
+"function_5B" : {
+"text": f"""**Function 5B:** :no_entry_sign: :hammer: Is currently function which is being developed :sunglasses: :innocent:, but can be already seen in the application diagrams :clipboard: :triangular_ruler:. Stay tuned!!!!
+""",
+"image": None
+},
+
+#  ---- Function 6 ----
 "function_6" : {
 "text": f"""**Function 6:** ZIP codes. You can search for:\n\n
 - ZIP codes based on city
@@ -314,6 +329,8 @@ The function uses 2 APIs as a source of data.\n\n
 More details can be found in the function description [here]({Assets.Links.f5_description}) :point_left:""",
 "image": Assets.Images.uml_f6
 },
+
+#  ---- Function 7 ----
 "function_7" : {
 "text": f"""**Function 7:** Transport calculation:\n\n
 - **The biggest** function in this application
@@ -330,6 +347,8 @@ More details can be found in the function description [here]({Assets.Links.f7_de
 """,
 "image": Assets.Images.uml_f7_f7b
 },
+
+#  ---- Function 7B ----
 "function_7B" : {
 "text": f"""**Function 7B**: View into DB. Based on offers created in Function 7
 - The 7B uses data created in Function 7
@@ -340,6 +359,8 @@ The data is taken from database. More details about the **DB structure** can be 
 """,
 "image": Assets.Images.uml_f7_f7b
 },
+
+#  ---- Function 8 ----
 "function_8" : {
 "text": f"""**Function 8**: Company Book - provides visibility of transport companies and their branches.\n\n
 - The transport companies are companies from real world

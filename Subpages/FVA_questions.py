@@ -443,12 +443,19 @@ FAQ = [
         "keywords": ["function", "function 4", "f4", "4"],
         "function_id": "4"
     },
-        {
+    {
         "q": "What does Function 5 do?",
         "answer_id": "function_5",
         "tags": ["function_5"],
         "keywords": ["function", "function 5", "f5", "5"],
         "function_id": "5"
+    },
+    {
+        "q": "What does Function 5B do?",
+        "answer_id": "function_5B",
+        "tags": ["function_5B"],
+        "keywords": ["function", "function 5b", "f5b", "5b"],
+        "function_id": "5B"
     },
     {
         "q": "What does Function 6 do?",
