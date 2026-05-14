@@ -125,9 +125,9 @@ st.write("""
 ''
 ''
 ''
-st.metric(label="CZK to EUR", value= f"{eur_rate:.3f}")
+st.metric(label="EUR to CZK", value= f"{eur_rate:.3f}")
 
-st.metric(label="CZK to USD", value= f"{usd_rate:.3f}")
+st.metric(label="USD to CZK", value= f"{usd_rate:.3f}")
 
 st.metric(label="EUR to USD", value= f"{eur_to_usd_rate:.3f}")
 
