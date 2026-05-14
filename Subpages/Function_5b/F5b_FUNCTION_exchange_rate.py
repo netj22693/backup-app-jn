@@ -79,10 +79,10 @@ st.write("# Exchange Rate - Trend:")
 ''
 ''
 st.write("""- EUR to CZK:""")
-st.plotly_chart(chart_eur_to_czk, use_container_width=True)
+st.plotly_chart(chart_eur_to_czk, width="stretch")
 
 st.write("""- USD to CZK:""")
-st.plotly_chart(chart_usd_to_czk, use_container_width=True)
+st.plotly_chart(chart_usd_to_czk, width="stretch")
 
 st.write("""- EUR to USD:""")
-st.plotly_chart(chart_eur_to_usd, use_container_width=True)
+st.plotly_chart(chart_eur_to_usd, width="stretch")
