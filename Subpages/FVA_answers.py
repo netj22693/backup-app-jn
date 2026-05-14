@@ -315,7 +315,7 @@ More details can be found in the function description [here]({Assets.Links.f5_de
 
 #  ---- Function 5B ----
 "function_5B" : {
-"text": f"""**Function 5B:** :no_entry_sign: :hammer: Is currently function which is being developed :sunglasses: :innocent:, but can be already seen in the application diagrams :clipboard: :triangular_ruler:. Stay tuned!!!!
+"text": f"""**Function 5B:** :hammer::clipboard: :triangular_ruler: Description will be provided soon - **not available yet**. Stay tuned.
 """,
 "image": None
 },

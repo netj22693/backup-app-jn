@@ -3,7 +3,7 @@ from Subpages.F1_F2_xml_structures import xml_data_euro_db_erd
 
 
 # ========== DB and ERD description ===========================
-st.write("# DB & ERD:")
+st.write("# DB & ERD")
 st.write("(!) Currently, this function is **NOT** connected to any DB. Maybe one day in the future :).")
 st.write("This is for visibility how DB tables could look like.")
 

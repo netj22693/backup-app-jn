@@ -2,7 +2,7 @@ import streamlit as st
 
 
 
-st.write("# Door-to-Door:")
+st.write("# Door-to-Door")
 
 ''
 st.write("This page provides a description about **delivery logic** in the Function 7.")

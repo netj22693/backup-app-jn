@@ -1,9 +1,10 @@
 import pandas as pd
 import plotly.graph_objects as go
+from plotly.graph_objs import Figure
 
 
 
-def create_chart(df, column_x, column_y, color_line, legend_name, currency):
+def create_chart(df: pd.DataFrame, column_x: str, column_y: str, color_line: str, legend_name: str, currency: str) -> Figure:
 
     fig = go.Figure()
 
@@ -19,7 +20,7 @@ def create_chart(df, column_x, column_y, color_line, legend_name, currency):
                 shape="spline"
             ),
             hovertemplate=
-                f"%{{y:.2f}} {currency}<extra></extra>"
+                f"%{{y:.3f}} {currency}<extra></extra>"
         )
     )
 

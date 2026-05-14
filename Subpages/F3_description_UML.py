@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.write("# UML diagrams:")
+st.write("# UML diagrams")
 
 
 # Split into tabs

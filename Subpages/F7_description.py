@@ -67,7 +67,7 @@ correction_list_data = [
 
 
 
-st.write("# Description - Function 7:")
+st.write("# Description - Function 7")
 
 ''
 ''

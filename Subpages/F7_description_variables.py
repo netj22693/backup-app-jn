@@ -1,7 +1,7 @@
 import streamlit as st
 
 
-st.write("# Variables:")
+st.write("# Variables")
 
 ''
 st.write("""

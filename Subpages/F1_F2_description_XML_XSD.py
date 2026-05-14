@@ -168,7 +168,7 @@ with st.expander(
 ''
 st.write("------")
 
-st.write("#### XML against XSD validation:")
+st.write("#### XML against XSD validation")
 ''
 st.write("""
 - Why the **XSD/XML Schema** is important?

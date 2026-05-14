@@ -113,7 +113,7 @@ def get_value_formated(input: float) -> str:
     return result
 
 # =================== App screen part ===================
-st.write("# Exchange rate:")
+st.write("# Exchange Rate:")
 ''
 ''
 st.write("""

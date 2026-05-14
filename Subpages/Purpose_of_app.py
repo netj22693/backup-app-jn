@@ -21,6 +21,7 @@ with st.expander("Overview of functions", icon= ":material/list:"):
 	''
 	st.write("""
 		- **Function 5:** Exchange rate/calculation (CZK, EUR, USD) - **API based** with actual exchange rate
+		- **Function 5B:** Exchange rate - Trend - **Background job based**, data continuously collected into DB and visualized via app UI
 		""")
 	''
 	st.write("""
@@ -237,6 +238,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 5:
+		- **v61.8** - F5B release  - 14-May-2026
 		- **v55.3** - Adjustment of format of results - 17-Mar-2026
 		- **v54.5** - Major code refactoring -> cleaner code & better modularity - 09-Dec-2025
 		- **v11.0** - try-except logic added + timeout 5 secs, to cover unavailability of APIs - 04-July-2025

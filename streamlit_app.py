@@ -142,13 +142,13 @@ function_5 = st.Page(
 
 function_5_desc_api = st.Page(
     "Subpages/F5_description_API.py",
-    title="Description - API",
+    title="Description - API & DB",
     icon= ":material/code:"
 )
 
 function_5b = st.Page(
     "Subpages/Function_5b/F5b_FUNCTION_exchange_rate.py",
-    title="5B. Exchange Rate Overview",
+    title="5B. Exchange Rate Trend",
     icon= ":material/play_circle:"
 )
 
@@ -272,7 +272,7 @@ pg = st.navigation(
         "Function 5": [
             function_5_desc_api,
             function_5,
-            # function_5b
+            function_5b
         ],
         "Function 6": [
             function_6_desc_api,

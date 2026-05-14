@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.write("# ArchiMate diagrams:")
+st.write("# ArchiMate diagrams")
 
 
 # Split into tabs

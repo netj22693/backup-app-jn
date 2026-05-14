@@ -29,7 +29,7 @@ def db_connection():
         db_connection_fail()
 
 
-st.write("# Company Book:")
+st.write("# Company Book")
 ''
 ''
 ''

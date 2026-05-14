@@ -1,7 +1,7 @@
 import streamlit as st
 from Subpages.Resources import Assets
 
-st.write("# UML diagrams:")
+st.write("# UML diagrams")
 
 
 # Split into tabs

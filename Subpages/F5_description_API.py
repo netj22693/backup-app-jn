@@ -7,19 +7,21 @@ from Subpages.F5_json_structures import json_api_structure_1, json_api_structure
 
 
 # ==================== Application screen + backend functions ==============
-st.write("# Description - Function 5")
+st.write("# Description - Functions 5 & 5B")
 ''
 ''
 st.write("""
-    - **Function 5:** Exchange rate/calculation (CZK, EUR, USD) - **API based** with actual exchange rate
-    """
-    )
+- **Function 5:** Exchange rate/calculation (CZK, EUR, USD) - **API based** with actual exchange rate
+- **Function 5B:** Exchange rate - Trend - **Background job based**, data continuously collected into DB and visualized via app UI
+"""
+)
+
 ''
 ''
 st.write("##### Business scenario:") 
 
 st.write("""
-- For visibility and calculation purposes. This function offers **a simple calculator** to convert values between currencies.
+- For visibility and calculation purposes. **Function 5** offers **a simple calculator** to convert values between currencies.
 		 
 	- CZK 
 	- EUR
@@ -209,7 +211,7 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 # Archimate
 st.write("##### Archimate Diagram:") 
 ''
-st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
+# st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
 st.image("Pictures/Function_5/F5_description_archimate_api.svg")
 
 ''
@@ -249,6 +251,35 @@ st.write("""
 	- 1x per 24 hours
 """
 )
+
+
+''
+''
+''
+''
+# F5B and ERD
+st.write("##### Background job and ERD:")
+
+st.write("""
+- **Function 5B** is based on the same APIs as **Function 5**
+	- **F5** calls the APIs when the function is **used by user through app UI** only
+	- **F5B** uses **background job** to continuously collect data and save it into DB, even if nobody is activelly using the app
+""")
+
+st.write("""
+- **The background job runs multiple times a day** 
+- Triggered through **GitHub Actions** cron
+- The data are saved into DB and **when F5B is used, the data are visualized** -> Trend of exchange rate in time can be seen 
+""")
+
+st.write("""
+- The DB includes also **metadata** tables for troubleshooting and monitoring purposes
+	- Tables capturing fail reasons of each API
+	- Table capturing runs of the background job 
+""")
+
+''
+st.image("Pictures/Function_5/F5B_ERD_v1.svg")
 
 # ===== Page navigation at the bottom ======
 ''

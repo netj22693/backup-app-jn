@@ -1,6 +1,6 @@
 import streamlit as st 
 
-st.write("# DB & ERD:")
+st.write("# DB & ERD")
 
 ''
 st.write("""

@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.write("# ArchiMate diagram:")
+st.write("# ArchiMate diagram")
 
 ''
 ''

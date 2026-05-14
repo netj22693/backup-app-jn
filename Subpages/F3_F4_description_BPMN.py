@@ -1,7 +1,7 @@
 import streamlit as st
 
 
-st.write("# BPMN diagrams:")
+st.write("# BPMN diagrams")
 
 
 # Split into tabs

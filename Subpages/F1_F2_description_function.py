@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.write("# Functions 1 and 2")
+st.write("# Functions 1 & 2")
 st.write(
     "Purpose of these functions is to parse data from XML -> validate them -> visualize them -> and produce simple .txt sumary."
     )
