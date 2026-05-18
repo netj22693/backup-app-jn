@@ -238,6 +238,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 5:
+		- **v61.9** - F5B rate metrics added - 18-May-2026
 		- **v61.8** - F5B release  - 14-May-2026
 		- **v55.3** - Adjustment of format of results - 17-Mar-2026
 		- **v54.5** - Major code refactoring -> cleaner code & better modularity - 09-Dec-2025
