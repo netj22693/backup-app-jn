@@ -134,7 +134,7 @@ tab1, tab2, tab3 = st.tabs([
 
 with tab1:
     ''
-    st.metric("Today", value=f"{value_eur_to_czk_last:.3f}", delta=delta_eur_to_czk)
+    st.metric("Last record", value=f"{value_eur_to_czk_last:.3f}", delta=delta_eur_to_czk)
     col1, col2, col3 = st.columns(3)
     col1.metric("Average", value=f"{avg_eur_to_czk:.3f}")
     col2.metric(f"Max (on {max_date_eur_to_czk})", value=f"{max_eur_to_czk:.3f}")
@@ -145,7 +145,7 @@ with tab1:
 
 with tab2:
     ''
-    st.metric("Today", value=f"{value_usd_to_czk_last:.3f}", delta=delta_usd_to_czk)
+    st.metric("Last record", value=f"{value_usd_to_czk_last:.3f}", delta=delta_usd_to_czk)
     col1, col2, col3 = st.columns(3)
     col1.metric("Average", value=f"{avg_usd_to_czk:.3f}")
     col2.metric(f"Max (on {max_date_usd_to_czk})", value=f"{max_usd_to_czk:.3f}")
@@ -156,7 +156,7 @@ with tab2:
 
 with tab3:
     ''
-    st.metric("Today", value=f"{value_eur_to_usd_last:.3f}", delta=delta_eur_to_usd)
+    st.metric("Last record", value=f"{value_eur_to_usd_last:.3f}", delta=delta_eur_to_usd)
     col1, col2, col3 = st.columns(3)
     col1.metric("Average", value=f"{avg_eur_to_usd:.3f}")
     col2.metric(f"Max (on {max_date_eur_to_usd})", value=f"{max_eur_to_usd:.3f}")
