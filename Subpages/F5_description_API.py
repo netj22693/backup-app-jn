@@ -258,14 +258,27 @@ st.write("""
 ''
 ''
 # F5B and ERD
-st.write("##### Background job and ERD:")
+st.write("##### Function 5, Function 5B, Background job and ERD:")
 
 st.write("""
-- **Function 5B** is based on the same APIs as **Function 5**
+- **F5B** is based on the same APIs as **F5**
 	- **F5** calls the APIs when the function is **used by user through app UI** only
 	- **F5B** uses **background job** to continuously collect data and save it into DB, even if nobody is activelly using the app
 """)
 
+''
+tab1, tab2, tab3 = st.tabs([
+	"F5",
+	"F5B job",
+	"F5B"
+])
+
+tab1.image("Pictures/Function_5/F5_UML_seq_v2.svg")
+tab2.image("Pictures/Function_5/F5B_UML_seq_job_v2.svg")
+tab3.image("Pictures/Function_5/F5B_UML_seq_v2.svg")
+
+''
+''
 st.write("""
 - **The background job runs multiple times a day** 
 - Triggered through **GitHub Actions** cron
