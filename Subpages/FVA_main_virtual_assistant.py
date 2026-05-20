@@ -42,7 +42,7 @@ def extract_function_id(text):
     if "function6" in text or "f6" in text:
         return "6"
 
-    if "function5b" in text or "f5" in text:
+    if "function5b" in text or "f5b" in text:
         return "5B"
 
     if "function5" in text or "f5" in text:

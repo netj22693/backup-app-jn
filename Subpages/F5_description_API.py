@@ -4,6 +4,7 @@ import json
 import pandas as pd
 import plotly.express as px
 from Subpages.F5_json_structures import json_api_structure_1, json_api_structure_2
+from Subpages.Resources import Assets
 
 
 # ==================== Application screen + backend functions ==============
@@ -273,9 +274,9 @@ tab1, tab2, tab3 = st.tabs([
 	"F5B"
 ])
 
-tab1.image("Pictures/Function_5/F5_UML_seq_v2.svg")
-tab2.image("Pictures/Function_5/F5B_UML_seq_job_v2.svg")
-tab3.image("Pictures/Function_5/F5B_UML_seq_v2.svg")
+tab1.image(Assets.Images.f5_description_uml_seq_f5)
+tab2.image(Assets.Images.f5_description_uml_seq_f5b_job)
+tab3.image(Assets.Images.f5_description_uml_seq_f5b)
 
 ''
 ''

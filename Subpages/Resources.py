@@ -18,12 +18,16 @@ class Assets:
         # UML
         uml_f1_f2 = "Pictures/Overall_UML_F1 and F2_v2.svg"
         uml_f3_f3b_f4 = "Pictures/Overall_UML_F3 and F4_v3.svg"
-        uml_f5 = "Pictures/Overall_UML_F5.svg"
+        uml_f5 = "Pictures/Overall_UML_F5_v2.svg"
         uml_f6 = "Pictures/Overall_UML_F6.svg"
         uml_f7_f7b = "Pictures/Overall_UML_F7_v3.svg"
         uml_f8 = "Pictures/Overall_UML_F8_v3.svg"
         # Function desc related images
         f2_xml_xsd_validation ="Pictures/Function_2/F2_diagram_xml_xsd_validation.svg"
+        # F5 + F5B
+        f5_description_uml_seq_f5 = "Pictures/Function_5/F5_UML_seq_v2.svg"
+        f5_description_uml_seq_f5b = "Pictures/Function_5/F5B_UML_seq_v2.svg"
+        f5_description_uml_seq_f5b_job = "Pictures/Function_5/F5B_UML_seq_job_v2.svg"
 
 
     class Links:
@@ -38,6 +42,7 @@ class Assets:
         f3_f4_json = "https://dataparsing.streamlit.app/F3_F4_description_json#json-schema"
         f3_description = "https://dataparsing.streamlit.app/F3_F4_description#functions-3-and-4"
         f5_description = "https://dataparsing.streamlit.app/F5_description_API"
+        f5_description_background_job = "https://dataparsing.streamlit.app/~/+/F5_description_API#function-5-function-5-b-background-job-and-erd"
         f6_description = "https://dataparsing.streamlit.app/F6_description_API"
         f7_description = "https://dataparsing.streamlit.app/F7_description"
         f8_description = "https://dataparsing.streamlit.app/F8_description"

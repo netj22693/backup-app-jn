@@ -315,9 +315,30 @@ More details can be found in the function description [here]({Assets.Links.f5_de
 
 #  ---- Function 5B ----
 "function_5B" : {
-"text": f"""**Function 5B:** :hammer::clipboard: :triangular_ruler: Description will be provided soon - **not available yet**. Stay tuned.
+"text": f"""**Function 5B:** Exchange rate - Trend
+- Background job based
+- Data continuously collected into DB and visualized via app UI
+- The data collection is independent on human/user
+
+For more details about the background job:
+- Description [here]({Assets.Links.f5_description_background_job}) :point_left:
+- Ask chatbot: **background job** :dart:
 """,
-"image": None
+"image": Assets.Images.uml_f5
+},
+
+"function_5B_job" : {
+"text": f"""The **background job** related to **F5B**
+- Is based on cron job 
+- Uses **Github Actions** to be executed and make the steps defined in the code
+- Runs **3-5 times per day** (between 9-17 UTC time)
+- The number of runs is **influenced by capacity of resources** of Github Actions
+- The job calls **both APIs** (like F5 uses) and inserts the results **into DB**
+- It runs independently in the background, not dependent on human action
+
+More details can be found here [here]({Assets.Links.f5_description_background_job}) :point_left:
+""",
+"image": Assets.Images.f5_description_uml_seq_f5b_job
 },
 
 #  ---- Function 6 ----

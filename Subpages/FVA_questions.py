@@ -443,6 +443,8 @@ FAQ = [
         "keywords": ["function", "function 4", "f4", "4"],
         "function_id": "4"
     },
+
+    #  ---- Function 5 ----
     {
         "q": "What does Function 5 do?",
         "answer_id": "function_5",
@@ -456,6 +458,20 @@ FAQ = [
         "tags": ["function_5B"],
         "keywords": ["function", "function 5b", "f5b", "5b"],
         "function_id": "5B"
+    },
+    {
+        "q": "background job",
+        "answer_id": "function_5B_job",
+        "tags": ["job","background"],
+        "keywords": ["background","job"],
+        "function_id": None
+    },
+    {
+        "q": "What does the background job do?",
+        "answer_id": "function_5B_job",
+        "tags": ["job","background"],
+        "keywords": ["what","background","job", "do","does"],
+        "function_id": None
     },
     {
         "q": "What does Function 6 do?",
