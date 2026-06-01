@@ -238,6 +238,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 5:
+		- **v63.0** - F5B Radio button (Month data, Last 30 days) + Expander with data - 01-June-2026
 		- **v61.9** - F5B rate metrics added - 18-May-2026
 		- **v61.8** - F5B release  - 14-May-2026
 		- **v55.3** - Adjustment of format of results - 17-Mar-2026

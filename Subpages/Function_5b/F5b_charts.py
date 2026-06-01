@@ -6,6 +6,8 @@ from plotly.graph_objs import Figure
 
 def create_chart(df: pd.DataFrame, column_x: str, column_y: str, color_line: str, legend_name: str, currency: str) -> Figure:
 
+    number_rows = len(df)
+
     fig = go.Figure()
 
     fig.add_trace(
@@ -64,5 +66,21 @@ def create_chart(df: pd.DataFrame, column_x: str, column_y: str, color_line: str
             tickfont=dict(color="#888"),
         )
     )
+
+    # DF at the beginning of month has just 1 to few records (for better chart visualization)
+    if number_rows <= 5:
+        fig.update_xaxes(
+        tickangle=0,
+        nticks=number_rows,
+        tickformat="%d %b"
+        )
+    
+    else: 
+        fig.update_xaxes(
+        tickangle=0,
+        nticks=5,
+        tickformat="%d %b"
+        )
+
 
     return fig
