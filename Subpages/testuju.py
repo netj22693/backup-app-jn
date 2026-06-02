@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import logging
-import time
 from datetime import datetime, timezone, timedelta
 from sqlalchemy import create_engine, text, Engine
 from Subpages.Function_5b.F5b_SQL_queries import sql_query_exchange_rate_data
@@ -113,7 +112,22 @@ def get_min_max(df:pd.DataFrame) -> tuple[float, str]:
 
 def get_delta(previous: float, last: float) -> float:
 
-    return round(((last - previous)/previous) * 100, 2)   
+    delta = round(last - previous, 3) 
+
+    if delta > 0:
+        delta_color = "green"
+        delta_arrow = "up"
+
+    elif delta < 0: 
+        delta_color = "red"
+        delta_arrow = "down"
+
+    else:
+        delta_color = "grey"
+        delta_arrow = "up"
+    
+    
+    return delta, delta_color, delta_arrow
 
 
 def get_values_for_metrics(df:pd.DataFrame) -> tuple[float, float, str]:
@@ -144,10 +158,6 @@ def get_values_for_metrics(df:pd.DataFrame) -> tuple[float, float, str]:
     else:
         # 0 rows: DF is empty -> this case is supposed to be stoped in main if/else logic and this function should not be called at all
         logging.error(f"Get_values_for_metrics - this condition cannot happen")
-        st.write("tu?")
-        previous = last = last_date_str = None
-        st.write(previous)
-        st.write(last)
 
 
     return previous, last, last_date_str
@@ -161,12 +171,8 @@ def df_split_data_clean_up(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
     # Small DF from 3 columns
     column_state = column_name + "_state"
     df = df[["created_at", column_name, column_state]]
-    st.write(df)
 
-
-    # Drop of NULL values
-    # df = df.loc[df[column_name].notna()]
-    # st.write(df)
+    # Drop of "FAILED" values
     df = df[df[column_state]  == "SUCCESS"]
 
     # Sorting based on data/time TIMESTAMPZ format form DB still 2026-05-14 07:01:18.101787+00
@@ -196,7 +202,7 @@ def extract_variables_from_df(df: pd.DataFrame):
     previous, last, last_date_str = get_values_for_metrics(df)
 
     # Get delta values for metrics
-    delta_last_previous = get_delta(previous, last)
+    delta_last_previous, delta_color, delta_arrow = get_delta(previous, last)
 
     # Get avg
     avg = get_avg(df)
@@ -204,7 +210,36 @@ def extract_variables_from_df(df: pd.DataFrame):
     # Get min and max
     min_value, date_min, max_value, date_max = get_min_max(df)
 
-    return last, delta_last_previous, avg, min_value, date_min, max_value, date_max, last_date_str
+    return last, delta_last_previous, avg, min_value, date_min, max_value, date_max, last_date_str, delta_color, delta_arrow
+
+def df_clean_up_for_ui(df: pd.DataFrame, column: str, column_new: str) -> pd.DataFrame:
+    '''
+    - DF cleaned and adjusted for UI purposes
+    - BE "layout" replaced 
+    - (!) returns STYLED DF
+    '''
+
+    # Keep 2 columns
+    df = df[["created_at", column]]
+
+    # Sorting DESC
+    df = df.sort_values(by="created_at", ascending=False)
+
+    # Change TIMESTAMP -> str DD-Mon-YYYY
+    df["created_at"] = pd.to_datetime(df["created_at"]).dt.strftime("%d-%b-%Y")
+
+    # Index reset
+    df = df.reset_index(drop=True)
+    df.index += 1
+
+    # Replace name of columns
+    df = df.rename(columns={column: column_new})
+    df = df.rename(columns={"created_at": "Date"})
+
+    # Show # decimals always
+    df_styled = df.style.format({column_new: "{:.3f}"})
+    
+    return df_styled
 
 
 # Determin date rage for DB query -> parameters
@@ -236,49 +271,105 @@ else:
     df_usd_to_czk = df_split_data_clean_up(df_table_full, "usd_to_czk")
     df_eur_to_usd = df_split_data_clean_up(df_table_full, "eur_to_usd")
 
-    
-    value_eur_to_czk_last, delta_eur_to_czk, avg_eur_to_czk, min_eur_to_czk, min_date_eur_to_czk, max_eur_to_czk, max_date_eur_to_czk, last_date_str_eur_to_czk = extract_variables_from_df(df_eur_to_czk)
-    value_usd_to_czk_last, delta_usd_to_czk, avg_usd_to_czk, min_usd_to_czk, min_date_usd_to_czk,max_usd_to_czk, max_date_usd_to_czk, last_date_str_usd_to_czk = extract_variables_from_df(df_usd_to_czk)
-    value_eur_to_usd_last, delta_eur_to_usd, avg_eur_to_usd, min_eur_to_usd, min_date_eur_to_usd, max_eur_to_usd, max_date_eur_to_usd, last_date_str_eur_to_usd = extract_variables_from_df(df_eur_to_usd)
-
-    # Creation of charts
-    chart_eur_to_czk = create_chart(df_eur_to_czk, "created_at", "eur_to_czk", "#3206F5", "EUR to CZK", "CZK")
-    chart_usd_to_czk = create_chart(df_usd_to_czk, "created_at", "usd_to_czk", "#111111", "USD to CZK", "CZK")
-    chart_eur_to_usd  = create_chart(df_eur_to_usd, "created_at", "eur_to_usd", "#CE6B0E", "EUR to USD", "USD")
-
-
+    df_eur_to_czk_ui = df_clean_up_for_ui(df_eur_to_czk, "eur_to_czk", "EUR to CZK")
+    df_usd_to_czk_ui = df_clean_up_for_ui(df_usd_to_czk, "usd_to_czk", "USD to CZK")
+    df_eur_to_usd_ui = df_clean_up_for_ui(df_eur_to_usd, "eur_to_usd", "EUR to USD")
 
     # =================== App UI - content -> result ===================
 
     with tab1:
-        ''
-        st.metric(f"Last record ({last_date_str_eur_to_czk})", value=f"{value_eur_to_czk_last:.3f}", delta=delta_eur_to_czk)
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Average", value=f"{avg_eur_to_czk:.3f}")
-        col2.metric(f"Max (on {max_date_eur_to_czk})", value=f"{max_eur_to_czk:.3f}")
-        col3.metric(f"Min (on {min_date_eur_to_czk})", value=f"{min_eur_to_czk:.3f}")
-        ''
-        ''
-        st.plotly_chart(chart_eur_to_czk, width="stretch")
+        if df_eur_to_czk.empty:
+            st.info("There is no data for EUR to CZK yet")
+
+        else:
+
+            #------ metrics & chart ------
+            value_eur_to_czk_last, delta_eur_to_czk, avg_eur_to_czk, min_eur_to_czk, min_date_eur_to_czk, max_eur_to_czk, max_date_eur_to_czk, last_date_str_eur_to_czk, delta_color_eur_to_czk, delta_arrow_eur_to_czk = extract_variables_from_df(df_eur_to_czk)    
+
+            chart_eur_to_czk = create_chart(df_eur_to_czk, "created_at", "eur_to_czk", "#3206F5", "EUR to CZK", "CZK")
+
+            # ------ UI ------
+            ''
+            st.metric(
+                f"Last record ({last_date_str_eur_to_czk})",
+                value=f"{value_eur_to_czk_last:.3f}",
+                delta=f"{delta_eur_to_czk:.3f}",
+                delta_color=delta_color_eur_to_czk,
+                delta_arrow=delta_arrow_eur_to_czk
+                )
+            
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Average", value=f"{avg_eur_to_czk:.3f}")
+            col2.metric(f"Max (on {max_date_eur_to_czk})", value=f"{max_eur_to_czk:.3f}")
+            col3.metric(f"Min (on {min_date_eur_to_czk})", value=f"{min_eur_to_czk:.3f}")
+            ''
+            ''
+            st.plotly_chart(chart_eur_to_czk, width="stretch")
+
+            ''
+            with st.expander("List of records", icon=":material/table:"):
+                st.dataframe(df_eur_to_czk_ui)
 
     with tab2:
-        ''
-        st.metric(f"Last record ({last_date_str_usd_to_czk})", value=f"{value_usd_to_czk_last:.3f}", delta=delta_usd_to_czk)
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Average", value=f"{avg_usd_to_czk:.3f}")
-        col2.metric(f"Max (on {max_date_usd_to_czk})", value=f"{max_usd_to_czk:.3f}")
-        col3.metric(f"Min (on {min_date_usd_to_czk})", value=f"{min_usd_to_czk:.3f}")
-        ''
-        ''
-        st.plotly_chart(chart_usd_to_czk, width="stretch")
+        if df_usd_to_czk.empty:
+            st.info("There is no data for USD to CZK yet")
+
+        else:
+            #------ metrics & chart ------
+            value_usd_to_czk_last, delta_usd_to_czk, avg_usd_to_czk, min_usd_to_czk, min_date_usd_to_czk,max_usd_to_czk, max_date_usd_to_czk, last_date_str_usd_to_czk, delta_color_usd_to_czk, delta_arrow_usd_to_czk = extract_variables_from_df(df_usd_to_czk)
+
+            chart_usd_to_czk = create_chart(df_usd_to_czk, "created_at", "usd_to_czk", "#111111", "USD to CZK", "CZK")
+
+            # ------ UI ------
+            ''
+            st.metric(
+                f"Last record ({last_date_str_usd_to_czk})",
+                value=f"{value_usd_to_czk_last:.3f}",
+                delta=f"{delta_usd_to_czk:.3f}",
+                delta_color=delta_color_usd_to_czk,
+                delta_arrow=delta_arrow_usd_to_czk
+                )
+            
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Average", value=f"{avg_usd_to_czk:.3f}")
+            col2.metric(f"Max (on {max_date_usd_to_czk})", value=f"{max_usd_to_czk:.3f}")
+            col3.metric(f"Min (on {min_date_usd_to_czk})", value=f"{min_usd_to_czk:.3f}")
+            ''
+            ''
+            st.plotly_chart(chart_usd_to_czk, width="stretch")
+
+            ''
+            with st.expander("List of records", icon=":material/table:"):
+                st.dataframe(df_usd_to_czk_ui)
 
     with tab3:
-        ''
-        st.metric(f"Last record ({last_date_str_eur_to_usd})", value=f"{value_eur_to_usd_last:.3f}", delta=delta_eur_to_usd)
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Average", value=f"{avg_eur_to_usd:.3f}")
-        col2.metric(f"Max (on {max_date_eur_to_usd})", value=f"{max_eur_to_usd:.3f}")
-        col3.metric(f"Min (on {min_date_eur_to_usd})", value=f"{min_eur_to_usd:.3f}")
-        ''
-        ''
-        st.plotly_chart(chart_eur_to_usd, width="stretch")
+        if df_eur_to_usd.empty:
+            st.info("There is no data for EUR to USD yet")
+
+        else:
+            #------ metrics & chart ------
+            value_eur_to_usd_last, delta_eur_to_usd, avg_eur_to_usd, min_eur_to_usd, min_date_eur_to_usd, max_eur_to_usd, max_date_eur_to_usd, last_date_str_eur_to_usd, delta_color_eur_to_usd, delta_arrow_eur_to_usd = extract_variables_from_df(df_eur_to_usd)
+
+            chart_eur_to_usd  = create_chart(df_eur_to_usd, "created_at", "eur_to_usd", "#CE6B0E", "EUR to USD", "USD")
+
+            # ------ UI ------
+            ''
+            st.metric(
+                f"Last record ({last_date_str_eur_to_usd})",
+                value=f"{value_eur_to_usd_last:.3f}",
+                delta=f"{delta_eur_to_usd:.3f}",
+                delta_color=delta_color_eur_to_usd,
+                delta_arrow=delta_arrow_eur_to_usd
+                )
+            
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Average", value=f"{avg_eur_to_usd:.3f}")
+            col2.metric(f"Max (on {max_date_eur_to_usd})", value=f"{max_eur_to_usd:.3f}")
+            col3.metric(f"Min (on {min_date_eur_to_usd})", value=f"{min_eur_to_usd:.3f}")
+            ''
+            ''
+            st.plotly_chart(chart_eur_to_usd, width="stretch")
+
+            ''
+            with st.expander("List of records", icon=":material/table:"):
+                st.dataframe(df_eur_to_usd_ui)

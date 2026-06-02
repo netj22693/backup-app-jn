@@ -112,7 +112,22 @@ def get_min_max(df:pd.DataFrame) -> tuple[float, str]:
 
 def get_delta(previous: float, last: float) -> float:
 
-    return round(((last - previous)/previous) * 100, 2)   
+    delta = round(last - previous, 3) 
+
+    if delta > 0:
+        delta_color = "green"
+        delta_arrow = "up"
+
+    elif delta < 0: 
+        delta_color = "red"
+        delta_arrow = "down"
+
+    else:
+        delta_color = "grey"
+        delta_arrow = "up"
+    
+    
+    return delta, delta_color, delta_arrow
 
 
 def get_values_for_metrics(df:pd.DataFrame) -> tuple[float, float, str]:
@@ -187,7 +202,7 @@ def extract_variables_from_df(df: pd.DataFrame):
     previous, last, last_date_str = get_values_for_metrics(df)
 
     # Get delta values for metrics
-    delta_last_previous = get_delta(previous, last)
+    delta_last_previous, delta_color, delta_arrow = get_delta(previous, last)
 
     # Get avg
     avg = get_avg(df)
@@ -195,7 +210,7 @@ def extract_variables_from_df(df: pd.DataFrame):
     # Get min and max
     min_value, date_min, max_value, date_max = get_min_max(df)
 
-    return last, delta_last_previous, avg, min_value, date_min, max_value, date_max, last_date_str
+    return last, delta_last_previous, avg, min_value, date_min, max_value, date_max, last_date_str, delta_color, delta_arrow
 
 def df_clean_up_for_ui(df: pd.DataFrame, column: str, column_new: str) -> pd.DataFrame:
     '''
@@ -269,13 +284,20 @@ else:
         else:
 
             #------ metrics & chart ------
-            value_eur_to_czk_last, delta_eur_to_czk, avg_eur_to_czk, min_eur_to_czk, min_date_eur_to_czk, max_eur_to_czk, max_date_eur_to_czk, last_date_str_eur_to_czk = extract_variables_from_df(df_eur_to_czk)    
+            value_eur_to_czk_last, delta_eur_to_czk, avg_eur_to_czk, min_eur_to_czk, min_date_eur_to_czk, max_eur_to_czk, max_date_eur_to_czk, last_date_str_eur_to_czk, delta_color_eur_to_czk, delta_arrow_eur_to_czk = extract_variables_from_df(df_eur_to_czk)    
 
             chart_eur_to_czk = create_chart(df_eur_to_czk, "created_at", "eur_to_czk", "#3206F5", "EUR to CZK", "CZK")
 
             # ------ UI ------
             ''
-            st.metric(f"Last record ({last_date_str_eur_to_czk})", value=f"{value_eur_to_czk_last:.3f}", delta=delta_eur_to_czk)
+            st.metric(
+                f"Last record ({last_date_str_eur_to_czk})",
+                value=f"{value_eur_to_czk_last:.3f}",
+                delta=f"{delta_eur_to_czk:.3f}",
+                delta_color=delta_color_eur_to_czk,
+                delta_arrow=delta_arrow_eur_to_czk
+                )
+            
             col1, col2, col3 = st.columns(3)
             col1.metric("Average", value=f"{avg_eur_to_czk:.3f}")
             col2.metric(f"Max (on {max_date_eur_to_czk})", value=f"{max_eur_to_czk:.3f}")
@@ -294,13 +316,20 @@ else:
 
         else:
             #------ metrics & chart ------
-            value_usd_to_czk_last, delta_usd_to_czk, avg_usd_to_czk, min_usd_to_czk, min_date_usd_to_czk,max_usd_to_czk, max_date_usd_to_czk, last_date_str_usd_to_czk = extract_variables_from_df(df_usd_to_czk)
+            value_usd_to_czk_last, delta_usd_to_czk, avg_usd_to_czk, min_usd_to_czk, min_date_usd_to_czk,max_usd_to_czk, max_date_usd_to_czk, last_date_str_usd_to_czk, delta_color_usd_to_czk, delta_arrow_usd_to_czk = extract_variables_from_df(df_usd_to_czk)
 
             chart_usd_to_czk = create_chart(df_usd_to_czk, "created_at", "usd_to_czk", "#111111", "USD to CZK", "CZK")
 
             # ------ UI ------
             ''
-            st.metric(f"Last record ({last_date_str_usd_to_czk})", value=f"{value_usd_to_czk_last:.3f}", delta=delta_usd_to_czk)
+            st.metric(
+                f"Last record ({last_date_str_usd_to_czk})",
+                value=f"{value_usd_to_czk_last:.3f}",
+                delta=f"{delta_usd_to_czk:.3f}",
+                delta_color=delta_color_usd_to_czk,
+                delta_arrow=delta_arrow_usd_to_czk
+                )
+            
             col1, col2, col3 = st.columns(3)
             col1.metric("Average", value=f"{avg_usd_to_czk:.3f}")
             col2.metric(f"Max (on {max_date_usd_to_czk})", value=f"{max_usd_to_czk:.3f}")
@@ -319,13 +348,20 @@ else:
 
         else:
             #------ metrics & chart ------
-            value_eur_to_usd_last, delta_eur_to_usd, avg_eur_to_usd, min_eur_to_usd, min_date_eur_to_usd, max_eur_to_usd, max_date_eur_to_usd, last_date_str_eur_to_usd = extract_variables_from_df(df_eur_to_usd)
+            value_eur_to_usd_last, delta_eur_to_usd, avg_eur_to_usd, min_eur_to_usd, min_date_eur_to_usd, max_eur_to_usd, max_date_eur_to_usd, last_date_str_eur_to_usd, delta_color_eur_to_usd, delta_arrow_eur_to_usd = extract_variables_from_df(df_eur_to_usd)
 
             chart_eur_to_usd  = create_chart(df_eur_to_usd, "created_at", "eur_to_usd", "#CE6B0E", "EUR to USD", "USD")
 
             # ------ UI ------
             ''
-            st.metric(f"Last record ({last_date_str_eur_to_usd})", value=f"{value_eur_to_usd_last:.3f}", delta=delta_eur_to_usd)
+            st.metric(
+                f"Last record ({last_date_str_eur_to_usd})",
+                value=f"{value_eur_to_usd_last:.3f}",
+                delta=f"{delta_eur_to_usd:.3f}",
+                delta_color=delta_color_eur_to_usd,
+                delta_arrow=delta_arrow_eur_to_usd
+                )
+            
             col1, col2, col3 = st.columns(3)
             col1.metric("Average", value=f"{avg_eur_to_usd:.3f}")
             col2.metric(f"Max (on {max_date_eur_to_usd})", value=f"{max_eur_to_usd:.3f}")
