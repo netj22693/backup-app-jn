@@ -1,375 +1,490 @@
 import streamlit as st
 import pandas as pd
-import logging
-from datetime import datetime, timezone, timedelta
-from sqlalchemy import create_engine, text, Engine
-from Subpages.Function_5b.F5b_SQL_queries import sql_query_exchange_rate_data
-from Subpages.Function_5b.F5b_charts import create_chart
-
-# =================== App UI  ===================
-st.write("# Exchange Rate - Trend:")
-''
-''
-options = ["Last 30 days","Current month"]
-radio_selected = st.radio("Range", options=options, label_visibility="collapsed")
-''
-''
-tab1, tab2, tab3 = st.tabs([
-    "EUR to CZK",
-    "USD to CZK",
-    "EUR to USD"
-])
-# -----------------------------------------------
-
-
-# GLOBAL variable - Value for rounding
-round_value = 3
-# ------------------------------------
-
-# Inicialization for logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s: %(message)s",
-    force=True
-)
-# ------------------------------------
+import plotly.express as px
+from datetime import date, timedelta
+from sqlalchemy import create_engine, text
+from Subpages.F3b_SQL_queries import sql_query_overview_invoices, sql_query_extra_service, sql_query_file_format, sql_query_mapping_log, sql_query_overview, sql_query_product, sql_query_transport, sql_query_transport_company, get_sql_part_where_date, get_sql_query_category, get_sql_query_company, get_sql_query_parcel_size, get_sql_query_currency, get_sql_query_country, get_sql_query_extra_service_type, get_sql_query_extra_service_count, get_mapping_extra_services, get_sql_query_file_format
 
 @st.dialog("Error: DB not connected")
 def db_connection_fail():
 
-    st.warning("Application is not able to establish connection with DB server -> **This 5B Function is currently not available**")
+    st.warning("Application is not able to establish connection with DB server -> **This 3B Function is currently not available**")
     st.stop()
 
 
-def connection_db() -> Engine:
+def connection_db():
+    # Load secrets
+    password = st.secrets["neon"]["password"]
+    endpoint = st.secrets["neon"]["endpoint"]
 
+    # connection string
     try: 
-        # Load secrets
-        password = st.secrets["neon"]["password"]
-        endpoint = st.secrets["neon"]["endpoint"]
-
-        # connection string
         conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.gwc.azure.neon.tech/neondb?sslmode=require"
 
         engine = create_engine(conn_string)
-
-        with engine.connect() as conn:
-            logging.info("DB connection established")
-
         return engine
 
-    except Exception as e:
-        logging.error(f"DB connection failed: {e}")
+    except:
         db_connection_fail()
 
 
-   
 
-def get_date_range(radio_input: str) -> dict:
-    '''
-    - To detrmin date from/to based radio button selection from user
-    '''
+# ================ Application Screen - INPUT Buttons ========================
+st.write("# Find your invoice:")
+''
 
-    now = datetime.now(timezone.utc)
+st.write("- View into DB. Based on invoices created in Function 3...")
+''
 
-    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
-    month_range_past =  today_start - timedelta(days=30)
-
-    start_of_month = datetime(now.year, now.month, 1, tzinfo=timezone.utc)
-
-    mapping = {
-        "Last 30 days": {
-            "start": month_range_past,
-            "end": now
-        },
-        "Current month": {
-            "start": start_of_month,
-            "end": now
-        }
-    }
-
-    return mapping[radio_input]
+tab1, tab2, tab3, tab4 = st.tabs([
+    "Last 15 invoices",
+    "Search for specific invoice",
+    "Customized search",
+    "Analytics"
+])
 
 
-def get_avg(df:pd.DataFrame) -> float:
+# =================  Tab 1  ======================
+with tab1:
 
-    return round(df.iloc[:,1].mean(), round_value)
+    ''
+    if st.button("Show last 15 offers", width="stretch", icon=":material/table:"):
 
+        db_engine = connection_db()
 
-def get_min_max(df:pd.DataFrame) -> tuple[float, str]:
+        df = pd.read_sql(sql_query_overview_invoices, db_engine)
 
-    min_value = round(df.iloc[:,1].min(), round_value)
-    date_min = df.loc[df.iloc[:,1].idxmin(), df.columns[0]]
-    date_min = pd.to_datetime(date_min).strftime("%d-%b-%Y")
+        # DF styling
 
-    max_value = round(df.iloc[:,1].max(), round_value)
-    date_max= df.loc[df.iloc[:,1].idxmax(), df.columns[0]]
-    date_max = pd.to_datetime(date_max).strftime("%d-%b-%Y")
+        # This makes index + 1 -> by adding new column which is based on index number + 1 (normal df_styled.index = df_styled.index + 1 here doesn't work due to the style. - ing)
+        df[" "] = df.index + 1
+        df = df.set_index(" ")
+
+        df["Date"] = pd.to_datetime(df["Date"])
+
+        df_styled = df.style.format({
+            "Price": "{:,.2f}",
+            "Extra service price": "{:,.2f}",
+            "Transport price": "{:,.2f}",
+            "Total price": "{:,.2f}",
+            "Date": lambda d: d.strftime("%d-%b-%Y")
+            })
+        
+        ''
+        st.dataframe(df_styled, width = "stretch", height=562)
+
+# =================  Tab 2 - main logic put in def ======================
+
+def tab_2_logic_run():
     
-    return min_value, date_min, max_value, date_max
+    # DB connection + queries run
+    db_engine = connection_db()
+
+    with db_engine.connect() as conn:
+        params = {"order": order_input}
+        df_file_format = pd.read_sql_query(sql=text(sql_query_file_format), con=conn, params=params)
+        df_overview = pd.read_sql_query(sql=text(sql_query_overview), con=conn, params=params)
+        df_product = pd.read_sql_query(sql=text(sql_query_product), con=conn, params=params)
+        df_extra_service = pd.read_sql_query(sql=text(sql_query_extra_service), con=conn, params=params)
+        df_transport = pd.read_sql_query(sql=text(sql_query_transport), con=conn, params=params)
+        df_transport_company = pd.read_sql_query(sql=text(sql_query_transport_company), con=conn, params=params)
+        df_mapping_logs = pd.read_sql_query(sql=text(sql_query_mapping_log), con=conn, params=params)
 
 
-
-def get_delta(previous: float, last: float) -> float:
-
-    delta = round(last - previous, 3) 
-
-    if delta > 0:
-        delta_color = "green"
-        delta_arrow = "up"
-
-    elif delta < 0: 
-        delta_color = "red"
-        delta_arrow = "down"
-
-    else:
-        delta_color = "grey"
-        delta_arrow = "up"
+    # Key if/else logic - in case that no match in DB with Order number -> tab_2 logic doesn't continue
+    if df_overview.empty or df_file_format.empty:
+        st.info(f"**No invoice** found with this **Order number: {order_input}**")
     
-    
-    return delta, delta_color, delta_arrow
+    else: 
+        # Making variables extracting them from dataframes
+        file_format = df_file_format['name'].iloc[0]
+        transport_company = df_transport_company['name'].iloc[0]
 
 
-def get_values_for_metrics(df:pd.DataFrame) -> tuple[float, float, str]:
-    '''
-    - If there is less than 2 records (can happen on 1st of month) -> elif condition
-    - Tail - Takes 2 latest records from DF -> 'last' and 'previous'
-    - .iloc - Takes valus from DF -> float 
-    - produces date in string format of the last record
-    Purpose: 
-        - floats for metrics/comparison purposes
-        - date_str -> to visualize from which date the last record in DB is
-    '''
-    number_rows = len(df.index)
+        #df styling
+        df_overview["Date"] = pd.to_datetime(df_overview["Date"])
 
-    if number_rows >= 2:
-        df = df.tail(2)
-        previous = round(df.iloc[0,1],round_value)
-        last = round(df.iloc[1,1], round_value)
-        last_date = df.iloc[1,0]
-        last_date_str = last_date.strftime("%d-%b-%Y")
-    
-    elif number_rows == 1:
-        last = round(df.iloc[0,1],round_value)
-        previous = last
-        last_date = df.iloc[0,0]
-        last_date_str = last_date.strftime("%d-%b-%Y")
+        df_overview_styled = df_overview.style.format({
+            "Total price": "{:,.2f}",
+            "Date": lambda d: d.strftime("%d-%m-%Y")
+            })
 
-    else:
-        # 0 rows: DF is empty -> this case is supposed to be stoped in main if/else logic and this function should not be called at all
-        logging.error(f"Get_values_for_metrics - this condition cannot happen")
+        df_product_styled = df_product.style.format({
+            "Price": "{:,.2f}"
+            })
+        
+        df_extra_service_styled = df_extra_service.style.format({
+            "Extra service price": "{:,.2f}"
+            })
 
+        df_transport_styled = df_transport.style.format({
+            "Transport price": "{:,.2f}"
+            })
 
-    return previous, last, last_date_str
+        if not df_mapping_logs.empty:
+            # This makes index + 1 -> by adding new column which is based on index number + 1 (normal df_styled.index = df_styled.index + 1 here doesn't work due to the style. - ing)
+            df_mapping_logs[" "] = df_mapping_logs.index + 1
+            df_mapping_logs = df_mapping_logs.set_index(" ")
 
+            df_mapping_logs["Date"] = pd.to_datetime(df_mapping_logs["Date"])
 
-def df_split_data_clean_up(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
-    '''
-    Split of full DF pulled from DB into small DFs accordingly to column name -> values for particular currency
-    '''
-
-    # Small DF from 3 columns
-    column_state = column_name + "_state"
-    df = df[["created_at", column_name, column_state]]
-
-    # Drop of "FAILED" values
-    df = df[df[column_state]  == "SUCCESS"]
-
-    # Sorting based on data/time TIMESTAMPZ format form DB still 2026-05-14 07:01:18.101787+00
-    df = df.sort_values("created_at")
-
-    # Drop of TIME and Z -> 2026-05-14
-    df["created_at"] = pd.to_datetime(df["created_at"]).dt.date
-
-    # Grouping of values based on date 2026-05-14 -> taking just the latest value
-    # Note: the scheduler runs multiple time per day, there can be avg 4-5 records of rate per date -> That's why to take the last 
-    df = df.groupby("created_at").tail(1)
-
-    return df
-
-def extract_variables_from_df(df: pd.DataFrame):
-    # Sorting based on data/time TIMESTAMPZ format form DB still 2026-05-14 07:01:18.101787+00
-    df = df.sort_values("created_at")
-
-    # Drop of TIME and Z -> 2026-05-14
-    df["created_at"] = pd.to_datetime(df["created_at"]).dt.date
-
-    # Grouping of values based on date 2026-05-14 -> taking just the latest value
-    # Note: the scheduler runs multiple time per day, there can be avg 4-5 records of rate per date -> That's why to take the last 
-    df = df.groupby("created_at").tail(1)
-
-    # Get values for metrics
-    previous, last, last_date_str = get_values_for_metrics(df)
-
-    # Get delta values for metrics
-    delta_last_previous, delta_color, delta_arrow = get_delta(previous, last)
-
-    # Get avg
-    avg = get_avg(df)
-
-    # Get min and max
-    min_value, date_min, max_value, date_max = get_min_max(df)
-
-    return last, delta_last_previous, avg, min_value, date_min, max_value, date_max, last_date_str, delta_color, delta_arrow
-
-def df_clean_up_for_ui(df: pd.DataFrame, column: str, column_new: str) -> pd.DataFrame:
-    '''
-    - DF cleaned and adjusted for UI purposes
-    - BE "layout" replaced 
-    - (!) returns STYLED DF
-    '''
-
-    # Keep 2 columns
-    df = df[["created_at", column]]
-
-    # Sorting DESC
-    df = df.sort_values(by="created_at", ascending=False)
-
-    # Change TIMESTAMP -> str DD-Mon-YYYY
-    df["created_at"] = pd.to_datetime(df["created_at"]).dt.strftime("%d-%b-%Y")
-
-    # Index reset
-    df = df.reset_index(drop=True)
-    df.index += 1
-
-    # Replace name of columns
-    df = df.rename(columns={column: column_new})
-    df = df.rename(columns={"created_at": "Date"})
-
-    # Show # decimals always
-    df_styled = df.style.format({column_new: "{:.3f}"})
-    
-    return df_styled
+            df_mapping_logs_styled = df_mapping_logs.style.format({
+                "Date": lambda d: d.strftime("%d-%m-%Y - %H:%M:%S")
+                })
 
 
-# Determin date rage for DB query -> parameters
-dict_range_date = get_date_range(radio_selected)
-start = dict_range_date["start"]
-end = dict_range_date["end"]
+        def bring_logo_screen(input_company):
 
-# Engine creation
-db_engine = connection_db()
-
-# Creation DF from DB
-with db_engine.connect() as conn:
-    df_table_full = pd.read_sql_query(sql=text(sql_query_exchange_rate_data), con=conn, params = {
-    "start": start,
-    "end": end
-    })
-
-# Fallback - case: 1st day in month -> user selects 'Current month' (radio button) but no record in DB yet because scheduler has not run yet. 
-if df_table_full.empty:
-    st.info("""
-    - For current month there is **no record in DB yet**
-    - The automated scheduler has not run yet today
-    - **Should be visible within next few hours**
-    """) 
-
-else:
-    
-    df_eur_to_czk = df_split_data_clean_up(df_table_full, "eur_to_czk")
-    df_usd_to_czk = df_split_data_clean_up(df_table_full, "usd_to_czk")
-    df_eur_to_usd = df_split_data_clean_up(df_table_full, "eur_to_usd")
-
-    df_eur_to_czk_ui = df_clean_up_for_ui(df_eur_to_czk, "eur_to_czk", "EUR to CZK")
-    df_usd_to_czk_ui = df_clean_up_for_ui(df_usd_to_czk, "usd_to_czk", "USD to CZK")
-    df_eur_to_usd_ui = df_clean_up_for_ui(df_eur_to_usd, "eur_to_usd", "EUR to USD")
-
-    # =================== App UI - content -> result ===================
-
-    with tab1:
-        if df_eur_to_czk.empty:
-            st.info("There is no data for EUR to CZK yet")
-
-        else:
-
-            #------ metrics & chart ------
-            value_eur_to_czk_last, delta_eur_to_czk, avg_eur_to_czk, min_eur_to_czk, min_date_eur_to_czk, max_eur_to_czk, max_date_eur_to_czk, last_date_str_eur_to_czk, delta_color_eur_to_czk, delta_arrow_eur_to_czk = extract_variables_from_df(df_eur_to_czk)    
-
-            chart_eur_to_czk = create_chart(df_eur_to_czk, "created_at", "eur_to_czk", "#3206F5", "EUR to CZK", "CZK")
-
-            # ------ UI ------
-            ''
-            st.metric(
-                f"Last record ({last_date_str_eur_to_czk})",
-                value=f"{value_eur_to_czk_last:.3f}",
-                delta=f"{delta_eur_to_czk:.3f}",
-                delta_color=delta_color_eur_to_czk,
-                delta_arrow=delta_arrow_eur_to_czk
-                )
+            if input_company == 'DHL':
+                image = 'Pictures/Function_3/Logo_DHL_v3.svg'
+                size = 150
             
-            col1, col2, col3 = st.columns(3)
-            col1.metric("Average", value=f"{avg_eur_to_czk:.3f}")
-            col2.metric(f"Max (on {max_date_eur_to_czk})", value=f"{max_eur_to_czk:.3f}")
-            col3.metric(f"Min (on {min_date_eur_to_czk})", value=f"{min_eur_to_czk:.3f}")
-            ''
-            ''
-            st.plotly_chart(chart_eur_to_czk, width="stretch")
-
-            ''
-            with st.expander("List of records", icon=":material/table:"):
-                st.dataframe(df_eur_to_czk_ui)
-
-    with tab2:
-        if df_usd_to_czk.empty:
-            st.info("There is no data for USD to CZK yet")
-
-        else:
-            #------ metrics & chart ------
-            value_usd_to_czk_last, delta_usd_to_czk, avg_usd_to_czk, min_usd_to_czk, min_date_usd_to_czk,max_usd_to_czk, max_date_usd_to_czk, last_date_str_usd_to_czk, delta_color_usd_to_czk, delta_arrow_usd_to_czk = extract_variables_from_df(df_usd_to_czk)
-
-            chart_usd_to_czk = create_chart(df_usd_to_czk, "created_at", "usd_to_czk", "#111111", "USD to CZK", "CZK")
-
-            # ------ UI ------
-            ''
-            st.metric(
-                f"Last record ({last_date_str_usd_to_czk})",
-                value=f"{value_usd_to_czk_last:.3f}",
-                delta=f"{delta_usd_to_czk:.3f}",
-                delta_color=delta_color_usd_to_czk,
-                delta_arrow=delta_arrow_usd_to_czk
-                )
+            if input_company == 'Fedex':
+                image = 'Pictures/Function_3/Logo_Fedex_v3.svg'
+                size = 95
             
-            col1, col2, col3 = st.columns(3)
-            col1.metric("Average", value=f"{avg_usd_to_czk:.3f}")
-            col2.metric(f"Max (on {max_date_usd_to_czk})", value=f"{max_usd_to_czk:.3f}")
-            col3.metric(f"Min (on {min_date_usd_to_czk})", value=f"{min_usd_to_czk:.3f}")
-            ''
-            ''
-            st.plotly_chart(chart_usd_to_czk, width="stretch")
+            return image, size
 
-            ''
-            with st.expander("List of records", icon=":material/table:"):
-                st.dataframe(df_usd_to_czk_ui)
+        logo, size_logo = bring_logo_screen(transport_company)
 
-    with tab3:
-        if df_eur_to_usd.empty:
-            st.info("There is no data for EUR to USD yet")
 
+        # Visualization on user screen
+        ''
+        ''
+        st.write(f"- Invoice was originally produced in **{file_format}** format")
+        ''
+        st.write("- Invoice overview:")
+        st.dataframe(df_overview_styled, hide_index=True)
+
+        ''
+        st.write("- Product overview:")
+        st.dataframe(df_product_styled, hide_index=True)
+
+        ''
+        st.write("- Extra service overview:")
+        st.dataframe(df_extra_service_styled, hide_index=True)
+
+        ''
+        st.write("- Transport overview:")
+        st.image(logo, width= size_logo)
+        st.dataframe(df_transport_styled, hide_index=True)
+
+        ''
+        if df_mapping_logs.empty:
+            st.write("- Logs - Invoice mapped to differnet format: **no mapping**")
+            st.dataframe(df_mapping_logs)
         else:
-            #------ metrics & chart ------
-            value_eur_to_usd_last, delta_eur_to_usd, avg_eur_to_usd, min_eur_to_usd, min_date_eur_to_usd, max_eur_to_usd, max_date_eur_to_usd, last_date_str_eur_to_usd, delta_color_eur_to_usd, delta_arrow_eur_to_usd = extract_variables_from_df(df_eur_to_usd)
+            st.write("- Logs - Invoice mapped to differnet format:")
+            st.dataframe(df_mapping_logs_styled)
 
-            chart_eur_to_usd  = create_chart(df_eur_to_usd, "created_at", "eur_to_usd", "#CE6B0E", "EUR to USD", "USD")
 
-            # ------ UI ------
-            ''
-            st.metric(
-                f"Last record ({last_date_str_eur_to_usd})",
-                value=f"{value_eur_to_usd_last:.3f}",
-                delta=f"{delta_eur_to_usd:.3f}",
-                delta_color=delta_color_eur_to_usd,
-                delta_arrow=delta_arrow_eur_to_usd
-                )
+with tab2: 
+
+    with st.form(key="user_form"):
+        order_input = st.text_input(label="Order number:", help="Insert **Order number** of invoice you would like to see. It is based on invoices created in **Function 3**.")
+
+        order_input=order_input.strip()
+        
+        submit_button = st.form_submit_button(label= "Submit", width="stretch")
+    
+    if submit_button:
+
+        def input_validation(input):
+
+            if input == '':
+                st.warning("**Missing input** - Please provide **Order number**")
+                return False
             
-            col1, col2, col3 = st.columns(3)
-            col1.metric("Average", value=f"{avg_eur_to_usd:.3f}")
-            col2.metric(f"Max (on {max_date_eur_to_usd})", value=f"{max_eur_to_usd:.3f}")
-            col3.metric(f"Min (on {min_date_eur_to_usd})", value=f"{min_eur_to_usd:.3f}")
-            ''
-            ''
-            st.plotly_chart(chart_eur_to_usd, width="stretch")
+            return True
+        
+        # helps to prevent SQL injection to limit inputs to integer only
+        def input_safety_validation(input):
+            
+            try: 
+                input = int(input)
+                return True
 
+            except:
+                st.warning("**Format issue** - The provide Order number is not in correct format")
+                return False
+                
+                
+        
+        # if/else logic block - if not preventing for triggering main logic due to wrong input
+        if not input_validation(order_input) or not input_safety_validation(order_input):
+            pass
+
+
+        # Tab 2 main being triggered here
+        else:
+            tab_2_logic_run()
+            
+
+# =================  Tab 3  ======================
+
+# To be built up
+with tab3:
+    st.info("This part is currently under build - to be released soon")
+
+# =================  Tab 4  ======================
+
+with tab4:
+    # Date picker
+    ''
+    radio_state_tb4 = st.radio("Filter",options=["All invoices - no specific date","Date range"])
+
+    if radio_state_tb4 == "All invoices - no specific date":
+
+        # Extending SQL -> no extension, no additional filter
+        date_query_applicable = False
+        picked_date_from_tab4 = None
+        picked_date_to_tab4 = None
+
+
+    if radio_state_tb4 == "Date range":
+        
+        col1_tab4, col2_tab4 = st.columns(2)
+
+        # Min date allowed
+        min_date = date(2025, 1, 1)
+
+        # default = today - 30 days
+        default_date = date.today() - timedelta(days=30)
+        max_date = date.today()
+
+        
+        picked_date_from_tab4 = col1_tab4.date_input(
+            "From",
+            value=default_date,
+            min_value = min_date,
+            max_value = max_date,
+            format ="DD/MM/YYYY",
+            key = "key_date_input_tab4_1"
+        )
+
+        picked_date_to_tab4 = col2_tab4.date_input(
+            "To",
+            value = max_date,
+            format = "DD/MM/YYYY",
+            min_value = min_date,
+            max_value = max_date,
+            key ="key_date_input_tab4_2")
+        
+        # Extending SQL query date filter
+        date_query_applicable = True
+
+
+        # Fallback info 
+        if picked_date_from_tab4 > picked_date_to_tab4:
+            st.warning("Date **To** is farther in the past than **From** -> search will not work. Please change it.")
+  
+
+    ''
+    ''
+    submit_button_tab4 = st.button("Submit", width= "stretch", icon=":material/apps:", key="key_submit_button_tab4")
+
+    if submit_button_tab4:
+        db_engine = connection_db()
+
+        with db_engine.connect() as conn:
+
+            # Function retruning SQL WHERE condition/string, if filtering based on date applicable
+            sql_date_query_where_part = get_sql_part_where_date(date_query_applicable)
+
+            # Build of parameters date
+            params_date = {
+                "date_from" : picked_date_from_tab4,
+                "date_to" : picked_date_to_tab4,
+            }
+
+            # Build of parameters joining -> full set of parametrs
+            params = params_date
+
+            # Building of SQL queries
+            sql_query_category = get_sql_query_category(date_query_applicable, sql_date_query_where_part)
+            sql_query_company = get_sql_query_company(date_query_applicable, sql_date_query_where_part) 
+            sql_query_parcel_size = get_sql_query_parcel_size(date_query_applicable, sql_date_query_where_part)
+            sql_query_currency = get_sql_query_currency(date_query_applicable, sql_date_query_where_part)
+            sql_query_country = get_sql_query_country(date_query_applicable, sql_date_query_where_part)
+            sql_query_extra_service_type = get_sql_query_extra_service_type(date_query_applicable, sql_date_query_where_part)
+            sql_query_extra_service_count = get_sql_query_extra_service_count(date_query_applicable, sql_date_query_where_part)
+            sql_query_file_format = get_sql_query_file_format(date_query_applicable, sql_date_query_where_part)
+
+            
+            # Dataframes creation
+            with db_engine.connect() as conn:
+                df_category_grouped = pd.read_sql_query(sql=text(sql_query_category), con = conn, params=params)
+                df_company_grouped = pd.read_sql_query(sql=text(sql_query_company), con = conn, params=params)
+                df_parcel_size_grouped = pd.read_sql_query(sql=text(sql_query_parcel_size), con = conn, params=params)
+                df_currency_grouped = pd.read_sql_query(sql=text(sql_query_currency), con = conn, params=params)
+                df_country_grouped = pd.read_sql_query(sql=text(sql_query_country), con = conn, params=params)
+                df_extra_service_type_grouped = pd.read_sql_query(sql=text(sql_query_extra_service_type), con = conn, params=params)
+                df_extra_service_count_grouped = pd.read_sql_query(sql=text(sql_query_extra_service_count), con = conn, params=params)
+                df_file_format_grouped = pd.read_sql_query(sql=text(sql_query_file_format), con = conn, params=params)
+
+
+            # mapping
+            df_extra_service_count_grouped_mapped = get_mapping_extra_services(df_extra_service_count_grouped)
+
+            # DF extract how many records -> for UI purposes
+            number_rows_category = df_category_grouped["count"].sum()
+            number_rows_extra_service_count = df_extra_service_count_grouped_mapped["count"].sum()
+            number_rows_extra_service_type = df_extra_service_type_grouped["count"].sum()
+
+
+
+            def df_change_column_name(input_df: pd.DataFrame) -> pd.DataFrame:
+                
+                dict_names = {
+                    "extra_service" : "Extra service",
+                    "count" : "Count",
+                    "name" : "Label"
+                }
+
+                output_df = input_df.rename(columns=dict_names)
+
+                return output_df
+            
+
+            def df_styling_index_set_1(input_df: pd.DataFrame) -> pd.DataFrame:
+                
+                # Need to create a copy of the original DF to do not change existing variable/DF outside of this function
+                input_df = input_df.copy()
+
+
+                input_df[" "] = input_df.index + 1
+                input_df = input_df.set_index(" ")
+
+                # Change of column name for UI purposes
+                adj_df = df_change_column_name(input_df)
+
+                return adj_df
+            
+
+            # Styling for UI purposes -> index change + column name change
+            df_category_grouped_styled = df_styling_index_set_1(df_category_grouped)
+            df_company_grouped_styled = df_styling_index_set_1(df_company_grouped)
+            df_parcel_size_grouped_styled = df_styling_index_set_1(df_parcel_size_grouped)
+            df_currency_grouped_styled = df_styling_index_set_1(df_currency_grouped)
+            df_country_grouped_styled = df_styling_index_set_1(df_country_grouped)
+            df_extra_service_count_grouped_mapped_styled = df_styling_index_set_1(df_extra_service_count_grouped_mapped)
+            df_extra_service_type_grouped_styled = df_styling_index_set_1(df_extra_service_type_grouped)
+            df_file_format_grouped_styled = df_styling_index_set_1(df_file_format_grouped)
+
+
+            # Charts def
+            def create_pie_chart(df_input, x_data, y_data):
+                
+                chart = px.pie(
+                df_input, 
+                names = df_input[f"{x_data}"],
+                values = df_input[f"{y_data}"]
+                )
+
+                # Adjustment to see 2 decimals always in the chart
+                chart.update_traces(texttemplate="%{percent:.2%}")
+
+                return chart
+
+
+            # Charts
+            # Note: built based on the DF pulled from DB (column names) not the styled one (in case of change of styling, no need to change the rest of code)
+            chart_category = create_pie_chart(df_category_grouped, "name","count")
+            chart_company = create_pie_chart(df_company_grouped, "name","count")
+            chart_parcel_size = create_pie_chart(df_parcel_size_grouped, "name","count")
+            chart_currency = create_pie_chart(df_currency_grouped, "name","count")
+            chart_country = create_pie_chart(df_country_grouped, "name","count")
+            chart_extra_service_count = create_pie_chart(df_extra_service_count_grouped_mapped, "extra_service","count")
+            chart_extra_service_type = create_pie_chart(df_extra_service_type_grouped, "name","count")
+            chart_file_format = create_pie_chart(df_file_format_grouped, "name","count")
+
+
+        
+            # UI fallback - for case when dataframes are empty (no data following search criteria)
+            def data_empty_fallback_info(input_df: pd.DataFrame) -> bool:
+
+                if input_df.empty:
+                    st.warning("No data in DB related to the selected date range")
+                    fallback = True
+
+                else:
+                    fallback = False
+
+                return fallback
+
+            # UI visualization
             ''
-            with st.expander("List of records", icon=":material/table:"):
-                st.dataframe(df_eur_to_usd_ui)
+            ''
+            tab4_tab1, tab4_tab2, tab4_tab3, tab4_tab4, tab4_tab5 = st.tabs([
+                "Category & Size",
+                "Company & Country",
+                "Service type",
+                "Currency type",
+                "File format",
+            ])
+
+            col_layout_1 = [1.5,0.3,2]
+            col_layout_2 = [1.5,0.3,1.5]
+            
+
+            with tab4_tab1:
+                fallback = data_empty_fallback_info(df_category_grouped)
+
+                if fallback == False:
+                    st.write(f"- Split based on **category** type - total: **{number_rows_category}**:")
+                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                    col_tab4_1.dataframe(df_category_grouped_styled, hide_index=True)
+                    col_tab4_3.plotly_chart(chart_category, key="chart_category")
+
+                    ''
+                    st.write(f"- Split based on **size** type - total: **{number_rows_category}**:")
+                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                    col_tab4_1.dataframe(df_parcel_size_grouped_styled, hide_index=True)
+                    col_tab4_3.plotly_chart(chart_parcel_size, key="chart_parcel_size")
+
+            with tab4_tab2:
+                fallback = data_empty_fallback_info(df_company_grouped)
+
+                if fallback == False:
+                    st.write(f"- Split based on **delivery company** - total: **{number_rows_category}**:")
+                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                    col_tab4_1.dataframe(df_company_grouped_styled, hide_index=True)
+                    col_tab4_3.plotly_chart(chart_company, key="chart_company")
+                    ''
+                    st.write(f"- Split based on **selected country for delivery** - total: **{number_rows_extra_service_type}**:")
+                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                    col_tab4_1.dataframe(df_country_grouped_styled, hide_index=True)
+                    col_tab4_3.plotly_chart(chart_country, key="chart_country")
+
+
+            with tab4_tab3:
+                fallback = data_empty_fallback_info(df_extra_service_type_grouped)
+
+                if fallback == False:
+                    st.write(f"- Split based on **extra service purchase** - total: **{number_rows_extra_service_count}**:")
+                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                    col_tab4_1.dataframe(df_extra_service_count_grouped_mapped_styled, hide_index=True)
+                    col_tab4_3.plotly_chart(chart_extra_service_count, key="chart_service_count")
+                    ''
+                    st.write(f"- Split based on selected **extra service type** - total: **{number_rows_extra_service_type}**:")
+                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                    col_tab4_1.dataframe(df_extra_service_type_grouped_styled, hide_index=True)
+                    col_tab4_3.plotly_chart(chart_extra_service_type, key="chart_service_type")
+
+            with tab4_tab4:
+                fallback = data_empty_fallback_info(df_currency_grouped)
+
+                if fallback == False:
+                    st.write(f"- Split based on **currency** - total: **{number_rows_extra_service_count}**:")
+                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                    col_tab4_1.dataframe(df_currency_grouped_styled, hide_index=True)
+                    col_tab4_3.plotly_chart(chart_currency, key="chart_currency")
+
+            with tab4_tab5:
+                fallback = data_empty_fallback_info(df_file_format_grouped)
+
+                if fallback == False:
+                    st.write(f"- Split based on **invoice format** - total: **{number_rows_extra_service_count}**:")
+                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                    col_tab4_1.dataframe(df_file_format_grouped_styled, hide_index=True)
+                    col_tab4_3.plotly_chart(chart_file_format, key="chart_file_format")

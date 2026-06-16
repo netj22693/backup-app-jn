@@ -264,6 +264,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 3:
+		- **v63.1** - F3B - function extended by Analytics + code refactoring - 16-June-2026
 		- **v52.3** - Function description extended by Video Guide - 03-Dec-2025
 		- **v52.2** - New DB schema - SQL queries refactored - 01-Dec-2025
 		- **v51.1** - F3B - Invoice overview now provides logs, if any mapping using F4 function - 16-Nov-2025
