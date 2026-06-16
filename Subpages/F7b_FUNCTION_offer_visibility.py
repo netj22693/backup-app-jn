@@ -757,10 +757,13 @@ with tab4:
             def data_empty_fallback_info(input_df: pd.DataFrame):
 
                 if input_df.empty:
-                    st.warning("No data in DB related to the select date range")
+                    st.warning("No data in DB related to the selected date range")
+                    fallback = True
 
                 else:
-                    pass
+                    fallback = False
+
+                return fallback
 
 
             # UI visualization
@@ -779,69 +782,81 @@ with tab4:
             col_layout_2 = [1.5,0.3,1.5]
 
             with tab4_tab1:
-                data_empty_fallback_info(df_transport_grouped)
-                st.write(f"- Split based on selected **transport** type - total: **{number_rows_transport}**:")
-                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
-                col_tab4_1.dataframe(df_transport_grouped_renamed, hide_index=True)
-                col_tab4_3.plotly_chart(chart_transport, key="chart_transport")
+                fallback = data_empty_fallback_info(df_transport_grouped)
+
+                if fallback == False:
+                    st.write(f"- Split based on selected **transport** type - total: **{number_rows_transport}**:")
+                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                    col_tab4_1.dataframe(df_transport_grouped_renamed, hide_index=True)
+                    col_tab4_3.plotly_chart(chart_transport, key="chart_transport")
             
             with tab4_tab2:
-                data_empty_fallback_info(df_service_grouped)
-                st.write(f"- Split based on selected **delivery service** type - total: **{number_rows_transport}**:")
-                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
-                col_tab4_1.dataframe(df_service_grouped_renamed, hide_index=True)
-                col_tab4_3.plotly_chart(chart_service, key="chart_service")
+                fallback = data_empty_fallback_info(df_service_grouped)
+
+                if fallback == False:
+                    st.write(f"- Split based on selected **delivery service** type - total: **{number_rows_transport}**:")
+                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                    col_tab4_1.dataframe(df_service_grouped_renamed, hide_index=True)
+                    col_tab4_3.plotly_chart(chart_service, key="chart_service")
             
             with tab4_tab3:
                 # For the fallback I use different DF than df_dtd_with_without_adj. Reason: It doesn't work on .empty principle like other DFs
-                data_empty_fallback_info(df_transport_grouped) 
-                st.write(f"- How many times **door-to-door** was ordered - total: **{number_rows_transport}**:")
-                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
-                col_tab4_1.dataframe(df_dtd_with_without_adj)
-                col_tab4_3.plotly_chart(chart_dtd, key="chart_dtd")
+                fallback = data_empty_fallback_info(df_transport_grouped) 
+
+                if fallback == False:
+                    st.write(f"- How many times **door-to-door** was ordered - total: **{number_rows_transport}**:")
+                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                    col_tab4_1.dataframe(df_dtd_with_without_adj)
+                    col_tab4_3.plotly_chart(chart_dtd, key="chart_dtd")
             
             with tab4_tab4:
-                data_empty_fallback_info(df_currency_grouped)
-                st.write(f"- Split based on **currency** - total: **{number_rows_transport}**:")
-                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
-                col_tab4_1.dataframe(df_currency_grouped_renamed, hide_index=True)
-                col_tab4_3.plotly_chart(chart_currency, key="chart_currency")
+                fallback = data_empty_fallback_info(df_currency_grouped)
+
+                if fallback == False:
+                    st.write(f"- Split based on **currency** - total: **{number_rows_transport}**:")
+                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                    col_tab4_1.dataframe(df_currency_grouped_renamed, hide_index=True)
+                    col_tab4_3.plotly_chart(chart_currency, key="chart_currency")
             
             with tab4_tab5:
-                data_empty_fallback_info(df_country_from_grouped_styled)
-                st.write(f"- Total number: **{number_rows_transport}**:")
-                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_2)
-                col_tab4_1.write("- Most frequent **origin** country:")
-                col_tab4_1.dataframe(df_country_from_grouped_styled)
-                col_tab4_1.plotly_chart(chart_country_from, key="chart_country_from")
-                
-                col_tab4_3.write("- Most frequent **destination** country:")
-                col_tab4_3.dataframe(df_country_to_grouped_styled)
-                col_tab4_3.plotly_chart(chart_country_to, key="chart_country_to")
+                fallback = data_empty_fallback_info(df_country_from_grouped_styled)
 
-                # with st.expander("Ahojda"):
-                #     col_tab4_1, col_tab4_2 = st.columns(2)
-                #     col_tab4_1.dataframe(df_at)
-                #     col_tab4_1.dataframe(df_cz)
-                #     col_tab4_1.dataframe(df_de)
-                #     col_tab4_1.dataframe(df_pl)
-                #     col_tab4_1.dataframe(df_sk)
+                if fallback == False:
+                    st.write(f"- Total number: **{number_rows_transport}**:")
+                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_2)
+                    col_tab4_1.write("- Most frequent **origin** country:")
+                    col_tab4_1.dataframe(df_country_from_grouped_styled)
+                    col_tab4_1.plotly_chart(chart_country_from, key="chart_country_from")
+                    
+                    col_tab4_3.write("- Most frequent **destination** country:")
+                    col_tab4_3.dataframe(df_country_to_grouped_styled)
+                    col_tab4_3.plotly_chart(chart_country_to, key="chart_country_to")
+
+                    # with st.expander("Ahojda"):
+                    #     col_tab4_1, col_tab4_2 = st.columns(2)
+                    #     col_tab4_1.dataframe(df_at)
+                    #     col_tab4_1.dataframe(df_cz)
+                    #     col_tab4_1.dataframe(df_de)
+                    #     col_tab4_1.dataframe(df_pl)
+                    #     col_tab4_1.dataframe(df_sk)
 
             with tab4_tab6:
-                data_empty_fallback_info(df_top_city_from_styled)
-                st.write(f"- Total number: **{number_rows_transport}**:")
-                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_2)
-                col_tab4_1.write("- Most frequent **origin** city:")
-                col_tab4_1.dataframe(df_top_city_from_styled)
-                col_tab4_3.write("- Most frequent **destination** city:")
-                col_tab4_3.dataframe(df_top_city_to_styled)
+                fallback = data_empty_fallback_info(df_top_city_from_styled)
 
-                st.write("- Top 20 routes:")
-                
-                #Fallback warning - if not enough routes 
-                number_rows_route = df_routes.count().iloc[0]
+                if fallback == False:
+                    st.write(f"- Total number: **{number_rows_transport}**:")
+                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_2)
+                    col_tab4_1.write("- Most frequent **origin** city:")
+                    col_tab4_1.dataframe(df_top_city_from_styled)
+                    col_tab4_3.write("- Most frequent **destination** city:")
+                    col_tab4_3.dataframe(df_top_city_to_styled)
 
-                if 0 < number_rows_route < 20:
-                    st.info(f"There has been only **{number_rows_route} routes** following the selected date criteria")
+                    st.write("- Top 20 routes:")
+                    
+                    #Fallback warning - if not enough routes 
+                    number_rows_route = df_routes.count().iloc[0]
 
-                st.dataframe(df_routes_styled)
+                    if 0 < number_rows_route < 20:
+                        st.info(f"There has been only **{number_rows_route} routes** following the selected date criteria")
+
+                    st.dataframe(df_routes_styled)
