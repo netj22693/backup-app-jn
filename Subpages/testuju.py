@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 from sqlalchemy import create_engine, Engine
 from sqlalchemy import text
+from Subpages.F8_map import get_map
 from Subpages.F8_SQL_queries import sql_query_number_companies, sql_query_number_branches, sql_query_company_overview, sql_query_branch_info_df, get_sql_query_international_domestic, determin_transport_for_db_query, mapping_country_table, mapping_transport_type, create_df_branches_country
 
 
@@ -141,7 +142,10 @@ with tab1:
         sql_query_international_domestic = get_sql_query_international_domestic(international, country_table, transport_type_mapped, branch_codes_display)
 
         # Pull data from DB
-        df = pd.read_sql(sql_query_international_domestic, db_engine)
+        df_raw = pd.read_sql(sql_query_international_domestic, db_engine)
+
+        # DF drop of columns not to be visible UI
+        df = df_raw.drop(columns=["lat","lon","color_r","color_g","color_b"])
 
         # DF styling - index
         df = adjust_index(df)
@@ -151,7 +155,10 @@ with tab1:
 
         # ==== UI data visualization ====
         ''
-        with st.expander("Branch type info:",width= "stretch", icon=":material/help_outline:"):
+        with st.expander("Map - Locations", icon=":material/location_on:"):
+            get_map(df_raw)
+
+        with st.expander("Branch type info",width= "stretch", icon=":material/help_outline:"):
             st.dataframe(branch_type_info_df, hide_index=True)
         
         ''
@@ -265,3 +272,13 @@ with tab3:
 
             ''
             st.dataframe(df, width = "stretch", height=800)
+
+
+
+# Pokracovat s:
+# Doplnit PL and DE lokace v DB -> čeknout to proti googlu
+# Projit lokace CY, AT, SK, a ykontrolovat na mapě, že to nejde někam do pole
+
+# TAB 2 - zakomponovat taky maps expander do výsledků -> složit jeden DF ze 5 malých DF -> passnout MAP funkci 
+
+# Pak jsem ještě jsem přemýšlel TAB 4 -> search for Branch Based on ID, že bych ke každě firmě našel logo, udělal nějaké stručné summary o té firmě, stručné summary o té pobočce zobrazil ji na mapě

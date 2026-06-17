@@ -60,7 +60,14 @@ def get_sql_query_international_domestic(international: bool, country_table: str
         number as "No.",
         district as "District",
         zip_code as "ZIP code",
-        international_transport as "International transport"
+        international_transport as "International transport",
+        lat, 
+        lon,
+        color_r,
+        color_g,
+        color_b,
+        branch_id as "Branch ID"
+
     FROM
         company
         INNER JOIN {country_table} ON (comp_id = c_comp_id)
