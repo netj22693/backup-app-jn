@@ -3,14 +3,12 @@ import streamlit as st
 from sqlalchemy import create_engine, Engine
 from sqlalchemy import text
 from Subpages.F8_map import get_map
-from Subpages.F8_SQL_queries import sql_query_number_companies, sql_query_number_branches, sql_query_company_overview, sql_query_branch_info_df, get_sql_query_international_domestic, determin_transport_for_db_query, mapping_country_table, mapping_transport_type, create_df_branches_country
+from Subpages.F8_SQL_queries import sql_query_number_companies, sql_query_number_branches, sql_query_company_overview, sql_query_branch_info_df, get_sql_query_international_domestic, determin_transport_for_db_query, mapping_country, mapping_transport_type, create_df_branches_country, drop_columns
 
 
 # ==== Business data - lists the F8 works with ====
 country_list = ["AT","CZ","DE","PL","SK"]
 country_list.sort()
-
-country_list_lowered = list(map(lambda x: x.lower(),country_list))
 
 list_transport = ["Truck","Train","Airplane"]
 
@@ -54,7 +52,6 @@ def adjust_index(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-
 # ==== UI Function 8 ==== 
 st.write("# Company Book")
 ''
@@ -94,6 +91,7 @@ with tab1:
 
     ''
     with st.form(key="user_form"):
+
         country_from = st.selectbox(
             label="Country From",
             options=country_list,
@@ -115,11 +113,6 @@ with tab1:
         submit_button = st.form_submit_button(label= "Submit", width="stretch")
 
 
-    # lowering letters for SQL purpose - case sensitive
-    country_from = country_from.lower()
-    country_to = country_to.lower()
-    transport_type = transport_type.lower()
-
     # Submit button -> main logic TAB 1
     if submit_button:
         
@@ -134,21 +127,26 @@ with tab1:
 
         branch_codes_display = f"'1','2','3','4','{transport_type_code}'"
 
-        country_table = mapping_country_table(country_from)
+        country_from_mapped = mapping_country(country_from)
+        country_to_mapped = mapping_country(country_to)
 
         transport_type_mapped = mapping_transport_type(transport_type)
         
         # Get SQL query 
-        sql_query_international_domestic = get_sql_query_international_domestic(international, country_table, transport_type_mapped, branch_codes_display)
+        sql_query_international_domestic_from = get_sql_query_international_domestic(international,  country_from_mapped, transport_type_mapped, branch_codes_display)
+        sql_query_international_domestic_to = get_sql_query_international_domestic(international,  country_to_mapped, transport_type_mapped, branch_codes_display)
 
         # Pull data from DB
-        df_raw = pd.read_sql(sql_query_international_domestic, db_engine)
+        df_raw_from = pd.read_sql(sql_query_international_domestic_from, db_engine)
+        df_raw_to = pd.read_sql(sql_query_international_domestic_to, db_engine)
 
         # DF drop of columns not to be visible UI
-        df = df_raw.drop(columns=["lat","lon","color_r","color_g","color_b"])
+        df_from = drop_columns(df_raw_from)
+        df_to = drop_columns(df_raw_to)
 
         # DF styling - index
-        df = adjust_index(df)
+        df_from = adjust_index(df_from)
+        df_to = adjust_index(df_to)
 
         # Branch type info
         branch_type_info_df = pd.read_sql(sql_query_branch_info_df, db_engine)
@@ -156,13 +154,30 @@ with tab1:
         # ==== UI data visualization ====
         ''
         with st.expander("Map - Locations", icon=":material/location_on:"):
-            get_map(df_raw)
+
+            # Concat of the 2 DF for MAP purposes + drop of duplicates (this can happen if it is domestic transport and the same country)
+            df_raw_from_to = pd.concat([df_raw_from, df_raw_to], ignore_index=True).drop_duplicates()
+
+            get_map(df_raw_from_to)
+
 
         with st.expander("Branch type info",width= "stretch", icon=":material/help_outline:"):
             st.dataframe(branch_type_info_df, hide_index=True)
         
-        ''
-        st.dataframe(df, width = "stretch")
+
+        if international == True:
+            ''
+            st.write(f"From country - **{country_from}**")
+            st.dataframe(df_from, width = "stretch")
+
+            ''
+            st.write(f"To country - **{country_to}**")
+            st.dataframe(df_to, width = "stretch")
+        
+        else:
+            ''
+            st.write(f"Domestic transport - **{country_from}**")
+            st.dataframe(df_from, width = "stretch")
 
 
 with tab2:
@@ -170,7 +185,7 @@ with tab2:
     # DB enine creation
     db_engine = db_connection()
 
-    company_df = pd.read_sql("SELECT name FROM company;", db_engine)
+    company_df = pd.read_sql("SELECT name FROM function8.company;", db_engine)
     company_list = company_df['name'].tolist()
     company_list.sort()
 
@@ -196,18 +211,17 @@ with tab2:
         # ==== Main logic TAB 2 ====
         with db_engine.connect() as conn:
             result = conn.execute(
-                text("SELECT comp_id FROM company WHERE name = :company"),
+                text("SELECT company_id FROM function8.company WHERE name = :company"),
                 {"company": selected_company}
             )
-            cus_id = result.scalar()
+            company_id = result.scalar()
      
 
-        df_at = create_df_branches_country('at', cus_id, db_engine)
-        df_cz = create_df_branches_country('cz', cus_id, db_engine)
-        df_de = create_df_branches_country('de', cus_id, db_engine)
-        df_pl = create_df_branches_country('pl', cus_id, db_engine)
-        df_sk = create_df_branches_country('sk', cus_id, db_engine)
-        
+        df_at_raw, df_at = create_df_branches_country('AT', company_id, db_engine)
+        df_cz_raw, df_cz = create_df_branches_country('CZ', company_id, db_engine)
+        df_de_raw, df_de = create_df_branches_country('DE', company_id, db_engine)
+        df_pl_raw, df_pl = create_df_branches_country('PL', company_id, db_engine)
+        df_sk_raw, df_sk = create_df_branches_country('SK', company_id, db_engine)
 
         branch_type_info_df = pd.read_sql(sql_query_branch_info_df, db_engine)
 
@@ -216,6 +230,13 @@ with tab2:
         # ==== UI ====
 
         ''
+        with st.expander("Map - Locations", icon=":material/location_on:"):
+
+            df_raw_concat = pd.concat([df_at_raw, df_cz_raw, df_de_raw, df_pl_raw, df_sk_raw], ignore_index=True).drop_duplicates()
+
+            get_map(df_raw_concat)
+
+
         with st.expander("Branch type info:",width= "stretch", icon=":material/help_outline:"):
             st.dataframe(branch_type_info_df, hide_index=True)
 
@@ -279,6 +300,6 @@ with tab3:
 # Doplnit PL and DE lokace v DB -> čeknout to proti googlu
 # Projit lokace CY, AT, SK, a ykontrolovat na mapě, že to nejde někam do pole
 
-# TAB 2 - zakomponovat taky maps expander do výsledků -> složit jeden DF ze 5 malých DF -> passnout MAP funkci 
+# TAB 2 - zakomponovat taky maps expander do výsledků -> složit jeden DF ze 5 malých DF -> passnout MAP funkci A NEBO MOŽNÁÁÁÁÁ :) DÁT POD KAŽDOU ZEMI SEPARÁTNÍ MAPU - S JINÝM DEFAULT SETAUPEM LAN LONG A TEN EXPANDER ZOBRAZIT POUZE IF DF NOT EMPTY :)))
 
 # Pak jsem ještě jsem přemýšlel TAB 4 -> search for Branch Based on ID, že bych ke každě firmě našel logo, udělal nějaké stručné summary o té firmě, stručné summary o té pobočce zobrazil ji na mapě

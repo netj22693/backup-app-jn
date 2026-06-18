@@ -4,14 +4,14 @@ from sqlalchemy import Engine
 
 #  ==== Functions for mapping ====
 
-def mapping_country_table(input_country: str) -> str:
+def mapping_country(input_country: str) -> str:
 
     mapping = {
-            "at": "country_at",
-            "cz": "country_cz",
-            "de": "country_de",
-            "pl": "country_pl",
-            "sk" : "country_sk"
+            "AT": "AT",
+            "CZ": "CZ",
+            "DE": "DE",
+            "PL": "PL",
+            "SK" : "SK"
         }
     return mapping.get(input_country)     
    
@@ -19,9 +19,9 @@ def mapping_country_table(input_country: str) -> str:
 def determin_transport_for_db_query(transport: str) -> str:
 
     mapping = {
-            "truck": 5,
-            "train": 6,
-            "airplane": 7
+            "Truck": 5,
+            "Train": 6,
+            "Airplane": 7
         }
     return mapping.get(transport, 0)
 
@@ -29,17 +29,23 @@ def determin_transport_for_db_query(transport: str) -> str:
 def mapping_transport_type(transport: str) -> str:
 
     mapping = {
-            "truck": "truck",
-            "train": "train",
-            "airplane": "airplane"
+            "Truck": "truck",
+            "Train": "train",
+            "Airplane": "airplane"
         }
     return mapping.get(transport)
+
+
+#  ==== Function - adjustment of DF ====
+def drop_columns(df: pd.DataFrame) -> pd.DataFrame:
+
+    return df.drop(columns=["lat","lon","color_r","color_g","color_b"])
 
 
 
 #  ==== Function - dynamic SQL query ====
 
-def get_sql_query_international_domestic(international: bool, country_table: str, transport_type: str, branch_codes: str):
+def get_sql_query_international_domestic(international: bool, country_from: str, transport_type: str, branch_codes: str) -> str:
 
     '''
     Building SQL query based on dynamic inputs
@@ -53,78 +59,86 @@ def get_sql_query_international_domestic(international: bool, country_table: str
 
     query = f"""
     SELECT
-        name as "Name",
-        city as "City",
-        branch_text as "Type",
-        street as "Street",
-        number as "No.",
-        district as "District",
-        zip_code as "ZIP code",
-        international_transport as "International transport",
-        lat, 
-        lon,
-        color_r,
-        color_g,
-        color_b,
-        branch_id as "Branch ID"
+        a.name as "Name",
+        b.city as "City",
+        d.branch_text as "Type",
+        b.street as "Street",
+        b.number as "No.",
+        b.district as "District",
+        b.zip_code as "ZIP code",
+        a.international_transport as "International transport",
+        b.lat, 
+        b.lon,
+        d.color_r,
+        d.color_g,
+        d.color_b,
+        b.branch_id as "Branch ID"
 
     FROM
-        company
-        INNER JOIN {country_table} ON (comp_id = c_comp_id)
-        INNER JOIN branch ON (branch_type = type_code)
+        function8.company a
+        INNER JOIN function8.branch b ON(a.company_id = b.company_id)
+        INNER JOIN function8.branch_type d ON (b.branch_type = d.type_code)
     WHERE
         {transport_type} = TRUE
         {extra_where}
-        AND type_code IN ({branch_codes})
+        AND b.country_code = '{country_from}'
+        AND d.type_code IN ({branch_codes})
     ORDER BY
-        name,
-        city,
-        district ASC
+        a.name,
+        b.city,
+        b.district ASC
     """
 
     return query
 
 # ==== Function - TAB 2 ====
-def create_df_branches_country(country_code: str, customer, engine: Engine) -> pd.DataFrame:
+def create_df_branches_country(country_code: str, company_id, engine: Engine) -> pd.DataFrame:
     '''
     - Main logic for TAB 2 -> getting DF/data from DB
     '''
 
     # Provide name of table for dynamic SQL query
-    country_table = mapping_country_table(country_code)
+    country_code_mapped = mapping_country(country_code)
 
     query_country = f"""
         SELECT
-            name as "Name",
-            city as "City",
-            branch_text as "Type",
-            street as "Street",
-            number as "No.",
-            district as "District",
-            zip_code as "ZIP code",
-            branch_id as "Branch id"
+            a.name as "Name",
+            b.city as "City",
+            d.branch_text as "Type",
+            b.street as "Street",
+            b.number as "No.",
+            b.district as "District",
+            b.zip_code as "ZIP code",
+            b.lat, 
+            b.lon,
+            d.color_r,
+            d.color_g,
+            d.color_b,
+            b.branch_id as "Branch ID"
 
         FROM
-            company 
-            INNER JOIN {country_table} ON (comp_id = c_comp_id)
-            INNER JOIN branch ON (branch_type = type_code)
+            function8.company a
+            INNER JOIN function8.branch b ON (a.company_id = b.company_id)
+            INNER JOIN function8.branch_type d ON (b.branch_type = d.type_code)
 
         WHERE
-            c_comp_id = {customer}
+            a.company_id = {company_id} AND
+            b.country_code = '{country_code_mapped}'
                     
         ORDER BY
-            name,
-            city, 
-            district ASC;
+            a.name,
+            b.city, 
+            b.district ASC;
         """
 
     # Get DF from DB
     df = pd.read_sql(query_country, engine)
+    df_ui = drop_columns(df)
 
     # Index change for UI purposes
-    df.index = df.index + 1
+    df_ui.index = df_ui.index + 1
     
-    return df
+    return df, df_ui
 
 
 # ============= SQL QUERIES =============
@@ -135,7 +149,7 @@ SELECT
     branch_text as "Type",
     description as "Description"                  
 FROM 
-    branch
+    function8.branch_type
 WHERE
     type_code >= 3
 ORDER BY
@@ -145,29 +159,36 @@ ORDER BY
 # ==== TAB 3 ====
 
 sql_query_number_companies = """        
-SELECT count(comp_id) as count
-FROM company;"""
+SELECT count(company_id) as count
+FROM function8.company;"""
 
 
 sql_query_number_branches = """        
-SELECT 
-    (SELECT COUNT(branch_id) FROM country_at) +
-    (SELECT COUNT(branch_id) FROM country_cz) +
-    (SELECT COUNT(branch_id) FROM country_de) +
-    (SELECT COUNT(branch_id) FROM country_pl) +
-    (SELECT COUNT(branch_id) FROM country_sk) as total_count;"""
+SELECT count(branch_id) as total_count
+FROM function8.branch
+;"""
 
 
 sql_query_company_overview = """
 SELECT 
-    name as "Name",
-    truck as "Truck",
-    train as "Train",
-    airplane as "Airplane",
-    international_transport as "International transport"
+    a.name as "Name",
+    a.truck as "Truck",
+    a.train as "Train",
+    a.airplane as "Airplane",
+    a.international_transport as "International transport",
+    count(b.branch_id) as "No. branches"
 FROM
-    company
+    function8.company a 
+    LEFT JOIN function8.branch b ON (a.company_id = b.company_id)
+
+GROUP BY
+    a.name,
+    a.truck,
+    a.train,
+    a.airplane,
+    a.international_transport
+
 ORDER BY 
-    name ASC;"""
+    a.name ASC;"""
 
 

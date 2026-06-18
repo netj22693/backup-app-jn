@@ -35,7 +35,7 @@ def get_map(df: pd.DataFrame):
             initial_view_state=view_state,
             map_style=None,
             tooltip={
-                "text": "City: {City}\nCompany: {Name}\nType: {Type}\nStreet: {Street} {No.}\nBrach ID: {Branch ID} "
+                "text": "City: {City}\nCompany: {Name}\nType: {Type}\nStreet: {Street} {No.}\nBranch ID: {Branch ID} "
             }
         )
     )
