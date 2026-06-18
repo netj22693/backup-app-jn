@@ -297,9 +297,8 @@ with tab3:
 
 
 # Pokracovat s:
-# Doplnit PL and DE lokace v DB -> čeknout to proti googlu
-# Projit lokace CY, AT, SK, a ykontrolovat na mapě, že to nejde někam do pole
+# Projit lokace CZ, AT, SK, a zkontrolovat na mapě, že to nejde někam do pole (PAK AŽ BUDU MÍT DEVELOPNUTOU TAB 2, TAK TAM DÁT MAPU S LOKACÍ s detailem)
 
-# TAB 2 - zakomponovat taky maps expander do výsledků -> složit jeden DF ze 5 malých DF -> passnout MAP funkci A NEBO MOŽNÁÁÁÁÁ :) DÁT POD KAŽDOU ZEMI SEPARÁTNÍ MAPU - S JINÝM DEFAULT SETAUPEM LAN LONG A TEN EXPANDER ZOBRAZIT POUZE IF DF NOT EMPTY :)))
+# TAB 2 přidat tam pak nějaký summary počty poboček zobrazených dle jednotlivých typů 
 
 # Pak jsem ještě jsem přemýšlel TAB 4 -> search for Branch Based on ID, že bych ke každě firmě našel logo, udělal nějaké stručné summary o té firmě, stručné summary o té pobočce zobrazil ji na mapě
