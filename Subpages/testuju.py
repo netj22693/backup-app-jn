@@ -3,7 +3,7 @@ import streamlit as st
 from sqlalchemy import create_engine, Engine
 from sqlalchemy import text
 from Subpages.F8_map import get_map
-from Subpages.F8_SQL_queries import sql_query_number_companies, sql_query_number_branches, sql_query_company_overview, sql_query_branch_info_df, get_sql_query_international_domestic, determin_transport_for_db_query, mapping_country, mapping_transport_type, create_df_branches_country, drop_columns
+from Subpages.F8_SQL_queries import sql_query_number_companies, sql_query_number_branches, sql_query_company_overview, sql_query_branch_info_df, sql_query_branch_df,sql_query_branch_for_map, sql_query_branch_size, get_sql_query_international_domestic, determin_transport_for_db_query, mapping_country, mapping_transport_type, create_df_branches_country, drop_columns
 
 
 # ==== Business data - lists the F8 works with ====
@@ -60,10 +60,11 @@ st.write("# Company Book")
 st.image("Pictures/Function_8/F8_brands.svg", width=450)
 
 ''
-tab1, tab2, tab3 = st.tabs([
+tab1, tab2, tab3, tab4 = st.tabs([
     "Transport From - To",
     "Specific Company",
-    "Overview - Companies"
+    "Overview Companies",
+    "Branch Info"
 ])
 
 
@@ -116,7 +117,7 @@ with tab1:
     # Submit button -> main logic TAB 1
     if submit_button:
         
-        # DB enine creation
+        # DB engine creation
         db_engine = db_connection()
 
 
@@ -158,7 +159,7 @@ with tab1:
             # Concat of the 2 DF for MAP purposes + drop of duplicates (this can happen if it is domestic transport and the same country)
             df_raw_from_to = pd.concat([df_raw_from, df_raw_to], ignore_index=True).drop_duplicates()
 
-            get_map(df_raw_from_to)
+            get_map(df_raw_from_to, "BIG")
 
 
         with st.expander("Branch type info",width= "stretch", icon=":material/help_outline:"):
@@ -182,7 +183,7 @@ with tab1:
 
 with tab2:
 
-    # DB enine creation
+    # DB engine creation
     db_engine = db_connection()
 
     company_df = pd.read_sql("SELECT name FROM function8.company;", db_engine)
@@ -234,7 +235,7 @@ with tab2:
 
             df_raw_concat = pd.concat([df_at_raw, df_cz_raw, df_de_raw, df_pl_raw, df_sk_raw], ignore_index=True).drop_duplicates()
 
-            get_map(df_raw_concat)
+            get_map(df_raw_concat, "BIG")
 
 
         with st.expander("Branch type info:",width= "stretch", icon=":material/help_outline:"):
@@ -263,7 +264,7 @@ with tab3:
         submit_button_tab3 = st.button("Companies", width= "stretch", icon=":material/table:", key="key_submit_button_tab3")
 
         if submit_button_tab3:
-            # DB enine creation
+            # DB engine creation
             db_engine = db_connection()
 
             # Number of companies reqistered in DB
@@ -295,10 +296,114 @@ with tab3:
             st.dataframe(df, width = "stretch", height=800)
 
 
+# ==== Function TAB 4 ==== 
+def input_validation(value) -> int | None:
+    try:
+        return int(value)
+    
+    except (TypeError, ValueError):
+
+        st.warning("This is not supported format. Branch ID is a number")
+        return None
+
+with tab4:
+    st.info("This section is under development - stay tuned")     
+
+# with tab4:
+
+#     with st.form(key="user_form_branch"):
+#         branch_id_input = st.text_input(label="Branch ID:", help="Insert **Branch ID** you would like to see. The Branch ID is available either in the tables with results or on the maps in the TAB 1 and TAB 2.")
+        
+#         submit_button = st.form_submit_button(label= "Submit", width="stretch", icon = ":material/apps:")
+
+#     if submit_button:
+
+#         input_valid = input_validation(branch_id_input)
+    
+#         if input_valid is not None:
+
+#             # DB engine creation
+#             db_engine = db_connection()
+
+#             df_branch_and_company = pd.read_sql(text(sql_query_branch_df), db_engine, params={"branch_id": input_valid})
+
+#             # Empty DF -> no branch in DB
+#             if df_branch_and_company.empty == True:
+#                 st.info(f"No branch with ID: **{input_valid}**")
+            
+#             else:
+
+#                 # DF from DB
+#                 df_map = pd.read_sql(text(sql_query_branch_for_map), db_engine, params={"branch_id": input_valid})
+
+#                 df_branch_size = pd.read_sql(text(sql_query_branch_size), db_engine, params={"branch_id": input_valid})
+
+
+#                 st.write(df_branch_size)
+
+#                 # For extracting data from DF
+#                 branch = df_branch_and_company.iloc[0]
+#                 branch_type = df_map.iloc[0]
+#                 branch_size = df_branch_size.iloc[0]
+
+#                 # ==== UI ====
+
+#                 ''
+#                 ''
+#                 st.image({branch.image_path})
+
+#                 ''
+#                 ''
+#                 st.write(f"""
+#                 - Company: **{branch['name']}**
+#                 - Web page: [here]({branch.web_url})
+#                 """)
+
+#                 st.caption(f"{branch.company_description}")
+                
+#                 st.write("---")
+                
+#                 col1, col2 = st.columns(2)
+#                 ''
+#                 col1.write(f"""
+#                 - Country: **{branch.country_code}**
+#                 - City: **{branch.city}**
+#                 - Street: **{branch.street} {branch.number}**
+#                 - District: **{branch.district}**
+#                 - Zip Code: **{branch.zip_code}**
+#                 """)
+
+
+#                 col2.write(f"""
+#                 - Branch ID: **{branch_type['Branch ID']}**
+#                 - Category: **{branch_type.branch_text}**
+#                 - Size: **{branch_size.description}**
+#                 """)
+#                 ''
+#                 get_map(df_map, "SMALL")
+
+            
+            # Dat tam obecny company info + loga + web + branch info a mapu 
+    
+
 
 # Pokracovat s:
-# Projit lokace CZ, AT, SK, a zkontrolovat na mapě, že to nejde někam do pole (PAK AŽ BUDU MÍT DEVELOPNUTOU TAB 2, TAK TAM DÁT MAPU S LOKACÍ s detailem)
+
+# DB + TAB 4:
+# Projit lokace CZ, AT, SK, DE, PL a zkontrolovat na mapě, že to nejde někam do pole
+# Zatím jsem zkontrolovat a updatnoul Branches pouze pro company_id 2 = CD Cargo -> projít všechny další companies a navázaný branches. 
+
+# Dodat url linky a images do DB ke companies  + company description
+
+# Nastavit jednotnout velikost SVG company logos (když to půjde, tak hardcoded v kodu, když ne, tak udělat novou tabulku v DB s hodnotama)
+
+# Nastavit fallbacky v případě, že nějaká z informací v DB bude NULL -> preventing from crash
+
+# Rozšířit kód o logování
 
 # TAB 2 přidat tam pak nějaký summary počty poboček zobrazených dle jednotlivých typů 
 
 # Pak jsem ještě jsem přemýšlel TAB 4 -> search for Branch Based on ID, že bych ke každě firmě našel logo, udělal nějaké stručné summary o té firmě, stručné summary o té pobočce zobrazil ji na mapě
+
+
+# Celá funkce F8 -> Rozšířit kód o logování

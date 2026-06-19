@@ -191,4 +191,46 @@ GROUP BY
 ORDER BY 
     a.name ASC;"""
 
+# ==== TAB 4 ====
+
+sql_query_branch_df = """
+SELECT *
+FROM function8.branch b
+INNER JOIN function8.company a ON (b.company_id = a.company_id)
+WHERE b.branch_id = :branch_id
+;"""
+
+sql_query_branch_for_map = """
+SELECT
+    a.name as "Name",
+    b.branch_id as "Branch ID",
+    b.city as "City",
+    b.street as "Street",
+    b.number as "No.",
+    b.lat,
+    b.lon,
+    d.branch_text,
+    d.color_r,
+    d.color_g,
+    d.color_b,
+    d.branch_text as "Type"
+
+FROM function8.branch b
+    INNER JOIN function8.branch_type d ON (b.branch_type = d.type_code)
+    INNER JOIN function8.company a ON (b.company_id = a.company_id)
+
+WHERE b.branch_id = :branch_id
+;"""
+
+
+sql_query_branch_size = """
+SELECT 
+    e.description
+
+FROM function8.branch_size e
+    INNER JOIN function8.branch b ON (b.branch_size = e.branch_size)
+
+WHERE b.branch_id = :branch_id
+;"""
+
 
