@@ -191,6 +191,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 8:
+		- **v64.4** - TAB 4 Branch info released - 28-Jun-2026
 		- **v64.2** - DB design changed & TAB 2 extended also by MAP - 18-Jun-2026
 		- **v64.1** - TAB 1 extended by MAP to visualize branches - 17-Jun-2026
 		- **v64.0** - Code refactoring & clean up - 17-Jun-2026

@@ -306,81 +306,88 @@ def input_validation(value) -> int | None:
         st.warning("This is not supported format. Branch ID is a number")
         return None
 
-with tab4:
-    st.info("This section is under development - stay tuned")     
-
 # with tab4:
+#     st.info("This section is under development - stay tuned")     
 
-#     with st.form(key="user_form_branch"):
-#         branch_id_input = st.text_input(label="Branch ID:", help="Insert **Branch ID** you would like to see. The Branch ID is available either in the tables with results or on the maps in the TAB 1 and TAB 2.")
+with tab4:
+
+    # ==== UI ==== 
+    ''
+    st.write("""
+    - Provides **branch detail**
+    """)
+    ''
+
+    with st.form(key="user_form_branch"):
+        branch_id_input = st.text_input(label="Branch ID:", help="Insert **Branch ID** you would like to see. The Branch ID is available either in the tables with results or on the maps in the TAB 1 and TAB 2.")
         
-#         submit_button = st.form_submit_button(label= "Submit", width="stretch", icon = ":material/apps:")
+        submit_button = st.form_submit_button(label= "Submit", width="stretch", icon = ":material/apps:")
 
-#     if submit_button:
+    if submit_button:
 
-#         input_valid = input_validation(branch_id_input)
+        input_valid = input_validation(branch_id_input)
     
-#         if input_valid is not None:
+        if input_valid is not None:
 
-#             # DB engine creation
-#             db_engine = db_connection()
+            # DB engine creation
+            db_engine = db_connection()
 
-#             df_branch_and_company = pd.read_sql(text(sql_query_branch_df), db_engine, params={"branch_id": input_valid})
+            df_branch_and_company = pd.read_sql(text(sql_query_branch_df), db_engine, params={"branch_id": input_valid})
 
-#             # Empty DF -> no branch in DB
-#             if df_branch_and_company.empty == True:
-#                 st.info(f"No branch with ID: **{input_valid}**")
+            # Empty DF -> no branch in DB
+            if df_branch_and_company.empty == True:
+                st.info(f"No branch with ID: **{input_valid}**")
             
-#             else:
+            else:
 
-#                 # DF from DB
-#                 df_map = pd.read_sql(text(sql_query_branch_for_map), db_engine, params={"branch_id": input_valid})
+                # DF from DB
+                df_map = pd.read_sql(text(sql_query_branch_for_map), db_engine, params={"branch_id": input_valid})
 
-#                 df_branch_size = pd.read_sql(text(sql_query_branch_size), db_engine, params={"branch_id": input_valid})
+                df_branch_size = pd.read_sql(text(sql_query_branch_size), db_engine, params={"branch_id": input_valid})
 
 
-#                 st.write(df_branch_size)
+                # For extracting data from DF
+                branch = df_branch_and_company.iloc[0]
+                branch_type = df_map.iloc[0]
+                branch_size = df_branch_size.iloc[0]
 
-#                 # For extracting data from DF
-#                 branch = df_branch_and_company.iloc[0]
-#                 branch_type = df_map.iloc[0]
-#                 branch_size = df_branch_size.iloc[0]
+                # ==== UI ====
 
-#                 # ==== UI ====
+                ''
+                ''
+                try:
+                    st.image({branch.image_path}, width=200)
+                except:
+                    pass
+                ''
+                ''
+                st.write(f"""
+                - Company: **{branch['name']}**
+                - Web page: [here]({branch.web_url})
+                """)
 
-#                 ''
-#                 ''
-#                 st.image({branch.image_path})
-
-#                 ''
-#                 ''
-#                 st.write(f"""
-#                 - Company: **{branch['name']}**
-#                 - Web page: [here]({branch.web_url})
-#                 """)
-
-#                 st.caption(f"{branch.company_description}")
+                st.caption(f"{branch.company_description}")
                 
-#                 st.write("---")
+                st.write("---")
                 
-#                 col1, col2 = st.columns(2)
-#                 ''
-#                 col1.write(f"""
-#                 - Country: **{branch.country_code}**
-#                 - City: **{branch.city}**
-#                 - Street: **{branch.street} {branch.number}**
-#                 - District: **{branch.district}**
-#                 - Zip Code: **{branch.zip_code}**
-#                 """)
+                col1, col2 = st.columns(2)
+                ''
+                col1.write(f"""
+                - Country: **{branch.country_code}**
+                - City: **{branch.city}**
+                - Street: **{branch.street} {branch.number}**
+                - District: **{branch.district}**
+                - Zip Code: **{branch.zip_code}**
+                """)
 
 
-#                 col2.write(f"""
-#                 - Branch ID: **{branch_type['Branch ID']}**
-#                 - Category: **{branch_type.branch_text}**
-#                 - Size: **{branch_size.description}**
-#                 """)
-#                 ''
-#                 get_map(df_map, "SMALL")
+                col2.write(f"""
+                - Branch ID: **{branch_type['Branch ID']}**
+                - Category: **{branch_type.branch_text}**
+                - Size: **{branch_size.description}**
+                """)
+                ''
+                get_map(df_map, "SMALL")
 
             
             # Dat tam obecny company info + loga + web + branch info a mapu 
@@ -391,19 +398,31 @@ with tab4:
 
 # DB + TAB 4:
 # Projit lokace CZ, AT, SK, DE, PL a zkontrolovat na mapě, že to nejde někam do pole
-# Zatím jsem zkontrolovat a updatnoul Branches pouze pro company_id 2 = CD Cargo -> projít všechny další companies a navázaný branches. 
+# Zatím jsem zkontrolovat a updatnoul Branches pouze pro company_id 2 = CD Cargo -> projít všechny další companies a navázaný branches. --- DONE 
 
-# Dodat url linky a images do DB ke companies  + company description
+# Dodat url linky a images do DB ke companies  + company description  --- DONE 
 
-# Nastavit jednotnout velikost SVG company logos (když to půjde, tak hardcoded v kodu, když ne, tak udělat novou tabulku v DB s hodnotama)
+# Nastavit jednotnout velikost SVG company logos (když to půjde, tak hardcoded v kodu, když ne, tak udělat novou tabulku v DB s hodnotama) - DONE
 
-# Nastavit fallbacky v případě, že nějaká z informací v DB bude NULL -> preventing from crash
+# Nastavit fallbacky v případě, že nějaká z informací v DB bude NULL -> preventing from crash  -> nastavit především v DB na NOT NULL - mandatory fields
+
+# TAB 4 Přidat ještě vlaječky zemí kde ta pobočka je 
 
 # Rozšířit kód o logování
 
 # TAB 2 přidat tam pak nějaký summary počty poboček zobrazených dle jednotlivých typů 
+# TAB 2 přidat tam logo company a přidat tam i to company description z DB
 
 # Pak jsem ještě jsem přemýšlel TAB 4 -> search for Branch Based on ID, že bych ke každě firmě našel logo, udělal nějaké stručné summary o té firmě, stručné summary o té pobočce zobrazil ji na mapě
 
 
 # Celá funkce F8 -> Rozšířit kód o logování
+
+
+# Rozšířit DB o pobočky 
+# Fedex
+# Emirates skycargo
+# Lufthansa Cargo
+# OBB Rail crago (hroznej shit to hledat)
+# Metrans, ty se dobže hledaj
+# DB Cargo
