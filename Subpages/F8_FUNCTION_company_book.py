@@ -61,10 +61,10 @@ st.image("Pictures/Function_8/F8_brands.svg", width=450)
 
 ''
 tab1, tab2, tab3, tab4 = st.tabs([
-    "Transport From - To",
-    "Specific Company",
+    "Transport",
+    "Company",
     "Overview Companies",
-    "Branch Info"
+    "Branch"
 ])
 
 
