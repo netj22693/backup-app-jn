@@ -41,8 +41,8 @@ st.write("##### DB structure - ERD:")
 ''
 st.write("""
 - The DB is designed based on **2 operational** tables and **multiple lookup** tables
-- In the ERD there are highlithed mandatory fields for the F8 tu function properly as **'NOT NULL'**
-- When **new either company or branch** is inserted, **DB prevents** from saving without mandatory fields -> **F8 will have all the inputs to function properly** (Displaying of data & MAP)
+- In the ERD there are highlithed **mandatory fields for onboarding** of new branch or company to get onboarded  as :blue[**'NOT NULL'**] 
+- This ensures that **F8 will function properly** (Displaying of data & MAP) and **no input will be missed**. 
 """)
 ''
 ''
