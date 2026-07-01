@@ -36,11 +36,17 @@ def mapping_transport_type(transport: str) -> str:
     return mapping.get(transport)
 
 
-#  ==== Function - adjustment of DF ====
-def drop_columns(df: pd.DataFrame) -> pd.DataFrame:
+#  ==== Function - extension of DF for map purposes ====
+def create_pin_column(df: pd.DataFrame, position:int) -> pd.DataFrame:
+    
+    '''
+    - Creation of Pin columns -> for visualization purpuses
+    - position - index of column
+    '''
 
-    return df.drop(columns=["lat","lon","color_r","color_g","color_b"])
+    df.insert(position, "Pin", "⬤")
 
+    return df
 
 
 #  ==== Function - dynamic SQL query ====
@@ -133,7 +139,8 @@ def create_df_branches_country(country_code: str, company_id, engine: Engine) ->
 
     # Get DF from DB
     df = pd.read_sql(query_country, engine)
-    df_ui = drop_columns(df)
+
+    df_ui = create_pin_column(df, 2)
 
     # Index change for UI purposes
     df_ui.index = df_ui.index + 1
@@ -147,7 +154,10 @@ def create_df_branches_country(country_code: str, company_id, engine: Engine) ->
 sql_query_branch_info_df = """
 SELECT
     branch_text as "Type",
-    description as "Description"                  
+    description as "Description",
+    color_r,
+    color_g,
+    color_b                 
 FROM 
     function8.branch_type
 WHERE

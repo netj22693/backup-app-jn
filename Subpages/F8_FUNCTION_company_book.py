@@ -2,8 +2,8 @@ import pandas as pd
 import streamlit as st
 from sqlalchemy import create_engine, Engine
 from sqlalchemy import text
-from Subpages.F8_map import get_map
-from Subpages.F8_SQL_queries import sql_query_number_companies, sql_query_number_branches, sql_query_company_overview, sql_query_branch_info_df, sql_query_branch_df,sql_query_branch_for_map, sql_query_branch_size, get_sql_query_international_domestic, determin_transport_for_db_query, mapping_country, mapping_transport_type, create_df_branches_country, drop_columns
+from Subpages.F8_map import get_map, df_styling_colors_per_map
+from Subpages.F8_SQL_queries import sql_query_number_companies, sql_query_number_branches, sql_query_company_overview, sql_query_branch_info_df, sql_query_branch_df,sql_query_branch_for_map, sql_query_branch_size, get_sql_query_international_domestic, determin_transport_for_db_query, mapping_country, mapping_transport_type, create_df_branches_country, create_pin_column
 
 
 # ==== Business data - lists the F8 works with ====
@@ -11,6 +11,22 @@ country_list = ["AT","CZ","DE","PL","SK"]
 country_list.sort()
 
 list_transport = ["Truck","Train","Airplane"]
+
+# ==== Hide columns for UI ====
+# Note: there is a layer conflict between pd Styling and Streamlit visualization. This is a workaroud 
+HIDDEN_COLUMNS = {
+        "color_r": None,
+        "color_g": None,
+        "color_b": None,
+        "lat": None,
+        "lon": None,
+    }
+
+HIDDEN_COLUMNS_BRANCH_INFO = {
+        "color_r": None,
+        "color_g": None,
+        "color_b": None,
+            }
 
 
 # ==== Generic function - DB connection ====
@@ -140,17 +156,23 @@ with tab1:
         # Pull data from DB
         df_raw_from = pd.read_sql(sql_query_international_domestic_from, db_engine)
         df_raw_to = pd.read_sql(sql_query_international_domestic_to, db_engine)
-
-        # DF drop of columns not to be visible UI
-        df_from = drop_columns(df_raw_from)
-        df_to = drop_columns(df_raw_to)
-
-        # DF styling - index
-        df_from = adjust_index(df_from)
-        df_to = adjust_index(df_to)
-
         # Branch type info
         branch_type_info_df = pd.read_sql(sql_query_branch_info_df, db_engine)
+
+        # DF creation of new coumn 'PINS'
+        df_from = create_pin_column(df_raw_from, 2)
+        df_to = create_pin_column(df_raw_to, 2)
+        branch_type_info_df = create_pin_column(branch_type_info_df, 0)
+
+        # DF index
+        df_from = adjust_index(df_raw_from)
+        df_to = adjust_index(df_raw_to)
+
+        # DF styling - colors
+        df_from_styled = df_styling_colors_per_map(df_from)
+        df_to_styled = df_styling_colors_per_map(df_to)
+        branch_type_info_df = df_styling_colors_per_map(branch_type_info_df)
+
 
         # ==== UI data visualization ====
         ''
@@ -163,22 +185,22 @@ with tab1:
 
 
         with st.expander("Branch type info",width= "stretch", icon=":material/help_outline:"):
-            st.dataframe(branch_type_info_df, hide_index=True)
+            st.dataframe(branch_type_info_df, hide_index=True, column_config = HIDDEN_COLUMNS_BRANCH_INFO)
         
 
         if international == True:
             ''
             st.write(f"From country - **{country_from}**")
-            st.dataframe(df_from, width = "stretch")
+            st.dataframe(df_from_styled, width = "stretch", column_config=HIDDEN_COLUMNS)
 
             ''
             st.write(f"To country - **{country_to}**")
-            st.dataframe(df_to, width = "stretch")
+            st.dataframe(df_to_styled, width = "stretch", column_config=HIDDEN_COLUMNS)
         
         else:
             ''
             st.write(f"Domestic transport - **{country_from}**")
-            st.dataframe(df_from, width = "stretch")
+            st.dataframe(df_from_styled, width = "stretch", column_config=HIDDEN_COLUMNS)
 
 
 with tab2:
@@ -224,8 +246,22 @@ with tab2:
         df_pl_raw, df_pl = create_df_branches_country('PL', company_id, db_engine)
         df_sk_raw, df_sk = create_df_branches_country('SK', company_id, db_engine)
 
+        df_at = df_styling_colors_per_map(df_at)
+        df_cz = df_styling_colors_per_map(df_cz)
+        df_de = df_styling_colors_per_map(df_de)
+        df_pl = df_styling_colors_per_map(df_pl)
+        df_sk = df_styling_colors_per_map(df_sk)
+
+
+        # Branch type info DF
         branch_type_info_df = pd.read_sql(sql_query_branch_info_df, db_engine)
 
+        branch_type_info_df = create_pin_column(branch_type_info_df, 0)
+        
+        branch_type_info_df = df_styling_colors_per_map(branch_type_info_df)
+
+        # Company info + logo 
+        # TBD
 
 
         # ==== UI ====
@@ -238,24 +274,24 @@ with tab2:
             get_map(df_raw_concat, "BIG")
 
 
-        with st.expander("Branch type info:",width= "stretch", icon=":material/help_outline:"):
-            st.dataframe(branch_type_info_df, hide_index=True)
+        with st.expander("Branch type ",width= "stretch", icon=":material/help_outline:"):
+            st.dataframe(branch_type_info_df, hide_index=True, column_config = HIDDEN_COLUMNS_BRANCH_INFO)
 
         ''
         st.write("Austria - AT")
-        st.write(df_at)
+        st.dataframe(df_at, width = "stretch", column_config=HIDDEN_COLUMNS)
 
         st.write("Czech Republic - CZ")
-        st.write(df_cz)
+        st.dataframe(df_cz, width = "stretch", column_config=HIDDEN_COLUMNS)
 
         st.write("Germany - DE")
-        st.write(df_de)
+        st.dataframe(df_de, width = "stretch", column_config=HIDDEN_COLUMNS)
 
         st.write("Poland - PL")
-        st.write(df_pl)
+        st.dataframe(df_pl, width = "stretch", column_config=HIDDEN_COLUMNS)
 
         st.write("Slovakia - SK")
-        st.write(df_sk)
+        st.dataframe(df_sk, width = "stretch",column_config=HIDDEN_COLUMNS)
 
 
 with tab3:

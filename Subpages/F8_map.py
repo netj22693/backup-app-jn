@@ -1,6 +1,8 @@
 import pandas as pd
 import streamlit as st
 import pydeck as pdk
+from pandas.io.formats.style import Styler
+
 
 
 def get_map(df: pd.DataFrame, map_size: str):
@@ -12,11 +14,10 @@ def get_map(df: pd.DataFrame, map_size: str):
     - "BIG" (else) - used as part of TAB 1 and TAB 2
     - "SMALL" - used as part of TAB 4
     '''
-
-    # Create new column based on data from DB (in DB saved -> RGB color scale)
-    df["color"] = df[["color_r", "color_g", "color_b"]].values.tolist()
-
     
+    # Merging RGB for map 
+    df["color"] = df[["color_r", "color_g", "color_b"]].values.tolist()
+ 
     if map_size == "SMALL":
         
         # To have the location point in the center
@@ -76,3 +77,26 @@ def get_map(df: pd.DataFrame, map_size: str):
 
     # Note: "height" needs to be set as part of Streamlit component (If set as part of pdk.Deck Streamlit will not apply it)
     st.pydeck_chart(map_fig, height=figures["height"])
+
+
+def df_styling_colors_per_map(df: pd.DataFrame) -> Styler:
+
+    '''
+    - Using predefined (DB) RGB figures to change color of text in DF 
+    - Column "Type" (Type of Branch)
+    - Has nested function du to the .apply() principle
+    '''
+
+    def style_type(row):
+
+        r = row["color_r"]
+        g = row["color_g"]
+        b = row["color_b"]
+
+        styles = [""] * len(row)
+        styles[df.columns.get_loc("Pin")] = f"color: rgb({r}, {g}, {b})"
+        return styles
+
+    df_styled = df.style.apply(style_type, axis=1).hide(axis="columns")
+
+    return df_styled
