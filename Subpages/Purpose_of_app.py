@@ -191,6 +191,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 8:
+		- **v64.6** - TABs extended by country flags + Company info expander added - 02-July-2026
 		- **v64.5** - DFs extended by PINs and colored -> better visualization on UI - 01-July-2026
 		- **v64.4** - TAB 4 Branch info released - 28-Jun-2026
 		- **v64.2** - DB design changed & TAB 2 extended also by MAP - 18-Jun-2026

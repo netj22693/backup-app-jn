@@ -67,6 +67,7 @@ def get_sql_query_international_domestic(international: bool, country_from: str,
     SELECT
         a.name as "Name",
         b.city as "City",
+        b.branch_id as "Branch ID",
         d.branch_text as "Type",
         b.street as "Street",
         b.number as "No.",
@@ -77,8 +78,7 @@ def get_sql_query_international_domestic(international: bool, country_from: str,
         b.lon,
         d.color_r,
         d.color_g,
-        d.color_b,
-        b.branch_id as "Branch ID"
+        d.color_b
 
     FROM
         function8.company a
@@ -110,6 +110,7 @@ def create_df_branches_country(country_code: str, company_id, engine: Engine) ->
         SELECT
             a.name as "Name",
             b.city as "City",
+            b.branch_id as "Branch ID",
             d.branch_text as "Type",
             b.street as "Street",
             b.number as "No.",
@@ -119,8 +120,7 @@ def create_df_branches_country(country_code: str, company_id, engine: Engine) ->
             b.lon,
             d.color_r,
             d.color_g,
-            d.color_b,
-            b.branch_id as "Branch ID"
+            d.color_b
 
         FROM
             function8.company a
@@ -140,7 +140,7 @@ def create_df_branches_country(country_code: str, company_id, engine: Engine) ->
     # Get DF from DB
     df = pd.read_sql(query_country, engine)
 
-    df_ui = create_pin_column(df, 2)
+    df_ui = create_pin_column(df, 3)
 
     # Index change for UI purposes
     df_ui.index = df_ui.index + 1
@@ -165,6 +165,20 @@ WHERE
 ORDER BY
     type_code;"""
 
+# ==== TAB 2 ====
+sql_query_company_table = """        
+SELECT 
+  a.name,
+  a.truck,
+  a.train,
+  a.airplane,
+  a.international_transport,
+  a.web_url,
+  a.image_path,
+  a.company_description
+
+FROM function8.company a
+WHERE a.company_id = :company_id;"""
 
 # ==== TAB 3 ====
 
