@@ -289,6 +289,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 2:
+		- **v64.7** - Major code refactoring & clean up - 03-July-2026
 		- **v52.3** - Function description extended by Video Guide - 03-Dec-2025
 		- **v35.4** - Plotly() arguments adjusted, deprication will happen end of 2025  - 20-Oct-2025
 		- **v16.4** - Better visualization in dataframes - 2 decimals always - 22-July-2025

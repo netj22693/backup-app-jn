@@ -1,529 +1,729 @@
-import pandas as pd
 import streamlit as st
-from sqlalchemy import create_engine, Engine
-from sqlalchemy import text
-from Subpages.F8_map import get_map, df_styling_colors_per_map
-from Subpages.F8_operational_functions import boolean_to_string_for_ui, count_rows, select_country_flag_path
-from Subpages.F8_SQL_queries import sql_query_number_companies, sql_query_number_branches, sql_query_company_overview, sql_query_branch_info_df, sql_query_branch_df,sql_query_branch_for_map, sql_query_branch_size, sql_query_company_table, get_sql_query_international_domestic, determin_transport_for_db_query, mapping_country, mapping_transport_type, create_df_branches_country, create_pin_column
+import xml.etree.ElementTree as ET
+import time
+import pandas as pd
+import math
+import pandasql as ps
+from Subpages.F2_expanders import show_expander_help, show_expander_help_validation_process
+from Subpages.F2_operational_functions import validate_xml_against_xsd, data_parsing_find, data_parsing_get, data_parsing_find_conditional, data_parsing_including_additional_services, create_pie_chart, df_styling, close_function, display_warning_multiselect, create_bar_chart, data_validation, data_validation_services
+from Subpages.F2_SQL_queries import get_sql_query_item_inc_add_service, get_sql_query_percentage_product_prices_category, get_sql_query_percentage_product_prices_category_inc_add_serv, get_sql_query_percentage_add_services, sql_query_no_items_product_category, sql_query_no_items_with_additional_service, sql_query_no_items_without_additional_service, sql_query_expensive_item, sql_query_cheapest_item, sql_query_avg_price, sql_query_avg_price_with_add_serv, sql_query_avg_price_of_add_serv
 
 
-# ==== Business data - lists the F8 works with ====
-country_list = ["AT","CZ","DE","PL","SK"]
-country_list.sort()
 
-list_transport = ["Truck","Train","Airplane"]
+# ==== UI upload box ====
 
-# ==== Hide columns for UI ====
-# Note: there is a layer conflict between pd Styling and Streamlit visualization. This is a workaroud 
-HIDDEN_COLUMNS = {
-        "color_r": None,
-        "color_g": None,
-        "color_b": None,
-        "lat": None,
-        "lon": None,
-    }
-
-HIDDEN_COLUMNS_BRANCH_INFO = {
-        "color_r": None,
-        "color_g": None,
-        "color_b": None,
-            }
-
-# ==== Predefined UI width variable used across TABs ====
-FLAG_IMAGE_WIDTH = 20
-
-# ==== Generic function - DB connection ====
-@st.dialog("Error: DB not connected")
-def db_connection_fail():
-
-    st.warning("Application is not able to establish connection with DB server -> **Function 8 is currently not available**")
-    st.stop()
-
-
-def db_connection() -> Engine:
-
-    # Load secrets
-    password = st.secrets["neon"]["password"]
-    endpoint = st.secrets["neon"]["endpoint"]
-
-    # connection string
-    try: 
-        conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.gwc.azure.neon.tech/neondb?sslmode=require"
-
-
-        engine = create_engine(conn_string)
-        return engine
-
-    except:
-        st.warning("DB not connected")
-        db_connection_fail()
-
-
-# ==== Generic function - index ==== 
-
-def adjust_index(df: pd.DataFrame) -> pd.DataFrame:
-    '''
-    Index +1 -> First line in DF will have 1 not 0
-    '''
-
-    df.index = df.index + 1
-
-    return df
-
-
-# ==== UI Function 8 ==== 
-st.write("# Company Book")
+st.write("# Upload XML:")
 ''
-''
-''
-st.image("Pictures/Function_8/F8_brands.svg", width=450)
 
-''
-tab1, tab2, tab3, tab4 = st.tabs([
-    "Transport",
-    "Company",
-    "Branch",
-    "Overview Companies"
-])
+# type = ".xml" - allows to upload only xml files
+object_from_upload = st.file_uploader("Upload your XML file", type=".xml", label_visibility="collapsed", accept_multiple_files=False)
+
+if object_from_upload is None:
+    st.info("When a file uploaded, the application will start")
+
+    show_expander_help()
 
 
-with tab1:
+# ==== F2 logic when file uploaded ====
 
-    # Function for TAB 1
-    def determin_international(c_from: str, c_to: str) -> bool:
-        '''
-        - Function to determin if the transport will be from country to the same country or to the different country (international)
-        - Result BOOLEAN used for SQL query build
-        '''
+if object_from_upload is not None:
 
-        if c_from == c_to:
-            return False
+    # Validation XML against XSD
+    validate_xml_against_xsd(xml_path = object_from_upload, xsd_path ="F2_XSD_validation/XML_Schema_for_functions_1_and_2.xsd")
+    
+    tree_element_data = ET.parse(object_from_upload)
 
-        else:
-            return True
+    root = tree_element_data.getroot()
 
+
+    #  ==== DATA PARSING FROM HEADER LEVEL XML ====
+    value_customer = root[0][0].text
+    value_invoice_num = root[0][1].text
+    value_date = root[0][2].text
+
+
+    currency = data_parsing_find(root,'header','price/currency', False, False)
+    value_total_sum = data_parsing_find(root,'header','price/total_sum', True, False) 
+    value_total_sum_services_fl = data_parsing_find(root,'header','price/total_sum_services', True, False)   
+
+    
+
+    #  ==== DATA PARSING FROM DETAIL LEVEL XML ====   
+    value_category_list = data_parsing_find(root,'detail','category', False, True)   
+    value_product_name_list = data_parsing_find(root,'detail','product_name', False, True)
+    value_price_list = data_parsing_find(root,'detail','price_amount', False, True)
+
+    value_attribut = data_parsing_get(root,'detail', 'id')
+    
+    # Change of types
+    value_price_list_fl = list(map(float, value_price_list))
+
+    value_attribute_int = list(map(int, value_attribut))
+    max_value_attribut = max(value_attribute_int)
+
+    
+    # Logic for recognizing whether any extra money for 'extended warranty' or 'insurance'   
+    warranty = data_parsing_find_conditional(root,'detail','additional_service/service_type', 'extended warranty', 'additional_service/service_price')
+    
+    warranty_float = list(map(float, warranty)) 
+    sum_price_warranty = math.fsum(warranty_float)
+
+    insurance = data_parsing_find_conditional(root,'detail','additional_service/service_type', 'insurance', 'additional_service/service_price')   
+       
+    insurance_float = list(map(float, insurance)) 
+    sum_price_insurance = math.fsum(insurance_float)
+
+    #Extra parsing for charts
+    # Type of additional service <additional_service> - Including 'None'
+    add_service_full = []
+    for add_ser_item in root.findall('detail'):
+        add_service = add_ser_item.find('additional_service/service_type').text
+        add_service = add_service.capitalize()
+        add_service_full.append(add_service)
+
+    # Prices full - including '0.00' for None values
+    add_ser_price_full = []
+    for service_type in root.findall('detail'):
+        condition_service_type = service_type.find('additional_service/service_type').text
+
+        # v5.3 - extended logic
+        if condition_service_type == 'extended warranty':
+            service_price = service_type.find('additional_service/service_price').text
+            add_ser_price_full.append(service_price)
+
+        if condition_service_type == 'insurance':
+            service_price = service_type.find('additional_service/service_price').text
+            add_ser_price_full.append(service_price)
+        
+        # v5.3 - specifically this part is important to not parse value in case that <service_type> 'none' but <service_price> 999.99 (with value) -> this is the anti-pattern which this mechanism prevents -> 
+        # if 'None' it ignors a value but always appends 0.00 to this list
+        if condition_service_type == 'None':
+            add_ser_price_full.append(0.00)
+
+
+
+
+    # Extra parsing for charts in SQL 3 expander  - NOT including add.services
+    price_gaming = data_parsing_find_conditional(root,'detail','category','Gaming','price_amount')
+    price_mobile_phone = data_parsing_find_conditional(root,'detail','category','Mobile phones','price_amount')
+    price_tablets = data_parsing_find_conditional(root,'detail','category','Tablets','price_amount')
+    price_pc = data_parsing_find_conditional(root,'detail','category','PC','price_amount')
+    price_tv = data_parsing_find_conditional(root,'detail','category','TV','price_amount')
+    price_majapliances = data_parsing_find_conditional(root,'detail','category','Major Appliances','price_amount')
+    price_majapliances = data_parsing_find_conditional(root,'detail','category','Major Appliances','price_amount')
+    price_househol = data_parsing_find_conditional(root,'detail','category','Households','price_amount')
+
+
+    # Type change from string to float
+    price_gaming = list(map(float, price_gaming))
+    price_mobile_phone = list(map(float, price_mobile_phone))
+    price_tablets = list(map(float, price_tablets))
+    price_pc = list(map(float, price_pc))
+    price_tv = list(map(float, price_tv))
+    price_majapliances = list(map(float, price_majapliances))
+    price_househol = list(map(float, price_househol))
+
+    # Sum of the list values
+    sum_price_gaming = sum(price_gaming)
+    sum_price_mobile_phone = sum(price_mobile_phone)
+    sum_price_tablets = sum(price_tablets)
+    sum_price_pc = sum(price_pc)
+    sum_price_tv = sum(price_tv)
+    sum_price_majapliances = sum(price_majapliances)
+    sum_price_househol = sum(price_househol)
+
+
+    # 10-July-2025 Extra parsing for charts in SQL 3 expander  - INCLUDING add services
+    sum_price_gaming_addserv = data_parsing_including_additional_services(root,'detail','category','Gaming', 'additional_service/service_type', 'additional_service/service_price')
+
+    sum_price_mobphones_addserv = data_parsing_including_additional_services(root,'detail','category','Mobile phones','additional_service/service_type', 'additional_service/service_price')
+
+    sum_price_tablets_addserv = data_parsing_including_additional_services(root,'detail','category','Tablets','additional_service/service_type', 'additional_service/service_price')
+
+    sum_price_pc_addserv = data_parsing_including_additional_services(root,'detail','category','PC','additional_service/service_type', 'additional_service/service_price')
+
+    sum_price_tv_addserv = data_parsing_including_additional_services(root,'detail','category','TV','additional_service/service_type', 'additional_service/service_price')
+
+    sum_price_majappl_addserv = data_parsing_including_additional_services(root,'detail','category','Major Appliances','additional_service/service_type', 'additional_service/service_price')
+
+    sum_price_households_addserv = data_parsing_including_additional_services(root,'detail','category','Households','additional_service/service_type', 'additional_service/service_price')
+
+
+
+    # sum of sum - price + additional service price -> for chart in SQL 3 expander
+    ss_gaming = sum_price_gaming + sum_price_gaming_addserv
+    ss_mobile = sum_price_mobile_phone + sum_price_mobphones_addserv
+    ss_tablets = sum_price_tablets + sum_price_tablets_addserv
+    ss_pc = sum_price_pc + sum_price_pc_addserv
+    ss_tv = sum_price_tv + sum_price_tv_addserv
+    ss_majapp = sum_price_majapliances + sum_price_majappl_addserv
+    ss_househlds = sum_price_househol + sum_price_households_addserv
+
+
+    # Sum of prices - type change string -> float for calculation
+    value_price_list_float = list(map(float, value_price_list)) 
+    sum_price = math.fsum(value_price_list_float)
+    
+    # Data validation - total_sum = pri_values Y/N 
+    value_total_sum_fl = float(value_total_sum)
+
+    # Data type change for purpose of charts
+    add_ser_price_full_float = list(map(float, add_ser_price_full)) 
+    sum_adds_fl = math.fsum(add_ser_price_full_float)
+
+
+    # v 3.2.X and higher - additional parsing for charts ---------------
+
+    pro_price_where_insurance = data_parsing_find_conditional(root,'detail','additional_service/service_type', 'insurance', 'price_amount')
+
+    pro_price_where_ewarranty = data_parsing_find_conditional(root,'detail','additional_service/service_type', 'extended warranty', 'price_amount')
+
+       
+    pro_price_where_insurance = list(map(float, pro_price_where_insurance)) 
+    sum_pro_price_where_insurance = math.fsum(pro_price_where_insurance)
+
+    pro_price_where_ewarranty = list(map(float, pro_price_where_ewarranty)) 
+    sum_pro_price_where_ewarranty = math.fsum(pro_price_where_ewarranty)
+
+    # ==== UI ====
+
+    # Notification to appear on the screen when all parsing steps successfully done
+    st.success("**UPLOAD COMPLETE**")
+
+    # Validation if DETAIL line sum matches HEADER value 
+    # <total_sum>
+
+    st.write("---------")
+    st.write("#### Validation process")
+    ''
+    st.write("1) ###### Validation process")
+
+    result_obj_outcome = data_validation(value_total_sum_fl, sum_price, currency)
+
+
+    # Data validation - <total_sum_services> = value_total_sum_services Y/N 
+    
+    ''
+    st.write("2) ###### Validation process")
+
+    result_obj_outcome_services = data_validation_services(value_total_sum_services_fl, sum_price_warranty , sum_price_insurance, currency)
+
+    value_to_paid = value_total_sum + sum_price_warranty + sum_price_insurance
 
     # ==== UI ====
     ''
-    st.write("""
-    - Provides **companies available** for selected **type of transport** and their **contact points/branches** 
-    """)
-
     ''
-    with st.form(key="user_form"):
+    with st.expander("Help",icon= ":material/help_outline:"):
+        show_expander_help_validation_process()
 
-        country_from = st.selectbox(
-            label="Country From",
-            options=country_list,
-            help="Origin of transport."
-            )
-        
-        country_to = st.selectbox(
-            label="Country To",
-            options=country_list,
-            help="Destination of transport. **Note:** If country **From** and **To** is **the same**,  **also** companies doing **only** domestic transport (within the selected country) will be included."
-            )
-        
-        transport_type = st.selectbox(
-            label="Transport type",
-            options=list_transport,
-            help="Select preferred transport type."
-            )
-        
-        submit_button = st.form_submit_button(label= "Submit", width="stretch", icon = ":material/apps:")
-
-
-    # Submit button -> main logic TAB 1
-    if submit_button:
-        
-        # DB engine creation
-        db_engine = db_connection()
-
-
-        # preparation of inputs/for dynamic SQL query using mapping
-        international = determin_international(country_from, country_to)
-
-        transport_type_code = determin_transport_for_db_query(transport_type)
-
-        branch_codes_display = f"'1','2','3','4','{transport_type_code}'"
-
-        country_from_mapped = mapping_country(country_from)
-        country_to_mapped = mapping_country(country_to)
-
-        transport_type_mapped = mapping_transport_type(transport_type)
-        
-        # Get SQL query 
-        sql_query_international_domestic_from = get_sql_query_international_domestic(international,  country_from_mapped, transport_type_mapped, branch_codes_display)
-        sql_query_international_domestic_to = get_sql_query_international_domestic(international,  country_to_mapped, transport_type_mapped, branch_codes_display)
-
-        # Pull data from DB
-        df_raw_from = pd.read_sql(sql_query_international_domestic_from, db_engine)
-        df_raw_to = pd.read_sql(sql_query_international_domestic_to, db_engine)
-        # Branch type info
-        branch_type_info_df = pd.read_sql(sql_query_branch_info_df, db_engine)
-
-        # DF creation of new coumn 'PINS'
-        df_from = create_pin_column(df_raw_from, 3)
-        df_to = create_pin_column(df_raw_to, 3)
-        branch_type_info_df = create_pin_column(branch_type_info_df, 0)
-
-        # DF index
-        df_from = adjust_index(df_raw_from)
-        df_to = adjust_index(df_raw_to)
-
-        # DF styling - colors
-        df_from_styled = df_styling_colors_per_map(df_from)
-        df_to_styled = df_styling_colors_per_map(df_to)
-        branch_type_info_df = df_styling_colors_per_map(branch_type_info_df)
-
-
-        # ==== UI data visualization ====
-        ''
-        with st.expander("Map - Locations", icon=":material/location_on:"):
-
-            # Concat of the 2 DF for MAP purposes + drop of duplicates (this can happen if it is domestic transport and the same country)
-            df_raw_from_to = pd.concat([df_raw_from, df_raw_to], ignore_index=True).drop_duplicates()
-
-            get_map(df_raw_from_to, "BIG")
-
-
-        with st.expander("Branch type info",width= "stretch", icon=":material/help_outline:"):
-            st.dataframe(branch_type_info_df, hide_index=True, column_config = HIDDEN_COLUMNS_BRANCH_INFO)
-        
-
-        if international == True:
-            ''
-            st.write(f"From country - **{country_from}**")
-            st.image(select_country_flag_path(country_from), width=FLAG_IMAGE_WIDTH)
-            st.dataframe(df_from_styled, width = "stretch", column_config=HIDDEN_COLUMNS)
-
-            ''
-            st.write(f"To country - **{country_to}**")
-            st.image(select_country_flag_path(country_to), width=FLAG_IMAGE_WIDTH)
-            st.dataframe(df_to_styled, width = "stretch", column_config=HIDDEN_COLUMNS)
-        
-        else:
-            ''
-            st.write(f"Domestic transport - **{country_from}**")
-            st.image(select_country_flag_path(country_from), width=FLAG_IMAGE_WIDTH)
-            st.dataframe(df_from_styled, width = "stretch", column_config=HIDDEN_COLUMNS)
-
-
-with tab2:
-
-    # DB engine creation
-    db_engine = db_connection()
-
-    company_df = pd.read_sql("SELECT name FROM function8.company;", db_engine)
-    company_list = company_df['name'].tolist()
-    company_list.sort()
-
-    # ==== UI ====
+    st.write("------")
+    st.write("#### Data Visualization:")
     ''
-    st.write("""
-    - Provides **visibility** about selected company - **availability and branches in countries**
-    """)
-
     ''
-    with st.form(key="user_form_2"):
-
-        selected_company = st.selectbox(
-            label="Company",
-            options=company_list,
-            help="Select or type a company name you are interested in."
-            )
-
-        submit_button = st.form_submit_button(label= "Submit", width="stretch", icon = ":material/apps:")
-
-    if submit_button:
-
-        # ==== Main logic TAB 2 ====
-        with db_engine.connect() as conn:
-            result = conn.execute(
-                text("SELECT company_id FROM function8.company WHERE name = :company"),
-                {"company": selected_company}
-            )
-            company_id = result.scalar()
-
-
-        df_at_raw, df_at = create_df_branches_country('AT', company_id, db_engine)
-        df_cz_raw, df_cz = create_df_branches_country('CZ', company_id, db_engine)
-        df_de_raw, df_de = create_df_branches_country('DE', company_id, db_engine)
-        df_pl_raw, df_pl = create_df_branches_country('PL', company_id, db_engine)
-        df_sk_raw, df_sk = create_df_branches_country('SK', company_id, db_engine)
-
-        df_at = df_styling_colors_per_map(df_at)
-        df_cz = df_styling_colors_per_map(df_cz)
-        df_de = df_styling_colors_per_map(df_de)
-        df_pl = df_styling_colors_per_map(df_pl)
-        df_sk = df_styling_colors_per_map(df_sk)
-
-        num_rows_at = count_rows(df_at_raw)
-        num_rows_cz = count_rows(df_cz_raw)
-        num_rows_de = count_rows(df_de_raw)
-        num_rows_pl = count_rows(df_pl_raw)
-        num_rows_sk = count_rows(df_sk_raw)
-
-
-        # Branch type info DF
-        branch_type_info_df = pd.read_sql(sql_query_branch_info_df, db_engine)
-
-        branch_type_info_df = create_pin_column(branch_type_info_df, 0)
-        
-        branch_type_info_df = df_styling_colors_per_map(branch_type_info_df)
-
-
-        # Company info and logo          
-        df_company = pd.read_sql(text(sql_query_company_table), db_engine, params={"company_id": company_id})
-
-        company = df_company.iloc[0]
-        company_image = company["image_path"]
-        company_name = company["name"]
-        company_truck = company["truck"]
-        company_train = company["train"]
-        company_airplane = company["airplane"]
-        company_internation_transport = company["international_transport"]
-        company_web_url = company["web_url"]
-        company_description = company["company_description"]
-
-        company_truck_str = boolean_to_string_for_ui(company_truck)
-        company_train_str = boolean_to_string_for_ui(company_train)
-        company_airplane_str = boolean_to_string_for_ui(company_airplane)
-        company_internation_transport_str = boolean_to_string_for_ui(company_internation_transport)
-
-
-        # ==== UI ====
+    with st.expander("Summary overview - Invoice", icon = ":material/apps:"):
         ''
-        try:
-            st.image(company_image, width=200)
-        except:
-            pass
+        '' 
+        st.write(f"**Sumary:**")
+        st.write(f" - Invoice number: **{value_invoice_num}**")
+        st.write(f" - Receiver of the invoice: **{value_customer}**")
+        st.write(f" - Invoice from date (YYYY-MM-DD): **{value_date}**")
 
-        ''
-        with st.expander(f"Company info - **{company_name}**",width= "stretch", icon=":material/list:"):
-            
-            st.write(f"""
-            - Company: **{company_name}**
-            - Web page: [here]({company_web_url})
-            """)
-                        
-            st.caption(company_description)
-
-
-            st.write(f"""
-            - International transport: **{company_internation_transport_str}**
-            """)
-
-            ''
-            st.write(f"""
-            - Truck: **{company_truck_str}**
-            - Train: **{company_train_str}**
-            - Airplane: **{company_airplane_str}**
-            """)
-        
-        with st.expander("Branch type",width= "stretch", icon=":material/help_outline:"):
-            st.dataframe(branch_type_info_df, hide_index=True, column_config = HIDDEN_COLUMNS_BRANCH_INFO)
-
-        with st.expander("Map - Locations", icon=":material/location_on:"):
-            
-            # 02-July-2026 - Note: some DFs can be emppty due to no data (expacted behavior). FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation. -> For loop is filtering out the empty ones -> pd.concat() works
-            dfs = [df_at_raw, df_cz_raw, df_de_raw, df_pl_raw, df_sk_raw]
-
-            dfs = [df for df in dfs if not df.empty]
-
-            df_raw_concat = pd.concat(dfs, ignore_index=True).drop_duplicates()
-
-            get_map(df_raw_concat, "BIG")
-
-
-        image_width = 20
-
+        st.write(f" - Price to be paid: **{value_to_paid:,.2f} {currency}** (*products + services)")
+        st.write(f" - Number of products: **{max_value_attribut}**")
         ''
         ''
-        st.write(f"Austria - **AT** - Branches: **{num_rows_at}**")
-        st.image(select_country_flag_path('AT'), width=FLAG_IMAGE_WIDTH)
-        st.dataframe(df_at, width = "stretch", column_config=HIDDEN_COLUMNS)
-
         ''
-        st.write(f"Czech Republic - **CZ** - Branches: **{num_rows_cz}**")
-        st.image(select_country_flag_path('CZ'), width=FLAG_IMAGE_WIDTH)
-        st.dataframe(df_cz, width = "stretch", column_config=HIDDEN_COLUMNS)
+        st.write(f"**Detail:**")
+        st.write(f" - Total sum of products: **{value_total_sum:,.2f} {currency}**")
 
+        sum_additional_serv = sum_price_warranty + sum_price_insurance
+
+        st.write(f" - Sum of additional services: **{sum_additional_serv:,.2f} {currency}**")
+        st.write(f" - Extended warranty: **{sum_price_warranty:,.2f} {currency}**")
+        st.write(f" - Insurance: **{sum_price_insurance:,.2f} {currency}**")
         ''
-        st.write(f"Germany - **DE** - Branches: **{num_rows_de}**")
-        st.image(select_country_flag_path('DE'), width=FLAG_IMAGE_WIDTH)
-        st.dataframe(df_de, width = "stretch", column_config=HIDDEN_COLUMNS)
-
         ''
-        st.write(f"Poland - **PL** - Branches: **{num_rows_pl}**")
-        st.image(select_country_flag_path('PL'), width=FLAG_IMAGE_WIDTH)
-        st.dataframe(df_pl, width = "stretch", column_config=HIDDEN_COLUMNS)
 
-        ''
-        st.write(f"Slovakia - **SK** - Branches: **{num_rows_sk}**")
-        st.image(select_country_flag_path('SK'), width=FLAG_IMAGE_WIDTH)
-        st.dataframe(df_sk, width = "stretch",column_config=HIDDEN_COLUMNS)
+    # Transformation of Data to table -> not editable table
+    data_table = pd.DataFrame({
+        "Item id" : value_attribut,
+        "Product" : value_product_name_list,
+        "Price" : value_price_list_fl, # must be float due to filtring in table    
+        "Category" : value_category_list, 
+        "Additional service" : add_service_full, 
+        "Additional service price" : add_ser_price_full_float  # must be float due to filtring in table                
+        })
 
-
-
-
-# ==== Function TAB 3 ==== 
-def input_validation(value) -> int | None:
-    try:
-        return int(value)
     
-    except (TypeError, ValueError):
-
-        st.warning("This is not supported format. Branch ID is a number")
-        return None
-
- 
-
-with tab3:
-
-    # ==== UI ==== 
-    ''
-    st.write("""
-    - Provides **branch detail**
-    """)
-    ''
-
-    with st.form(key="user_form_branch"):
-        branch_id_input = st.text_input(label="Branch ID:", help="The **Branch ID** is available in TAB 1 or TAB 2. When results are displayed, you can find the **Branch ID** either in the **tables** or in the **maps**")
-        
-        submit_button = st.form_submit_button(label= "Submit", width="stretch", icon = ":material/apps:")
-
-    if submit_button:
-
-        input_valid = input_validation(branch_id_input)
-    
-        if input_valid is not None:
-
-            # DB engine creation
-            db_engine = db_connection()
-
-            df_branch_and_company = pd.read_sql(text(sql_query_branch_df), db_engine, params={"branch_id": input_valid})
-
-            # Empty DF -> no branch in DB
-            if df_branch_and_company.empty == True:
-                st.info(f"No branch with ID: **{input_valid}**")
-            
-            else:
-
-                # DF from DB
-                df_map = pd.read_sql(text(sql_query_branch_for_map), db_engine, params={"branch_id": input_valid})
-
-                df_branch_size = pd.read_sql(text(sql_query_branch_size), db_engine, params={"branch_id": input_valid})
+    data_table_sql = pd.DataFrame({
+        "Item_id" : value_attribut,
+        "Product" : value_product_name_list,
+        "Price" : value_price_list_fl, # must be float due to filtring in table    
+        "Category" : value_category_list, 
+        "Additional_service" : add_service_full, 
+        "Additional_service_price" : add_ser_price_full_float  # must be float due to filtring in table                
+        })
 
 
-                # For extracting data from DF
-                branch = df_branch_and_company.iloc[0]
-                branch_type = df_map.iloc[0]
-                branch_size = df_branch_size.iloc[0]
-
-                # Determin country flag
-                branch_country = branch["country_code"]
-                
-                country_flag = select_country_flag_path(branch_country)
-
-
-
-                # ==== UI ====
-
-                ''
-                ''
-                try:
-                    st.image({branch.image_path}, width=200)
-                except:
-                    pass
-                ''
-                ''
-                st.write(f"""
-                - Company: **{branch['name']}**
-                - Web page: [here]({branch.web_url})
-                """)
-
-                st.caption(f"{branch.company_description}")
-                
-                st.write("---")
-
-                try:
-                    st.image(country_flag, width=60)
-                except:
-                    pass
-                
-                col1, col2 = st.columns(2)
-                ''
-                col1.write(f"""
-                - Country: **{branch.country_code}**
-                - City: **{branch.city}**
-                - Street: **{branch.street} {branch.number}**
-                - District: **{branch.district}**
-                - Zip Code: **{branch.zip_code}**
-                """)
-
-
-                col2.write(f"""
-                - Branch ID: **{branch_type['Branch ID']}**
-                - Category: **{branch_type.branch_text}**
-                - Size: **{branch_size.description}**
-                """)
-                ''
-                get_map(df_map, "SMALL")
-
-            
-            # Dat tam obecny company info + loga + web + branch info a mapu 
-    
-
-with tab4:
-        # ==== UI ====
+    # SQL 1
+    with st.expander("SQL Queries 1 - Overview", icon = ":material/view_list:"):
         ''
-        st.write("""
-        - Provides **overall summary/visibility** of companies in DB and number of their branches 
+        '' 
+        st.write(f"- Number of items in **each product Category** (No. of items - {max_value_attribut}):")
+        st.dataframe(ps.sqldf(sql_query_no_items_product_category, locals()), hide_index=True, width="stretch")
+
+        ''
+        ''
+        st.write("- Number of items having **additional services**:")
+        st.dataframe(ps.sqldf(sql_query_no_items_with_additional_service, locals()), hide_index=True, width="stretch")
+
+        ''
+        ''
+        st.write("- Number of items **without** any additional service:")
+        st.dataframe(ps.sqldf(sql_query_no_items_without_additional_service, locals()), hide_index=True, width="stretch")
+
+    # SQL 2
+    with st.expander("SQL Queries 2 - Prices/Costs", icon = ":material/view_list:"):
+
+        # Get SQL queries
+        sql_query_warranty_expensive_inc_add_serv = get_sql_query_item_inc_add_service('Extended warranty', 'DESC')
+        sql_query_insurance_expensive_inc_add_serv = get_sql_query_item_inc_add_service('Insurance', 'DESC')
+        sql_query_warranty_cheapest_inc_add_serv = get_sql_query_item_inc_add_service('Extended warranty', 'ASC')
+        sql_query_insurance_cheapest_inc_add_serv = get_sql_query_item_inc_add_service('Insurance', 'ASC')
+
+
+        # Extract data
+        df_q1 = ps.sqldf(sql_query_expensive_item, locals())
+        df_q2 = ps.sqldf(sql_query_warranty_expensive_inc_add_serv, locals())
+        df_q2b = ps.sqldf(sql_query_insurance_expensive_inc_add_serv, locals())
+        df_q3 = ps.sqldf(sql_query_cheapest_item, locals())
+        df_q4 = ps.sqldf(sql_query_warranty_cheapest_inc_add_serv, locals())
+        df_q4b = ps.sqldf(sql_query_insurance_cheapest_inc_add_serv, locals())
+
+
+        # Data styling before visualization  -> 2 decimals
+        df_q1_styled = df_styling(df_q1)
+        df_q2_styled = df_styling(df_q2)
+        df_q2b_styled = df_styling(df_q2b)
+        df_q3_styled = df_styling(df_q3)
+        df_q4_styled = df_styling(df_q4)
+        df_q4b_styled = df_styling(df_q4b)
+
+        # === UI - Data visualization ====
+        ''
+        ''
+        st.write(f"- Currency: **{currency}**")
+        ''
+        ''  
+        st.write("- The **most expensive** item (Price):")
+        st.dataframe(data=df_q1_styled, hide_index=True, width="stretch")
+        ''
+        ''
+        st.write("- The **most expensive additional service** (Extended warranty and Insurance):")
+        st.dataframe(df_q2_styled, hide_index=True, width="stretch")
+        st.dataframe(df_q2b_styled, hide_index=True, width="stretch")
+        ''
+        ''
+        st.write("- The **cheapest** item (lowest Price):")
+        st.dataframe(data=df_q3_styled, hide_index=True, width="stretch")
+        ''
+        ''
+        st.write("- The **cheapest additional service** (Extended warranty and Insurance):")
+        st.dataframe(df_q4_styled, hide_index=True, width="stretch")
+        st.dataframe(df_q4b_styled, hide_index=True, width="stretch")
+
+
+    # SQL 3 
+    with st.expander("SQL Queries 3 & Pie Charts - % Ratio", icon = ":material/clock_loader_60:"):
+
+        sql_query_percentage_category = get_sql_query_percentage_product_prices_category(value_total_sum)
+
+        sql_query_percentage_category_inc_add_serv = get_sql_query_percentage_product_prices_category_inc_add_serv(value_to_paid)
+
+        sql_query_percentage_add_services = get_sql_query_percentage_add_services(sum_additional_serv)
+
+
+        df_q5 = ps.sqldf(sql_query_percentage_category, locals())
+        df_q5b = ps.sqldf(sql_query_percentage_category_inc_add_serv, locals())
+        df_q6 = ps.sqldf(sql_query_percentage_add_services, locals())
+
+        # Data styling before visualization  -> 2 decimals
+        df_q5_styled = df_styling(df_q5)
+        df_q5b_styled = df_styling(df_q5b)
+        df_q6_styled = df_styling(df_q6)
+
+
+        # Data frames for Charts in SQL 3 expander
+        df_pie_sql3_1 = pd.DataFrame({
+
+            "Costs" : [
+                sum_price_gaming,
+                sum_price_mobile_phone,
+                sum_price_tablets,
+                sum_price_pc,
+                sum_price_tv,
+                sum_price_majapliances,
+                sum_price_househol
+                ],
+
+            "Category" : [
+                "Gaming",
+                "Mobile phones",
+                "Tablets",
+                "PC",
+                "TV",
+                "Major Appliances",
+                "Households"
+                ]
+            })
+        
+       
+        df_pie_sql3_2 = pd.DataFrame({
+
+            "Costs" : [
+                sum_price_gaming_addserv,
+                sum_price_mobphones_addserv,
+                sum_price_tablets_addserv,
+                sum_price_pc_addserv,
+                sum_price_tv_addserv,
+                sum_price_majappl_addserv,
+                sum_price_households_addserv
+                ],
+
+            "Category" : [
+                "Gaming",
+                "Mobile phones",
+                "Tablets",
+                "PC",
+                "TV"
+                ,"Major Appliances"
+                ,"Households"
+                ]
+            })
+
+      
+        df_pie_sql3_3 = pd.DataFrame({
+
+            "Costs" : [
+                ss_gaming,
+                ss_mobile,
+                ss_tablets,
+                ss_pc,
+                ss_tv,
+                ss_majapp,
+                ss_househlds
+                ],
+
+            "Category" : ["Gaming",
+                "Mobile phones",
+                "Tablets",
+                "PC",
+                "TV"
+                ,"Major Appliances"
+                ,"Households"
+                ]
+            })
+
+
+        
+        # ==== UI - Data visualization ====
+        ''
+        ''
+        st.write(f"- Currency: **{currency}**")
+        '' 
+        st.write(f"- No. of items: **{max_value_attribut}**")
+
+        '' 
+        st.write(f"- **(1) Percentage % ratio** of product costs per **Category**. From  total sum of products: **{value_total_sum:,.2f} {currency}** ")
+
+        st.dataframe(df_q5_styled, hide_index=True, width="stretch")
+        
+        ''
+        st.write(f"- **(2) Percentage % ratio** of product prices per **Category**. From  total sum of products: **{value_to_paid:,.2f} {currency}**, **including** additional services **{sum_additional_serv:,.2f} {currency}**.")
+
+        st.dataframe(df_q5b_styled, hide_index=True, width="stretch")
+
+        ''
+        st.write(f"- **(3) Percentage % ratio** of **additional services** per Category (**{sum_additional_serv:,.2f} {currency}**)")
+
+        st.dataframe(df_q6_styled, hide_index=True, width="stretch")   
+
+        # ==== UI - Charts visualization ====
+        ''
+        ''
+        col1, col2 = st.columns(2, gap="medium")
+
+
+        col1.plotly_chart(create_pie_chart(df_pie_sql3_1,"Category","Costs","(1) Ratio of product costs per Category:", True))
+        col2.plotly_chart(create_pie_chart(df_pie_sql3_3,"Category","Costs","(2) ...including add. services:", True))
+        col1.plotly_chart(create_pie_chart(df_pie_sql3_2,"Category","Costs","(3) Ratio of additional services per Category:", True))
+
+
+
+
+    # SQL 4
+    with st.expander("SQL Queries 4 - Average", icon = ":material/view_list:"):
+
+
+        df_q4 = ps.sqldf(sql_query_avg_price, locals())
+        df_q4b = ps.sqldf(sql_query_avg_price_with_add_serv, locals())
+        df_q4c = ps.sqldf(sql_query_avg_price_of_add_serv, locals())
+
+        # Data styling before visualization  -> 2 decimals
+        df_q4_styled = df_styling(df_q4)
+        df_q4b_styled = df_styling(df_q4b)
+        df_q4c_styled = df_styling(df_q4c)
+
+        # ==== UI Visualization ====
+        ''
+        ''
+        st.write(f"- Currency: **{currency}**")
+        '' 
+        st.write("- Tables show values **only** if there is more than 1 item/product in specific category -> **no. of products > 1**")
+        '' 
+        ''
+
+        st.write(f"- **Average price** in each product Category (Total price **{value_total_sum:,.2f} {currency}** - **without** additional services):")
+
+        st.dataframe(df_q4_styled, hide_index=True, width="stretch")
+
+        ''
+        ''
+        st.write(f"""
+        - **Average price including additional service price** in each product Category:
+            - Total price **{value_to_paid:,.2f} {currency}** - **with** additional services
+            - Δ delta = avg(Price with add. services)  - avg(Price without add. services)   
+            - if Δ delta is **0** -> there was no additional service purchased in the category  
         """)
+
+        st.dataframe(df_q4b_styled, hide_index=True, width="stretch")
+
         ''
-        submit_button_tab3 = st.button("Companies", width= "stretch", icon=":material/table:", key="key_submit_button_tab3")
+        ''
+        st.write(f"""
+        - **Average price of additional services:**
+            - count - no. of items having the type of service purchased
+            - sum - sum of costs
+            - average - average cost per item 
+        """)
+        st.dataframe(df_q4c_styled, hide_index=True, width="stretch")
+    
 
-        if submit_button_tab3:
-            # DB engine creation
-            db_engine = db_connection()
 
-            # Number of companies reqistered in DB
-            df_company_no = pd.read_sql(sql_query_number_companies, db_engine)
+    
+    # ==== UI - Data Visualization ====
+    ''
+    ''
+    ''
+    ''
+    st.write("##### Interactive table and charts:")
+
+
+    # Creation of unique values from lists -> purpose: filters
+    unique_value = data_table['Category'].unique()
+
+    unique_add_ser = data_table['Additional service'].unique()
+
+    # Creation of min and max values from lists to have start/end points of filters
+    min_value_price = data_table['Price'].min()
+    max_value_price = data_table['Price'].max()
+    
+    min_value_ads = data_table['Additional service price'].min()
+    max_value_ads = data_table['Additional service price'].max()
+
+
+
+    # Multiselect filter - Category
+    ''
+    filter_multiselect = st.multiselect(
+        "Select Category",
+        unique_value,
+        default = unique_value,
+        help = "Select category which you want to see. Multiple categories allowed"
+    )  
+
+   
+    if not len(filter_multiselect):
+        display_warning_multiselect()
+
+
+    
+    # Slider - price 
+    ''
+    from_price, to_price = st.slider(
+        "Filter Price",
+        min_value = min_value_price,
+        max_value = max_value_price,
+        value= [min_value_price, max_value_price],
+        step = 10.00,
+        help = "Select range of prices you want to see"
+    )
+
+
+
+    # Multiselect filter - Additional service
+    ''
+    ''
+    filter_multiselect_2 = st.multiselect(
+        "Select Additional service",
+        unique_add_ser,
+        default= unique_add_ser,
+        help = "Select additional service which you want to see. Multiple categories allowed"
+        )
+
+
+    if not len(filter_multiselect_2):
+        display_warning_multiselect()
+        
+    
+    
+    # Slider - price additional services
+    ''
+    from_price_ads, to_price_ads = st.slider(
+        "Filter Price of Additional Services",
+        min_value = min_value_ads,
+        max_value = max_value_ads,
+        value= [min_value_ads, max_value_ads],
+        step = 5.00,
+        help = "Select range of prices you want to see"
+    )
+    
+
+    
+    # Set of filters applied into the dataframe/table throught this part of code
+    filtered_data = data_table[
+    (data_table["Category"].isin(filter_multiselect)) & (data_table["Additional service"].isin(filter_multiselect_2))
+
+    & ((data_table["Price"] <= to_price)
+    & (data_table["Price"] >= from_price))
+
+    & ((data_table["Additional service price"] <= to_price_ads)
+    & (data_table["Additional service price"] >= from_price_ads))
+
+    ]
+    
+
+    # DF style formating prior data visualization - to have 2 decimals
+    df_filtered_styled = df_styling(filtered_data)
+
+    # Visualization of the table (where filters already applied)
+    ''
+    ''
+    data_table_2 = st.dataframe(df_filtered_styled, hide_index=True, width="stretch")
+    
+    # Plotly chart
+    with st.container(border=True):
+        st.plotly_chart(create_pie_chart(filtered_data,"Product","Price", "Costs - ratio of product prices", False ))
+     
+    # Bar chart
+    with st.container(border=True):
+        st.plotly_chart(create_bar_chart(filtered_data,"Product","Price", "Bar chart - Costs - ratio of product prices"))
+
+
+    # 15-June-25 - testuju
+    # Bar chart 2 -  Price + Additional service price
+    # It is important to have values in float!!! to be able to 'sum' them as part of visualizing in the chart
+    data_bar_2 = ({
+        "Product" : value_product_name_list,
+        "Price" : value_price_list_float,  #float is must 
+        "Category" : value_category_list, 
+        "Additional service" : add_service_full, 
+        "Additional service price" : add_ser_price_full_float #float is must 
+    })
+
+    ''
+    ''
+    ''
+    st.write("##### Static Charts:")
+
+    with st.container(border=True):
+        st.plotly_chart(create_bar_chart(data_bar_2,"Product",["Price","Additional service price"], "Bar chart - Ratio of price including extra costs for additional services"))
+
+
+    # v4.0 - new charts ---------------------------------------
+
+    data_pie_2 = pd.DataFrame({
+        "Costs" : [value_total_sum_fl,sum_adds_fl],
+        "Costs name" : ["Sum price","Sum additional services"],
+    })
+
+
+    data_pie_3 = pd.DataFrame({
+    "Costs" : [sum_pro_price_where_insurance,sum_price_insurance],
+    "Costs named" : ["Costs products","Costs Insurance"],
+    })
+
+
+    data_pie_4 = pd.DataFrame({
+    "Costs" : [sum_pro_price_where_ewarranty,sum_price_warranty],
+    "Costs names" : ["Costs products","Costs warranty"],
+    })
+
+    # ==== UI - Data Visualization ====
+    with st.container(border=True):
+        st.plotly_chart(create_pie_chart(data_pie_2,"Costs name","Costs","How much additional services increase the costs", False))
+        st.write(f"- Products costs: **{value_total_sum_fl:,.2f}** {currency}")
+        st.write(f"- Additional services costs: **{sum_adds_fl:,.2f}** {currency}")
+        st.write(f"- Summary:  **{(sum_adds_fl + value_total_sum_fl):,.2f}** {currency}")
+
+    col1, col2 = st.columns(2)
+
+    with col1.container(border=True):
+        st.write(create_pie_chart(data_pie_3,"Costs named","Costs","Costs Extended warranty", False))
+        st.write(f"- Products costs: **{sum_pro_price_where_insurance:,.2f}** {currency}")
+        st.write(f"- The insurance: **{sum_price_insurance:,.2f}** {currency}")
+        st.write(f"- Summary:  **{(sum_pro_price_where_insurance + sum_price_insurance):,.2f}** {currency}")
+
+
+    with col2.container(border=True):
+        st.write(create_pie_chart(data_pie_4, "Costs names", "Costs","Costs Extended warranty", False))
+        st.write(f"- Products costs: **{sum_pro_price_where_ewarranty:,.2f}** {currency}")
+        st.write(f"- The warranty: **{sum_price_warranty:,.2f}** {currency}")
+        st.write(f"- Summary:  **{(sum_pro_price_where_ewarranty + sum_price_warranty):,.2f}** {currency}")
+    
+    #----------------------------------------------------------------------------
+
+    # Final outcome for print - using SERVER time
+    st.write("------")
+    st.write("#### Download of .txt:")
+    st.write('''A short summary of the original XML invoice, including result of validation, date and some of the parsed data.''')
+
+    st.image("Pictures/V2_pictures/txt outcome_3.png")
+
+
+    # Time 
+    time_objects = time.localtime()
+    year, month, day, hour, minute, second, weekday, yearday, daylight = time_objects  
+
+    date_custom = str("Date: %02d-%02d-%04d" % (day,month,year))
+    time_custom = str("Time: %02d:%02d:%02d" % (hour,minute,second))
+    day_custom = str(("Mon","Tue","Wed","Thu","Fri","Sat","Sun") [weekday])
+    day_custom_2 = str("Day: "+ day_custom)
+    full_date_outcome = str(date_custom +" | " + day_custom_2 +" | " + time_custom )
+
+    final_outcome = (f"{full_date_outcome} | Validation: 1. {result_obj_outcome}, 2. {result_obj_outcome_services} | Receiver: {value_customer} | Price to pay (including extra services): {value_to_paid:,.2f} {currency}.")
+
+
+    file_name_fstring = f"Summary-{value_invoice_num}.txt"
+
+    ''
+    ''
+    ''
+    if st.download_button(
+        "Download",
+        data= final_outcome,
+        file_name= file_name_fstring,
+        icon = ":material/download:",
+        width="stretch"):
             
-            company_num = df_company_no['count'].iloc[0]
+        st.info("**DOWNLOAD WILL START IN FEW SECONDS**")
+    
+    st.write("-------")
+
+    #Closing button   
+    if st.button("Close Function 2", width="stretch", icon=":material/close:"):
+        close_function()
 
 
-            # Number of branches in DB - accross all country_xx tables
-            df_branch_num = pd.read_sql(sql_query_number_branches, db_engine)
-            
-            branch_num = df_branch_num['total_count'].iloc[0]
 
 
-            # Main query + DF styling
-            df = pd.read_sql(sql_query_company_overview, db_engine)
-
-            # Index
-            df = adjust_index(df)
-
-            # ==== UI data visualization ====
-            ''
-            st.write(f"""
-            - Number of companies: **{company_num}**
-            - Number of branches: **{branch_num}**
-            """)
-
-            ''
-            st.dataframe(df, width = "stretch", height=800)
-
-# Pokracovat s:
-
-# Celá funkce F8 -> Rozšířit kód o logování
-
-# Rozšířit DB o pobočky 
-# Fedex
-# Emirates skycargo
-# Lufthansa Cargo
-# OBB Rail crago (hroznej shit to hledat)
-# Metrans, ty se dobže hledaj
-# DB Cargo
