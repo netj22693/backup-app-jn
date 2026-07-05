@@ -349,7 +349,7 @@ def get_filtered_df_including_ui_filters(df:pd.DataFrame) -> pd.DataFrame:
 
     # Creation of unique values from lists -> purpose: filters
     unique_value = df['Category'].unique()
-    unique_value.sort()
+    unique_value = sorted(df["Category"].dropna().unique().tolist())
 
     # Multiselect filter - Category
     ''
@@ -388,7 +388,7 @@ def get_filtered_df_including_ui_filters(df:pd.DataFrame) -> pd.DataFrame:
     df_filtered = df[(df["Category"].isin(filter_multiselect_category))]
 
     unique_add_ser = df_filtered['Additional service'].unique()
-    unique_add_ser.sort()
+    unique_add_ser = sorted(df['Additional service'].dropna().unique().tolist())
    
     # Slider - price 
     ''
@@ -408,7 +408,7 @@ def get_filtered_df_including_ui_filters(df:pd.DataFrame) -> pd.DataFrame:
     ]
 
     unique_add_ser = df_filtered['Additional service'].unique()
-    unique_add_ser.sort()
+    unique_add_ser = sorted(df['Additional service'].dropna().unique().tolist())
 
     # Multiselect filter - Additional service
     ''
