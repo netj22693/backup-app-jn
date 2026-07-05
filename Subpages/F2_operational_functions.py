@@ -384,12 +384,7 @@ def get_filtered_df_including_ui_filters(df:pd.DataFrame) -> pd.DataFrame:
     if min_value_price == max_value_price:
         max_value_price = max_value_price + 1
 
-
-    df_filtered = df[(df["Category"].isin(filter_multiselect_category))]
-
-    unique_add_ser = df_filtered['Additional service'].unique()
-    unique_add_ser = sorted(df['Additional service'].dropna().unique().tolist())
-   
+ 
     # Slider - price 
     ''
     from_price, to_price = st.slider(
@@ -408,7 +403,7 @@ def get_filtered_df_including_ui_filters(df:pd.DataFrame) -> pd.DataFrame:
     ]
 
     unique_add_ser = df_filtered['Additional service'].unique()
-    unique_add_ser = sorted(df['Additional service'].dropna().unique().tolist())
+    unique_add_ser = sorted(df_filtered['Additional service'].dropna().unique().tolist())
 
     # Multiselect filter - Additional service
     ''
