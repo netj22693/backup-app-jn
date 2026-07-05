@@ -46,7 +46,7 @@ def xsd_not_passed():
     st.error("The uploaded XML doesn't follow XSD rules -> the XML is not valid for this application")
 
     with st.expander(
-        "Help",
+        "Help - XML is not valid",
         icon= ":material/help_outline:"
         ):
 
