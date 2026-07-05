@@ -5,7 +5,7 @@ import pandas as pd
 import math
 import pandasql as ps
 from Subpages.F2_expanders import show_expander_help, show_expander_help_validation_process
-from Subpages.F2_operational_functions import validate_xml_against_xsd, data_parsing_find, data_parsing_get, data_parsing_find_conditional, data_parsing_including_additional_services, create_pie_chart, df_styling, close_function, display_warning_multiselect, create_bar_chart, data_validation, data_validation_services, data_parsing_find_conditional_with_none_condition, get_utc_time_custom_string
+from Subpages.F2_operational_functions import validate_xml_against_xsd, data_parsing_find, data_parsing_get, data_parsing_find_conditional, data_parsing_including_additional_services, create_pie_chart, df_styling, close_function, display_warning_multiselect, create_bar_chart, data_validation, data_validation_services, data_parsing_find_conditional_with_none_condition, get_utc_time_custom_string, get_filtered_df_including_ui_filters
 from Subpages.F2_SQL_queries import get_sql_query_item_inc_add_service, get_sql_query_percentage_product_prices_category, get_sql_query_percentage_product_prices_category_inc_add_serv, get_sql_query_percentage_add_services, sql_query_no_items_product_category, sql_query_no_items_with_additional_service, sql_query_no_items_without_additional_service, sql_query_expensive_item, sql_query_cheapest_item, sql_query_avg_price, sql_query_avg_price_with_add_serv, sql_query_avg_price_of_add_serv
 
 
@@ -499,93 +499,11 @@ if object_from_upload is not None:
     ''
     st.write("##### Interactive table and charts:")
 
-
-    # Creation of unique values from lists -> purpose: filters
-    unique_value = data_table['Category'].unique()
-
-    unique_add_ser = data_table['Additional service'].unique()
-
-    # Creation of min and max values from lists to have start/end points of filters
-    min_value_price = data_table['Price'].min()
-    max_value_price = data_table['Price'].max()
-    
-    min_value_ads = data_table['Additional service price'].min()
-    max_value_ads = data_table['Additional service price'].max()
-
-
-
-    # Multiselect filter - Category
-    ''
-    filter_multiselect = st.multiselect(
-        "Select Category",
-        unique_value,
-        default = unique_value,
-        help = "Select category which you want to see. Multiple categories allowed"
-    )  
-
-   
-    if not len(filter_multiselect):
-        display_warning_multiselect()
-
-
-    
-    # Slider - price 
-    ''
-    from_price, to_price = st.slider(
-        "Filter Price",
-        min_value = min_value_price,
-        max_value = max_value_price,
-        value= [min_value_price, max_value_price],
-        step = 10.00,
-        help = "Select range of prices you want to see"
-    )
-
-
-
-    # Multiselect filter - Additional service
-    ''
-    ''
-    filter_multiselect_2 = st.multiselect(
-        "Select Additional service",
-        unique_add_ser,
-        default= unique_add_ser,
-        help = "Select additional service which you want to see. Multiple categories allowed"
-        )
-
-
-    if not len(filter_multiselect_2):
-        display_warning_multiselect()
-        
-    
-    
-    # Slider - price additional services
-    ''
-    from_price_ads, to_price_ads = st.slider(
-        "Filter Price of Additional Services",
-        min_value = min_value_ads,
-        max_value = max_value_ads,
-        value= [min_value_ads, max_value_ads],
-        step = 5.00,
-        help = "Select range of prices you want to see"
-    )
-    
-
-    
-    # Set of filters applied into the dataframe/table throught this part of code
-    filtered_data = data_table[
-    (data_table["Category"].isin(filter_multiselect)) & (data_table["Additional service"].isin(filter_multiselect_2))
-
-    & ((data_table["Price"] <= to_price)
-    & (data_table["Price"] >= from_price))
-
-    & ((data_table["Additional service price"] <= to_price_ads)
-    & (data_table["Additional service price"] >= from_price_ads))
-
-    ]
-    
+    # MAIN logic of filtering - Multiselects, Sliders, Filtering, Fallbacks. Including UI visualization
+    df_filtered = get_filtered_df_including_ui_filters(data_table)
 
     # DF style formating prior data visualization - to have 2 decimals
-    df_filtered_styled = df_styling(filtered_data)
+    df_filtered_styled = df_styling(df_filtered)
 
     # Visualization of the table (where filters already applied)
     ''
@@ -594,11 +512,11 @@ if object_from_upload is not None:
     
     # Plotly chart
     with st.container(border=True):
-        st.plotly_chart(create_pie_chart(filtered_data,"Product","Price", "Costs - ratio of product prices", False ))
+        st.plotly_chart(create_pie_chart(df_filtered,"Product","Price", "Costs - ratio of product prices", False ))
      
     # Bar chart
     with st.container(border=True):
-        st.plotly_chart(create_bar_chart(filtered_data,"Product","Price", "Bar chart - Costs - ratio of product prices"))
+        st.plotly_chart(create_bar_chart(df_filtered,"Product","Price", "Bar chart - Costs - ratio of product prices"))
 
 
     # 15-June-25 - testuju

@@ -336,3 +336,136 @@ def get_utc_time_custom_string() -> str:
     day_custom_2 = str("Day: "+ day_custom)
     
     return str(date_custom +" | " + day_custom_2 +" | " + time_custom + " UTC")
+
+
+# ====== Main filtering logic Multiselects, Sliders, dynamic DF =======
+def get_filtered_df_including_ui_filters(df:pd.DataFrame) -> pd.DataFrame:
+
+    '''
+    - Function including 4 widgets (2 multiselect + 2 sliders)
+    - Allowing to sequentially pass values based on filterinf from widget/filter 1 -> 4 from top to bottom -> dynamic values/widgets
+    - Including IF/ELSE statements/logic due to limitation of Streamlit st.multiselect() not having a parameter strictly restricting that at least 1 chip/option need to be always selected. Currently Streamlit allows 0 chips -> that's why this fallback logic was built to keep the rest of widgets/filters working and no crash  
+    '''
+
+    # Creation of unique values from lists -> purpose: filters
+    unique_value = df['Category'].unique()
+    unique_value.sort()
+
+    # Multiselect filter - Category
+    ''
+    filter_multiselect_category = st.multiselect(
+        "Select Category",
+        unique_value,
+        default = unique_value,
+        help = "Select category which you want to see. Multiple categories allowed"
+    )  
+
+    # This if/else statement is workarounf to st.multiselect() which has no parametr strictly having at least on 1 (chip) in the multiselect. In case that 0 chips -> this IF statement is triggered
+    if len(filter_multiselect_category) == 0:
+        display_warning_multiselect()
+
+        # IMPORTANT (!) - This returns 'zero-row DataFrame' -> keeps column names, but 0 rows -> this step keeps the other filters/widgets working as it is passing empty DF but existing DF.
+        df_filtered = df.iloc[0:0]  
+
+        min_value_price = 0.00
+        max_value_price = 1.00
+        min_value_ads = 0.00
+        max_value_ads = 1.00
+
+
+    else:
+        df_filtered = df[
+        (df["Category"].isin(filter_multiselect_category))]
+
+        min_value_price = df_filtered['Price'].min()
+        max_value_price = df_filtered['Price'].max()
+
+    # Fallback to keep Slider functioning in case of the same values (1 row in DF -> min and max is the same value -> slider needs different)
+    if min_value_price == max_value_price:
+        max_value_price = max_value_price + 1
+
+
+    df_filtered = df[(df["Category"].isin(filter_multiselect_category))]
+
+    unique_add_ser = df_filtered['Additional service'].unique()
+    unique_add_ser.sort()
+   
+    # Slider - price 
+    ''
+    from_price, to_price = st.slider(
+        "Filter Price",
+        min_value = min_value_price,
+        max_value = max_value_price,
+        value= [min_value_price, max_value_price],
+        step = 10.00,
+        help = "Select range of prices you want to see"
+    )
+
+
+    df_filtered = df[
+        (df["Category"].isin(filter_multiselect_category))
+        & ((df["Price"] <= to_price) & (df["Price"] >= from_price))
+    ]
+
+    unique_add_ser = df_filtered['Additional service'].unique()
+    unique_add_ser.sort()
+
+    # Multiselect filter - Additional service
+    ''
+    ''
+    filter_multiselect_add_serv = st.multiselect(
+        "Select Additional service",
+        unique_add_ser,
+        default= unique_add_ser,
+        help = "Select additional service which you want to see. Multiple categories allowed"
+        )
+
+    # This if/else statement is workarounf to st.multiselect() which has no parametr strictly having at least on 1 (chip) in the multiselect. In case that 0 chips -> this IF statement is triggered
+    if len(filter_multiselect_add_serv) == 0 or len(filter_multiselect_category) == 0:
+        display_warning_multiselect()
+
+        # IMPORTANT (!) - This returns 'zero-row DataFrame' -> keeps column names, but 0 rows -> this step keeps the other filters/widgets working as it is passing empty DF but existing DF.
+        df_filtered = df.iloc[0:0]
+
+        min_value_ads = 0.00
+        max_value_ads = 1.00
+    
+    else:
+        df_filtered = df[
+            (df["Category"].isin(filter_multiselect_category))
+            & ((df["Price"] <= to_price) & (df["Price"] >= from_price))
+            & (df["Additional service"].isin(filter_multiselect_add_serv))
+        ]
+        
+
+        min_value_ads = df_filtered['Additional service price'].min()
+        max_value_ads = df_filtered['Additional service price'].max()
+
+
+        # Fallback to keep Slider functioning in case of the same values (1 row in DF -> min and max is the same value -> slider needs different) 
+        if min_value_ads == max_value_ads:
+            max_value_ads = max_value_ads + 1 
+    
+
+
+    # Slider - price additional services
+    ''
+    from_price_ads, to_price_ads = st.slider(
+        "Filter Price of Additional Services",
+        min_value = min_value_ads,
+        max_value = max_value_ads,
+        value= [min_value_ads, max_value_ads],
+        step = 5.00,
+        help = "Select range of prices you want to see"
+    )
+    
+   
+    # Final set of filters applied into the dataframe/table throught this part of code
+    df_filtered = df[
+    (df["Category"].isin(filter_multiselect_category))
+    & ((df["Price"] <= to_price) & (df["Price"] >= from_price))
+    & (df["Additional service"].isin(filter_multiselect_add_serv))
+    & ((df["Additional service price"] <= to_price_ads) & (df["Additional service price"] >= from_price_ads))
+    ]
+
+    return df_filtered
