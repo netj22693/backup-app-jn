@@ -1,4 +1,5 @@
 import streamlit as st
+import time
 import pandas as pd
 from pandas.io.formats.style import Styler
 import plotly.express as px
@@ -110,7 +111,7 @@ def data_validation(total_sum: float, sum_price: float, currency: str) -> str:
     if result != 0:
 
         st.warning(f"""
-        **NOT PASSED**
+        Not passed
         - **Invoice summary** does **not** equal to **line values**
         - You can either continue with existing file or adjust the input file and upload it again.""")
 
@@ -122,7 +123,7 @@ def data_validation(total_sum: float, sum_price: float, currency: str) -> str:
 
 
     else:
-        st.success("**PASSED**")
+        st.success("Passed")
         return "Sum total - Passed"
 
 
@@ -134,7 +135,7 @@ def data_validation_services(value_total_sum_services_fl: float, sum_price_warra
     
     if result != 0:
         st.warning("""
-        **NOT PASSED**
+        Not passed
         - **Summary** does **not** equal to **line values**
         - You can either continue with existing file or adjust the input file and upload it again.""")
 
@@ -146,7 +147,7 @@ def data_validation_services(value_total_sum_services_fl: float, sum_price_warra
         return ("Services - Not passed")
 
     else:
-        st.success("**PASSED**")
+        st.success("Passed")
         return "Services - Passed"
 
 
@@ -190,13 +191,13 @@ def data_parsing_find_conditional(root: Element, findall_value: str, find_value:
         condition = a.find(find_value).text
 
         if condition == condition_type:
-            d = a.find(find_value_after_condition).text
-            c.append(d)
+            b = a.find(find_value_after_condition).text
+            c.append(b)
 
     return c
 
 
-def data_parsing_including_additional_services(root: Element, findall_value: str,find_value: str, condition_type: str, find_value_after_condition: str, find_value_if_not_none: str) -> float:
+def data_parsing_including_additional_services(root: Element, findall_value: str, find_value: str, condition_type: str, find_value_after_condition: str, find_value_if_not_none: str) -> float:
 
     b = []
     for a in root.findall(findall_value):
@@ -216,6 +217,27 @@ def data_parsing_including_additional_services(root: Element, findall_value: str
 
     return b
 
+def data_parsing_find_conditional_with_none_condition(root: Element, findall_value: str, find_value: str) -> float:
+
+    c = []
+    for a in root.findall(findall_value):
+        condition = a.find(find_value).text
+
+        # v5.3 - extended logic
+        if condition in ['extended warranty','insurance']:
+            b = a.find('additional_service/service_price').text
+            c.append(b)
+        
+        # v5.3 - specifically this part is important to not parse value in case that <service_type> 'None' but <service_price> 999.99 (with value) -> this is the anti-pattern which this mechanism prevents -> 
+        # if 'None' it ignors a value but always appends 0.00 to this list
+        elif condition == 'None':
+            c.append(0.00)
+        
+        # Note: XSD definition allows only the 'value' from upper conditions, if different, such XML should not pass validation to the parsing step at all
+        else:
+            print("Data parsing issue: This should have been stopped by XSD")
+
+    return c
 
 # ======= Charts ======
 
@@ -293,3 +315,24 @@ def df_styling(df: pd.DataFrame) -> Styler:
 def display_warning_multiselect():
 
     st.warning("Select at lease 1 category to see overview table and charts")
+
+
+# ======= UTC time ======
+def get_utc_time_custom_string() -> str:
+
+    utc = time.gmtime()
+
+    year = utc.tm_year
+    month = utc.tm_mon
+    day = utc.tm_mday
+    hour = utc.tm_hour
+    minute = utc.tm_min
+    second = utc.tm_sec  
+    weekday = utc.tm_wday
+
+    date_custom = str("Date: %02d-%02d-%04d" % (day,month,year))
+    time_custom = str("Time: %02d:%02d:%02d" % (hour,minute,second))
+    day_custom = str(("Mon","Tue","Wed","Thu","Fri","Sat","Sun") [weekday])
+    day_custom_2 = str("Day: "+ day_custom)
+    
+    return str(date_custom +" | " + day_custom_2 +" | " + time_custom + " UTC")

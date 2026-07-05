@@ -5,7 +5,7 @@ import pandas as pd
 import math
 import pandasql as ps
 from Subpages.F2_expanders import show_expander_help, show_expander_help_validation_process
-from Subpages.F2_operational_functions import validate_xml_against_xsd, data_parsing_find, data_parsing_get, data_parsing_find_conditional, data_parsing_including_additional_services, create_pie_chart, df_styling, close_function, display_warning_multiselect, create_bar_chart, data_validation, data_validation_services
+from Subpages.F2_operational_functions import validate_xml_against_xsd, data_parsing_find, data_parsing_get, data_parsing_find_conditional, data_parsing_including_additional_services, create_pie_chart, df_styling, close_function, display_warning_multiselect, create_bar_chart, data_validation, data_validation_services, data_parsing_find_conditional_with_none_condition, get_utc_time_custom_string
 from Subpages.F2_SQL_queries import get_sql_query_item_inc_add_service, get_sql_query_percentage_product_prices_category, get_sql_query_percentage_product_prices_category_inc_add_serv, get_sql_query_percentage_add_services, sql_query_no_items_product_category, sql_query_no_items_with_additional_service, sql_query_no_items_without_additional_service, sql_query_expensive_item, sql_query_cheapest_item, sql_query_avg_price, sql_query_avg_price_with_add_serv, sql_query_avg_price_of_add_serv
 
 
@@ -75,32 +75,13 @@ if object_from_upload is not None:
 
     #Extra parsing for charts
     # Type of additional service <additional_service> - Including 'None'
-    add_service_full = []
-    for add_ser_item in root.findall('detail'):
-        add_service = add_ser_item.find('additional_service/service_type').text
-        add_service = add_service.capitalize()
-        add_service_full.append(add_service)
+    add_service_full = data_parsing_find(root,'detail','additional_service/service_type', False, True )
+
+    add_service_full = list(map(str.capitalize, add_service_full))
+
 
     # Prices full - including '0.00' for None values
-    add_ser_price_full = []
-    for service_type in root.findall('detail'):
-        condition_service_type = service_type.find('additional_service/service_type').text
-
-        # v5.3 - extended logic
-        if condition_service_type == 'extended warranty':
-            service_price = service_type.find('additional_service/service_price').text
-            add_ser_price_full.append(service_price)
-
-        if condition_service_type == 'insurance':
-            service_price = service_type.find('additional_service/service_price').text
-            add_ser_price_full.append(service_price)
-        
-        # v5.3 - specifically this part is important to not parse value in case that <service_type> 'none' but <service_price> 999.99 (with value) -> this is the anti-pattern which this mechanism prevents -> 
-        # if 'None' it ignors a value but always appends 0.00 to this list
-        if condition_service_type == 'None':
-            add_ser_price_full.append(0.00)
-
-
+    add_ser_price_full = data_parsing_find_conditional_with_none_condition(root,'detail','additional_service/service_type')
 
 
     # Extra parsing for charts in SQL 3 expander  - NOT including add.services
@@ -188,7 +169,7 @@ if object_from_upload is not None:
     # ==== UI ====
 
     # Notification to appear on the screen when all parsing steps successfully done
-    st.success("**UPLOAD COMPLETE**")
+    st.success("Upload complete")
 
     # Validation if DETAIL line sum matches HEADER value 
     # <total_sum>
@@ -683,28 +664,21 @@ if object_from_upload is not None:
     
     #----------------------------------------------------------------------------
 
-    # Final outcome for print - using SERVER time
+    # Time + creation of strings for .txt file
+    full_date_outcome = get_utc_time_custom_string()
+
+    final_outcome = (f"{full_date_outcome} | Validation: 1. {result_obj_outcome}, 2. {result_obj_outcome_services} | Receiver: {value_customer} | Price to pay (including extra services): {value_to_paid:,.2f} {currency}.")
+
+    file_name_fstring = f"Summary-{value_invoice_num}.txt"
+
+
+
+    # ===== UI Download txt file =====
     st.write("------")
     st.write("#### Download of .txt:")
     st.write('''A short summary of the original XML invoice, including result of validation, date and some of the parsed data.''')
 
     st.image("Pictures/V2_pictures/txt outcome_3.png")
-
-
-    # Time 
-    time_objects = time.localtime()
-    year, month, day, hour, minute, second, weekday, yearday, daylight = time_objects  
-
-    date_custom = str("Date: %02d-%02d-%04d" % (day,month,year))
-    time_custom = str("Time: %02d:%02d:%02d" % (hour,minute,second))
-    day_custom = str(("Mon","Tue","Wed","Thu","Fri","Sat","Sun") [weekday])
-    day_custom_2 = str("Day: "+ day_custom)
-    full_date_outcome = str(date_custom +" | " + day_custom_2 +" | " + time_custom )
-
-    final_outcome = (f"{full_date_outcome} | Validation: 1. {result_obj_outcome}, 2. {result_obj_outcome_services} | Receiver: {value_customer} | Price to pay (including extra services): {value_to_paid:,.2f} {currency}.")
-
-
-    file_name_fstring = f"Summary-{value_invoice_num}.txt"
 
     ''
     ''
@@ -716,7 +690,7 @@ if object_from_upload is not None:
         icon = ":material/download:",
         width="stretch"):
             
-        st.info("**DOWNLOAD WILL START IN FEW SECONDS**")
+        st.info("Download complete")
     
     st.write("-------")
 
