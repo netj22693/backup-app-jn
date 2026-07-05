@@ -96,7 +96,7 @@ https://zipcodestack.com/
 ''
 ''
 # Expander API 2 JSON 
-with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/help:"):
+with st.expander("API JSON structure - Zipcodestack.com", icon= ":material/help:"):
 
 
 	''
