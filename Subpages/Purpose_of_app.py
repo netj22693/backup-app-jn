@@ -271,6 +271,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 3:
+		- **v64.9** - F3 - Major code refactoring & clean up - 06-July-2026
 		- **v63.1** - F3B - function extended by Analytics + code refactoring - 16-June-2026
 		- **v52.3** - Function description extended by Video Guide - 03-Dec-2025
 		- **v52.2** - New DB schema - SQL queries refactored - 01-Dec-2025

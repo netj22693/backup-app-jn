@@ -1,28 +1,28 @@
 {
     "header": {
-        "order_number": "172",
-        "customer": "Antonin Novotny",
-        "invoice_number": "INV-010697",
-        "date": "2026-03-16",
+        "order_number": "194",
+        "customer": "sycx",
+        "invoice_number": "INV-194",
+        "date": "2026-07-06",
         "price": {
-            "total_sum": 465.21,
+            "total_sum": 12.17,
             "currency": "US dollar"
         }
     },
     "detail": {
-        "category": "Gaming",
-        "product_name": "Playstation 5 Pro",
-        "price_amount": 399.99,
+        "category": "TV",
+        "product_name": "\\ccx",
+        "price_amount": 10.0,
         "additional_service": {
-            "service": "Y",
-            "service_type": "insurance",
-            "service_price": 60.0
+            "service": "N",
+            "service_type": "None",
+            "service_price": 0.0
         }
     },
     "transportation": {
-        "transporter": "Fedex",
-        "country": "Slovakia",
-        "size": "medium",
-        "transport_price": 5.22
+        "transporter": "DHL",
+        "country": "Czech Republic",
+        "size": "small",
+        "transport_price": 2.17
     }
 }

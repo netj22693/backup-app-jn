@@ -1,80 +1,10 @@
 import streamlit as st
 import xml.etree.ElementTree as ET
-import string
-import random
-import time
-import json
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float
-from sqlalchemy.orm import declarative_base, Session
-import pandas as pd
+from Subpages.F3_operational_functions import create_invoice_number, get_utc_time_custom_string,connection_db, mapping_additional_service, mapping_additional_service_into_field, reset, get_transport_price, mapping_country_to_table, mapping_currency_for_query, create_order_num, insert_db_not_complete, process_done, mapping_category, mapping_country, mapping_currency, mapping_extra_service, mapping_file_format, mapping_size, mapping_transport_company, insert_into_db, create_json_file, create_xml_file
 
 
 
-
-# ================ Functions defined =========================
-
-# Function for pretty print of XML elements
-def prettify(element, indent='  '):
-    queue = [(0, element)]  # (level, element)
-    while queue:
-        level, element = queue.pop(0)
-        children = [(level + 1, child) for child in list(element)]
-        if children:
-            element.text = '\n' + indent * (level+1)  # for child open
-        if queue:
-            element.tail = '\n' + indent * queue[0][0]  # for sibling open
-        else:
-            element.tail = '\n' + indent * (level-1)  # for parent close
-        queue[0:0] = children  # prepend so children come before siblings
-
-
-
-# Function for generating random 6 digits for invoice number
-def id_generator(size=6, chars=string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
-
-# a = id_generator()
-# invoice_number_generated = 'INV-' + a
-
-# Function for generating random 12 digits for invoice number
-# def order_generator(size=5, chars=string.digits):
-#     return ''.join(random.choice(chars) for _ in range(size))
-
-# order_num_generated = order_generator()
-
-
-
-# Generation of date for <date> element
-now = time.localtime()
-
-date_input = time.strftime("%Y-%m-%d", now)
-
-
-@st.dialog("Error: DB not connected")
-def db_connection_fail():
-
-    st.warning("Application is not able to establish connection with DB server -> **This invoice was not saved into DB**")
-    st.stop()
-
-
-def connection_db():
-    # Load secrets
-    password = st.secrets["neon"]["password"]
-    endpoint = st.secrets["neon"]["endpoint"]
-
-    # connection string
-    try: 
-        conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.gwc.azure.neon.tech/neondb?sslmode=require"
-
-        engine = create_engine(conn_string)
-        return engine
-
-    except:
-        db_connection_fail()
-
-
-
-# ================ Application Screen - INPUT Buttons ========================
+# ================ UI input widgets ========================
 st.write("# Delivery details:")
 ''
 
@@ -201,7 +131,6 @@ with st.expander("Transportation", icon = ":material/directions_bus:"):
 # Conversion between formats -> due to later mapping into message structures
 # this rounding to 2 decimals avoids bugs in case that the input will be having more than 2 decimals. Case: User MANUALY enters number example 20.7777777 -> automatically gets rounded
 price = round(price, 2)
-price_str = str(price)
 price_fl = float(price)
 price_fl = float("{:.2f}".format(price_fl))
 
@@ -209,76 +138,16 @@ price_fl = float("{:.2f}".format(price_fl))
 
 # =============== Logic for additional service (selected by user on screen) =======
 
-# def() for making a string object
-def fun_add_service_1(option):
-    
-    if option == 'No additional service':
-        return 'None'
-
-    elif option == 'Insurance':
-        return 'insurance'
-    
-    elif option == 'Extended warranty':
-        return 'extended warranty'
-
-# translation of what was selected from user input into object using def()
-service_type_fn = fun_add_service_1(add_service_select)
-
-# def() for calculation of predefined costs based on price and add. service from user inputs
-def fun_add_service_2(option, price):
-    
-    if option == 'No additional service':
-        return 0.00
-
-    elif option == 'Insurance':
-        ins = price * 0.15
-        #ins = str(ins)
-        return ins
-    
-    elif option == 'Extended warranty':
-        extv = price * 0.1
-        #extv = str(extv)
-        return extv
-
 # creation of objects /change of data types
-service_price_fn = fun_add_service_2(add_service_select, price)
+service_type_fn , service_price_fn = mapping_additional_service(add_service_select, price)
 service_price_fn = round(service_price_fn, 2)
-service_price_fn_str = str(service_price_fn)
 service_price_fl = float(service_price_fn)
 
 
-# def() for transfering user input into field in XML/JSON
-def fun_add_service_3(option):
-    
-    if option == 'No additional service':
-        return 'N'
+# def() for transfering user input into field in XML/JSON    
+service_fn = mapping_additional_service_into_field(add_service_select)
 
-    else:
-        return 'Y'
-       
-
-service_fn = fun_add_service_3(add_service_select)
-
-# ==================== User screen =================================
-
-
-
-# Clear of inputs - Reset button
-def reset():
-    st.session_state["k_customer"] = None
-    st.session_state["k_product"] = None
-    st.session_state["k_category"] = None
-    st.session_state["k_currency"] = None
-    st.session_state["k_price"] = 0.00
-    st.session_state["k_add_service"] = "No additional service"
-    st.session_state["k_country"] = None
-    st.session_state["k_transp"] = None
-    st.session_state["k_size"] = None
-
-
-
-# Submit button
-
+# ==================== UI Submit button =================================
 ''
 ''
 if  st.button(
@@ -295,91 +164,122 @@ if  st.button(
         st.warning("**Not all inputs provided** - please check, fill in and then push the **Submit** button again.")
 
 
-    else:
-        a = id_generator()
-        invoice_number_generated = 'INV-' + a
-
-        def get_transport_price(engine, currency, c_code, size, company):
-            
-            query = f"""
-            SELECT {currency} 
-                FROM shared.transport_company e
-                INNER JOIN transport.country_{c_code} x ON (e.comp_id = x.c_comp_id)
-                INNER JOIN shared.parcel_size f ON (x.size = f.size_id)
-                WHERE
-                e.name = '{company}' AND
-                f.name = '{size}'
-            """
-
-            df_query_result = pd.read_sql(query, engine)
-            query_result = df_query_result[f'{currency}'].iloc[0]
-
-            return query_result
-        
-        def make_order_num(engine):
-
-            query = f"""
-            SELECT MAX(order_number) AS order_number
-            FROM billing.invoice
-            """
-
-            df_query_result = pd.read_sql(query, engine)
-
-            query_result = df_query_result['order_number'].iloc[0]
-            
-            # Take the last existing in DB (the highest) + 1 -> next available number
-            next_order_num = query_result + 1
-            next_order_num = str(next_order_num)
-
-            return next_order_num
-
-            
-        
-        def transform_currency_for_query(currency):
-
-            mapping = {
-                "euro": "euro",
-                "US dollar": "us_dollar",
-                "Kč": "koruna"
-            }
-
-            return mapping.get(currency)      
-
-
-
-        def transform_country_to_code(country):
-
-            mapping = {
-                "Czech Republic": "cz",
-                "Slovakia": "sk",
-            }
-
-            return mapping.get(country) 
-
-
-
+    else:      
         db_engine = connection_db()
 
-        currency_query = transform_currency_for_query(currency_selb)
+        currency_query = mapping_currency_for_query(currency_selb)
 
-        country_code = transform_country_to_code(city_selb)
+        country_table = mapping_country_to_table(city_selb)
 
-        calc_transport_price = get_transport_price(db_engine, currency_query, country_code, size_selb, transport_co_selb)
+        calc_transport_price = get_transport_price(db_engine, currency_query, country_table, size_selb, transport_co_selb)
 
-        order_num_generated = make_order_num(db_engine)
+        order_num_generated = create_order_num(db_engine)
 
+        invoice_number_generated = create_invoice_number(order_num_generated)
 
-        
+        date_input = get_utc_time_custom_string()
+
+   
         # Calculation of final price 
         # important to keep the calculation after SUBMIT button, if not TypeError: unsupported operand type(s) for +: 'float' and 'NoneType'
         final_price_fl = price + calc_transport_price + service_price_fn
         final_price_fl = round(final_price_fl, 2)
-        final_price_fl_str = str(final_price_fl)
+
         
+        # ===== XML and JSON creation -> RAW data to be passed builder functions =====
+
+        data_raw = {
+            # STR
+            "order_number" : order_num_generated,
+            # STR
+            "customer" : customer_input,
+            # STR
+            "invoice_number" : invoice_number_generated,
+            # STR
+            "date" : date_input,
+            # FLOAT
+            "total_sum" : final_price_fl,
+            # STR
+            "currency" : currency_selb,
+            # STR
+            "category" : category_selb,
+            # STR
+            "product_name" : product_name_inp,
+            # FLOAT
+            "price_amount" : price_fl,
+            # STR
+            "service" : service_fn,
+            # STR
+            "service_type" : service_type_fn,
+            # FLOAT
+            "service_price" : service_price_fl,
+            # STR
+            "transporter" : transport_co_selb,
+            # STR
+            "country" : city_selb,
+            # STR
+            "size" : size_selb,
+            # FLOAT
+            "transport_price" : calc_transport_price
+        }
+
+
+        # File names creation
+        file_name_xml_fstring = f"{invoice_number_generated}.xml"
+        file_name_json_fstring = f"{invoice_number_generated}.json"
+ 
+
+        # Mapping for DB insert purposes (to follow the ERD / Relation design principle)
+        mapped_category = mapping_category(category_selb)
+        mapped_extra_service, mapped_extra_service_bool = mapping_extra_service(add_service_select)
+        mapped_country = mapping_country(city_selb)
+        mapped_tr_company = mapping_transport_company(transport_co_selb)
+        mapped_size = mapping_size(size_selb)
+        mapped_currency = mapping_currency(currency_selb)
+
+
+        # Data to be inserted to DB
+        data_for_insert = {
+        "order_number": order_num_generated,   
+        "date": date_input,
+        "customer": customer_input,   
+        "category": mapped_category,       
+        "product_name": product_name_inp,
+        "product_price": price_fl,
+        "extra_service": mapped_extra_service_bool,           
+        "extra_service_type": mapped_extra_service,
+        "extra_service_price": service_price_fn,
+        "country": mapped_country,
+        "tr_company": mapped_tr_company,
+        "tr_price": float(calc_transport_price),
+        "parcel_size": mapped_size,
+        "total_price": float(final_price_fl),
+        "currency": mapped_currency,
+        # + "file_format": mapped_file_format - by which this is extended bellow, once one of download buttons pushed
+        }
+           
+                   
+        def on_download_click(file_format):
+
+            mapped_file_format = mapping_file_format(file_format)
+
+            data_for_insert.update({"file_format": mapped_file_format})
+
+            try:
+                insert_into_db(db_engine, data_for_insert)
+                process_done(order_num_generated)
+
+            except Exception as e:
+                print(f"Insert failed: {e}")
+                insert_db_not_complete()
+        
+
+        # ================= UI - DOWNLOAD + FINALIZTION OF THE PROCESS ===========
         st.write("#### Summary of your order:")
 
         st.write(f" - Customer name: **{customer_input}**")
         st.write(f" - Order number: **{order_num_generated}**")
+        st.write(f" - Invoice number: **{invoice_number_generated}**")
         ''
         st.write(f" - Product name: **{product_name_inp}**")
         st.write(f" - Category: **{category_selb}**")
@@ -403,345 +303,28 @@ if  st.button(
                 - If change of data needed:
                     - Go up > Change data > Push Submit button again""")
         
-        # Change of data type
-        calc_transport_price_str = str(calc_transport_price)
-        
-        
-        # ================ XML and JSON creation =================================
-        # XML structure build
-        xml_doc = ET.Element("invoice")
-        header = ET.SubElement(xml_doc, 'header')
-        order_number = ET.SubElement(header, 'order_number').text = order_num_generated
-        customer = ET.SubElement(header, 'customer').text = customer_input
-        invoice_number = ET.SubElement(header, 'invoice_number').text = invoice_number_generated
-        date = ET.SubElement(header, 'date').text = date_input
-        price = ET.SubElement(header, 'price')
-        total_sum = ET.SubElement(price, 'total_sum').text = final_price_fl_str
-        #total_sum_services = ET.SubElement(price, 'total_sum_services').text = service_price_fn
-        currency = ET.SubElement(price, 'currency').text = currency_selb
-
-        detail = ET.SubElement(xml_doc, 'detail')
-        category= ET.SubElement(detail, 'category').text = category_selb
-        product_name = ET.SubElement(detail, 'product_name').text = product_name_inp
-        price_amount = ET.SubElement(detail, 'price_amount').text = price_str
-        addtional_service = ET.SubElement(detail, 'additional_service')
-        service = ET.SubElement(addtional_service, 'service'). text = service_fn
-        service_type = ET.SubElement(addtional_service, 'service_type').text = service_type_fn
-        service_price = ET.SubElement(addtional_service, 'service_price').text = service_price_fn_str
-
-        transportation = ET.SubElement(xml_doc, 'transportation')
-        transporter = ET.SubElement(transportation, 'transporter').text = transport_co_selb
-        country = ET.SubElement(transportation, 'country').text = city_selb
-        size = ET.SubElement(transportation, 'size').text = size_selb
-        transport_price = ET.SubElement(transportation, 'transport_price').text = calc_transport_price_str
-
-        # Calling of the pretty print function to put the XML into nice shape (based on nesting)
-        prettify(xml_doc)
-
-        tree = ET.ElementTree(xml_doc)
-
-        # xml_declaration=Tru -> generuje XML prolog
-        tree.write('Data/Function_3_do NOT delete.xml', encoding='UTF-8', xml_declaration=True)
-
-
-        # JSON structure build
-        data_json = {
-        "header" : {
-            "order_number" : order_num_generated,
-            "customer": customer_input,
-            "invoice_number": invoice_number_generated,
-            "date": date_input,
-            "price": {
-                "total_sum": final_price_fl,
-                "currency": currency_selb
-            }
-        },
-        "detail": {
-            "category": category_selb,
-            "product_name": product_name_inp,
-            "price_amount": price_fl,
-            "additional_service": {
-                "service": service_fn,
-                "service_type": service_type_fn,
-                "service_price": service_price_fl
-            }
-        },
-        "transportation": {
-            "transporter": transport_co_selb,
-            "country": city_selb,
-            "size": size_selb,
-            "transport_price": calc_transport_price
-        }
-        }
-
-        json_object = json.dumps(data_json, indent=4)
-
-        with open("Data/Function_3_do NOT delete - JSON.json", "w") as outfile:
-            outfile.write(json_object)
-            outfile.close()
-
-
-        # File names creation
-        file_name_xml_fstring = f"{invoice_number_generated}.xml"
-        file_name_json_fstring = f"{invoice_number_generated}.json"
-
-
-        # ================ Process complete function and not complete =================
-
-        def final_dialogs_goto():    
-            ''
-            st.write("**Go to:**")
-
-            st.page_link(
-                label = "Function 3B - Invoice visibility",
-                page="Subpages/F3b_FUNCTION_invoice_visibility.py",
-                help="The button will redirect to the relevant page within this app.",
-                use_container_width=True,
-                icon=":material/play_circle:",
-                )
-            
-            st.page_link(
-                label = "Function 4 - Mapping",
-                page="Subpages/F4_FUNCTION_translation_mapping.py",
-                help="The button will redirect to the relevant page within this app.",
-                use_container_width=True,
-                icon=":material/play_circle:",
-                )
-
-            st.page_link(
-                label = "Function 5 - Description - API",
-                page="Subpages/F5_description_API.py",
-                help="The button will redirect to the relevant page within this app.",
-                use_container_width=True,
-                icon=":material/code:",
-                )
-            
-            st.page_link(
-                label = "Home page",
-                page="Subpages/Purpose_of_app.py",
-                help="The button will redirect to the relevant page within this app.",
-                use_container_width=True,
-                icon=":material/home:",
-                )
-
-        @st.dialog("Complete!")
-        def process_done():
-            st.write(f"""
-                - File was created and downloaded -> :green[**Complete**]
-                - Order **{order_number}** was inserted into DB -> :green[**Complete**]
-                """)
-            ''
-            final_dialogs_goto()
-
-
-        @st.dialog("Insert into DB failed") 
-        def insert_db_not_complete():
-            st.write("""
-                - File was created and downloaded -> :green[**Complete**]
-                - But Order **was not** inserted into DB -> :red[**Technical issue**]
-                """)
-            ''
-            final_dialogs_goto()
-
-
-        # ================= DOWNLOAD + FINALIZTION OF THE PROCESS ===========
         ''
-        st.write("###### Download:")
-
-        # Functions for mapping
-        def mapping_category(input):
-
-            mapping = {
-                "PC" : 1,
-                "TV" : 2,
-                "Gaming" : 3,
-                "Mobile phones" : 4,
-                "Tablets" : 5,
-                "Major Appliances" : 6,
-                "Households" : 7
-            }
-
-            return mapping.get(input) 
-
-        def mapping_category(input):
-
-            mapping = {
-                "PC" : 1,
-                "TV" : 2,
-                "Gaming" : 3,
-                "Mobile phones" : 4,
-                "Tablets" : 5,
-                "Major Appliances" : 6,
-                "Households" : 7
-            }
-            return mapping.get(input) 
+        st.write("###### Download:")  
 
 
-        def mapping_extra_service(input):
-
-            mapping = {
-                "No additional service" : 1,
-                "Insurance" : 2,
-                "Extended warranty" : 3
-            }
-
-            result = mapping.get(input)
-
-            if result != 1:
-                result_bool = True
-            else:
-                result_bool = False
-
-            return result, result_bool
-
-
-        def mapping_country(input):
-
-            mapping = {
-                "Czech Republic" : 1,
-                "Slovakia" : 2
-            }
-            return mapping.get(input) 
-
-        def mapping_transport_company(input):
-
-            mapping = {
-                "DHL" : 1,
-                "Fedex" : 2
-            }
-            return mapping.get(input) 
-        
-        def mapping_size(input):
-
-            mapping = {
-                "small" : "s",
-                "medium" : "m",
-                "large" : "l",
-            }
-            return mapping.get(input) 
-        
-        def mapping_currency(input):
-
-            mapping = {
-                "euro" : 1,
-                "US dollar" : 2,
-                "Kč" : 3,
-            }
-            return mapping.get(input) 
-
-
-        def mapping_file_format(input):
-
-            mapping = {
-                "XML" : 1,
-                "JSON" : 2,
-            }
-            return mapping.get(input) 
-        
-        
-
-        # Mapping for DB insert purposes (to follow the ERD / Relation design principle)
-        mapped_category = mapping_category(category_selb)
-        mapped_extra_service, mapped_extra_service_bool = mapping_extra_service(add_service_select)
-        mapped_country = mapping_country(city_selb)
-        mapped_tr_company = mapping_transport_company(transport_co_selb)
-        mapped_size = mapping_size(size_selb)
-        mapped_currency = mapping_currency(currency_selb)
-
-
-        # Data to be inserted to DB
-        data_for_insert = {
-        "order_number": order_number,   
-        "date": date_input,
-        "customer": customer_input,   
-        "category": mapped_category,       
-        "product_name": product_name_inp,
-        "product_price": price_fl,
-        "extra_service": mapped_extra_service_bool,           
-        "extra_service_type": mapped_extra_service,
-        "extra_service_price": service_price_fn,
-        "country": mapped_country,
-        "tr_company": mapped_tr_company,
-        "tr_price": transport_price,
-        "parcel_size": mapped_size,
-        "total_price": float(final_price_fl),
-        "currency": mapped_currency,
-        # + "file_format": mapped_file_format - by which this is extended bellow, once one of download buttons pushed
-        }
-
-
-        def sql_insert_function(engine, data):
-            
-            print(data_for_insert)
-
-            Base = declarative_base()
-
-            class Invoice(Base):
-                __tablename__ = "invoice"
-                __table_args__ = {"schema": "billing"}
-
-                record_id = Column(Integer, primary_key=True)
-                order_number = Column(String)
-                date = Column(String)
-                customer = Column(String)
-                category = Column(String)
-                product_name = Column(String)
-                product_price = Column(Float)
-                extra_service = Column(Boolean)
-                extra_service_type = Column(String)
-                extra_service_price = Column(String)
-                country = Column(String)
-                tr_company = Column(String)
-                tr_price = Column(Float)
-                parcel_size = Column(String)
-                total_price = Column(Float)
-                currency = Column(String)
-                file_format = Column(String)
-
-            with Session(engine) as session:
-                new_invoice = Invoice(**data)
-                session.add(new_invoice)
-                session.commit()
-            
-
-            
-            
-        def on_download_click(file_format):
-
-            print(file_format)
-            mapped_file_format = mapping_file_format(file_format)
-
-            data_for_insert.update({"file_format": mapped_file_format})
-
-            try:
-                sql_insert_function(db_engine, data_for_insert)
-                process_done()
-
-            except Exception as e:
-                print(f"Insert failed: {e}")
-                insert_db_not_complete()
-
-        with open('Data/Function_3_do NOT delete.xml', 'rb') as f:
-
-            st.download_button(
-                'Download - XML',
-                f,
-                file_name=file_name_xml_fstring,
-                use_container_width=True,
-                icon=":material/download:",
-                on_click=lambda: on_download_click("XML")
-            )
+        st.download_button(
+            'Download - XML',
+            create_xml_file(data_raw),
+            file_name=file_name_xml_fstring,
+            use_container_width=True,
+            icon=":material/download:",
+            on_click=lambda: on_download_click("XML")
+        )
 
         
-        with open('Data/Function_3_do NOT delete - JSON.json') as j:
-
-            st.download_button(
-                'Download - JSON',
-                j, file_name = file_name_json_fstring,
-                use_container_width=True,
-                icon = ":material/download:",
-                on_click=lambda: on_download_click("JSON")
-            )
+        st.download_button(
+            'Download - JSON',
+            create_json_file(data_raw), 
+            file_name = file_name_json_fstring,
+            use_container_width=True,
+            icon = ":material/download:",
+            on_click=lambda: on_download_click("JSON")
+        )
 
             
                 

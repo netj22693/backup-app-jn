@@ -1,28 +1,28 @@
 {
     "header": {
-        "order_number": "173",
-        "customer": "MNO s.r.o.",
-        "invoice_number": "INV-192562",
-        "date": "2026-05-07",
+        "order_number": "192",
+        "customer": "ABC s.r.o",
+        "invoice_number": "INV-205245",
+        "date": "2026-07-06",
         "price": {
-            "total_sum": 16168.5,
+            "total_sum": 6619.0,
             "currency": "K\u010d"
         }
     },
     "detail": {
-        "category": "PC",
-        "product_name": "HP notebook 123",
-        "price_amount": 13990.0,
+        "category": "Gaming",
+        "product_name": "Logitech G923 SE Racing Bundle (Xbox/PC)",
+        "price_amount": 6499.0,
         "additional_service": {
-            "service": "Y",
-            "service_type": "insurance",
-            "service_price": 2098.5
+            "service": "N",
+            "service_type": "None",
+            "service_price": 0.0
         }
     },
     "transportation": {
-        "transporter": "DHL",
-        "country": "Czech Republic",
+        "transporter": "Fedex",
+        "country": "Slovakia",
         "size": "medium",
-        "transport_price": 80.0
+        "transport_price": 120.0
     }
 }
