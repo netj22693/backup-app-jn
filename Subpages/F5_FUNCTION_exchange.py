@@ -3,6 +3,15 @@ import json
 import streamlit as st
 from typing import Optional
 
+# =================== App screen part UI 1 ===================
+st.write("# Exchange Rate:")
+''
+''
+st.write("""
+- The exchange rate is API based 
+- The information comes from https://www.kurzy.cz/ and https://app.freecurrencyapi.com/
+""")
+
 # =================== API functions ===================
 @st.cache_data(ttl=3600)
 def api_GET_request(url_string: str) -> Optional[str]: 
@@ -112,14 +121,7 @@ def get_value_formated(input: float) -> str:
     result = f"{input:,.2f}". replace(",", " ")
     return result
 
-# =================== App screen part ===================
-st.write("# Exchange Rate:")
-''
-''
-st.write("""
-- The exchange rate is API based 
-- The information comes from https://www.kurzy.cz/ and https://app.freecurrencyapi.com/
-""")
+# =================== App screen part UI 2 ===================
 
 
 ''
