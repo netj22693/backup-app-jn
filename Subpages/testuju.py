@@ -18,7 +18,8 @@ with st.expander("Buyer", icon=":material/tag_faces:"):
         key= "k_customer"
         )
 
-    customer_input = customer_input.strip()
+    if customer_input is not None:
+        customer_input = customer_input.strip()
 
 with st.expander("Product", icon=":material/devices:"):
 
@@ -28,7 +29,8 @@ with st.expander("Product", icon=":material/devices:"):
         key= "k_product"
         )
 
-    product_name_inp = product_name_inp.strip()
+    if product_name_inp is not None:
+        product_name_inp = product_name_inp.strip()
 
     category_selb = st.selectbox(
         "Category:" ,
