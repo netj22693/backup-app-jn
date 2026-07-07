@@ -4,13 +4,24 @@ st.write("# UML diagrams")
 
 
 # Split into tabs
-tab1, tab2 = st.tabs([
-	"1 - Use Case diagram",
-	"2 - Activity diagram"
+tab1, tab2, tab3 = st.tabs([
+    "File builders",
+	"UML - Use Case diagram",
+	"UML - Activity diagram"
 ])
 
-#Tab 1 
+
 with tab1:
+    ''
+    st.write("""
+    - **Modularity** and logical code dependency of **core functions** in **F3** and **F4** -> **simplified view**
+    - **Principle**: the F3 and F4 use/share the same core functions -> **working with/re-using the same data model**
+    """)
+    ''
+    ''
+    st.image("Pictures/Function_3/F3_F4_functions_file_builders_v1.svg")
+
+with tab2:
     st.write("#### UML Use Case diagram:")
     ''
     ''
@@ -24,7 +35,7 @@ with tab1:
     ''
     st.image("Pictures/Function_4/F4_UML_UseCase.svg")
 
-with tab2:
+with tab3:
     st.write("#### UML Activity diagram:")
     ''
     ''
