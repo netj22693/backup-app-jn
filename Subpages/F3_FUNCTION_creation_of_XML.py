@@ -179,7 +179,7 @@ if  st.button(
 
         invoice_number_generated = create_invoice_number(order_num_generated)
 
-        date_input = get_utc_time_custom_string()
+        date_input = get_utc_time_custom_string('invoice')
 
    
         # Calculation of final price 

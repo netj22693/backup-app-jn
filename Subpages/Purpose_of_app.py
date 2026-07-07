@@ -260,6 +260,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 4:
+		- **v65.9** - Major code refactoring & clean up - 07-July-2026
 		- **v52.3** - Function description extended by Video Guide - 03-Dec-2025
 		- **v52.2** - New DB schema - SQL queries refactored - 01-Dec-2025
 		- **v50.1** - Log about mapping put into DB as a record about this activity - 16-Nov-2025	

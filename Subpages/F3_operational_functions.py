@@ -14,11 +14,25 @@ def create_invoice_number(order_num: int) -> str:
 
 
 # ===== Generating of date for <date> element =====
-def get_utc_time_custom_string() -> str:
+def get_utc_time_custom_string(purpose: str) -> str:
+
+    '''
+    - Function to generate UTC time and format based on DB table and function F3 or F4 
+    - 'invoice' - DB table 'invoice' used by F3
+    - 'change_log' - DB table 'change_log' used by F4
+    
+    '''
 
     now = time.gmtime()
 
-    return time.strftime("%Y-%m-%d", now)
+    if purpose == 'invoice':
+        return time.strftime("%Y-%m-%d", now)
+
+    elif purpose == 'change_log':
+        return time.strftime("%Y-%m-%d %H:%M:%S", now)
+    
+    else:
+        print("Function: get utc time: Invalid input")
 
 
 # ===== DB =====
@@ -257,6 +271,11 @@ def create_json_file(data: dict) -> str:
 
 # ==== XML Builder =====
 def create_xml_file(data: dict) -> str:
+    
+    '''
+    - XML Builder
+    - Returns: XML as str/text
+    '''
 
     xml_doc = ET.Element("invoice")
 
