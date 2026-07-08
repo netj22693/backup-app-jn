@@ -56,6 +56,15 @@ LIMIT 15
 
 
 # ==== TAB 2 ====
+sql_query_order_exist = """
+SELECT 
+    a.order_number                                        
+FROM billing.invoice a
+WHERE 
+    a.order_number = :order
+"""
+
+
 sql_query_overview = """
 SELECT 
     a.order_number as "Order no.",

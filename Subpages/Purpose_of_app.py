@@ -272,6 +272,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 3:
+		- **v65.1** - F3B - Major code refactoring & clean up - 08-July-2026
 		- **v64.9** - F3 - Major code refactoring & clean up - 06-July-2026
 		- **v63.1** - F3B - function extended by Analytics + code refactoring - 16-June-2026
 		- **v52.3** - Function description extended by Video Guide - 03-Dec-2025
