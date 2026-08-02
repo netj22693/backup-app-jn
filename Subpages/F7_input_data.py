@@ -1,10 +1,23 @@
+# Rounding in the function 
+ROUND_TO = 2
+
+# Unit distance
+UNIT_DISTANCE = 30
+
+# Transport type speed - km/h
+TRANSPORT_SPEED = {
+    "truck": 70,
+    "train": 80,
+    "airplane": 700,
+}
+
 
 # type of transport
 tranport_types_list = ['Truck','Train','Airplane']
 
 
 # List of cities with coordinates and types of transport availability
-dataset_test = ({
+dataset_cities = ({
 "cz" : {
     "Prague" : {"big" : ["4","10"], "small" : ["10","29"], "train":"y", "air":"y"},
     "Brno" : {"big" : ["5","12"], "small" : ["14","35"], "train":"y", "air":"y"},
@@ -108,3 +121,242 @@ correction_list_data = [
     {"city1" : "Klagenfurt" , "city2" : "Bratislava", "distance": 367},
     {"city1" : "Munich" , "city2" : "Jihlava", "distance": 458},
 ]
+
+# Dataset impacting costs based on exchange rate value
+criteria_dict = {
+    "kc": [
+        {
+            "min": None,
+            "max": 20,
+            "rule_text": "x < 20",
+            "impact_pct": -9.3,
+            "cost_trend": "cost decrease"
+        },
+        {
+            "min": 20,
+            "max": 21,
+            "rule_text": "20 ≤ x < 21",
+            "impact_pct": -4.7,
+            "cost_trend": "cost decrease"
+        },
+        {
+            "min": 21,
+            "max": 22,
+            "rule_text": "21 ≤ x < 22",
+            "impact_pct": 0,
+            "cost_trend": "default value"
+        },
+        {
+            "min": 22,
+            "max": None,
+            "rule_text": "22 ≤ x",
+            "impact_pct": 4.7,
+            "cost_trend": "cost increase"
+        }
+    ],
+    "eur": [
+        {
+            "min": None,
+            "max": 0.82,
+            "rule_text": "x < 0.82",
+            "impact_pct": -5.9,
+            "cost_trend": "cost decrease"
+        },
+        {
+            "min": 0.82,
+            "max": 0.87,
+            "rule_text": "0.82 ≤ x < 0.87",
+            "impact_pct": 0,
+            "cost_trend": "default value"
+        },
+        {
+            "min": 0.87,
+            "max": 0.90,
+            "rule_text": "0.87 ≤ x < 0.90",
+            "impact_pct": 3.5,
+            "cost_trend": "cost increase"
+        },
+        {
+            "min": 0.90,
+            "max": None,
+            "rule_text": "0.90 ≤ x",
+            "impact_pct": 7.1,
+            "cost_trend": "cost increase"
+        }
+    ]
+}
+
+# Dataset SLA
+sla_dict = {
+	"truck": {
+		"slow": {
+			"extra_time": 120,
+            "coef" : 0.4
+		},
+		"standard": {
+			"extra_time": 32,
+            "coef" : None
+		},
+		"express": {
+			"extra_time": 6,
+            "coef" : 0.4
+		}
+	},
+	"train": {
+		"slow": {
+			"extra_time": 120,
+            "coef" : 0.5
+		},
+		"standard": {
+			"extra_time": 48,
+            "coef" : None
+		},
+		"express": {
+			"extra_time": 10,
+            "coef" : 0.5
+		}
+	},
+	"airplane": {
+		"slow": {
+			"extra_time": 240,
+            "coef": 0.1
+		},
+		"standard": {
+			"extra_time": 72,
+            "coef" : None
+		},
+		"express": {
+			"extra_time": 2,
+            "coef": 0.7
+		}
+	}
+}
+
+
+# Dataset price per transport type & currency 
+# "standard" Price per 1t/per approx 30km (one square on map) - STANDARD servide
+# "coef" - price coeficients increasing(Express delivery) or decreasign (Slow delivery) price per square
+
+price_dict = {
+	"truck": {
+		"eur": {
+			"standard": 60,
+		},
+		"kc": {
+			"standard": 1_500,
+		}
+	},
+	"train": {
+		"eur": {
+			"standard": 48,
+		},
+		"kc": {
+			"standard": 1_200,
+		}
+	},
+	"airplane": {
+		"eur": {
+			"standard": 600,
+		},
+		"kc": {
+			"standard": 15_000,
+		}
+	}
+}
+
+
+# These to DTD dictionaries need to corespond
+# Options per transport type
+dtd_options_dict = {
+    "truck" : ["Within city", "10 km", "20 km"],
+    "train" : ["No", "10 km", "20 km"],
+    "airplane" : ["No", "10 km", "20 km"]
+}
+
+# Time needed HOURS (Truck) for DTD delivery based on selection + Prices
+dtd_calculation_values_dict = {
+	"No": {
+		"distance": 0, 
+		"truck_driving": 0,
+		"price": {
+			"train": {
+				"euro": 0,
+				"koruna": 0
+			},
+			"airplane": {
+				"euro": 0,
+				"koruna": 0
+			},
+
+            # Note: this 'No' option option cannot be selected on UI as part of 'Truck' but it is importtant to have this OBJECT for TAB 2 purposes. Without this function will fail get_door_to_door_cost_and_distance()
+            "truck": {
+				"euro": 0,
+				"koruna": 0
+			}
+		}
+	},
+	"Within city": {
+		"distance": 0,
+		"truck_driving": 0,
+		"price": {
+			"truck": {
+				"euro": 0,
+				"koruna": 0
+			},
+
+            # Note: this 'Within city' option cannot be selected on UI as part of 'Train' or 'Airplane' but it is importtant to have this OBJECT for TAB 2 purposes. Without this function will fail get_door_to_door_cost_and_distance()
+            "train": {
+				"euro": 0,
+				"koruna": 0
+			},
+			"airplane": {
+				"euro": 0,
+				"koruna": 0
+			}
+		}
+	},
+	"10 km": {
+		"distance": 10,
+		"truck_driving": 0.42,
+		"price": {
+			"truck": {
+				"euro": 20,
+				"koruna": 500
+			},
+			"train": {
+				"euro": 40,
+				"koruna": 1000
+			},
+			"airplane": {
+				"euro": 40,
+				"koruna": 1000
+			}
+		}
+	},
+	"20 km": {
+		"distance": 20,
+		"truck_driving": 0.75,
+		"price": {
+			"truck": {
+				"euro": 40,
+				"koruna": 1000
+			},
+			"train": {
+				"euro": 60,
+				"koruna": 1500
+			},
+			"airplane": {
+				"euro": 60,
+				"koruna": 1500
+			}
+		}
+	},
+	"transfer": 1
+}
+
+# Extra services / % values
+extra_service_dict = {
+    "insurance" : 10,
+    "fragile": 5,
+    "danger":  7
+}

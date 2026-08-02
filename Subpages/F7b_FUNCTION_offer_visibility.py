@@ -6,7 +6,7 @@ from typing import Optional,Dict, Tuple
 import plotly.express as px
 from Subpages.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
 from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes
-from Subpages.F7_input_data import tranport_types_list, dataset_test
+from Subpages.F7_input_data import tranport_types_list, dataset_cities
 
 @st.dialog("Error: DB not connected")
 def db_connection_fail():
@@ -378,7 +378,7 @@ def create_parameters_for_sql(input: list, param_letter: str) -> Tuple[Dict[str,
 with tab3: 
 
     #From the dataset -> parse keys -> create list of countries for multiselect
-    list_countries = dataset_test.keys()
+    list_countries = dataset_cities.keys()
 
     list_countries_upper = []
     for country in list_countries:

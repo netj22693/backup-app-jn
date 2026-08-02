@@ -28,7 +28,7 @@ def call_go_green(db_engine: Engine, from_city_extra_doortdoor: float, to_city_e
 
         return emission_value
 
-    def calculate_emission_transfer(df: pd.DataFrame, dtd_from: float, dtd_to: float) -> pd.DataFrame | float | bool:
+    def calculate_emission_transfer(df: pd.DataFrame, dtd_from: float, dtd_to: float) -> float:
 
         # Loop to get emission value for 'Transfer' - applicable when DTD 
         for index, row in df.iterrows():
@@ -44,7 +44,7 @@ def call_go_green(db_engine: Engine, from_city_extra_doortdoor: float, to_city_e
         else:
             result = 0
 
-        return result, emission_value
+        return result
     
 
     def calculate_dtd_emissions(distance: float, emission: float) -> float:
@@ -82,8 +82,8 @@ def call_go_green(db_engine: Engine, from_city_extra_doortdoor: float, to_city_e
         - Returns full df with all these columns (if DTD 0 -> values 0)
         '''
 
-        df["DTD From"] = dtd_from * truck_value
-        df["DTD To"] = dtd_to * truck_value
+        df["DTD From"] = dtd_from
+        df["DTD To"] = dtd_to
 
         rule_truck = df["Transport type"] == "Truck"
         variable = df["DTD From"] + df["DTD To"]
@@ -156,16 +156,16 @@ def call_go_green(db_engine: Engine, from_city_extra_doortdoor: float, to_city_e
     df_emissions_db_styled = styling_df(df_emissions_db)
 
     # To get emission value for 'Transfer'
-    emission_transfer, emission_value = calculate_emission_transfer(df_emissions_db, from_city_extra_doortdoor, to_city_extra_doortdoor)
+    emission_transfer = calculate_emission_transfer(df_emissions_db, from_city_extra_doortdoor, to_city_extra_doortdoor)
 
     # To get emission values for selected distances per transport types + DTD 
-    emission_dtd_from = calculate_dtd_emissions(from_city_extra_doortdoor, emission_value)
-    emission_dtd_to = calculate_dtd_emissions(to_city_extra_doortdoor, emission_value)
+    emission_dtd_from = calculate_dtd_emissions(from_city_extra_doortdoor, emission_unit_truck)
+    emission_dtd_to = calculate_dtd_emissions(to_city_extra_doortdoor, emission_unit_truck)
     
     emissions_main_distance_df = calculate_emissions_main_distance(df_tab2_transport, df_emissions_db)
 
     # Extending by DTD and Transfere values
-    emissions_all_df  = extend_emissions_dtd_transfer_df( emissions_main_distance_df, emission_transfer, emission_unit_truck, emission_dtd_from, emission_dtd_to)
+    emissions_all_df  = extend_emissions_dtd_transfer_df(emissions_main_distance_df, emission_transfer, emission_unit_truck, emission_dtd_from, emission_dtd_to)
 
     emissions_all_df_rounded = df_rounding(emissions_all_df)
 

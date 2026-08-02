@@ -206,6 +206,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v66.0** - F7 - Major code refactoring & clean up - 02-Aug-2026
 		- **v63.2** - F7B - Adjustment of fallback on UI (if no records in DB) - 16-June-2026
 		- **v60.0** - F7 Go Green calculation released - 21-Apr-2026
 		- **v55.8** - F7B Analytics tab released - 09-Apr-2026

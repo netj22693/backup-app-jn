@@ -44,3 +44,21 @@ def provide_ui_color_coding_image(transport: str, dtd_a: int, dtd_b: int, truck_
     path = f"Pictures/Function_7/F7_transport_flow_images/F7B_color_coding_{transport}_dtd_A_{a}{ta}_dtd_B_{b}{tb}{breaks}.svg"
     
     return path
+
+
+def show_ui_transport_flow(ui_image_path: str, ui_color_coding_image_path: str):
+    try:
+        st.image(ui_image_path)
+
+    except Exception as e:
+        print(e)
+        st.warning("Failed to load image")
+    
+    ''
+    with st.expander("Transfer process", icon= ":material/help:"):
+        try:
+            st.image(ui_color_coding_image_path)
+
+        except Exception as e:
+            print(e)
+            st.warning("Failed to load image")
