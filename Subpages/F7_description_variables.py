@@ -11,13 +11,14 @@ st.write("""
         """)
 
 ''
-var_tab1, var_tab2 = st.tabs([
+var_tab1, var_tab2, var_tab3 = st.tabs([
     "Function 7",
-    "Function 7B"
+    "Function 7B",
+    "Data flow F7 & F7B"
 ])
 
 with var_tab1:
-    st.image("Pictures/Function_7/F7_Variables/F7_desc_function_diagram_v9.svg")
+    st.image("Pictures/Function_7/F7_Variables/F7_desc_function_diagram_v10.svg")
 
     ''
     st.write("""
@@ -66,6 +67,10 @@ with var_tab2:
         2) Accrodingly to selected search -> SQL queries to DB are performed
         3) Results based on data in DB are displayed
         """)
+
+with var_tab3:
+    st.image("Pictures/Function_7/F7_Variables/F7_desc_function_F7_F7B_data_flow_v5.svg", width=610)
+
 
 # ===== Page navigation at the bottom ======
 ''
