@@ -1133,7 +1133,7 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
             overall_time_db = overall_time_truck 
 
 
-            delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time = delivery_date_time(overall_time_truck,agreed_till)
+            delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time, delivery_at_utc, approve_till_utc, created_utc = delivery_date_time(overall_time_truck,agreed_till, True)
 
             cet_cest_delivery = determin_cet_cest(delivery_dt)
             cet_cest_now = determin_cet_cest(date_time_europe)
@@ -1228,7 +1228,7 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
             #overall_time_db - for DB purpose unified variable (the same will have train and truck)
             overall_time_db = overall_time_train_air
 
-            delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time = delivery_date_time(overall_time_train_air,agreed_till)
+            delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time, delivery_at_utc, approve_till_utc, created_utc = delivery_date_time(overall_time_train_air,agreed_till, True)
 
             cet_cest_delivery = determin_cet_cest(delivery_dt)
             cet_cest_now = determin_cet_cest(date_time_europe)
@@ -1525,21 +1525,21 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
             tab2_delivery_dt_formated_truck = delivery_dt_formated
         
         else:
-            tab2_delivery_dt_truck, tab2_delivery_dt_formated_truck, tab2_date_time_europe_truck, tab2_europe_date_part_truck, tab2_europe_time_part_truck, tab2_customer_approve_date_truck, tab2_customer_approve_time_truck = delivery_date_time(tab2_overall_time_truck_rounded,agreed_till)
+            tab2_delivery_dt_truck, tab2_delivery_dt_formated_truck, tab2_date_time_europe_truck, tab2_europe_date_part_truck, tab2_europe_time_part_truck, tab2_customer_approve_date_truck, tab2_customer_approve_time_truck = delivery_date_time(tab2_overall_time_truck_rounded,agreed_till, False)
 
 
         if selected_transport == 'Train':
             tab2_delivery_dt_formated_train = delivery_dt_formated  
 
         else:
-            tab2_delivery_dt_train, tab2_delivery_dt_formated_train, tab2_date_time_europe_train, tab2_europe_date_part_train, tab2_europe_time_part_train, tab2_customer_approve_date_train, tab2_customer_approve_time_train = delivery_date_time(tab2_overall_time_train,agreed_till)
+            tab2_delivery_dt_train, tab2_delivery_dt_formated_train, tab2_date_time_europe_train, tab2_europe_date_part_train, tab2_europe_time_part_train, tab2_customer_approve_date_train, tab2_customer_approve_time_train = delivery_date_time(tab2_overall_time_train,agreed_till, False)
 
 
         if selected_transport == 'Airplane':
             tab2_delivery_dt_formated_air = delivery_dt_formated  
 
         else:
-            tab2_delivery_dt_air, tab2_delivery_dt_formated_air, tab2_date_time_europe_air, tab2_europe_date_part_air, tab2_europe_time_part_air, tab2_customer_approve_date_air, tab2_customer_approve_time_air = delivery_date_time(tab2_overall_time_air,agreed_till)
+            tab2_delivery_dt_air, tab2_delivery_dt_formated_air, tab2_date_time_europe_air, tab2_europe_date_part_air, tab2_europe_time_part_air, tab2_customer_approve_date_air, tab2_customer_approve_time_air = delivery_date_time(tab2_overall_time_air,agreed_till, False)
 
 
 
@@ -1886,7 +1886,11 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
             "time_overall" : overall_time_db,
             "expected_delivery" : delivery_dt_formated,
             "final_price" : final_price,
-            "currency" : mapped_currency
+            "currency" : mapped_currency,
+            "created_utc": created_utc,
+            "approve_till_utc": approve_till_utc,
+            "delivery_at_utc": delivery_at_utc,
+            "offer_state": "CREATED" # Default hardcoded state for insert
             }
 
         # 2) DELIVERY table 
@@ -1935,6 +1939,16 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
         }
 
         variables_extra_go_green_dict = offer_id | variables_go_green_dict_returned
+
+        # 6) STATE_CHANGE_LOG table 
+        # Dictionary for INSERT
+        state_change_log_dict = {
+            "offer_id": offer_number_generated,
+            "state_from": " ",
+            "state_to": "CREATED",
+            "change_note": "Created by user - Function 7",
+            "timestamp_utc": created_utc
+        }
 
         # PDF 
         data_for_pdf = {
@@ -1996,6 +2010,6 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
             data = data_pdf,
             file_name=f"Offer_{offer_number_generated}.pdf",
             mime="application/pdf",
-            on_click=lambda: save_to_db_main_stream(offer_number_generated, variables_offer_dict, variables_delivery_dict, variables_costs_dict, variables_extra_steps_time_dict, variables_extra_go_green_dict),
+            on_click=lambda: save_to_db_main_stream(offer_number_generated, variables_offer_dict, variables_delivery_dict, variables_costs_dict, variables_extra_steps_time_dict, variables_extra_go_green_dict, state_change_log_dict),
             key="key_save_button"
         )

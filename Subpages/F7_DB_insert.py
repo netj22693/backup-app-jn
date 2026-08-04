@@ -1,5 +1,5 @@
 import streamlit as st
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, DateTime
 from sqlalchemy.orm import declarative_base, Session
 
 
@@ -104,7 +104,11 @@ def insert_variables_offer(engine, data):
     "time_overall" : data["time_overall"],
     "expected_delivery" : data["expected_delivery"],
     "final_price" : data["final_price"],
-    "currency" : data["currency"]
+    "currency" : data["currency"],
+    "created_utc": data["created_utc"],
+    "approve_till_utc": data["approve_till_utc"],
+    "delivery_at_utc": data["delivery_at_utc"],
+    "offer_state": data["offer_state"]
     }
 
     Base = declarative_base()
@@ -127,6 +131,10 @@ def insert_variables_offer(engine, data):
         expected_delivery = Column(String)
         final_price = Column(Float)
         currency = Column(Integer)
+        created_utc = Column(DateTime(timezone=True))
+        approve_till_utc = Column(DateTime(timezone=True))
+        delivery_at_utc = Column(DateTime(timezone=True))
+        offer_state = Column(String)
 
     with Session(engine) as session:
         new_offer = Offer(**mapped_data)
@@ -341,11 +349,39 @@ def insert_variables_go_green(engine, data):
         session.add(new_offer)
         session.commit()
 
+def insert_variables_state_change_log(engine, data):
 
+    mapped_data = {
+        "offer_id": data["offer_id"],
+        "state_from": data["state_from"],
+        "state_to": data["state_to"],
+        "change_note": data["change_note"],
+        "timestamp_utc": data["timestamp_utc"]
+    }
+
+
+
+    Base = declarative_base()
+
+    class State_change_log(Base):
+        __tablename__ = "state_change_log"
+        __table_args__ = {"schema": "function7"}
+
+        id = Column(Integer, primary_key=True)
+        offer_id = Column(String)
+        state_from = Column(String)
+        state_to = Column(String)
+        change_note = Column(String)
+        timestamp_utc = Column(DateTime(timezone=True))
+
+    with Session(engine) as session:
+        new_offer = State_change_log(**mapped_data)
+        session.add(new_offer)
+        session.commit()
 
 
 # def save_to_db_main_stream(variables_extra_steps_time):
-def save_to_db_main_stream(offer_number, variables_offer, variables_delivery, variables_costs, variables_extra_steps_time, variables_go_green_dict):
+def save_to_db_main_stream(offer_number, variables_offer, variables_delivery, variables_costs, variables_extra_steps_time, variables_go_green_dict, state_change_log_dict):
 
 
     # tady bych dělla PDF ještě
@@ -358,6 +394,7 @@ def save_to_db_main_stream(offer_number, variables_offer, variables_delivery, va
         insert_variables_costs(db_engine, variables_costs)
         insert_variables_extra_steps_time(db_engine, variables_extra_steps_time)
         insert_variables_go_green(db_engine, variables_go_green_dict)
+        insert_variables_state_change_log(db_engine, state_change_log_dict)
 
         process_done(offer_number)
 

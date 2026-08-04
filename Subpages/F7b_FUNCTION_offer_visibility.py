@@ -1,12 +1,15 @@
 import streamlit as st
-from sqlalchemy import create_engine, text, bindparam
+from sqlalchemy import create_engine, text
 import pandas as pd
 from datetime import date, timedelta
 from typing import Optional,Dict, Tuple
 import plotly.express as px
 from Subpages.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
-from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes
+from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, sql_query_offer_status_validation_df, sql_query_offer_status_validation_single, sql_query_logs, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes
 from Subpages.F7_input_data import tranport_types_list, dataset_cities
+from Subpages.F7b_operational_functions import change_state_in_db, singular_or_plural, input_validation, operational_update_of_states, display_offer_state, display_offer_logs
+
+
 
 @st.dialog("Error: DB not connected")
 def db_connection_fail():
@@ -54,7 +57,13 @@ with tab1:
 
     ''
     if st.button("Show last 15 offers", width="stretch", icon=":material/table:"):
-        ''
+
+        # Pulling of data from DB - status check
+        df_status_check = pd.read_sql(sql_query_offer_status_validation_df, db_engine)
+
+        operational_update_of_states(df_status_check, db_engine)
+
+        
         # Query into DB + DF styling
         df = pd.read_sql(sql_query_table_overview,db_engine)
 
@@ -66,36 +75,10 @@ with tab1:
             })
             
         # Styled DF visualization
+        ''
         st.dataframe(df_styled, width = "stretch", height=562)
 
 # ====================== TAB 2 ======================
-# ====================== main logic for tab2 + relevant def functions ======================
-
-def input_validation(input: str) -> Optional[str]:
-    '''  
-    Simple logic to have correct format of 'offer_id' before query to DB
-
-    Covers basic scenarios:
-    1) user input is correct F7-number  - e.g. F7-123
-    2) user input is "lazy" number format e.g. 123 -> adjustment F7-123
-    3) user input is wrong generically - e.g. f123 -> return False
-
-    '''
-    if input.startswith("F7-"):
-        return input
-
-    if input.isdigit():
-        input = "F7-" + input
-        return input
-    
-    if input == "":
-        st.warning("**Missing input** - Please provide **Offer number**")
-        return None
-
-    else:
-        st.error(f"Invalid Offer format inserted - **{input}** is not valid. Valid format: F7-XXX")
-        return None
-
 
 with tab2:
 
@@ -125,6 +108,11 @@ with tab2:
                 else:
                     offer_id = offer_id_exists["offer_id"].iloc[0]
 
+                    # Validation (and change) of state to have it actual
+                    df_validation = pd.read_sql_query(sql=text(sql_query_offer_status_validation_single), con=conn, params=params)
+
+                    operational_update_of_states(df_validation, db_engine)
+
                     # a.OFFER
                     df_table_offer = pd.read_sql_query(sql=text(sql_table_offer), con=conn, params=params)
                     
@@ -143,6 +131,7 @@ with tab2:
                     offer_expected_delivery = row_offer["expected_delivery"]
                     offer_final_price = row_offer["final_price"]
                     offer_currency = row_offer["currency"]
+                    offer_state = row_offer["offer_state"]
 
                     # b.DELIVERY
                     df_table_delivery = pd.read_sql_query(sql=text(sql_table_delivery), con=conn, params=params)
@@ -192,148 +181,185 @@ with tab2:
                     row_sla = df_table_sla.iloc[0]
 
                     sla_time_sla = row_sla["time_sla"]
-
-
-                    # ========== TAB 2 UI ========================================
-
-
-                    # Function to determin day/days and hour/hoursfor UI purposes
-                    def singular_or_plural(input: int) -> str:
-                        if input <= 1:
-                            return ""
-                        
-                        else:
-                            return "s"
-                    
+                  
                     # Determin singular or plural for UI
                     day_days_str = singular_or_plural(offer_need_approve_days)
                     hour_hours_str = singular_or_plural(offer_time_overall)
 
                     # Get UI image for the particular offer 
+
+                
                     ui_image_path = provide_ui_image_path(offer_transport, delivery_from_dtd, delivery_to_dtd, extra_steps_time_truck_breaks)
 
                     ui_color_coding_image_path = provide_ui_color_coding_image(offer_transport, delivery_from_dtd, delivery_to_dtd, extra_steps_time_truck_breaks)
 
 
-                    # UI
+                    # ========== TAB 2 UI ========================================
                     ''
                     ''
-                    st.write(f"""
-                        - Offer number: **{offer_id}**
-                        - Offer created: **{offer_created_date} - {offer_created_time} {offer_time_zone}**
-                        - Customer to approve till: **{offer_need_approve_date} {offer_need_approve_time} - {offer_time_zone}** ({offer_need_approve_days} day{day_days_str})
-                    """)
+                    tab2_tab1, tab2_tab2, tab2_tab3 = st.tabs([
+                        f"Offer **{offer_id}**",
+                        "State change & logs",
+                        "State flow"
+                    ])
 
-                    # UI transport workflow image
-                    ''
-                    try:
-                        st.image(ui_image_path)
+                    with tab2_tab1:
 
-                    except Exception as e:
-                        print(e)
-                        st.warning("Failed to load image")
-                    
-                    # Expander 
-                    with st.expander("Transfer process", icon= ":material/help:"):
+                        display_offer_state(offer_state)
+
+                        ''
+                        st.write(f"""
+                            - Offer number: **{offer_id}**
+                            - Offer created: **{offer_created_date} - {offer_created_time} {offer_time_zone}**
+                            - Customer to approve till: **{offer_need_approve_date} {offer_need_approve_time} - {offer_time_zone}** ({offer_need_approve_days} day{day_days_str})
+                        """)
+
+                        # UI transport workflow image
+                        ''
                         try:
-                            st.image(ui_color_coding_image_path)
+                            st.image(ui_image_path)
 
                         except Exception as e:
                             print(e)
                             st.warning("Failed to load image")
                         
+                        # Expander 
+                        with st.expander("Transfer process", icon= ":material/help:"):
+                            try:
+                                st.image(ui_color_coding_image_path)
 
-                        # To show DTD button or not
-                        if delivery_from_dtd > 0 or delivery_to_dtd > 0:
-
-                            st.write("- More info about DTD:")
+                            except Exception as e:
+                                print(e)
+                                st.warning("Failed to load image")
                             
-                            st.link_button(
-                                label = "Go to Door-to-Door page",
-                                url="https://dataparsing.streamlit.app/F7_description_dtd",
-                                help="The button will redirect to the relevant page within this app for download.",
-                                width="stretch",
-                                icon=":material/launch:"
-                            )                       
 
-                    ''
-                    ''
-                    st.write(f"""
-                        - Delivery from **{delivery_from_city} ({delivery_from_country})** to **{delivery_to_city} ({delivery_to_country}):**
-                            - Costs: **{costs_distance_cost:,.2f} {offer_currency}**
-                            - Distance: **{delivery_distance_length:,.2f} km**
-                            - Time to cover the distance: **{delivery_distance_time:.2f} hour(s)**
-                            - Transport type: **{offer_transport}**
-                    """)
+                            # To show DTD button or not
+                            if delivery_from_dtd > 0 or delivery_to_dtd > 0:
 
-
-                    # Different UI for Truck and Train or Airplane
-                    if offer_transport == 'Truck':
+                                st.write("- More info about DTD:")
+                                
+                                st.link_button(
+                                    label = "Go to Door-to-Door page",
+                                    url="https://dataparsing.streamlit.app/F7_description_dtd",
+                                    help="The button will redirect to the relevant page within this app for download.",
+                                    width="stretch",
+                                    icon=":material/launch:"
+                                )                       
 
                         ''
+                        ''
                         st.write(f"""
-                            - **Door-to-Door**:
-                                - Additional: **{delivery_from_dtd + delivery_to_dtd} km** to the distance
-                                    - {delivery_from_city}: {delivery_from_dtd} km
-                                    - {delivery_to_city}: {delivery_to_dtd} km
-                                - Time to cover the Door-to-Door: **{delivery_dtd_time:.2f} hours(s)**
+                            - Delivery from **{delivery_from_city} ({delivery_from_country})** to **{delivery_to_city} ({delivery_to_country}):**
+                                - Costs: **{costs_distance_cost:,.2f} {offer_currency}**
+                                - Distance: **{delivery_distance_length:,.2f} km**
+                                - Time to cover the distance: **{delivery_distance_time:.2f} hour(s)**
+                                - Transport type: **{offer_transport}**
                         """)
 
-                        ''
-                        st.write(f"""
-                        - **{offer_transport}**:
-                            - Selected service **{offer_service}** requires **{sla_time_sla:.2f} hours** for administration, load, etc. - **the SLA**  
-                            - If longer distance (including Door-to-Door time), **mandatory breaks** for driver: **{extra_steps_time_truck_breaks} hour(s)**
-                        """)
 
-                    if offer_transport in ('Train','Airplane'):
-                        ''
-                        st.write(f"""
-                            - **Door-to-Door**:
-                                - Additional: **{delivery_from_dtd + delivery_to_dtd} km** to the distance for which **Truck is needed**
-                                    - {delivery_from_city}: {delivery_from_dtd} km
-                                    - {delivery_to_city}: {delivery_to_dtd} km
-                                - Time to cover the Door-to-Door: **{delivery_dtd_time:.2f} hours(s)**
-                                    - Transfer {offer_transport} <-> Truck: {extra_steps_time_shipment_transfer_dtd_from + extra_steps_time_shipment_transfer_dtd_to} hour(s)
-                                    - Time for Truck ride: {extra_steps_time_dtd_truck_if_not_truck_main} hour(s)
-                        """)
+                        # Different UI for Truck and Train or Airplane
+                        if offer_transport == 'Truck':
 
-                        ''
-                        st.write(f"""
+                            ''
+                            st.write(f"""
+                                - **Door-to-Door**:
+                                    - Additional: **{delivery_from_dtd + delivery_to_dtd} km** to the distance
+                                        - {delivery_from_city}: {delivery_from_dtd} km
+                                        - {delivery_to_city}: {delivery_to_dtd} km
+                                    - Time to cover the Door-to-Door: **{delivery_dtd_time:.2f} hours(s)**
+                            """)
+
+                            ''
+                            st.write(f"""
                             - **{offer_transport}**:
                                 - Selected service **{offer_service}** requires **{sla_time_sla:.2f} hours** for administration, load, etc. - **the SLA**  
+                                - If longer distance (including Door-to-Door time), **mandatory breaks** for driver: **{extra_steps_time_truck_breaks} hour(s)**
+                            """)
+
+                        if offer_transport in ('Train','Airplane'):
+                            ''
+                            st.write(f"""
+                                - **Door-to-Door**:
+                                    - Additional: **{delivery_from_dtd + delivery_to_dtd} km** to the distance for which **Truck is needed**
+                                        - {delivery_from_city}: {delivery_from_dtd} km
+                                        - {delivery_to_city}: {delivery_to_dtd} km
+                                    - Time to cover the Door-to-Door: **{delivery_dtd_time:.2f} hours(s)**
+                                        - Transfer {offer_transport} <-> Truck: {extra_steps_time_shipment_transfer_dtd_from + extra_steps_time_shipment_transfer_dtd_to} hour(s)
+                                        - Time for Truck ride: {extra_steps_time_dtd_truck_if_not_truck_main} hour(s)
+                            """)
+
+                            ''
+                            st.write(f"""
+                                - **{offer_transport}**:
+                                    - Selected service **{offer_service}** requires **{sla_time_sla:.2f} hours** for administration, load, etc. - **the SLA**  
+                            """)
+
+                        # This UI same for all types of transport
+                        ''
+                        st.write("- **Overall time end-to-end delivery:**")
+
+                        with st.container(border=True):
+                            st.write(f"**{offer_time_overall:.2f} hour{hour_hours_str}**")
+                    
+
+                        st.write("- **Expected delivery:**")
+                        with st.container(border=True):
+                            st.write(f"**{offer_expected_delivery} - {offer_time_zone}**")
+
+
+                        ''
+                        ''
+                        st.write(f"""
+                        - **Additional services - costs**:
+                            - Insurance extra costs: **{costs_insurance:,.2f} {offer_currency}**
+                            - Fregile goods costs: **{costs_fragile:,.2f} {offer_currency}**
+                            - Danger goods costs: **{costs_danger:,.2f} {offer_currency}**
+                            - Door-To-Door - {delivery_from_city} ({delivery_from_country}):  **{costs_dtd_from:,.2f} {offer_currency}** - ({delivery_from_dtd} km)
+                            - Door-To-Door - {delivery_to_city} ({delivery_to_country}):  **{costs_dtd_to:,.2f} {offer_currency}** - ({delivery_to_dtd} km)
                         """)
 
-                    # This UI same for all types of transport
-                    ''
-                    st.write("- **Overall time end-to-end delivery:**")
 
-                    with st.container(border=True):
-                        st.write(f"**{offer_time_overall:.2f} hour{hour_hours_str}**")
-                
-
-                    st.write("- **Expected delivery:**")
-                    with st.container(border=True):
-                        st.write(f"**{offer_expected_delivery} - {offer_time_zone}**")
+                        ''
+                        ''
+                        st.write("- **Final price:**")
+                        with st.container(border=True):
+                            st.write(f"**{offer_final_price:,.2f} {offer_currency}**")
 
 
-                    ''
-                    ''
-                    st.write(f"""
-                    - **Additional services - costs**:
-                        - Insurance extra costs: **{costs_insurance:,.2f} {offer_currency}**
-                        - Fregile goods costs: **{costs_fragile:,.2f} {offer_currency}**
-                        - Danger goods costs: **{costs_danger:,.2f} {offer_currency}**
-                        - Door-To-Door - {delivery_from_city} ({delivery_from_country}):  **{costs_dtd_from:,.2f} {offer_currency}** - ({delivery_from_dtd} km)
-                        - Door-To-Door - {delivery_to_city} ({delivery_to_country}):  **{costs_dtd_to:,.2f} {offer_currency}** - ({delivery_to_dtd} km)
-                    """)
+                    with tab2_tab2:
+                        display_offer_state(offer_state)
+
+                        if offer_state == "CREATED":
+
+                            ''
+                            if st.button("Approve", 
+                                on_click=change_state_in_db,
+                                args=(True, db_engine, offer_id, offer_state, "APPROVED"),
+                                width="stretch",
+                                icon = ":material/check_circle:"
+                                ):
+                                    pass
+                                
+
+                            if st.button("Reject",
+                                on_click = change_state_in_db,
+                                args=(True, db_engine, offer_id, offer_state, "REJECTED"),
+                                width="stretch",
+                                icon = ":material/cancel:"
+                                ):
+                                    pass
+
+                            ''
+                            ''
+
+                        # Logs table   
+                        display_offer_logs(db_engine, sql_query_logs, offer_id)
 
 
-                    ''
-                    ''
-                    st.write("- **Final price:**")
-                    with st.container(border=True):
-                        st.write(f"**{offer_final_price:,.2f} {offer_currency}**")
+
+                    with tab2_tab3:
+                        st.info("This section is under build - to be available soon")
+                        # Sem dát simple BPMN flow + Pop up odkaz na description, který k tomu pak napíšu s větším a rozsáhlejším BPMN
 
 
 # ====================== TAB 3 ======================

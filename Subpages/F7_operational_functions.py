@@ -925,7 +925,7 @@ def adjust_delivery_time(dt):
 
 
 
-def delivery_date_time(overall_time, agreed_till):
+def delivery_date_time(overall_time: float, agreed_till: int, utc_needed: bool):
 
     # get actual time in Europe
     date_time_europe = datetime.now(ZoneInfo(f"Europe/Prague"))
@@ -963,8 +963,18 @@ def delivery_date_time(overall_time, agreed_till):
     customer_approve_date = customer_approve_date.strftime("%d-%b-%y")
     customer_approve_time = customer_approve_time.strftime("%H:%M")
 
+    # This is to avaoid to create variables in case of not needed (TAB 2 values)
+    if utc_needed == False:
+        return delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time
 
-    return delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time
+    else:
+        # UTC time for DB purposes
+        delivery_dt_utc = delivery_dt.astimezone(timezone.utc)
+        customer_approve_till_utc = customer_approve_till.astimezone(timezone.utc)
+        created_at_utc = date_time_europe.astimezone(timezone.utc)
+
+        return delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time, delivery_dt_utc, customer_approve_till_utc, created_at_utc
+
 
 
 # Date time function  -> to determin time CET or CEST

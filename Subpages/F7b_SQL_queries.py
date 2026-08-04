@@ -3,6 +3,7 @@
 sql_query_table_overview = """
 SELECT 
     a.offer_id as "Offer id",
+    a.offer_state as "State",
     f.label as "Transport",
     b.from_city "From",
     b.to_city as "To",
@@ -21,6 +22,38 @@ FROM function7.offer a
                 
 ORDER BY a.offer_id DESC
 LIMIT 15
+;"""
+
+
+sql_query_offer_status_validation_df = """
+SELECT 
+    a.offer_id,
+    a.offer_state,
+    a.created_utc,
+    a.approve_till_utc,
+    a.delivery_at_utc
+                            
+FROM function7.offer a
+                
+WHERE a.offer_state IN('CREATED', 'APPROVED', 'TRANSPORT_IN_PROGRESS')
+
+ORDER BY a.offer_id DESC
+
+LIMIT 15
+;"""
+
+# This one is used in TAB 2
+sql_query_offer_status_validation_single = """
+SELECT 
+    a.offer_id,
+    a.offer_state,
+    a.created_utc,
+    a.approve_till_utc,
+    a.delivery_at_utc
+                            
+FROM function7.offer a
+WHERE a.offer_id = :offer_id
+    AND a.offer_state IN('CREATED', 'APPROVED', 'TRANSPORT_IN_PROGRESS')
 ;"""
 
 
@@ -47,7 +80,8 @@ SELECT
     a.time_overall,
     a.expected_delivery,
     a.final_price,
-    j.label as "currency"         
+    j.label as "currency",
+    a.offer_state       
             
 FROM function7.offer a
     INNER JOIN function7.transport_type f ON (a.transport = f.transport_id)
@@ -104,6 +138,20 @@ FROM function7.offer a
     INNER JOIN function7.service g ON (a.service = g.service_id)
 
 WHERE a.offer_id = :offer_id
+;"""
+
+sql_query_logs = """
+SELECT 
+    m.state_from as "From",
+    m.state_to as "To",
+    m.change_note as "Info", 
+    m.timestamp_utc as "Timestamp UTC"
+
+    FROM function7.state_change_log m
+
+    WHERE m.offer_id = :offer_id
+
+    ORDER BY m.timestamp_utc  
 ;"""
 
 
