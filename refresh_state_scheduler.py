@@ -120,33 +120,36 @@ def operational_update_of_states(df: pd.DataFrame, db_engine: Engine):
             and row.approve_till_utc < utc_now
             ):
             updates.append((row.offer_id, row.offer_state, "EXPIRED"))
+            print(f"CREATED -> EXPIRED - offer: {row.offer_id}")
 
         elif (
             row.offer_state == "CREATED"
             and row.approve_till_utc > utc_now
             ):
-            print("CREATED - State is okay - no action")
+            print(f"CREATED - State is okay - no action - offer: {row.offer_id}")
 
         elif (
             row.offer_state == "APPROVED"
             and row.approve_till_utc > utc_now
             ):
-            print("APPROVED - State is okay - no action")
+            print(f"APPROVED - State is okay - no action - offer: {row.offer_id}")
 
         elif (
             row.offer_state == "APPROVED"
             and row.approve_till_utc < utc_now
             ):
             updates.append((row.offer_id, row.offer_state,"TRANSPORT_IN_PROGRESS"))
+            print(f"APPROVED -> TRANSPORT_IN_PROGRESS - offer: {row.offer_id}")
 
         elif (
             row.offer_state == "TRANSPORT_IN_PROGRESS"
             and row.delivery_at_utc < utc_now
             ):
             updates.append((row.offer_id, row.offer_state, "DELIVERED"))
+            print(f"TRANSPORT_IN_PROGRESS -> DELIVERED - offer: {row.offer_id}")
 
         else:
-            print(f"Undefined condition and state - row: {row.offer_id}")
+            print(f"Undefined condition and state - offer: {row.offer_id}")
 
 
     for offer_id, was_state, new_state in updates:
