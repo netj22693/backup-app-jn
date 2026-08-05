@@ -1,0 +1,251 @@
+# ----- Originally I had unpinned versions in requirements.txt-----
+streamlit
+st_pages
+lxml
+plotly.express
+pandasql
+psycopg2-binary
+sqlalchemy
+reportlab
+pytz
+scikit-learn
+python-dotenv
+
+# PROD installed latest versions - STOPPED working
+[     UTC     ] Logs for dataparsing.streamlit.app/
+
+────────────────────────────────────────────────────────────────────────────────────────
+
+[12:46:12] 🖥 Provisioning machine...
+
+[12:46:12] 🎛 Preparing system...
+
+[12:46:12] ⛓ Spinning up manager process...
+
+[12:46:04] 🚀 Starting up repository: 'backup-app-jn', branch: 'main', main module: 'streamlit_app.py'
+
+[12:46:04] 🐙 Cloning repository...
+
+[12:46:21] 🐙 Cloning into '/mount/src/backup-app-jn'...
+Updating files: 100% (548/548), done.
+
+[12:46:21] 🐙 Cloned repository!
+
+[12:46:21] 🐙 Pulling code changes from Github...
+
+[12:46:26] 📦 Processing dependencies...
+
+
+──────────────────────────────────────── uv ───────────────────────────────────────────
+
+
+Using uv pip install.
+
+Using Python 3.11.15 environment at /home/adminuser/venv
+
+Resolved 55 packages in 847ms
+
+Prepared 55 packages in 6.04s
+
+Installed 55 packages in 736ms
+
+ + altair==[2026-08-05 12:46:34.645437] 6.2.2
+
+ + anyio==4.14.2
+
+ + attrs==26.1.0
+
+ + blinker==1.9.0
+
+ + certifi==2026.7.22
+
+ + charset-normalizer==3.4.9
+
+ + click==8.4.2
+
+ + greenlet==3.5.4
+
+ + h11==0.16.0
+
+ + httptools==0.8.0
+
+ + idna==3.18
+
+ + itsdangerous==2.2.0
+
+ +[2026-08-05 12:46:34.645696]  jinja2==3.1.6
+
+ + joblib==1.5.3
+
+ + jsonschema==4.26.0
+
+ + jsonschema-specifications==2025.9.1
+
+ + lxml==6.1.1
+
+ + markupsafe==3.0.3
+
+ + narwhals==2.24.0
+
+ + numpy==2.4.6
+
+ + packaging==26.3
+
+ + pandas==3.0.5
+
+ + pandasql==0.7.3
+
+ + patsy==1.0.2
+
+ + [2026-08-05 12:46:34.646046] pillow==12.3.0
+
+ + plotly==6.9.0
+
+ + plotly-express==0.4.1
+
+ + protobuf==7.35.1
+
+ + psycopg2-binary==2.9.12
+
+ + pyarrow==24.0.0
+
+ + pydeck==0.9.3
+
+ + python-dateutil==2.9.0.post0
+
+ + python-dotenv==1.2.2
+
+ + python-multipart==0.0.32
+
+ + pytz[2026-08-05 12:46:34.646324] ==2026.3.post1
+
+ + referencing==0.37.0
+
+ + reportlab==5.0.0
+
+ + requests==2.34.2
+
+ + rpds-py==2026.6.3
+
+ + scikit-learn==1.9.0
+
+ + scipy==1.17.1
+
+ + six==1.17.0
+
+ + sqlalchemy==2.0.51
+
+ + st-pages==1.0.1
+
+ + starlette==1.4.0
+
+ + statsmodels==0.14.6[2026-08-05 12:46:34.646659] 
+
+ + streamlit==1.61.0
+
+ + tenacity==9.1.4
+
+ + threadpoolctl==3.6.0
+
+ + toml==0.10.2
+
+ + typing-extensions==4.16.0
+
+ + urllib3==2.7.0
+
+ + uvicorn==0.52.1
+
+ + watchdog==6.0.0
+
+ + websockets==[2026-08-05 12:46:34.646939] 16.1.1
+
+Checking if Streamlit is installed
+
+Found Streamlit version 1.61.0 in the environment
+
+Installing rich for an improved exception logging
+
+Using uv pip install.
+
+Using Python 3.11.15 environment at /home/adminuser/venv
+
+Resolved 4 packages in 125ms
+
+Prepared 4 packages in 178ms
+
+Installed 4 packages in 66ms
+
+ + markdown-it-py==4.2.0
+
+ + mdurl[2026-08-05 12:46:38.994782] ==0.1.2
+
+ + pygments==2.20.0
+
+ + rich==15.0.0
+
+
+────────────────────────────────────────────────────────────────────────────────────────
+
+
+[12:46:39] 🐍 Python dependencies were installed from /mount/src/backup-app-jn/requirements.txt using uv.
+
+Check if streamlit is installed
+
+Streamlit is already installed
+
+[12:46:40] 📦 Processed dependencies!
+
+2026-08-05 12:46:42.133 Uvicorn server started on :::8501
+
+
+
+
+[12:46:43] ❗️ The Streamlit server is responding 500 to health checks
+
+Exception in ASGI application
+
+Traceback (most recent call last):
+
+  File "/home/adminuser/venv/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+
+    result = await app(  # type: ignore[func-returns-value]
+
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/adminuser/venv/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+
+    return await self.app(scope, receive, send)
+
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/adminuser/venv/lib/python3.11/site-packages/starlette/applications.py", line 90, in __call__
+
+    await self.middleware_stack(scope, receive, send)
+
+  File "/home/adminuser/venv/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+
+    raise exc
+
+  File "/home/adminuser/venv/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+
+    await self.app(scope, receive, _send)
+
+  File "/home/adminuser/venv/lib/python3.11/site-packages/streamlit/web/server/starlette/starlette_path_security_middleware.py", line 174, in __call__
+
+    await self.app(scope, receive, send)
+
+  File "/home/adminuser/venv/lib/python3.11/site-packages/starlette/middleware/sessions.py", line 88, in __call__
+
+    await self.app(scope, receive, send_wrapper)
+
+  File "/home/adminuser/venv/lib/python3.11/site-packages/streamlit/web/server/starlette/starlette_gzip_middleware.py", line 144, in __call__
+
+    await super().__call__(scope, receive, send)
+
+  File "/home/adminuser/venv/lib/python3.11/site-packages/streamlit/web/server/starlette/starlette_gzip_middleware.py", line 125, in __call__
+
+    responder = _MediaAwareGZipResponder(
+
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TypeError: GZipResponder.__init__() missing 1 required keyword-only argument: 'thread_minimum_size'
