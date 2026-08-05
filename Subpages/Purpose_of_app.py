@@ -206,6 +206,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v67.1** - F7B - GitHub Action cron job for STATE changes - 05-Aug-2026
 		- **v67.0** - F7 & F7B - Offer STATES introduced - pilot version - 04-Aug-2026
 		- **v66.0** - F7 - Major code refactoring & clean up - 02-Aug-2026
 		- **v63.2** - F7B - Adjustment of fallback on UI (if no records in DB) - 16-June-2026

@@ -6,6 +6,32 @@ from datetime import datetime, timezone
 from dotenv import load_dotenv
 # import streamlit as st
 
+
+
+# ORM
+Base = declarative_base()
+
+
+class Offer(Base):
+    __tablename__ = "offer"
+    __table_args__ = {"schema": "function7"}
+
+    offer_id = Column(String, primary_key=True)
+    offer_state = Column(String)
+
+
+class StateChangeLog(Base):
+    __tablename__ = "state_change_log"
+    __table_args__ = {"schema": "function7"}
+
+    id = Column(Integer, primary_key=True)
+    offer_id = Column(String)
+    state_from = Column(String)
+    state_to = Column(String)
+    change_note = Column(String)
+    timestamp_utc = Column(DateTime(timezone=True))
+
+
 # SQL query 
 sql_query_offer_status_validation_df = """
 SELECT 
@@ -18,7 +44,7 @@ SELECT
 FROM function7.offer a
                 
 WHERE a.offer_state IN('CREATED', 'APPROVED', 'TRANSPORT_IN_PROGRESS')
-    AND a.created_utc >= NOW() - INTERVAL '20 days'
+    AND a.created_utc >= NOW() AT TIME ZONE 'UTC' - INTERVAL '20 days'
 
 ORDER BY a.offer_id DESC
 
@@ -46,47 +72,23 @@ def get_db_connection():
         return engine
     
     except Exception as e:
-        print(f"DB connection failed: {e}")
+        raise RuntimeError(f"DB connection failed: {e}")
 
 
-def change_state_in_db(engine: Engine, offer_id: str, was_state: str, new_state: str):
+def change_state_in_db(engine: Engine, offer_id: str, state_from: str, state_to: str):
 
     # GitHub Actions run id
-    # run_id = os.getenv("GITHUB_RUN_ID")
+    run_id = os.getenv("GITHUB_RUN_ID")
     # test
-    run_id = 111112
+    # run_id = 111112
 
     mapped_data_state_change_log = {
         "offer_id": offer_id,
-        "state_from": was_state,
-        "state_to": new_state,
+        "state_from": state_from,
+        "state_to": state_to,
         "change_note": f"System change - GitHub Actions run: {run_id}",
         "timestamp_utc": datetime.now(timezone.utc)
     }
-
-
-    Base = declarative_base()
-
-
-    # ORM class creation
-    class Offer(Base):
-        __tablename__ = "offer"
-        __table_args__ = {"schema": "function7"}
-
-        offer_id = Column(String, primary_key=True)
-        offer_state = Column(String)
-
-
-    class State_change_log(Base):
-        __tablename__ = "state_change_log"
-        __table_args__ = {"schema": "function7"}
-
-        id = Column(Integer, primary_key=True)
-        offer_id = Column(String)
-        state_from = Column(String)
-        state_to = Column(String)
-        change_note = Column(String)
-        timestamp_utc = Column(DateTime(timezone=True))
 
 
     # DB update
@@ -94,10 +96,10 @@ def change_state_in_db(engine: Engine, offer_id: str, was_state: str, new_state:
 
         # Update of OFFER table
         offer = session.get(Offer, offer_id)
-        offer.offer_state = new_state
+        offer.offer_state = state_to
 
         # Create new record in STATE_CHANGE_LOG table
-        state_change_log = State_change_log(**mapped_data_state_change_log)
+        state_change_log = StateChangeLog(**mapped_data_state_change_log)
         session.add(state_change_log)
 
         session.commit()
@@ -167,11 +169,11 @@ def main():
 
     except Exception as e:
         print(f"[Main logic error]: {e}")
+        raise
     
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
 
 # ----- For test purposes ----- 
 # if st.button("test"):
 #     main()
-    
