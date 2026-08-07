@@ -58,7 +58,6 @@ def main():
 
     # Delete
     ids = df["id"].tolist()
-    st.write(ids)
 
     try:
         with db_engine.begin() as conn:
