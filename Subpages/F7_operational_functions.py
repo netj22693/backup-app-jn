@@ -442,6 +442,8 @@ def L0_is_in_correction_list(from_city: str, to_city: str, correction_list_data:
             price = ((price_square/unit_distance) * distance)
             result = True
 
+            print("L0 - Correction list -> value taken")
+
             return distance, price, result
     
     return 0, 0, False
@@ -925,32 +927,36 @@ def adjust_delivery_time(dt):
 
 
 
-def delivery_date_time(overall_time: float, agreed_till: int, utc_needed: bool):
+def delivery_date_time(overall_time: float, agreed_till: int, time_physical_move: float = 0, utc_needed: bool = False):
 
-    # get actual time in Europe
+    '''
+    time_physical_move: float = 0 - this is defined due to TAB 2 where this calculation is not done in main.py because the variable is just for the MAIN transport 
+
+    utc_needed: bool = False - Also this is for TAB 2 to retrun less variables from the function   
+    '''
+
+    # Actuall CET/CEST time}
     date_time_europe = datetime.now(ZoneInfo(f"Europe/Prague"))
-    offset_to_utc = int(date_time_europe.utcoffset().total_seconds() / 3600)
 
+    # Strings for UI purposes
     europe_date_part = date_time_europe.date()  
     europe_date_part = europe_date_part.strftime("%d-%b-%y")
 
     europe_time_part = date_time_europe.time()   
     europe_time_part = europe_time_part.strftime("%H:%M")
 
-    #gmt time - for delta purpose
-    gmt = time.gmtime()
-    gmt_dt = datetime(
-    gmt.tm_year, gmt.tm_mon, gmt.tm_mday,
-    gmt.tm_hour, gmt.tm_min, gmt.tm_sec,
-    tzinfo=timezone.utc
-    )
 
-    # Delta 
-    delta = timedelta(hours = (overall_time + offset_to_utc + agreed_till))
-    delivery_dt = gmt_dt + delta
+    # This is when the time will be physically moved -> including the SLA administration
+    delivery_dt = date_time_europe + timedelta(hours=overall_time + agreed_till)
 
-    # This part helps to change time delivery in case of time between 22:00 - 06:59
+    # This is when the time will be physically moved -> NOT including the SLA administration
+    transport_start = delivery_dt - timedelta(hours=time_physical_move)
+
+
+    # Adjustment due to DTF (Data Time Frame business logic)
     delivery_dt = adjust_delivery_time(delivery_dt)
+
+    customer_approve_till = date_time_europe + timedelta(hours=agreed_till)
 
     #formating for screen visualization
     delivery_dt_formated = delivery_dt.strftime("%A - %d-%b-%y by %H:%M")
@@ -972,8 +978,9 @@ def delivery_date_time(overall_time: float, agreed_till: int, utc_needed: bool):
         delivery_dt_utc = delivery_dt.astimezone(timezone.utc)
         customer_approve_till_utc = customer_approve_till.astimezone(timezone.utc)
         created_at_utc = date_time_europe.astimezone(timezone.utc)
+        transport_start_utc = transport_start.astimezone(timezone.utc)
 
-        return delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time, delivery_dt_utc, customer_approve_till_utc, created_at_utc
+        return delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time, delivery_dt_utc, customer_approve_till_utc, created_at_utc, transport_start_utc
 
 
 

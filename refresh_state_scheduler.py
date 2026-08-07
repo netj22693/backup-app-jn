@@ -30,6 +30,7 @@ class StateChangeLog(Base):
     state_to = Column(String)
     change_note = Column(String)
     timestamp_utc = Column(DateTime(timezone=True))
+    github_actions_link = Column(String)
 
 
 # SQL query 
@@ -39,11 +40,12 @@ SELECT
     a.offer_state,
     a.created_utc,
     a.approve_till_utc,
-    a.delivery_at_utc
+    a.delivery_at_utc,
+    a.transport_start_utc
                             
 FROM function7.offer a
                 
-WHERE a.offer_state IN('CREATED', 'APPROVED', 'TRANSPORT_IN_PROGRESS')
+WHERE a.offer_state IN('CREATED','APPROVED','TRANSPORT_PREPARATION','TRANSPORT_ON_THE_WAY')
     AND a.created_utc >= NOW() AT TIME ZONE 'UTC' - INTERVAL '20 days'
 
 ORDER BY a.offer_id DESC
@@ -79,15 +81,18 @@ def change_state_in_db(engine: Engine, offer_id: str, state_from: str, state_to:
 
     # GitHub Actions run id
     run_id = os.getenv("GITHUB_RUN_ID")
+    repo = os.getenv("GITHUB_REPOSITORY")
     # test
     # run_id = 111112
+    # repo = "ahoj"
 
     mapped_data_state_change_log = {
         "offer_id": offer_id,
         "state_from": state_from,
         "state_to": state_to,
         "change_note": f"System change - GitHub Actions run: {run_id}",
-        "timestamp_utc": datetime.now(timezone.utc)
+        "timestamp_utc": datetime.now(timezone.utc),
+        "github_actions_link": f"https://github.com/{repo}/actions/runs/{run_id}"
     }
 
 
@@ -115,39 +120,81 @@ def operational_update_of_states(df: pd.DataFrame, db_engine: Engine):
     updates = []
 
     for row in df.itertuples(index=False):
+
+        #C1
         if (
+            row.offer_state == "CREATED"
+            and utc_now < row.approve_till_utc
+            ):
+            print(f"C1 - CREATED - State is okay - no action - offer: {row.offer_id}")
+
+        elif (
             row.offer_state == "CREATED"
             and row.approve_till_utc < utc_now
             ):
             updates.append((row.offer_id, row.offer_state, "EXPIRED"))
-            print(f"CREATED -> EXPIRED - offer: {row.offer_id}")
+            print(f"C1 - CREATED -> EXPIRED - offer: {row.offer_id}")
 
+        # C2
         elif (
-            row.offer_state == "CREATED"
-            and row.approve_till_utc > utc_now
+            row.offer_state == "APPROVED"
+            and utc_now < row.approve_till_utc
             ):
-            print(f"CREATED - State is okay - no action - offer: {row.offer_id}")
+            print(f"C2 - APPROVED - State is okay - no action - offer: {row.offer_id}")
 
         elif (
             row.offer_state == "APPROVED"
-            and row.approve_till_utc > utc_now
+            and row.approve_till_utc < utc_now < row.transport_start_utc
             ):
-            print(f"APPROVED - State is okay - no action - offer: {row.offer_id}")
+            updates.append((row.offer_id, row.offer_state,"TRANSPORT_PREPARATION"))
+            print(f"C2 - APPROVED -> TRANSPORT_PREPARATION - offer: {row.offer_id}")
 
+        # C3
+        elif (
+            row.offer_state == "TRANSPORT_PREPARATION"
+            and utc_now < row.transport_start_utc 
+            ):
+            print(f"C3 - TRANSPORT_PREPARATION - State is okay - no action - offer: {row.offer_id}")
+
+        elif (
+            row.offer_state == "TRANSPORT_PREPARATION"
+            and row.transport_start_utc < utc_now < row.delivery_at_utc
+            ):
+            updates.append((row.offer_id, row.offer_state,"TRANSPORT_ON_THE_WAY"))
+            print(f"C3 - TRANSPORT_PREPARATION -> TRANSPORT_ON_THE_WAY - offer: {row.offer_id}")
+
+        # Fallback
         elif (
             row.offer_state == "APPROVED"
-            and row.approve_till_utc < utc_now
+            and row.transport_start_utc < utc_now < row.delivery_at_utc
             ):
-            updates.append((row.offer_id, row.offer_state,"TRANSPORT_IN_PROGRESS"))
-            print(f"APPROVED -> TRANSPORT_IN_PROGRESS - offer: {row.offer_id}")
+            updates.append((row.offer_id, row.offer_state,"TRANSPORT_ON_THE_WAY"))
+            print(f"C3 - Fallback - APPROVED -> TRANSPORT_ON_THE_WAY - offer: {row.offer_id}")
+
+        # C4
+        elif (
+            row.offer_state == "TRANSPORT_ON_THE_WAY"
+            and utc_now < row.delivery_at_utc
+            ):
+            print(f"C4 - TRANSPORT_ON_THE_WAY - State is okay - no action - offer: {row.offer_id}")
 
         elif (
-            row.offer_state == "TRANSPORT_IN_PROGRESS"
+            row.offer_state == "TRANSPORT_ON_THE_WAY"
             and row.delivery_at_utc < utc_now
             ):
             updates.append((row.offer_id, row.offer_state, "DELIVERED"))
-            print(f"TRANSPORT_IN_PROGRESS -> DELIVERED - offer: {row.offer_id}")
+            print(f"C4 - TRANSPORT_ON_THE_WAY -> DELIVERED - offer: {row.offer_id}")
 
+
+        # Fallback logic for case where there will longer period of scheduler run than distance time  
+        elif (
+            row.offer_state in ("APPROVED", "TRANSPORT_PREPARATION")
+            and row.delivery_at_utc < utc_now
+            ):
+            updates.append((row.offer_id, row.offer_state, "DELIVERED"))
+            print(f"Fallback - changed to DELIVERED - offer: {row.offer_id}")      
+
+        # Falback to catch if any/condition is missed -> troubleshooting
         else:
             print(f"Undefined condition and state - offer: {row.offer_id}")
 

@@ -107,6 +107,7 @@ def insert_variables_offer(engine, data):
     "currency" : data["currency"],
     "created_utc": data["created_utc"],
     "approve_till_utc": data["approve_till_utc"],
+    "transport_start_utc": data["transport_start_utc"],
     "delivery_at_utc": data["delivery_at_utc"],
     "offer_state": data["offer_state"]
     }
@@ -135,7 +136,8 @@ def insert_variables_offer(engine, data):
         approve_till_utc = Column(DateTime(timezone=True))
         delivery_at_utc = Column(DateTime(timezone=True))
         offer_state = Column(String)
-
+        transport_start_utc = Column(DateTime(timezone=True))
+        
     with Session(engine) as session:
         new_offer = Offer(**mapped_data)
         session.add(new_offer)

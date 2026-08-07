@@ -73,7 +73,8 @@ def change_state_in_db(final_dialog: bool, engine: Engine, offer_id: str, was_st
         "APPROVED": "User changed via UI",
         "REJECTED": "User changed via UI",
         "EXPIRED": "System change",
-        "TRANSPORT_IN_PROGRESS": "System change",
+        "TRANSPORT_PREPARATION": "System change",
+        "TRANSPORT_ON_THE_WAY": "System change",
         "DELIVERED": "System change"
     }
 
@@ -145,32 +146,83 @@ def operational_update_of_states(df: pd.DataFrame, db_engine: Engine):
     updates = []
 
     for row in df.itertuples(index=False):
+
+        #C1
         if (
+            row.offer_state == "CREATED"
+            and utc_now < row.approve_till_utc
+            ):
+            print(f"C1 - CREATED - State is okay - no action - offer: {row.offer_id}")
+
+        elif (
             row.offer_state == "CREATED"
             and row.approve_till_utc < utc_now
             ):
             updates.append((row.offer_id, row.offer_state, "EXPIRED"))
+            print(f"C1 - CREATED -> EXPIRED - offer: {row.offer_id}")
 
+        # C2
         elif (
-            row.offer_state == "CREATED"
-            and row.approve_till_utc > utc_now
+            row.offer_state == "APPROVED"
+            and utc_now < row.approve_till_utc
             ):
-            print("State is okay - no action")
+            print(f"C2 - APPROVED - State is okay - no action - offer: {row.offer_id}")
 
         elif (
             row.offer_state == "APPROVED"
-            and row.approve_till_utc < utc_now
+            and row.approve_till_utc < utc_now < row.transport_start_utc
             ):
-            updates.append((row.offer_id, row.offer_state,"TRANSPORT_IN_PROGRESS"))
+            updates.append((row.offer_id, row.offer_state,"TRANSPORT_PREPARATION"))
+            print(f"C2 - APPROVED -> TRANSPORT_PREPARATION - offer: {row.offer_id}")
+
+        # C3
+        elif (
+            row.offer_state == "TRANSPORT_PREPARATION"
+            and utc_now < row.transport_start_utc 
+            ):
+            print(f"C3 - TRANSPORT_PREPARATION - State is okay - no action - offer: {row.offer_id}")
 
         elif (
-            row.offer_state == "TRANSPORT_IN_PROGRESS"
+            row.offer_state == "TRANSPORT_PREPARATION"
+            and row.transport_start_utc < utc_now < row.delivery_at_utc
+            ):
+            updates.append((row.offer_id, row.offer_state,"TRANSPORT_ON_THE_WAY"))
+            print(f"C3 - TRANSPORT_PREPARATION -> TRANSPORT_ON_THE_WAY - offer: {row.offer_id}")
+
+        # Fallback
+        elif (
+            row.offer_state == "APPROVED"
+            and row.transport_start_utc < utc_now < row.delivery_at_utc
+            ):
+            updates.append((row.offer_id, row.offer_state,"TRANSPORT_ON_THE_WAY"))
+            print(f"C3 - Fallback - APPROVED -> TRANSPORT_ON_THE_WAY - offer: {row.offer_id}")
+
+        # C4
+        elif (
+            row.offer_state == "TRANSPORT_ON_THE_WAY"
+            and utc_now < row.delivery_at_utc
+            ):
+            print(f"C4 - TRANSPORT_ON_THE_WAY - State is okay - no action - offer: {row.offer_id}")
+
+        elif (
+            row.offer_state == "TRANSPORT_ON_THE_WAY"
             and row.delivery_at_utc < utc_now
             ):
             updates.append((row.offer_id, row.offer_state, "DELIVERED"))
+            print(f"C4 - TRANSPORT_ON_THE_WAY -> DELIVERED - offer: {row.offer_id}")
 
+
+        # Fallback logic for case where there will longer period of scheduler run than distance time  
+        elif (
+            row.offer_state in ("APPROVED", "TRANSPORT_PREPARATION")
+            and row.delivery_at_utc < utc_now
+            ):
+            updates.append((row.offer_id, row.offer_state, "DELIVERED"))
+            print(f"Fallback - changed to DELIVERED - offer: {row.offer_id}")      
+
+        # Falback to catch if any/condition is missed -> troubleshooting
         else:
-            print("Undefined condition and state")
+            print(f"Undefined condition and state - offer: {row.offer_id}")
 
 
     for offer_id, was_state, new_state in updates:

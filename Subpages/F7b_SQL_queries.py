@@ -31,11 +31,12 @@ SELECT
     a.offer_state,
     a.created_utc,
     a.approve_till_utc,
-    a.delivery_at_utc
+    a.delivery_at_utc,
+    a.transport_start_utc
                             
 FROM function7.offer a
                 
-WHERE a.offer_state IN('CREATED', 'APPROVED', 'TRANSPORT_IN_PROGRESS')
+WHERE a.offer_state IN('CREATED','APPROVED','TRANSPORT_PREPARATION','TRANSPORT_ON_THE_WAY')
 
 ORDER BY a.offer_id DESC
 
@@ -49,11 +50,12 @@ SELECT
     a.offer_state,
     a.created_utc,
     a.approve_till_utc,
-    a.delivery_at_utc
+    a.delivery_at_utc,
+    a.transport_start_utc
                             
 FROM function7.offer a
 WHERE a.offer_id = :offer_id
-    AND a.offer_state IN('CREATED', 'APPROVED', 'TRANSPORT_IN_PROGRESS')
+    AND a.offer_state IN('CREATED','APPROVED','TRANSPORT_PREPARATION','TRANSPORT_ON_THE_WAY')
 ;"""
 
 
