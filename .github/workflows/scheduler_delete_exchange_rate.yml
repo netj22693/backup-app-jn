@@ -1,4 +1,4 @@
-name: Refresh State Scheduler
+name: Delete Exchange Rate
 
 on:
   schedule:
