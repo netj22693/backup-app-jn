@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from pandas.io.formats.style import Styler
 from sqlalchemy import text
 from typing import Optional
 from datetime import datetime, timezone
@@ -264,3 +265,53 @@ def input_validation(input: str) -> Optional[str]:
     else:
         st.error(f"Invalid Offer format inserted - **{input}** is not valid. Valid format: F7-XXX")
         return None
+
+
+# ===== Data stying =====
+def mapping_states(df: pd.DataFrame, mapping_dict: dict) -> pd.DataFrame:
+
+
+    df.insert(1, "Icon", "")
+
+    mapping = pd.DataFrame.from_dict(mapping_dict, orient="index")
+  
+    df["Icon"] = df["State"].map(mapping["symbol"])
+    df["Color"] = df["State"].map(mapping["color"])
+
+    # Note: 'state' mapping based on 'name' must be at the end as it changes to original lookup value 'APPROVE' -> 'Approved'
+    df["State"] = df["State"].map(mapping["name"])
+
+
+    return df
+
+
+
+def get_styling_colors(df: pd.DataFrame) -> Styler:
+
+    df[" "] = df.index + 1
+    df = df.set_index(" ")
+
+    # 1) This is separate variable for colors -> for styling because there will be drop from df before df_styled (styler has no .drop())
+    colors = df["Color"]
+
+    # 2) Drop from the origin DF
+    df_display = df.drop(columns=["Color"])
+
+    def style_row(row):
+        rgb = colors.loc[row.name]
+
+        return [
+            f"color: rgb({rgb})" if column == "Icon" else ""
+            for column in row.index
+        ]
+
+    # Implementing colors + firmating - Note: must happen in 1 step here (if I split it both will not be applied)
+    df_style = (
+            df_display.style
+            .apply(style_row, axis=1)
+            .format({
+                "Final price": "{:,.2f}",
+            })
+        )
+
+    return df_style

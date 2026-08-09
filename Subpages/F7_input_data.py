@@ -360,3 +360,43 @@ extra_service_dict = {
     "fragile": 5,
     "danger":  7
 }
+
+
+# =========== F7B UI ==========
+states_dict = {
+    "CREATED": {
+        "name": "Created",
+        "symbol" : "⏺",
+        "color" : "255, 120, 226"
+    },
+    "APPROVED": {
+        "name": "Approved",
+        "symbol" : "✔",
+        "color" : "81, 224, 54"
+    },
+    "REJECTED": {
+        "name": "Rejected",
+        "symbol" : "✖",
+        "color" : "214, 0, 0"
+    },
+    "EXPIRED": {
+        "name": "Expired",
+        "symbol" : "─",
+        "color" : "150, 148, 150"
+    },
+    "TRANSPORT_PREPARATION": {
+        "name": "Transport preparation",
+        "symbol" : "🞂",
+        "color" : "222, 149, 87"
+    },
+    "TRANSPORT_ON_THE_WAY": {
+        "name": "Transport on the way",
+        "symbol" : "🡺",
+        "color" : "16, 124, 222"
+    },
+    "DELIVERED": {
+        "name": "Delivered",
+        "symbol" : "⏺",
+        "color" : "56, 161, 35"
+    },
+}
