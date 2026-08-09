@@ -8,6 +8,7 @@ from Subpages.F7_UI_image_generator import provide_ui_image_path, provide_ui_col
 from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, sql_query_offer_status_validation_df, sql_query_offer_status_validation_single, sql_query_logs, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes
 from Subpages.F7_input_data import tranport_types_list, dataset_cities, states_dict
 from Subpages.F7b_operational_functions import change_state_in_db, singular_or_plural, input_validation, operational_update_of_states, display_state_and_symbol_mapped, display_offer_logs, mapping_states, get_styling_colors
+from Subpages.F7B_UI_functions import display_state_flow, display_state_flow_expander
 
 
 
@@ -70,7 +71,9 @@ with tab1:
         df = mapping_states(df, states_dict)
 
 
-        # Styled DF visualization
+        # UI + Styled DF visualization
+        ''
+        display_state_flow_expander()
         ''
         st.dataframe(
             get_styling_colors(df),
@@ -363,8 +366,7 @@ with tab2:
 
 
                     with tab2_tab3:
-                        st.info("This section is under build - to be available soon")
-                        # Sem dát simple BPMN flow + Pop up odkaz na description, který k tomu pak napíšu s větším a rozsáhlejším BPMN
+                        display_state_flow()
 
 
 # ====================== TAB 3 ======================
