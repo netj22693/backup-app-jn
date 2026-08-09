@@ -381,12 +381,12 @@ states_dict = {
     },
     "EXPIRED": {
         "name": "Expired",
-        "symbol" : "─",
+        "symbol" : "⏺",
         "color" : "150, 148, 150"
     },
     "TRANSPORT_PREPARATION": {
         "name": "Transport preparation",
-        "symbol" : "🞂",
+        "symbol" : "⯈",
         "color" : "222, 149, 87"
     },
     "TRANSPORT_ON_THE_WAY": {

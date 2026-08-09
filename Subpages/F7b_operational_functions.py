@@ -7,6 +7,77 @@ from datetime import datetime, timezone
 from sqlalchemy import Engine, Column, String, DateTime, Integer
 from sqlalchemy.orm import declarative_base, Session
 
+# ===== Data stying =====
+def style_row(row: pd.Series, colors: pd.Series, column_name: str):
+    rgb = colors.loc[row.name]
+
+    return [
+        f"color: rgb({rgb})" if column == column_name else ""
+        for column in row.index
+    ]
+
+
+def get_columns_styled(df: pd.DataFrame, color_mapping: dict) -> Styler:
+
+    def style_row(row):
+        styles = []
+
+        for column in row.index:
+            color_column = color_mapping.get(column)
+
+            if color_column:
+                rgb = row[color_column]
+                styles.append(f"color: rgb({rgb})")
+            else:
+                styles.append("")
+
+        return styles
+
+    return df.style.apply(style_row, axis=1)
+
+
+def mapping_states(df: pd.DataFrame, mapping_dict: dict) -> pd.DataFrame:
+
+
+    df.insert(1, "Icon", "")
+
+    mapping = pd.DataFrame.from_dict(mapping_dict, orient="index")
+  
+    df["Icon"] = df["State"].map(mapping["symbol"])
+    df["Color"] = df["State"].map(mapping["color"])
+
+    # Note: 'State' mapping based on 'name' must be at the end as it changes to original lookup value 'APPROVE' -> 'Approved'
+    df["State"] = df["State"].map(mapping["name"])
+
+    return df
+
+
+
+def get_styling_colors(df: pd.DataFrame) -> Styler:
+
+    df[" "] = df.index + 1
+    df = df.set_index(" ")
+
+    # 1) This is separate variable for colors -> for styling because there will be drop from df before df_styled (styler has no .drop())
+    colors = df["Color"]
+
+    # 2) Drop from the origin DF
+    df_display = df.drop(columns=["Color"])
+
+    # Implementing colors + firmating - Note: must happen in 1 step here (if I split it both will not be applied)
+    df_style = (
+        df_display.style
+        .apply(
+            lambda row: style_row(row, colors, "Icon"), 
+            axis=1
+        )
+        .format({
+            "Final price": "{:,.2f}",
+        })
+    )
+
+    return df_style
+
 # ===== UI text adjustment =====
 def singular_or_plural(input_value: float) -> str:
     '''
@@ -20,34 +91,73 @@ def singular_or_plural(input_value: float) -> str:
         return "s"
 
 
-def display_offer_state(offer_state: str):
+def display_state_and_symbol_mapped(input_state: str, mapping_dict: dict) -> str:
 
-    st.write(f"""
-    - Offer state: **{offer_state}**
-    """)
+    state = mapping_dict.get(input_state)
+
+    mapped_state = state["name"]
+    rgb = state["color"]
+    symbol = state["symbol"]
+    
+    st.markdown(
+        f"Offer state: **{mapped_state}** <span style='color: rgb({rgb});'>{symbol}</span>",
+        unsafe_allow_html=True
+    )
 
 
-def display_offer_logs(db_engine: Engine, sql_query: str, offer_id: str):
+def display_offer_logs(db_engine: Engine, sql_query: str, offer_id: str, mapping_dict: dict):
 
     df = pd.read_sql_query(sql=text(sql_query), con=db_engine, params={"offer_id" : offer_id}) 
 
     df.index = df.index + 1
 
+    mapping = pd.DataFrame.from_dict(mapping_dict, orient="index")
+
+    df["Sf"] = df["From"].map(mapping["symbol"])
+    df["Sf_color"] = df["From"].map(mapping["color"])
+    # Note: 'name' mapping based on 'name' must be at the end as it changes to original lookup value 'APPROVE' -> 'Approved'
+    df["From"] = df["From"].map(mapping["name"])
+
+    df["St"] = df["To"].map(mapping["symbol"])
+    df["St_color"] = df["To"].map(mapping["color"])
+    # Note: 'name' mapping based on 'name' must be at the end as it changes to original lookup value 'APPROVE' -> 'Approved'
+    df["To"] = df["To"].map(mapping["name"])
+
+    df = df[["From", "Sf", "Sf_color", "To", "St","St_color", "Info", "Timestamp UTC"]]
+
+    # If None in these colums → create empty string ""
+    df[["From", "Sf"]] = df[["From", "Sf"]].fillna("")
+
+    df_style = get_columns_styled(
+        df,
+        { # Creation of simple dict for mapping
+            "Sf": "Sf_color",
+            "St": "St_color",
+        }
+    )
 
     # Display on UI 
-    ''
-    st.write("""
-    - Offer change logs (UTC time):
-    """)
-
+    st.write("") # Woraround to make a space
     if df.empty:
+
         st.info(f"""
         - The offer {offer_id} has no log history available
         - This function was developed later on - starting by offer F7-322
         """)
 
     else:
-        st.write(df)
+        st.dataframe(
+            df_style, 
+            column_config={
+                # None -> hides
+                "Sf_color": None,
+                "St_color": None,
+
+                # Renaming columns
+                "Sf": "",
+                "St": ""
+            }
+        )
 
 
 
@@ -266,52 +376,3 @@ def input_validation(input: str) -> Optional[str]:
         st.error(f"Invalid Offer format inserted - **{input}** is not valid. Valid format: F7-XXX")
         return None
 
-
-# ===== Data stying =====
-def mapping_states(df: pd.DataFrame, mapping_dict: dict) -> pd.DataFrame:
-
-
-    df.insert(1, "Icon", "")
-
-    mapping = pd.DataFrame.from_dict(mapping_dict, orient="index")
-  
-    df["Icon"] = df["State"].map(mapping["symbol"])
-    df["Color"] = df["State"].map(mapping["color"])
-
-    # Note: 'state' mapping based on 'name' must be at the end as it changes to original lookup value 'APPROVE' -> 'Approved'
-    df["State"] = df["State"].map(mapping["name"])
-
-
-    return df
-
-
-
-def get_styling_colors(df: pd.DataFrame) -> Styler:
-
-    df[" "] = df.index + 1
-    df = df.set_index(" ")
-
-    # 1) This is separate variable for colors -> for styling because there will be drop from df before df_styled (styler has no .drop())
-    colors = df["Color"]
-
-    # 2) Drop from the origin DF
-    df_display = df.drop(columns=["Color"])
-
-    def style_row(row):
-        rgb = colors.loc[row.name]
-
-        return [
-            f"color: rgb({rgb})" if column == "Icon" else ""
-            for column in row.index
-        ]
-
-    # Implementing colors + firmating - Note: must happen in 1 step here (if I split it both will not be applied)
-    df_style = (
-            df_display.style
-            .apply(style_row, axis=1)
-            .format({
-                "Final price": "{:,.2f}",
-            })
-        )
-
-    return df_style
