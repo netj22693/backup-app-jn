@@ -366,7 +366,7 @@ extra_service_dict = {
 states_dict = {
     "CREATED": {
         "name": "Created",
-        "symbol" : "⏺",
+        "symbol" : "⬤",
         "color" : "255, 120, 226"
     },
     "APPROVED": {
@@ -381,22 +381,22 @@ states_dict = {
     },
     "EXPIRED": {
         "name": "Expired",
-        "symbol" : "⏺",
+        "symbol" : "⬤",
         "color" : "150, 148, 150"
     },
     "TRANSPORT_PREPARATION": {
         "name": "Transport preparation",
-        "symbol" : "⯈",
+        "symbol" : "▶",
         "color" : "222, 149, 87"
     },
     "TRANSPORT_ON_THE_WAY": {
         "name": "Transport on the way",
-        "symbol" : "🡺",
+        "symbol" : "➜",
         "color" : "16, 124, 222"
     },
     "DELIVERED": {
         "name": "Delivered",
-        "symbol" : "⏺",
+        "symbol" : "⬤",
         "color" : "56, 161, 35"
     },
 }
