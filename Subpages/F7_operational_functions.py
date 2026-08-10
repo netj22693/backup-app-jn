@@ -903,13 +903,12 @@ def adjust_delivery_time(dt):
     else:
         adjusted_dt = dt
 
-
     # Second condition. DAY 
     # If Saturday (5) -> Monday 10:00  
     # If Sunday (6) -> Monday 10:00  
 
     weekday = adjusted_dt.weekday()
-    hour_2 = adjusted_dt.hour
+    hour_adjusted = adjusted_dt.hour
 
     if weekday == 5:   
         adjusted_dt = (adjusted_dt + timedelta(days=2)).replace(hour=10, minute=0, second=0, microsecond=0)
@@ -917,10 +916,16 @@ def adjust_delivery_time(dt):
     elif weekday == 6: 
         adjusted_dt = (adjusted_dt + timedelta(days=1)).replace(hour=10, minute=0, second=0, microsecond=0)
 
+
     # If Monday (0) 07:00 - 9:59 -> Monday 10:00  
     elif weekday == 0:
-            if 6 < hour_2 < 10:
-                adjusted_dt = dt.replace(hour=10, minute=0, second=0, microsecond=0)             
+        if 6 < hour_adjusted < 10:
+            adjusted_dt = adjusted_dt.replace(hour=10, minute=0, second=0, microsecond=0)   
+        else:
+            pass   
+        
+    else:
+        pass     
 
     return adjusted_dt
 
@@ -952,9 +957,9 @@ def delivery_date_time(overall_time: float, agreed_till: int, time_physical_move
     # This is when the time will be physically moved -> NOT including the SLA administration
     transport_start = delivery_dt - timedelta(hours=time_physical_move)
 
-
     # Adjustment due to DTF (Data Time Frame business logic)
     delivery_dt = adjust_delivery_time(delivery_dt)
+
 
     customer_approve_till = date_time_europe + timedelta(hours=agreed_till)
 

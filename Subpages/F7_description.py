@@ -9,6 +9,11 @@ def adjust_delivery_time(dt):
 
     hour = dt.hour
 
+    #  - Delivery Monday: 10:00 - 22:00
+    #  - Delivery Tuesday - Friday : 07:00 - 22:00
+    #  - Delivery Saturday & Sunday: No delivery ->  Monday: 10:00
+
+
     # First condition, TIME/HOURS. 
     # If 22:00 - 23:59 -> move to 07:00 next day
     # If 00:00 - 06:59 -> move to 07:00 same day 
@@ -27,7 +32,7 @@ def adjust_delivery_time(dt):
     # If Sunday (6) -> Monday 10:00  
 
     weekday = adjusted_dt.weekday()
-    hour_2 = adjusted_dt.hour
+    hour_adjusted = adjusted_dt.hour
 
     if weekday == 5:   
         adjusted_dt = (adjusted_dt + timedelta(days=2)).replace(hour=10, minute=0, second=0, microsecond=0)
@@ -35,10 +40,16 @@ def adjust_delivery_time(dt):
     elif weekday == 6: 
         adjusted_dt = (adjusted_dt + timedelta(days=1)).replace(hour=10, minute=0, second=0, microsecond=0)
 
+
     # If Monday (0) 07:00 - 9:59 -> Monday 10:00  
     elif weekday == 0:
-            if 6 < hour_2 < 10:
-                adjusted_dt = dt.replace(hour=10, minute=0, second=0, microsecond=0)             
+        if 6 < hour_adjusted < 10:
+            adjusted_dt = adjusted_dt.replace(hour=10, minute=0, second=0, microsecond=0)   
+        else:
+            pass   
+        
+    else:
+        pass     
 
     return adjusted_dt
 """
@@ -419,12 +430,7 @@ with tab_tc2:
         st.write("- In case that **calculated Expected delivery time** is **not** in these time frames -> **the delivery time is adjusted to fit into these**  and displayed to user")
 
     ''
-    st.write("""
-        - The application uses time based on **python libraries 'time' and 'datetime'** (actual time and delta principle)
-             """)
 
-    ''
-    st.image("Pictures/Function_7/F7_desc_uml_time.svg")
 
 
 with tab_tc3:
