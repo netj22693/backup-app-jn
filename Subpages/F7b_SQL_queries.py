@@ -21,7 +21,7 @@ FROM function7.offer a
     INNER JOIN function7.currency_detail j ON (a.currency = j.currency_id)
                 
 ORDER BY a.offer_id DESC
-LIMIT 15
+LIMIT 30
 ;"""
 
 
@@ -40,7 +40,7 @@ WHERE a.offer_state IN('CREATED','APPROVED','TRANSPORT_PREPARATION','TRANSPORT_O
 
 ORDER BY a.offer_id DESC
 
-LIMIT 15
+LIMIT 30
 ;"""
 
 # This one is used in TAB 2

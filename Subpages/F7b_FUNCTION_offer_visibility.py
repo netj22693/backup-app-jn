@@ -45,7 +45,7 @@ st.write("- View into DB. Based on offers created in Function 7...")
 ''
 
 tab1, tab2, tab3, tab4 = st.tabs([
-    "Last 15 offers",
+    "Last 30 offers",
     "Search for specific offer",
     "Customized search",
     "Analytics"
@@ -57,7 +57,7 @@ db_engine = connection_db()
 with tab1:
 
     ''
-    if st.button("Show last 15 offers", width="stretch", icon=":material/table:"):
+    if st.button("Show last 30 offers", width="stretch", icon=":material/table:"):
 
         # Pulling of data from DB - status check
         df_status_check = pd.read_sql(sql_query_offer_status_validation_df, db_engine)
