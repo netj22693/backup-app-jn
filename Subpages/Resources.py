@@ -29,6 +29,9 @@ class Assets:
         f5_description_uml_seq_f5b = "Pictures/Function_5/F5B_UML_seq_v2.svg"
         f5_description_uml_seq_f5b_job = "Pictures/Function_5/F5B_UML_seq_job_v2.svg"
 
+        #F7B process/state flow
+        f7_state_flow = "Pictures/Function_7/F7B_state_flow/F7B_state_flow_v2.svg"
+
 
     class Links:
         linked_in = "https://www.linkedin.com/in/jan-netolicka-12209a221/"

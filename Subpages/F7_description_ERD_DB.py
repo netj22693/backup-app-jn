@@ -4,7 +4,7 @@ st.write("# DB & ERD")
 
 ''
 st.write("""
-- The **data produced by F7 function** are inserted into **5 operational tables** - :green[**offer_id**] is the main connector/key
+- The **data produced by F7 function** are inserted into **6 operational tables** - :green[**offer_id**] is the main connector/key
 - The **F7 function does mapping** of the values before insert to follow the **logic of lookup tables**
 - The **data are used also by F7B function** for **searching across DB** and **analytics stuff**
 - This DB design follows **standards of relational DB** concept to be **scalable**
@@ -61,7 +61,7 @@ st.write("-------")
 
 st.page_link(
 	label = "Next page",
-	page="Subpages/F7_description_dtd.py",
+	page="Subpages/F7_desc_state.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
 	icon=":material/east:"
