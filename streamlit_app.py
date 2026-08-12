@@ -205,7 +205,7 @@ function_7_desc_erd_db = st.Page(
 
 function_7_desc_state = st.Page(
     "Subpages/F7_desc_state.py",
-    title="Description - States",
+    title="Description - State flow",
     icon= ":material/code:"
 )
 
