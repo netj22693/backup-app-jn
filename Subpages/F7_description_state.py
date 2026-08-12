@@ -91,7 +91,7 @@ st.image("Pictures/Function_7/F7B_state_flow/F7B_state_diagrams_ERD_v1.svg")
 ''
 ''
 ''
-st.write("- Example of data based on states and methods of changing them")
+st.write("- Example of data based on states and methods changing them")
 ''
 st.image("Pictures/Function_7/F7B_state_flow/F7B_state_diagrams_ERD_detail_v1.svg")
 
