@@ -302,6 +302,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 2:
+		- **v67.8** - XML Schema/XSD validation - limited to 30 detail lines - 13-Aug-2026
 		- **v64.8** - Widgets/filters - logic rebuilt to be more dynamic - 05-July-2026
 		- **v64.7** - Major code refactoring & clean up - 03-July-2026
 		- **v52.3** - Function description extended by Video Guide - 03-Dec-2025
@@ -321,6 +322,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 1:
+		- **v67.8** - XML Schema/XSD validation - limited to 30 detail lines - 13-Aug-2026
 		- **v67.7** - UI layout change - 13-Aug-2026
 		- **v52.3** - Function description extended by Video Guide - 03-Dec-2025
 		- **v0.1** - F1 released (together with F2) - 20-Feb-2025

@@ -64,7 +64,7 @@ xsd_structure = '''<?xml version="1.0" encoding="UTF-8"?>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="detail" maxOccurs="unbounded">
+				<xs:element name="detail" maxOccurs="30">
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="category">

@@ -59,7 +59,7 @@ with tab2:
 
 	''
 	''
-	st.image("Pictures/Function_3/Function_3_json detail_10.png")
+	st.image("Pictures/Function_3/F3_json_detail_v2.png")
 	''
 	''
 

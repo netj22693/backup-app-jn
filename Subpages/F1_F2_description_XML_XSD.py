@@ -26,7 +26,7 @@ Basic principle: The XML is split into 2 main segments - header and detail.
 ''' - detail - is unbounded -> reflecting line/purchased product information (the more products you buy, the more lines/details will be in)'''
 ''
 ''        
-st.image("Pictures/V2_pictures/Simple level.png")
+st.image("Pictures/Function_2/F1_F2_XML_high_level_v2.png")
 ''
 ''
 ''  
@@ -41,26 +41,25 @@ tab1, tab2 = st.tabs([
 #tab1 
 with tab1:
         ''
-        st.image("Pictures/V2_pictures/header properties_2.png")
+        st.image("Pictures/Function_2/F1_F2_XML_header_v3.png")
         ''
-        ''  
-        st.image("Pictures/V2_pictures/xsd_header_2.png")
         ''
-        ''  
+        ''
+        ''
+        ''
+        ''
+
 
 #tab2 
 with tab2:
         '' 
-        st.image("Pictures/V2_pictures/detail properties_2.png")
-        ''
-        ''  
-        st.image("Pictures/V2_pictures/xsd_detail_2.png")
+        st.image("Pictures/Function_2/F1_F2_XML_detail_v2.png")
         ''
         ''
 
 
 with st.expander("Show XSD structure - code", icon= ":material/code:"):
-	st.code(xsd_structure, language= 'xml', line_numbers=True, height=700)
+	st.code(xsd_structure, language= 'xml', line_numbers=True, height=400)
 
 
 st.write("------")
@@ -68,7 +67,7 @@ st.write("------")
 st.write("##### Message definition overview:")
 ''
 ''
-st.image("Pictures/Function_2/F2_XML_layout_table.png")
+st.image("Pictures/Function_2/F2_XML_layout_table_v2.png")
 
 st.write("----")
 

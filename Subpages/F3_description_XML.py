@@ -40,11 +40,8 @@ with tab1:
         '' 
         st.image("Pictures/Function_3/XSD header.png")
         ''
-        ''  
-        st.image("Pictures/Function_3/F3_xsd_header.png")
         ''
-        ''  
-        ''
+
 
 with tab2: 
         ''
@@ -56,11 +53,8 @@ with tab2:
         '' 
         st.image("Pictures/Function_3/XSD detail.png")
         ''
-        ''  
-        st.image("Pictures/Function_3/F3_xsd_detail.png")
         ''
-        ''  
-        ''
+
 
 with tab3:
         ''
@@ -71,13 +65,14 @@ with tab3:
         '' 
         st.image("Pictures/Function_3/XSD transportation.png")
         ''
-        ''  
-        st.image("Pictures/Function_3/F3_xsd_transportation.png")
+        ''
+        ''
         ''
         ''
 
+
 with st.expander("Show XSD structure - code", icon= ":material/code:"):
-	st.code(xsd_as_string, language= 'xml', line_numbers=True, height=700)
+	st.code(xsd_as_string, language= 'xml', line_numbers=True, height=400)
 
 
 

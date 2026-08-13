@@ -20,8 +20,8 @@ st.write(
 )
 ''
 st.write("""
-- The number of detail lines is basically not limited
 - The XMLs **can be customized**
+- The XMLs are limited to **30 detail lines** (Set as XSD rule)
 - The customization needs to **fit into predefined XML Schema/XSD rules**
 """)
 
