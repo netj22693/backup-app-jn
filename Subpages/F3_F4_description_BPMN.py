@@ -2,6 +2,8 @@ import streamlit as st
 
 
 st.write("# BPMN diagrams")
+''
+''
 
 
 # Split into tabs
@@ -14,13 +16,12 @@ tab0, tab1, tab2 = st.tabs([
 
 #Tab 0
 with tab0:
-    st.write("#### Overview:")
     ''
     st.write("""
-    - **Simple overview of use-cases** and which **function to use**
-        - Create invoice - F3
-        - See invoice(s) - F3B
-        - Change file format of created invoice - F4
+    **Simple overview of use-cases** and which **function to use**
+    - Create invoice - F3
+    - See invoice(s) - F3B
+    - Change file format of created invoice - F4
     """)
 
     ''
@@ -30,7 +31,8 @@ with tab0:
 
 #Tab 1
 with tab1:
-    st.write("#### Function 3 process flow:")
+    ''
+    st.write("##### Function 3 process flow:")
     ''
     ''
     st.image("Pictures/Function_3/Function_3_BPMN process_6.svg")
@@ -78,7 +80,8 @@ with tab1:
 
 #Tab 2
 with tab2:
-    st.write("#### Function 4 process flow:")
+    ''
+    st.write("##### Function 4 process flow:")
     ''
     '''
     - If user wants to **change a file format** of the invoice generated in F3, there is a possibility to **use F4**

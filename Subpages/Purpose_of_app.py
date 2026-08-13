@@ -4,6 +4,8 @@ from Subpages.Resources import Assets
 
 st.write("# Welcome!")
 ''
+''
+
 st.write(
     "Purpose of this application is to play with **data structures/objects (XML, JSON, dictionary, dataframes)** and implement them into **smaller versions of real business cases**. The application has **8 functions**."
     )
@@ -319,6 +321,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 1:
+		- **v67.7** - UI layout change - 13-Aug-2026
 		- **v52.3** - Function description extended by Video Guide - 03-Dec-2025
 		- **v0.1** - F1 released (together with F2) - 20-Feb-2025
 	""")

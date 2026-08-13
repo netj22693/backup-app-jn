@@ -2,23 +2,23 @@ import streamlit as st
 from Subpages.Resources import Assets
 
 st.write("# UML diagrams")
+''
+''
 
 
 # Split into tabs
 tab1, tab2, tab3, tab4 = st.tabs([
-	"1 - Use Case diagram",
-	"2 - Activity diagram",
-	"3 - Activity diagram - Error handling",
-    "4 - XML against XSD validation"
+	"Use Case diagram",
+	"Activity diagram",
+	"Activity diagram - Error handling",
+    "XML against XSD validation"
 ])
 
 
 # Tab 1
 with tab1:
-
     ''
-    ''
-    st.write("#### UML Use Case diagram:")
+    st.write("##### UML Use Case diagram:")
     ''
     ''
     st.write("###### Function 1: ")
@@ -34,10 +34,8 @@ with tab1:
 
 # Tab 2
 with tab2:
-
     ''
-    ''
-    st.write("#### UML Activity diagram:")
+    st.write("##### UML Activity diagram:")
     ''
     st.write("""
     - Provides a visibility of:
@@ -74,10 +72,8 @@ with tab2:
 
 # Tab 3
 with tab3:
-
     ''
-    ''
-    st.write("#### UML Activity diagram - Error handling:")
+    st.write("##### UML Activity diagram - Error handling:")
     ''
     st.write("""
     - The application/Function 2 works with **specific XML file**
@@ -98,7 +94,7 @@ with tab3:
         
         ''
         ''
-        st.write("##### Display alert:")
+        st.write("###### Display alert:")
         ''
         st.image("Pictures/Function_2/F2_uml_display_alert.svg", width= 180)
         ''
@@ -124,7 +120,7 @@ with tab3:
         icon= ":material/help_outline:"
         ):
         ''
-        st.write("##### Validation of XML using XSD:")
+        st.write("###### Validation of XML using XSD:")
         ''
         st.image("Pictures/Function_2/F2_uml_error_handling_annotation_2.svg", width= 400)
 
@@ -183,7 +179,7 @@ with tab3:
         ):
 
         ''
-        st.write("##### Error note:")
+        st.write("###### Error note:")
         ''
         st.image("Pictures/Function_2/F2_uml_error_handling_annotation_3.svg", width=460)
         ''
@@ -197,10 +193,8 @@ with tab3:
 
 # Tab 4
 with tab4:
-
     ''
-    ''
-    st.write("#### XML against XSD validation:")
+    st.write("##### XML against XSD validation:")
     ''
     st.write("""
     - This is **not** specifically UML modelling language 

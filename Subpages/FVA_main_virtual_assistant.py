@@ -132,6 +132,8 @@ def get_welcome_message():
 
 # application UI
 st.title("🤖 FAQ Chatbot")
+''
+''
 
 if "messages" not in st.session_state:
     with st.spinner("Loading..."):

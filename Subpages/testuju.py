@@ -1,139 +1,221 @@
 import streamlit as st
+import xml.etree.ElementTree as ET
+from Subpages.F1_F2_xml_structures import xml_data_euro, xml_data_koruna, xml_data_usdollar, xml_empty_template
 
-st.write("# BPMN diagrams")
-st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
 
-st.write("-----")
-st.write("#### Application process flow:")
-''
-st.write("- 5 stages of the process - high level")
-''
-# st.image("Pictures/BPMN flow_2.png")
-st.image("Pictures/Function_2/F2_BPMN_5stages HLE_2.svg")
-''
-''
-''
+# ======================== Screen part ==================================
 
-# Split of the screen to tabs
-tab1, tab2, tab3 = st.tabs([
-    "Data Parsing",
-	"Data Validation",
-	"Data Visualization"
+st.write("# XML download")
+''
+''
+st.write(
+'''
+- Here you can **download XMLs** which can be used for parsing in **Function 2**:
 
+    1) Predefind file - **sum matches** - **euro - €** - 15 detail lines
+    2) Predefind file - **sum matches** - **koruna - Kč** - 12 detail lines
+    3) Predefind file - sum does **not** match - **US dollar - $** - 15 detail lines
+    4) XML Template
+'''
+)
+''
+st.write("""
+- The number of detail lines is basically not limited
+- The XMLs **can be customized**
+- The customization needs to **fit into predefined XML Schema/XSD rules**
+""")
+
+''
+''
+''
+tab1, tab2, tab3, tab4 = st.tabs([
+    "1. Euro",
+	"2. Koruna",
+	"3. US dollar",
+	"4. XML Template"
 ])
 
-
-# Tab 1
+# Option 1
 with tab1:
+    ''
+    st.write("""
+    - Currency: **euro - €**
+    - Lines in detail segment: **15**
+    - <total_sum> value **matches** sum of <price_amount> values in detail segment
+    - <total_sum_services> **matches** sum of <service_price> in detail segment
+    """)
 
     ''
-    st.write("##### Data Parsing process:")
     ''
-    st.write(" - Principle of the data parsing process from XML")
+    '''
+    -> Validation step in the application will be passed
+    '''
     ''
-    # st.image("Pictures/V2_pictures/BPMN data parsing.png")
-    st.image("Pictures/Function_2/F2_BPMN_data parsing.svg")
     ''
+    st.image("Pictures/V2_pictures/XML download - scenario 1_3.png")
+    ''
+    ''
+    with st.expander("Show XML structure - code", icon= ":material/code:"):
+        st.code(xml_data_euro, language= 'xml', line_numbers=True, height=700)
+
+    if st.download_button("Download",data = xml_data_euro  , file_name="XML_euro_sum_matching.xml", icon = ":material/download:"):
+        st.info("Download will happen in few seconds")
+
+
+
+# Option 2
+with tab2:
+    ''
+    st.write("""
+    - Currency: **Koruna - Kč**
+    - Lines in detail segment: **12**
+    - <total_sum> value **matches** sum of <price_amount> values in detail segment
+    - <total_sum_services> **matches** sum of <service_price> in detail segment
+    """)
+
+    ''
+    ''
+    '''
+    -> Validation step in the application will be passed
+    '''
+    ''
+    ''
+    st.image("Pictures/V2_pictures/XML download - scenario 2_2.png")
+    ''
+    ''
+    with st.expander("Show XML structure - code", icon= ":material/code:"):
+        st.code(xml_data_koruna, language= 'xml', line_numbers=True, height=700)
+        
+    if st.download_button("Download",data = xml_data_koruna  , file_name="XML_koruna_sum_matching.xml", icon = ":material/download:"):
+        st.info("Download will happen in few seconds")
+
+
+# Option 3
+with tab3:
+    ''
+    st.write("""
+    - Currency: **US dollar - $**
+    - Lines in detail segment: **15**
+    - <total_sum> value does **NOT** match sum of <price_amount> values in detail segment
+    - <total_sum_services> does **NOT** match sum of <service_price> in detail segment
+    """)
+
+    ''
+    ''
+    '''
+    -> Validation step in the application will show this inconsistency of numbers
+    '''
+    ''
+    ''
+    st.image("Pictures/V2_pictures/XML download - scenario 3_2.png")
+    ''
+    ''
+    with st.expander("Show XML structure - code", icon= ":material/code:"):
+        st.code(xml_data_usdollar, language= 'xml', line_numbers=True, height=700)
+        
+    if st.download_button("Download",data = xml_data_usdollar , file_name="XML_usdollar_sum_not matching.xml", icon = ":material/download:"):
+        st.info("Download will happen in few seconds")
+
+
+
+# Option 4
+with tab4:
+    ''
+    st.write("""
+    - Empty template
+    - Lines in detail segment: **12** 
+    - Data to be fulfilled manually
+    """)
+
+    '''
+    - **(!) It is recommended: Once the XML is fullfiled, pair it and validate it against XSD. It will help to make sure that the XML will be processed throught the application and will not fail due to data quality issue**
+    '''
+    '''
+    - *XSD - can be downloaded from the page Functions 1 and 2 "Description - XSD, XML Schema"*
+    '''
     ''
     with st.expander(
-        "The XML message",
+        "How to pair XML with XSD",
         icon= ":material/help_outline:"
         ):
         
+        st.write("1) Download XSD Schema from this application:")
         ''
-        st.write("Structure:")
-        st.image("Pictures/Function_1/F1_F2_XML_simple_screen.PNG")
-        ''
-        st.write("More details about the XML and data parsing:")
-
         st.link_button(
-            label = "Go to XSD, XML description page",
+            label = "Go to XSD page",
             url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
             help="The button will redirect to the relevant page within this app for download.",
             width="stretch",
             icon=":material/launch:"
+
+            ) 
+        ''
+        ''
+        st.write("2) At the **BOTTOM** of the page - download button .xsd format -> XSD will be downloaded")
+        ''
+        st.image("Pictures/V2_pictures/XSD download button.png", width=130)
+        ''
+        ''
+        st.write("3) Find location where the XSD is located on your device (probably in Downloads folder)")
+        ''
+        ''
+        st.write("4) Download XML Template from this section 4), just below :)")
+        ''
+        ''
+        st.write("5) Open the XML Template file in your data editor (Notepad++ is for free)")
+        ''
+        st.image("Pictures/V2_pictures/Altova notepad.png")
+        ''
+        ''
+        st.write("6) Extend the XML root element <invoice> by the following:")
+        ''
+        st.image("Pictures/V2_pictures/root extended.png")
+        ''
+        st.write('''
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="*location of your XSD file*">
+            '''
         )
+        ''
+        ''
+        st.write("7) **XML should be paired with XSD now**")
+        ''
+        ''
+        st.write("8) Depending on data editor tool you use - you can work with the validation and control that you follow predefined rules in the XSD")
+        ''
+        st.image("Pictures/V2_pictures/validation xsd final_2.png")
+        ''
+        ''
+        st.write("9) Once no error detected in your XML -> you can upload it in the app in Function 2 section")
+        ''
+        st.image("Pictures/V2_pictures/no error.png")
+        ''
+        ''
+        st.page_link(
+            label = "Go to Function 2",
+            page="Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
+            help="The button will redirect to the relevant page within this app.",
+            width="stretch",
+            icon=":material/play_circle:"
+            ) 
+        ''
+        ''
 
-# Tab 2
-with tab2:
-
-    ''
-    st.write("##### Data Validation process:")
-    ''
-    # st.image("Pictures/Function_2/F2_BPMN - Validation.png")
-    st.image("Pictures/Function_2/F2_BPMN - Validation.svg")
-    ''
-    ''
-    st.write("""
-    - The application includes validation of the data <total_sum> (Invoice summary of price) against price per item/product <price>. 
-    - The same happens for <total_sum_services> against sum of <serice_price> in detail.""")
-    ''
-    st.write(" -> **If match**, application displays green success note.")
-    st.write(" -> **If not match**, application displays warrning message and provides  suggestion of correct numbers (was calculated by the application)")
-    ''
-    st.write("**In BOTH CASES, the application ALLOWS to continue to data visualization step.**")
-
-
-    ''
-    ''
-    with st.expander(
-        "Validation",
-        icon= ":material/help_outline:"
-        ):
         
-        st.write("Example of validation in the Function 2:")
-        st.image("Pictures/V2_pictures/validation.png")
-        ''
-        ''
-
-
-# Tab 3
-with tab3:
-
-    ''
-    st.write("##### Data Visualization process:")
-    ''
-    # st.image("Pictures/Function_2/F2_BPMN - Visualization.png")
-    st.image("Pictures/Function_2/F2_BPMN - Visualization_2.svg")
-    ''
-    ''
-    st.write("""
-        Data Visualization:
-        - Overview of header and detail information including values which the app. calculated
-        - Interactive table  connected including pie chart and bar chart
-        - Static charts 
-        - And some highlights of the invoice - based on SQL query
-        """  
-        )
 
     ''
     ''
-    with st.expander(
-         "Visualization",
-        icon= ":material/help_outline:"
-        ):
+    ''
+    st.image("Pictures/V2_pictures/XML download - scenario 4.png")
+    ''
+    ''
+    with st.expander("Show XML structure - code", icon= ":material/code:"):
+        st.code(xml_empty_template, language= 'xml', line_numbers=True, height=700)
         
-        ''
-        st.write("**Few Examples:**")
-        ''
-        ''
-        st.write("- Invoice Overview & SQL highlights expanders:")
-        ''
-        st.image("Pictures/Function_2/F2_BPMN_visualization_highlight.svg",width=420)
-        ''
-        ''
-        ''
-        st.write("- Interactive table")
-        ''
-        st.image("Pictures/Function_2/F2_BPMN_visualization_inttable.svg",width=420)
-        ''
-        ''
-        ''
-        st.write("- Static charts")
-        ''
-        st.image("Pictures/Function_2/F2_BPMN_visualization_static charts.svg",width=420)
-        ''
-        ''
+    if st.download_button("Download",data = xml_empty_template , file_name="XML_empty_template.xml", icon = ":material/download:"):
+        st.info("Download will happen in few seconds")
+
+
 
 # ===== Page navigation at the bottom ======
 ''
@@ -143,16 +225,16 @@ with tab3:
 st.write("-------")
 
 st.page_link(
-    label = "Next page",
-	page="Subpages/F2_description_UML.py",
+    label = "Go to: Function 2",
+	page="Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
-    icon=":material/east:",
+    icon=":material/play_circle:",
 	) 
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/F1_F2_description_function.py",
+	page="Subpages/F1_F2_description_XML_XSD.py",
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/west:"

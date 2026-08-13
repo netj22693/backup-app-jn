@@ -1,7 +1,7 @@
 import streamlit as st 
 
 st.write("# DB & ERD")
-
+''
 ''
 st.write("""
 - The **data produced by F7 function** are inserted into **6 operational tables** - :green[**offer_id**] is the main connector/key

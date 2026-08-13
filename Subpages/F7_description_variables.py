@@ -2,7 +2,7 @@ import streamlit as st
 
 
 st.write("# Variables")
-
+''
 ''
 st.write("""
         - **Mind map** of the **Functions 7 and 7B** code

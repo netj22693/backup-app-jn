@@ -4,15 +4,17 @@ from Subpages.F3_F4_xml_json_structures import json_structure, json_schema
 
 # ============= Screen ================
 st.write("# JSON Schema")
+''
+''
 st.write(
-    '''
+'''
 Description of JSON structure with which these Functions 3 and 4 work. There is a download button at the end of this page to download the JSON Schema.
 
 '''
 )
 
 st.write("----")
-st.write("#### Diagram:")
+st.write("##### Diagram:")
 ''
 '''
 Basic principle: exactly as the XML also the JSON is split into 3 main segments - header, detail and transportation. So it can be said that the JSON structure has identical layout as the XML. Of course using JSON principles and rules. 
@@ -35,11 +37,12 @@ tab1,tab2, tab3 = st.tabs([
 
 #Tab1
 with tab1:
-	st.write("###### Header:")
 	''
-	'''
-	Header element includes nested elements providing key information/summary about an order which is created through the Function 3 in this app. 
-	'''
+	st.write("""
+	**Header** element includes nested elements providing key information/summary about an order which is created through the Function 3 in this app. 
+	"""
+	)
+
 	''
 	''
 	st.image("Pictures/Function_3/Function_3_json header_3.png")
@@ -48,14 +51,13 @@ with tab1:
 
 #Tab2
 with tab2:
-	st.write("###### Detail:")
 	''
-	'''
-	Detail element includes also nested elements. They are used for information about the product which was purchased and whether any additional service for the product was bought or not (Insurance, Extended varanty).
-	'''
+	st.write("""
+	**Detail** element includes also nested elements. They are used for information about the product which was purchased and whether any additional service for the product was bought or not (Insurance, Extended varanty).
+	"""
+	)
+
 	''
-	''
-	st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
 	''
 	st.image("Pictures/Function_3/Function_3_json detail_10.png")
 	''
@@ -63,11 +65,12 @@ with tab2:
 
 #Tab3
 with tab3:
-	st.write("###### Transportation:")
 	''
-	'''
-	Different element for this Function 3 (in comparison with Function 1 and 2 in this app) is element transportation. Also few nested elements which have information about transportation/delivery. 
-	'''
+	st.write("""
+	**Transportation** is a specific element for this Function 3 (in comparison with Function 1 and 2 in this app). Including few nested elements which keep data about transportation and delivery. 
+	"""
+	)
+
 	''
 	''
 	st.image("Pictures/Function_3/Function_3_json transportation_2.png")
@@ -84,7 +87,7 @@ with st.expander("Show JSON Schema structure - code", icon= ":material/code:"):
 	
 
 st.write("-----")
-st.write("#### Principle of the JSON in context of the Function 3:")
+st.write("##### Principle of the JSON in context of the Function 3:")
 ''
 '''
 In the application user provides key inputs about the product through input fields. Based on the inputs, function culculates and provides the remaining details (about your order) necessary/to fulfill this predefined json. 
@@ -99,7 +102,7 @@ st.write("-----")
 
 # Download of JSON Schema
 
-st.write("#### Download of the JSON Schema for Functions 3 and 4:")
+st.write("##### Download of the JSON Schema for Functions 3 and 4:")
 ''
 ''
 

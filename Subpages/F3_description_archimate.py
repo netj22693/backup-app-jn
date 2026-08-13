@@ -34,7 +34,6 @@ st.write("""
     - This is about dedicated Streamlit application server on which this application runs and Neon DB server
         - The principle of this **Streamlit Framework & environment** is **IaaS on Google Cloud**
         - The **DB environment** is **PaaS on Noen Cloud**
-    - Codespace: **MS Visual Studio Code**
     - Repository: **GitHub**
     """)
 
@@ -46,11 +45,11 @@ st.image("Pictures/Logo/Logo_GitHub.svg", width=140)
 ''
 st.image("Pictures/Logo/Logo_python.svg", width=140)
 
-st.image("Pictures/Logo/Logo_streamlit.svg", width=180)
+# st.image("Pictures/Logo/Logo_streamlit.svg", width=180)
 
-st.image("Pictures/Logo/Logo_neon.svg")
+st.image("Pictures/Logo/Logo_neon.svg", width=120)
 
-st.image("Pictures/Logo/Logo_vscode.svg", width=35)
+# st.image("Pictures/Logo/Logo_vscode.svg", width=35)
 
 
 # ===== Page navigation at the bottom ======

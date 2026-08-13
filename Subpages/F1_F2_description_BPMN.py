@@ -7,7 +7,6 @@ st.write("# BPMN diagrams")
 ''
 ''
 ''
-''
 st.image("Pictures/Function_2/F2_BPMN_HL_v4.svg")
 ''
 ''

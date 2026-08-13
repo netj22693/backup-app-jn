@@ -259,7 +259,6 @@ pg = st.navigation(
             fun_2_UML,
             app_description_ArM,
             xsd,
-            fun_2_DB_ERT,
             download, 
             parsing
             ],

@@ -3,7 +3,7 @@ from Subpages.Resources import Assets
 
 
 st.write("# State flow")
-
+''
 ''
 st.write("""
 - The **transport offer created in F7** is just first part of the business process.

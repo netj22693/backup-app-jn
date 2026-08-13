@@ -6,15 +6,18 @@ from Subpages.Resources import Assets
 
 # ========================== Screen ============================
 st.write("# XSD, XML Schema")
+''
+''
 st.write(
-    '''
-Description of XML structure/XML Schema with which this application, **Function 1 produces (Download) and Function 2 (Parsing and Visualization), works**. There is a **download button at the end of this page** to download the **XML Schema**.
-
-'''
+"""
+- Description of XML structure & XML Schema used in Function 1 and Function 2
+- **Function 1** - Download of predefined XMLs
+- **Function 2** - Parsing from the XMLs and data visualization
+"""
 )
 
 st.write("----")
-st.write("#### Diagram:")
+st.write("##### Diagram:")
 '''
 Basic principle: The XML is split into 2 main segments - header and detail. 
 '''
@@ -37,13 +40,6 @@ tab1, tab2 = st.tabs([
 
 #tab1 
 with tab1:
-
-        st.write("###### Header:")
-        ''
-        st.write("- Diagram with element properties")
-        ''
-        ''  
-        st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
         ''
         st.image("Pictures/V2_pictures/header properties_2.png")
         ''
@@ -54,13 +50,6 @@ with tab1:
 
 #tab2 
 with tab2:
-         
-        st.write("###### Detail:")
-        ''
-        st.write("- Diagram with element properties")
-        ''
-        ''  
-        st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
         '' 
         st.image("Pictures/V2_pictures/detail properties_2.png")
         ''
@@ -76,14 +65,14 @@ with st.expander("Show XSD structure - code", icon= ":material/code:"):
 
 st.write("------")
 ''
-st.write("#### Message definition overview:")
+st.write("##### Message definition overview:")
 ''
 ''
 st.image("Pictures/Function_2/F2_XML_layout_table.png")
 
 st.write("----")
 
-st.write("#### Principle of the XML:")
+st.write("##### Principle of the XML:")
 ''
 ''  
 st.image("Pictures/V2_pictures/Principle_3.png")
@@ -168,7 +157,7 @@ with st.expander(
 ''
 st.write("------")
 
-st.write("#### XML against XSD validation")
+st.write("##### XML against XSD validation")
 ''
 st.write("""
 - Why the **XSD/XML Schema** is important?
@@ -189,7 +178,7 @@ st.write("------")
 
 # Download of XSD
 
-st.write("#### Download of the XSD for Functions 1 and 2:")
+st.write("##### Download of the XSD for Functions 1 and 2:")
 ''
 ''
 
@@ -274,11 +263,11 @@ with st.expander(
 st.write("-------")
 
 st.page_link(
-    label = "Next page",
-	page="Subpages/F2_description_DB_ERT.py",
+    label = "Go to: Function 1",
+	page="Subpages/F1_FUNCTION_XML_dowload.py",
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
-    icon=":material/east:",
+    icon=":material/play_circle:",
 	) 
 
 st.page_link(

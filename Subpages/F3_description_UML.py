@@ -1,6 +1,8 @@
 import streamlit as st
 
 st.write("# UML diagrams")
+''
+''
 
 
 # Split into tabs
@@ -22,8 +24,6 @@ with tab1:
     st.image("Pictures/Function_3/F3_F4_functions_file_builders_v1.svg")
 
 with tab2:
-    st.write("#### UML Use Case diagram:")
-    ''
     ''
     st.write("###### Function 3: ")
     ''
@@ -36,8 +36,6 @@ with tab2:
     st.image("Pictures/Function_4/F4_UML_UseCase.svg")
 
 with tab3:
-    st.write("#### UML Activity diagram:")
-    ''
     ''
     st.write("""
     - Related to the **Function 3** - Creation of XML or JSON

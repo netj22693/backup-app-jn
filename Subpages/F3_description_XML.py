@@ -11,7 +11,7 @@ Description of XML structure/XML Schema with which these **Functions 3 and 4 wor
 )
 
 st.write("----")
-st.write("#### Diagram:")
+st.write("##### Diagram:")
 ''
 '''
 Basic principle: The XML is split into 3 main segments - header, detail and transportation. 
@@ -31,11 +31,12 @@ tab1, tab2, tab3 = st.tabs([
 
 # Note(!): I am keeping 2 tabs nesting. If 1 tab only it doesn't function properly
 with tab1:
-        st.write("###### Header:")
         ''
-        '''
-        Header element includes nested elements providing key information/summary about an order which is created through the Function 3 in this app. 
-        '''
+        st.write("""
+        **Header** element includes nested elements providing key information/summary about an order which is created through the Function 3 in this app. 
+        """
+        )
+
         '' 
         st.image("Pictures/Function_3/XSD header.png")
         ''
@@ -46,11 +47,12 @@ with tab1:
         ''
 
 with tab2: 
-        st.write("###### Detail:")
         ''
-        '''
-        Detail element includes also nested elements. They are used for information about the product which was purchased and whether any additional service for the product was bought or not (Insurance, Extended warranty).
-        '''
+        st.write("""
+        **Detail** element includes also nested elements. They are used for information about the product which was purchased and whether any additional service for the product was bought or not (Insurance, Extended warranty).
+        """
+        )
+
         '' 
         st.image("Pictures/Function_3/XSD detail.png")
         ''
@@ -61,11 +63,11 @@ with tab2:
         ''
 
 with tab3:
-        st.write("###### Transportation:")
         ''
-        '''
-        Transportation is a different element for this Function 3 (in comparison with Function 1 and 2 in this app). Including few nested elements which keep data about transportation and delivery. 
-        '''
+        st.write("""
+        **Transportation** is a specific element for this Function 3 (in comparison with Function 1 and 2 in this app). Including few nested elements which keep data about transportation and delivery. 
+        """
+        )
         '' 
         st.image("Pictures/Function_3/XSD transportation.png")
         ''
@@ -80,7 +82,7 @@ with st.expander("Show XSD structure - code", icon= ":material/code:"):
 
 
 st.write("-----")
-st.write("#### Message definition overview:")
+st.write("##### Message definition overview:")
 ''
 ''
 st.image("Pictures/Function_3/F3_XML_layout_table.png")
@@ -88,7 +90,7 @@ st.image("Pictures/Function_3/F3_XML_layout_table.png")
 
 st.write("----")
 
-st.write("#### Principle of the XML in context of the Function 3:")
+st.write("##### Principle of the XML in context of the Function 3:")
 ''
 '''
 In the application user provides key inputs about the product through input fields. Based on the inputs the Function 3 calculates and provides the remaining details (about your order). Then XML with data is produced.  
@@ -132,7 +134,7 @@ st.write("----")
 
 # Download of XSD
 
-st.write("#### Download of the XSD for Functions 3 and 4:")
+st.write("##### Download of the XSD for Functions 3 and 4:")
 ''
 ''
 
