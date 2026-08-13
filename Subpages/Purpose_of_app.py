@@ -405,6 +405,13 @@ st.page_link(
 	width="stretch",
 	icon=":material/play_circle:"
 	)
+st.page_link(
+	label = "Function 5B",
+	page="Subpages/Function_5b/F5b_FUNCTION_exchange_rate.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+	icon=":material/play_circle:"
+	)
 ''
 st.page_link(
     label = "Description about F6",
