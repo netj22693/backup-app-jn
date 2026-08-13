@@ -16,6 +16,7 @@ with st.expander("Overview of functions", icon= ":material/list:"):
 	''
 	st.write("""
 		- **Function 3:** Creation of XML (slightly different one than used in F1 and F2) or JSON, through the application screen (manual inputs) - **DB on cloud**
+		- **Function 3B:** Invoice Visibility - Visibility & Analytics based on invoices created in F3
 		- **Function 4:** Mapping/change of file format XML -> JSON or JSON -> XML 
 		""")
 	''
@@ -31,6 +32,7 @@ with st.expander("Overview of functions", icon= ":material/list:"):
 	''
 	st.write("""
 		- **Function 7:** Transport calculation - **API** provides input & **DB on cloud** (:green[**my favorit function**])
+		- **Function 7B:** Offer Visibility - Visibility & Analytics based on transport offers created in F7
 		"""
 		)
 	''

@@ -1,24 +1,23 @@
 import streamlit as st
 
 st.write("# BPMN diagrams")
-st.write("*For better visibility - put cursor on the picture and click on the icon in the right upper corner")
 
-st.write("-----")
-st.write("#### Application process flow:")
+
 ''
-st.write("- 5 stages of the process - high level")
 ''
-# st.image("Pictures/BPMN flow_2.png")
-st.image("Pictures/Function_2/F2_BPMN_5stages HLE_2.svg")
+''
+''
+''
+st.image("Pictures/Function_2/F2_BPMN_HL_v4.svg")
 ''
 ''
 ''
 
 # Split of the screen to tabs
 tab1, tab2, tab3 = st.tabs([
-    "Data Parsing",
-	"Data Validation",
-	"Data Visualization"
+    "Data parsing",
+	"Data validation",
+	"Data visualization"
 
 ])
 
@@ -27,21 +26,15 @@ tab1, tab2, tab3 = st.tabs([
 with tab1:
 
     ''
-    st.write("##### Data Parsing process:")
-    ''
-    st.write(" - Principle of the data parsing process from XML")
-    ''
-    # st.image("Pictures/V2_pictures/BPMN data parsing.png")
-    st.image("Pictures/Function_2/F2_BPMN_data parsing.svg")
+    st.image("Pictures/Function_2/F2_BPMN_HL_data_parsing_v2.svg", width=550)
     ''
     ''
     with st.expander(
-        "The XML message",
+        "XML message structure",
         icon= ":material/help_outline:"
         ):
         
         ''
-        st.write("Structure:")
         st.image("Pictures/Function_1/F1_F2_XML_simple_screen.PNG")
         ''
         st.write("More details about the XML and data parsing:")
@@ -58,82 +51,53 @@ with tab1:
 with tab2:
 
     ''
-    st.write("##### Data Validation process:")
-    ''
-    # st.image("Pictures/Function_2/F2_BPMN - Validation.png")
-    st.image("Pictures/Function_2/F2_BPMN - Validation.svg")
+    st.image("Pictures/Function_2/F2_BPMN_HL_data_validation_v4.svg")
     ''
     ''
     st.write("""
-    - The application includes validation of the data <total_sum> (Invoice summary of price) against price per item/product <price>. 
-    - The same happens for <total_sum_services> against sum of <serice_price> in detail.""")
+    Validation:
+    - Summary of prices in **detail level <price>** needs to equal to **<total_sum> in header** 
+    - Summary of prices per extra services in **detail level <service_price>** needs to equal to **<total_sum_services> in header**
+    """)
+
+
+    ''
     ''
     st.write(" -> **If match**, application displays green success note.")
-    st.write(" -> **If not match**, application displays warrning message and provides  suggestion of correct numbers (was calculated by the application)")
+    st.success("Passed")
+
+    ''
+    st.write(" -> **If not match**, application displays warrning message and provides visibility of what is not matching.")
+
+    st.warning(f"""
+    Not passed
+    - **Invoice summary** does **not** equal to **line values**
+    - You can either continue with existing file or adjust the input file and upload it again.""")
+
+    st.warning(f"""
+    - **Total sum** in the XML invoice is: **2000.00** US dollar
+    - But **summary of prices** in detail lines is: **2103.00** US dollar""")
+
+    ''
     ''
     st.write("**In BOTH CASES, the application ALLOWS to continue to data visualization step.**")
-
-
-    ''
-    ''
-    with st.expander(
-        "Validation",
-        icon= ":material/help_outline:"
-        ):
-        
-        st.write("Example of validation in the Function 2:")
-        st.image("Pictures/V2_pictures/validation.png")
-        ''
-        ''
-
 
 # Tab 3
 with tab3:
 
     ''
-    st.write("##### Data Visualization process:")
-    ''
-    # st.image("Pictures/Function_2/F2_BPMN - Visualization.png")
-    st.image("Pictures/Function_2/F2_BPMN - Visualization_2.svg")
+    st.image("Pictures/Function_2/F2_BPMN_HL_data_visualization_v3.svg")
     ''
     ''
     st.write("""
-        Data Visualization:
-        - Overview of header and detail information including values which the app. calculated
-        - Interactive table  connected including pie chart and bar chart
-        - Static charts 
-        - And some highlights of the invoice - based on SQL query
-        """  
-        )
+    Data visualization:
+    - Data analytics & statistics based on the uploaded XML invoice
+    - Interactive table connected including pie chart and bar chart
+    - Static charts
+    """
+    )
 
-    ''
-    ''
-    with st.expander(
-         "Visualization",
-        icon= ":material/help_outline:"
-        ):
-        
-        ''
-        st.write("**Few Examples:**")
-        ''
-        ''
-        st.write("- Invoice Overview & SQL highlights expanders:")
-        ''
-        st.image("Pictures/Function_2/F2_BPMN_visualization_highlight.svg",width=420)
-        ''
-        ''
-        ''
-        st.write("- Interactive table")
-        ''
-        st.image("Pictures/Function_2/F2_BPMN_visualization_inttable.svg",width=420)
-        ''
-        ''
-        ''
-        st.write("- Static charts")
-        ''
-        st.image("Pictures/Function_2/F2_BPMN_visualization_static charts.svg",width=420)
-        ''
-        ''
+
 
 # ===== Page navigation at the bottom ======
 ''
