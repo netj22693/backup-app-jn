@@ -1,173 +1,246 @@
 import streamlit as st
-import xml.etree.ElementTree as ET
-from Subpages.F1_F2_xml_structures import xml_data_euro, xml_data_koruna, xml_data_usdollar, xml_empty_template
+# import of xsd structure from different file
+from Subpages.F1_F2_xml_structures import xsd_structure, xsd_structure_rules_detail, xsd_structure_rules_header
+from Subpages.Resources import Assets
 
 
-# ======================== Screen part ==================================
-
-st.write("# XML download")
+# ========================== Screen ============================
+st.write("# XSD, XML Schema")
 ''
 ''
 st.write(
-'''
-- Here you can **download XMLs** which can be used for parsing in **Function 2**:
+"""
+- Description of XML structure & XML Schema used in Function 1 and Function 2
+- **Function 1** - Download of predefined XMLs
+- **Function 2** - Parsing from the XMLs and data visualization
+"""
+)
 
-    1) Predefind file - **sum matches** - **euro - €** - 15 detail lines
-    2) Predefind file - **sum matches** - **koruna - Kč** - 12 detail lines
-    3) Predefind file - sum does **not** match - **US dollar - $** - 15 detail lines
-    4) XML Template
+st.write("----")
+st.write("##### Diagram:")
+'''
+Basic principle: The XML is split into 2 main segments - header and detail. 
+'''
+''
+''' - header - can be only one time in the message -> it is a summary of the invoice'''
+''' - detail - is unbounded -> reflecting line/purchased product information (the more products you buy, the more lines/details will be in)'''
+''
+''        
+st.image("Pictures/Function_2/F1_F2_XML_high_level_v3.svg", width=320)
+''
+''
+''  
+# Split into tabs 1
+
+tab1, tab2, tab3 = st.tabs([
+	"Header",
+	"Detail",
+    "Notation"
+])
+
+
+#tab1 
+with tab1:
+        ''
+        st.image("Pictures/Function_2/F1_F2_XML_header_v4.svg")
+        ''
+        ''
+        ''
+        ''
+        ''
+        ''
+        ''
+        ''
+        with st.expander("XSD structure rules - header", icon= ":material/code:"):
+            st.code(xsd_structure_rules_header, language= 'xml', line_numbers=True, height=400)
+
+
+#tab2 
+with tab2:
+        '' 
+        st.image("Pictures/Function_2/F1_F2_XML_detail_v3.svg")
+        ''
+        ''
+        with st.expander("XSD structure rules - detail", icon= ":material/code:"):
+            st.code(xsd_structure_rules_detail, language= 'xml', line_numbers=True, height=400)
+
+#tab3
+with tab3:
+        ''
+        st.image("Pictures/Function_2/F1_F2_XML_notation_v1.svg", width=570)
+        ''
+        ''
+
+
+with st.expander("XSD structure - full", icon= ":material/code:"):
+	st.code(xsd_structure, language= 'xml', line_numbers=True, height=400)
+
+
+st.write("------")
+''
+st.write("##### Message definition overview:")
+''
+''
+st.image("Pictures/Function_2/F2_XML_layout_table_v2.png")
+
+st.write("----")
+
+st.write("##### Principle of the XML:")
+''
+''  
+st.image("Pictures/V2_pictures/Principle_3.png")
+''
+''  
+st.write('''
+As explained upper, there are 2 main segments (header and detail). Each of them has its own specific nested elements -> sub-elements. They provide more detail view on the invoice. 
 '''
 )
 ''
+''  
+st.write("###### In context of data parsing:")
+''
+st.write('''
+The application does the following, when XML uploaded:
+- Parsing of data from all the elements (except <service>)
+- Calculation and validation of the data (if header matches detail -> visible in the application)
+-  Take the parsed data to get the relevant information visible and visualized in the application
+'''
+)
+''
+st.image("Pictures/V2_pictures/Principle in context of parsing8.png")
+''
+st.write('''
+- **<customer>** - parsed as is ; data visualization
+- **<invoice_number>** - parsed as is ; data visualization
+- **<date>** - parsed as is - YYYY-MM-DD ; data visualization
+- **<total_sum>** - parsed as is ; for validation & data visualization
+- **<total_sum_services>** - parsed as is ; for validation & data visualization 
+- **<currency>** - parsed as is ; reflects the currency in the application - euro|US dollar|Kč
+- attribute **id=** - parsed as is ; for purposes of no. of products and visualization 
+- **<category>** - parsed as is ; for purposes of filtering in application - PC|TV|Gaming|Mobile phones|Tablets|Major Appliances|Households
+- **<product_name>** - parsed as is ; for visualization
+- **<price_amount>** - parsed as is ; for validation & data visualization
+- **<service>** - not parsed 
+- **<service_type>** - parsed as is ; important for logic of calculation which application does - None|extended warranty|insurance
+- **<service_price>** - parsed as is ; important for logic of calculation which application does + for validation & data visualization
+'''
+)
+''  
+st.write("###### Rules in the application from XML point of view:")
+''
+st.write('''
+Validation:
+- **<total_sum> rule:** sum all <price_amount> values from <detail> and compare with <total_sum>
+- **<total_sum_services> rule:** sum all <service_price> values from <detail> and compare with <total_sum_services>
+'''
+)
+''
+with st.expander(
+    "Validation",
+    icon= ":material/help_outline:"
+	):
+    
+	st.write("Example of validation in the Function 2:")
+	st.image("Pictures/V2_pictures/validation.png")
+	
+''
+''
+st.write('''
+Additional rules:
+- **<service_typ> rule - insurance:** sum all <service_price> values from <detail> when 'insurance' in <service_type>
+- **<service_typ> rule - extended warranty:** sum all <service_price> values from <detail> when 'extended warranty' in <service_type>
+'''
+)
+''
+with st.expander(
+    "Example of data parsing - insurance and extended warranty",
+    icon= ":material/help_outline:"
+	):
+    
+	st.write("Data parsing based on service type:")
+	''
+	st.image("Pictures/V2_pictures/Parsing help_2.png")
+	''
+	''
+	st.write("Anti-pattern:")
+	st.write(" - In case that there will be any price value but service type as 'None', the parsing mechanism will ignore the value")
+	''
+	st.image("Pictures/V2_pictures/None-not parsed.png")
+	
+''
+st.write("------")
+
+st.write("##### XML against XSD validation")
+''
 st.write("""
-- The number of detail lines is basically not limited
-- The XMLs **can be customized**
-- The customization needs to **fit into predefined XML Schema/XSD rules**
+- Why the **XSD/XML Schema** is important?
+	- Because it is **main function** programmed in the **Function 2**
+	- It helps to **keep the expected data quality** and helps to **reduce 99% of failures** (my estimate) during processing of the XML invoice
+    - The **XSD is stored in repository** and whenever XML invoice uploaded by user -> the XSD is called by the programmed function to make a validation:
+		- If data **okay** -> Function 2 executes next steps
+        - If data **not** okay -> User will see an alert on screen -> Function 2 stopped
 """)
 
 ''
 ''
+st.image(Assets.Images.f2_xml_xsd_validation)
+
 ''
-tab1, tab2, tab3, tab4 = st.tabs([
-    "1. Euro",
-	"2. Koruna",
-	"3. US dollar",
-	"4. XML Template"
-])
-
-# Option 1
-with tab1:
-    ''
-    st.write("""
-    - Currency: **euro - €**
-    - Lines in detail segment: **15**
-    - <total_sum> value **matches** sum of <price_amount> values in detail segment
-    - <total_sum_services> **matches** sum of <service_price> in detail segment
-    """)
-
-    ''
-    ''
-    '''
-    -> Validation step in the application will be passed
-    '''
-    ''
-    ''
-    st.image("Pictures/V2_pictures/XML download - scenario 1_3.png")
-    ''
-    ''
-    with st.expander("Show XML structure - code", icon= ":material/code:"):
-        st.code(xml_data_euro, language= 'xml', line_numbers=True, height=700)
-
-    if st.download_button("Download",data = xml_data_euro  , file_name="XML_euro_sum_matching.xml", icon = ":material/download:"):
-        st.info("Download will happen in few seconds")
+st.write("------")
 
 
+# Download of XSD
 
-# Option 2
-with tab2:
-    ''
-    st.write("""
-    - Currency: **Koruna - Kč**
-    - Lines in detail segment: **12**
-    - <total_sum> value **matches** sum of <price_amount> values in detail segment
-    - <total_sum_services> **matches** sum of <service_price> in detail segment
-    """)
+st.write("##### Download of the XSD for Functions 1 and 2:")
+''
+''
 
-    ''
-    ''
-    '''
-    -> Validation step in the application will be passed
-    '''
-    ''
-    ''
-    st.image("Pictures/V2_pictures/XML download - scenario 2_2.png")
-    ''
-    ''
-    with st.expander("Show XML structure - code", icon= ":material/code:"):
-        st.code(xml_data_koruna, language= 'xml', line_numbers=True, height=700)
+st.write("- Format .xsd")
+if st.download_button(
+            "Download",
+            data = xsd_structure,
+            file_name="XML_Schema_for_functions_1_and_2.xsd",
+            icon = ":material/download:"
+            ):
+
+            st.info("Download will happen in few seconds")
+
+''
+''
+st.write("- Format .txt")  
+if st.download_button("Download",
+            data = xsd_structure,
+            file_name="XML_Schema_for_functions_1_and_2.txt",
+            icon = ":material/download:"
+            ):
         
-    if st.download_button("Download",data = xml_data_koruna  , file_name="XML_koruna_sum_matching.xml", icon = ":material/download:"):
-        st.info("Download will happen in few seconds")
+            st.info("Download will happen in few seconds")
 
 
-# Option 3
-with tab3:
-    ''
-    st.write("""
-    - Currency: **US dollar - $**
-    - Lines in detail segment: **15**
-    - <total_sum> value does **NOT** match sum of <price_amount> values in detail segment
-    - <total_sum_services> does **NOT** match sum of <service_price> in detail segment
-    """)
+# How to pair XSD with XML
 
-    ''
-    ''
-    '''
-    -> Validation step in the application will show this inconsistency of numbers
-    '''
-    ''
-    ''
-    st.image("Pictures/V2_pictures/XML download - scenario 3_2.png")
-    ''
-    ''
-    with st.expander("Show XML structure - code", icon= ":material/code:"):
-        st.code(xml_data_usdollar, language= 'xml', line_numbers=True, height=700)
-        
-    if st.download_button("Download",data = xml_data_usdollar , file_name="XML_usdollar_sum_not matching.xml", icon = ":material/download:"):
-        st.info("Download will happen in few seconds")
+''
+''
+''
+''
+st.write("*In case you want to troubleshoot your XML message:")
+with st.expander(
+	"How to pair XML with XSD",
+	icon= ":material/help_outline:"
+	):
 
-
-
-# Option 4
-with tab4:
-    ''
-    st.write("""
-    - Empty template
-    - Lines in detail segment: **12** 
-    - Data to be fulfilled manually
-    """)
-
-    '''
-    - **(!) It is recommended: Once the XML is fullfiled, pair it and validate it against XSD. It will help to make sure that the XML will be processed throught the application and will not fail due to data quality issue**
-    '''
-    '''
-    - *XSD - can be downloaded from the page Functions 1 and 2 "Description - XSD, XML Schema"*
-    '''
-    ''
-    with st.expander(
-        "How to pair XML with XSD",
-        icon= ":material/help_outline:"
-        ):
-        
-        st.write("1) Download XSD Schema from this application:")
-        ''
-        st.link_button(
-            label = "Go to XSD page",
-            url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
-            help="The button will redirect to the relevant page within this app for download.",
-            width="stretch",
-            icon=":material/launch:"
-
-            ) 
         ''
         ''
-        st.write("2) At the **BOTTOM** of the page - download button .xsd format -> XSD will be downloaded")
+        st.write("1) Download XSD Schema **.xsd**")
         ''
-        st.image("Pictures/V2_pictures/XSD download button.png", width=130)
+        st.write("2) Find location where the XSD is located on your device (probably in Downloads folder)")
         ''
-        ''
-        st.write("3) Find location where the XSD is located on your device (probably in Downloads folder)")
-        ''
-        ''
-        st.write("4) Download XML Template from this section 4), just below :)")
-        ''
-        ''
-        st.write("5) Open the XML Template file in your data editor (Notepad++ is for free)")
+        st.write("3) Open the XML file, you want to check, in your data editor (Notepad++ is for free)")
         ''
         st.image("Pictures/V2_pictures/Altova notepad.png")
         ''
         ''
-        st.write("6) Extend the XML root element <invoice> by the following:")
+        st.write("4) Extend the XML root element <invoice> by the following:")
         ''
         st.image("Pictures/V2_pictures/root extended.png")
         ''
@@ -178,55 +251,33 @@ with tab4:
         )
         ''
         ''
-        st.write("7) **XML should be paired with XSD now**")
+        st.write("5) **XML should be paired with XSD now**")
         ''
         ''
-        st.write("8) Depending on data editor tool you use - you can work with the validation and control that you follow predefined rules in the XSD")
+        st.write("6) Depending on data editor tool you use - you can work with the validation and control that you follow predefined rules in the XSD")
         ''
         st.image("Pictures/V2_pictures/validation xsd final_2.png")
         ''
         ''
-        st.write("9) Once no error detected in your XML -> you can upload it in the app in Function 2 section")
+        st.write("7) Once no error detected in your XML -> you can upload it in the app in Function 2 section")
         ''
         st.image("Pictures/V2_pictures/no error.png")
-        ''
-        ''
-        st.page_link(
-            label = "Go to Function 2",
-            page="Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
-            help="The button will redirect to the relevant page within this app.",
-            width="stretch",
-            icon=":material/play_circle:"
-            ) 
-        ''
-        ''
-
-        
-
-    ''
-    ''
-    ''
-    st.image("Pictures/V2_pictures/XML download - scenario 4.png")
-    ''
-    ''
-    with st.expander("Show XML structure - code", icon= ":material/code:"):
-        st.code(xml_empty_template, language= 'xml', line_numbers=True, height=700)
-        
-    if st.download_button("Download",data = xml_empty_template , file_name="XML_empty_template.xml", icon = ":material/download:"):
-        st.info("Download will happen in few seconds")
 
 
 
+
+
+
+
+
+''
+''
 # ===== Page navigation at the bottom ======
-''
-''
-''
-''
 st.write("-------")
 
 st.page_link(
-    label = "Go to: Function 2",
-	page="Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
+    label = "Go to: Function 1",
+	page="Subpages/F1_FUNCTION_XML_dowload.py",
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
     icon=":material/play_circle:",
@@ -234,9 +285,10 @@ st.page_link(
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/F1_F2_description_XML_XSD.py",
+	page="Subpages/F1_F2_description_archimate.py",
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/west:"
 	) 
+
 

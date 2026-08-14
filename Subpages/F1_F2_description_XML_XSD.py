@@ -1,6 +1,6 @@
 import streamlit as st
 # import of xsd structure from different file
-from Subpages.F1_F2_xml_structures import xsd_structure
+from Subpages.F1_F2_xml_structures import xsd_structure, xsd_structure_rules_detail, xsd_structure_rules_header
 from Subpages.Resources import Assets
 
 
@@ -26,39 +26,53 @@ Basic principle: The XML is split into 2 main segments - header and detail.
 ''' - detail - is unbounded -> reflecting line/purchased product information (the more products you buy, the more lines/details will be in)'''
 ''
 ''        
-st.image("Pictures/Function_2/F1_F2_XML_high_level_v2.png")
+st.image("Pictures/Function_2/F1_F2_XML_high_level_v3.svg", width=320)
 ''
 ''
 ''  
 # Split into tabs 1
 
-tab1, tab2 = st.tabs([
+tab1, tab2, tab3 = st.tabs([
 	"Header",
-	"Detail"
+	"Detail",
+    "Notation"
 ])
 
 
 #tab1 
 with tab1:
         ''
-        st.image("Pictures/Function_2/F1_F2_XML_header_v3.png")
+        st.image("Pictures/Function_2/F1_F2_XML_header_v4.svg")
         ''
         ''
         ''
         ''
         ''
         ''
+        ''
+        ''
+        with st.expander("XSD structure rules - header", icon= ":material/code:"):
+            st.code(xsd_structure_rules_header, language= 'xml', line_numbers=True, height=400)
 
 
 #tab2 
 with tab2:
         '' 
-        st.image("Pictures/Function_2/F1_F2_XML_detail_v2.png")
+        st.image("Pictures/Function_2/F1_F2_XML_detail_v3.svg")
+        ''
+        ''
+        with st.expander("XSD structure rules - detail", icon= ":material/code:"):
+            st.code(xsd_structure_rules_detail, language= 'xml', line_numbers=True, height=400)
+
+#tab3
+with tab3:
+        ''
+        st.image("Pictures/Function_2/F1_F2_XML_notation_v1.svg", width=570)
         ''
         ''
 
 
-with st.expander("Show XSD structure - code", icon= ":material/code:"):
+with st.expander("XSD structure - full", icon= ":material/code:"):
 	st.code(xsd_structure, language= 'xml', line_numbers=True, height=400)
 
 

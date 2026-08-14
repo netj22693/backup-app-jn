@@ -113,11 +113,15 @@ xsd_structure = '''<?xml version="1.0" encoding="UTF-8"?>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
-						<xs:attribute name="id" type="xs:integer" use="required" id="yes"/>
+						<xs:attribute name="id" type="xs:integer" use="required"/>
 					</xs:complexType>
 				</xs:element>
 			</xs:sequence>
 		</xs:complexType>
+		<xs:unique name="unique_detail_id">
+			<xs:selector xpath="detail"/>
+			<xs:field xpath="@id"/>
+		</xs:unique>
 	</xs:element>
 </xs:schema>
 '''
@@ -862,4 +866,75 @@ xml_data_euro_db_erd = """<?xml version="1.0" encoding="UTF-8"?>
 		</additional_service>
 	</detail>
 </invoice>
+"""
+
+# Description of XSD rules
+xsd_structure_rules_header = """
+<!-- Element <invoice_number> limited by REGEX -->
+<xs:element name="invoice_number">
+    <xs:simpleType>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="10"/>
+            <xs:maxLength value="10"/>
+            <xs:pattern value="[I]{1}[N]{1}[V]{1}[-]{1}[0-9]{6}"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:element>
+
+<!-- Element <currency> limited input "euro|US dollar|Kč" -->
+<xs:element name="currency">
+    <xs:simpleType>
+        <xs:restriction base="xs:string">
+            <xs:pattern value="euro|US dollar|Kč"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:element>
+
+<!-- Numeric values are set as decimals -->
+<xs:restriction base="xs:decimal">
+"""
+
+xsd_structure_rules_detail = """
+<!-- Element <detail> limited to 30 occurences max -->
+<xs:element name="detail" maxOccurs="30">
+
+<!-- Element <category> limited to predefined list of options -->
+<xs:element name="category">
+    <xs:simpleType>
+        <xs:restriction base="xs:string">
+            <xs:pattern value="PC|TV|Gaming|Mobile phones|Tablets|Major Appliances|Households"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:element>
+
+<!-- Element <service> limited to predefined list of options "Y|N" -->
+<xs:element name="service" default="N">
+    <xs:simpleType>
+        <xs:restriction base="xs:string">
+            <xs:length value="1"/>
+            <xs:pattern value="Y|N"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:element>
+
+<!-- Element <service_type> limited to predefined list of options -->
+<xs:element name="service_type" default="None">
+    <xs:simpleType>
+        <xs:restriction base="xs:string">
+            <xs:pattern value="None|extended warranty|insurance"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:element>
+
+
+<!-- Attribute @id is limited integer which has to be unique -->
+<xs:attribute name="id" type="xs:integer" use="required"/>
+
+<xs:unique name="unique_detail_id">
+    <xs:selector xpath="detail"/>
+    <xs:field xpath="@id"/>
+</xs:unique>
+
+<!-- Numeric values are set as decimals -->
+<xs:restriction base="xs:decimal">
 """
