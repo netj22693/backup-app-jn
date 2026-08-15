@@ -1,4 +1,5 @@
 import streamlit as st
+from Subpages.Resources import Assets
 
 st.write("# BPMN diagrams")
 
@@ -7,13 +8,15 @@ st.write("# BPMN diagrams")
 ''
 ''
 ''
-st.image("Pictures/Function_2/F2_BPMN_HL_v4.svg")
+st.image("Pictures/Function_2/F2_BPMN_HL_v5.svg")
 ''
 ''
 ''
 
 # Split of the screen to tabs
-tab1, tab2, tab3 = st.tabs([
+tab1, tab2, tab3, tab4 = st.tabs([
+    ""
+    "Validation XML & XML Schema",
     "Data parsing",
 	"Data validation",
 	"Data visualization"
@@ -21,8 +24,19 @@ tab1, tab2, tab3 = st.tabs([
 ])
 
 
-# Tab 1
 with tab1:
+
+    ''
+    st.image(Assets.Images.f2_xml_xsd_validation, width=620)
+    ''
+    ''
+    st.write("""
+    - Important step when Function 2 is executed -> **prevents from crash**
+    - Helps to keep uploaded data (XML invoice) **consistent**
+    - The XML Schema validation **catches data issues** 
+    """)
+
+with tab2:
 
     ''
     st.image("Pictures/Function_2/F2_BPMN_HL_data_parsing_v2.svg", width=550)
@@ -46,8 +60,8 @@ with tab1:
             icon=":material/launch:"
         )
 
-# Tab 2
-with tab2:
+
+with tab3:
 
     ''
     st.image("Pictures/Function_2/F2_BPMN_HL_data_validation_v4.svg")
@@ -81,8 +95,8 @@ with tab2:
     ''
     st.write("**In BOTH CASES, the application ALLOWS to continue to data visualization step.**")
 
-# Tab 3
-with tab3:
+
+with tab4:
 
     ''
     st.image("Pictures/Function_2/F2_BPMN_HL_data_visualization_v3.svg")

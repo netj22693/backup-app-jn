@@ -23,7 +23,7 @@ class Assets:
         uml_f7_f7b = "Pictures/Overall_UML_F7_v4.svg"
         uml_f8 = "Pictures/Overall_UML_F8_v3.svg"
         # Function desc related images
-        f2_xml_xsd_validation ="Pictures/Function_2/F2_diagram_xml_xsd_validation.svg"
+        f2_xml_xsd_validation ="Pictures/Function_2/F2_BPMN_HL_xsd_validation_v1.svg"
         # F5 + F5B
         f5_description_uml_seq_f5 = "Pictures/Function_5/F5_UML_seq_v2.svg"
         f5_description_uml_seq_f5b = "Pictures/Function_5/F5B_UML_seq_v2.svg"

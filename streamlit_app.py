@@ -41,7 +41,7 @@ download = st.Page(
 
 xsd = st.Page(
     "Subpages/F1_F2_description_XML_XSD.py",
-    title="Description - XSD, XML Schema",
+    title="Description - XML Schema",
     icon= ":material/code:"
     )
 

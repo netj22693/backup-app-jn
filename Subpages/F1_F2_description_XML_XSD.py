@@ -5,7 +5,7 @@ from Subpages.Resources import Assets
 
 
 # ========================== Screen ============================
-st.write("# XSD, XML Schema")
+st.write("# XML Schema")
 ''
 ''
 st.write(
@@ -170,15 +170,12 @@ with st.expander(
 ''
 st.write("------")
 
-st.write("##### XML against XSD validation")
+st.write("##### Validation XML against XML Schema")
 ''
 st.write("""
-- Why the **XSD/XML Schema** is important?
-	- Because it is **main function** programmed in the **Function 2**
-	- It helps to **keep the expected data quality** and helps to **reduce 99% of failures** (my estimate) during processing of the XML invoice
-    - The **XSD is stored in repository** and whenever XML invoice uploaded by user -> the XSD is called by the programmed function to make a validation:
-		- If data **okay** -> Function 2 executes next steps
-        - If data **not** okay -> User will see an alert on screen -> Function 2 stopped
+- Important step when Function 2 is executed -> **prevents from crash**
+- Helps to keep uploaded data (XML invoice) **consistent**
+- The XML Schema validation **catches data issues** 
 """)
 
 ''
@@ -190,8 +187,7 @@ st.write("------")
 
 
 # Download of XSD
-
-st.write("##### Download of the XSD for Functions 1 and 2:")
+st.write("##### Download of the XML Schema:")
 ''
 ''
 
@@ -225,13 +221,13 @@ if st.download_button("Download",
 ''
 st.write("*In case you want to troubleshoot your XML message:")
 with st.expander(
-	"How to pair XML with XSD",
+	"How to pair XML with XML Schema .xsd",
 	icon= ":material/help_outline:"
 	):
 
         ''
         ''
-        st.write("1) Download XSD Schema **.xsd**")
+        st.write("1) Download XML Schema **.xsd**")
         ''
         st.write("2) Find location where the XSD is located on your device (probably in Downloads folder)")
         ''
@@ -251,10 +247,10 @@ with st.expander(
         )
         ''
         ''
-        st.write("5) **XML should be paired with XSD now**")
+        st.write("5) **XML should be paired with XML Schema now**")
         ''
         ''
-        st.write("6) Depending on data editor tool you use - you can work with the validation and control that you follow predefined rules in the XSD")
+        st.write("6) Depending on data editor tool you use - you can work with the validation and control that you follow predefined rules in the XML Schema")
         ''
         st.image("Pictures/V2_pictures/validation xsd final_2.png")
         ''

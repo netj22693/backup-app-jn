@@ -7,11 +7,10 @@ st.write("# UML diagrams")
 
 
 # Split into tabs
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3 = st.tabs([
 	"Use Case diagram",
 	"Activity diagram",
-	"Activity diagram - Error handling",
-    "XML against XSD validation"
+	"Activity diagram - Error handling"
 ])
 
 
@@ -189,24 +188,6 @@ with tab3:
         - Why? Because the (2) step of XML validation against XSD should catch all data issue -> the python script then should be fully functional because it will get the data which it expects. And because the Function 2 is built "around" the data the processing then should be alright.        
         """)
         ''
-
-
-# Tab 4
-with tab4:
-    ''
-    st.write("##### XML against XSD validation:")
-    ''
-    st.write("""
-    - This is **not** specifically UML modelling language 
-    - But this diagram is here for a context of **the validation XML against XSD**
-        - To visualize that the XSD is stored in **repository**
-        - And when XML file is uploaded, there is function which "calls" the XSD and makes a validation 
-        - This step **reduces 99% of failures** in the application (my estimate), because the data/data quality/data parsing is the key process 
-    """)
-
-    ''
-    ''
-    st.image(Assets.Images.f2_xml_xsd_validation)
 
 
 # ===== Page navigation at the bottom ======
