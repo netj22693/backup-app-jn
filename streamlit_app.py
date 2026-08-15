@@ -63,12 +63,6 @@ function_3b = st.Page(
     icon = ":material/play_circle:"
     )
 
-function_3_xml = st.Page(
-    "Subpages/F3_description_XML.py",
-    title="Description - XSD, XML Schema",
-    icon= ":material/code:"
-    )
-
 function_3_BPMN = st.Page(
     "Subpages/F3_F4_description_BPMN.py",
     title="Description - BPMN",
@@ -104,9 +98,9 @@ fun_4 = st.Page(
     icon = ":material/play_circle:"
 )
 
-fun_3_json = st.Page(
-    "Subpages/F3_F4_description_json.py",
-    title="Description - JSON Schema",
+fun_3_xml_json = st.Page(
+    "Subpages/F3_F4_description_XML_JSON.py",
+    title="Description - JSON & XML Schemas",
     icon= ":material/code:"
 )
 
@@ -267,8 +261,7 @@ pg = st.navigation(
             function_3_BPMN,
             fun_3_UML,
             fun_3_archm,
-            function_3_xml,
-            fun_3_json,
+            fun_3_xml_json,
             function_3_erd,
             function_3,
             function_3b,
