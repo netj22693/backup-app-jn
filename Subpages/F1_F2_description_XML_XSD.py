@@ -51,7 +51,7 @@ with tab1:
         ''
         ''
         ''
-        with st.expander("XSD structure rules - header", icon= ":material/code:"):
+        with st.expander("XML Schema structure rules - **header**", icon= ":material/code:"):
             st.code(xsd_structure_rules_header, language= 'xml', line_numbers=True, height=400)
 
 
@@ -61,7 +61,7 @@ with tab2:
         st.image("Pictures/Function_2/F1_F2_XML_detail_v3.svg")
         ''
         ''
-        with st.expander("XSD structure rules - detail", icon= ":material/code:"):
+        with st.expander("XML Schema structure rules - **detail**", icon= ":material/code:"):
             st.code(xsd_structure_rules_detail, language= 'xml', line_numbers=True, height=400)
 
 #tab3
@@ -72,7 +72,7 @@ with tab3:
         ''
 
 
-with st.expander("XSD structure - full", icon= ":material/code:"):
+with st.expander("XML Schema - **full**", icon= ":material/code:"):
 	st.code(xsd_structure, language= 'xml', line_numbers=True, height=400)
 
 
