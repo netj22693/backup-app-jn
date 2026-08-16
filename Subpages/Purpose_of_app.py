@@ -210,6 +210,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v68.0** - F7 - Sequence in DB set -> allows concurrent users - 16-Aug-2026
 		- **v67.5** - F7B upgrade of UI for better visualization of offer states TAB 1, TAB 2 - 09-Aug-2026
 		- **v67.2** - F7 refactored time calculation, F7B STATE logic extended - 07-Aug-2026
 		- **v67.1** - F7B - GitHub Action cron job for STATE changes - 05-Aug-2026
@@ -282,6 +283,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 3:
+		- **v67.9** - F3 - Sequence in DB set -> allows concurrent users - 16-Aug-2026
 		- **v65.1** - F3B - Major code refactoring & clean up - 08-July-2026
 		- **v64.9** - F3 - Major code refactoring & clean up - 06-July-2026
 		- **v63.1** - F3B - function extended by Analytics + code refactoring - 16-June-2026

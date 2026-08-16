@@ -223,8 +223,6 @@ def create_order_num(engine) -> tuple[int, str]:
 
     df_query_result = pd.read_sql(query, engine)
 
-    st.write(df_query_result)
-
     # 'nextval' is the name of column
     query_result = df_query_result['nextval'].iloc[0]
     
