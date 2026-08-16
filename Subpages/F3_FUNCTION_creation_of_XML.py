@@ -175,9 +175,9 @@ if  st.button(
 
         calc_transport_price = get_transport_price(db_engine, currency_query, country_table, size_selb, transport_co_selb)
 
-        order_num_generated = create_order_num(db_engine)
+        order_number, order_number_str = create_order_num(db_engine)
 
-        invoice_number_generated = create_invoice_number(order_num_generated)
+        invoice_number_generated = create_invoice_number(order_number_str)
 
         date_input = get_utc_time_custom_string('invoice')
 
@@ -191,8 +191,8 @@ if  st.button(
         # ===== XML and JSON creation -> RAW data to be passed builder functions =====
 
         data_raw = {
-            # STR
-            "order_number" : order_num_generated,
+            # STR - using STR because of XML
+            "order_number" : order_number_str,
             # STR
             "customer" : customer_input,
             # STR
@@ -242,7 +242,7 @@ if  st.button(
 
         # Data to be inserted to DB
         data_for_insert = {
-        "order_number": order_num_generated,   
+        "order_number": order_number,   
         "date": date_input,
         "customer": customer_input,   
         "category": mapped_category,       
@@ -269,7 +269,7 @@ if  st.button(
 
             try:
                 insert_into_db(db_engine, data_for_insert)
-                process_done(order_num_generated)
+                process_done(order_number_str)
 
             except Exception as e:
                 print(f"Insert failed: {e}")
@@ -280,7 +280,7 @@ if  st.button(
         st.write("#### Summary of your order:")
 
         st.write(f" - Customer name: **{customer_input}**")
-        st.write(f" - Order number: **{order_num_generated}**")
+        st.write(f" - Order number: **{order_number_str}**")
         st.write(f" - Invoice number: **{invoice_number_generated}**")
         ''
         st.write(f" - Product name: **{product_name_inp}**")
@@ -301,7 +301,7 @@ if  st.button(
         st.info(f"""
                 - When **Download button** used:
                     - A file will be created - **XML** or **JSON**
-                    - Data will be stored into **DB** - Order number: **{order_num_generated}** 
+                    - Data will be stored into **DB** - Order number: **{order_number_str}** 
                 - If change of data needed:
                     - Go up > Change data > Push Submit button again""")
         

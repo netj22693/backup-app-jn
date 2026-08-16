@@ -214,19 +214,22 @@ def get_transport_price(engine: Engine, currency: str, table: str, size:str, com
     return query_result
 
 # ===== DEF SQL Query =====
-def create_order_num(engine) -> str:
+def create_order_num(engine) -> tuple[int, str]:
 
+    # Using sequence principle
     query = f"""
-    SELECT MAX(order_number) AS order_number
-    FROM billing.invoice
+    SELECT nextval('billing.invoice_order_number_sequence')
     """
 
     df_query_result = pd.read_sql(query, engine)
 
-    query_result = df_query_result['order_number'].iloc[0]
+    st.write(df_query_result)
+
+    # 'nextval' is the name of column
+    query_result = df_query_result['nextval'].iloc[0]
     
-    # Take the last existing in DB (the highest) + 1 -> next available number
-    return str(query_result + 1)
+    # INT for DB - i simportant to explicitly change the type to int() due to pandas it is np.int64() which ORM when save to DB has an issue with 
+    return int(query_result), str(query_result)
 
 
 # ===== JSON Builder =====
@@ -323,7 +326,7 @@ def insert_into_db(engine: Engine, data: dict):
         __table_args__ = {"schema": "billing"}
 
         record_id = Column(Integer, primary_key=True)
-        order_number = Column(String)
+        order_number = Column(Integer)
         date = Column(String)
         customer = Column(String)
         category = Column(String)
