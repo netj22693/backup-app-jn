@@ -33,23 +33,16 @@ def db_connection() -> Engine:
 # ===== DB related function =====
 def create_offer_number(engine: Engine) -> str:
 
-    query = f"""
-    SELECT MAX(offer_id) AS offer_id
-    FROM function7.offer
-    """
+    # Having sequence set in DB for concurrency of users
+    query = f"""SELECT nextval('function7.offer_id_sequence')"""
 
     df_query_result = pd.read_sql(query, engine)
 
-    query_result_str = df_query_result['offer_id'].iloc[0]
+    # 'nextval' is the name of column pulled from DB using sequence
+    query_result = df_query_result['nextval'].iloc[0]
 
-    prefix = query_result_str[0:3]
-    number = int(query_result_str[3:])
-    
-    next_number = str(number + 1)
-
-    next_offer_number = str(prefix + next_number)
-
-    return next_offer_number
+    # Return STR
+    return f"F7-{query_result}"
 
 # ===== API =====
 def api_get_rate() -> tuple[float, float]:
