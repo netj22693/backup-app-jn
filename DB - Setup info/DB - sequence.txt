@@ -1,0 +1,60 @@
+
+-- All sequences set in DB can be listed
+SELECT *
+FROM pg_sequences;
+
+
+
+-------
+F3
+-------
+
+-- Setup on 16-Aug-2026
+-- Sequence creation 
+CREATE SEQUENCE billing.invoice_order_number_sequence;  -> Statement executed successfully
+
+-- Set value
+-- Simple set as the COLUMN is set as INT -> simple to set sequence
+SELECT setval(
+    'billing.invoice_order_number_sequence',
+    COALESCE((SELECT MAX(order_number) FROM billing.invoice), 0)    -> 217 (last record)
+);
+
+
+-- Validation next value
+SELECT nextval('billing.invoice_order_number_sequence');     -> 218 (correct)
+
+
+
+---------
+F7
+---------
+-- Setup on 16-Aug-2026
+
+-- Sequence creation 
+CREATE SEQUENCE function7.offer_id_sequence;   -> Statement executed successfully
+
+
+-- Set value
+-- COALESCE - is fallback in case that table is empty 
+-- Principle CAST is change of data type 
+-- 1. Take offer_id F7-123 (VARCHAR / STR)
+-- 2. Take 123 -> VARCHAR/STR -> INT 
+
+SELECT setval(
+    'function7.offer_id_sequence',
+    COALESCE(
+        (
+            SELECT MAX(CAST(SUBSTRING(offer_id FROM 4) AS INTEGER))
+            FROM function7.offer
+            WHERE offer_id LIKE 'F7-%'
+        ),
+        0
+    )
+);
+
+
+
+-- Validation next value
+-- 3. Python code gets just the INT next value -> 123 -> 124 
+SELECT nextval('function7.offer_id_sequence'); 

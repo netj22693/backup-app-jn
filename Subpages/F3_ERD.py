@@ -27,7 +27,7 @@ with tab_erd_1:
 
     ''
     ''
-    st.image("Pictures/Function_3/F3_F3B_F4_ERD_landscape_context_v2.svg")
+    st.image("Pictures/Function_3/F3_F3B_F4_ERD_landscape_context_v3.svg")
 
 
 with tab_erd_2:
@@ -81,7 +81,7 @@ with tab_erd_3:
         - The DB is designed to be **scalable** in case of growth of options in the future
         """)    
     ''
-    st.image("Pictures/Function_3/F3_ERD_invoice_v4.svg")
+    st.image("Pictures/Function_3/F3_ERD_invoice_v5.svg")
 
     query_2 = """
 SELECT 

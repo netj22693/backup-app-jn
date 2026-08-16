@@ -4,15 +4,21 @@ st.write("# DB & ERD")
 ''
 ''
 st.write("""
-- The **data produced by F7 function** are inserted into **6 operational tables** - :green[**offer_id**] is the main connector/key
-- The **F7 function does mapping** of the values before insert to follow the **logic of lookup tables**
+- The **data produced by F7** are inserted into **6 operational tables** - :green[**offer_id**] is the main connector/key
+- The **F7 does mapping** of the values before insert to follow the **logic of lookup tables**
 - The **data are used also by F7B function** for **searching across DB** and **analytics stuff**
 - This DB design follows **standards of relational DB** concept to be **scalable**
 """)
 
+st.write("""
+- As part of the F7 process there is a need of keeping offer_id "reserved" in DB -> **sequence in PostgreSQL** is set to **allow concurrency of users** without technicall issue
+""")
+
 ''
 ''
-st.image("Pictures/Function_7/F7_ERD/F7_ERD_landscape_v5.svg")
+''
+''
+st.image("Pictures/Function_7/F7_ERD/F7_ERD_landscape_v6.svg")
 
 ''
 ''
