@@ -11,7 +11,7 @@ st.write("""
 """)
 
 st.write("""
-- As part of the F7 process there is a need of keeping offer_id "reserved" in DB -> **sequence in PostgreSQL** is set to **allow concurrency of users** without technicall issue
+- As part of the F7 process, there is a need of keeping **offer_id** "reserved" in DB -> **sequence in PostgreSQL** is set to **allow concurrency of users** without technicall issue
 """)
 
 ''

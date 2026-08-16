@@ -78,7 +78,7 @@ with tab_erd_3:
         """)     
 
     st.write("""
-        - The DB is designed to be **scalable** in case of growth of options in the future
+        - As part of the F3 process, there is a need of keeping **order_id** "reserved" in DB → **sequence in PostgreSQL** is set to **allow concurrency of users** without technicall issue
         """)    
     ''
     st.image("Pictures/Function_3/F3_ERD_invoice_v5.svg")
