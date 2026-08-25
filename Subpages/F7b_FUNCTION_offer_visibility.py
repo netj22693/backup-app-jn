@@ -2,13 +2,12 @@ import streamlit as st
 from sqlalchemy import create_engine, text
 import pandas as pd
 from datetime import date, timedelta
-from typing import Dict, Tuple
-import plotly.express as px
 from Subpages.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
 from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, sql_query_offer_status_validation_df, sql_query_offer_status_validation_single, sql_query_logs, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes
 from Subpages.F7_input_data import tranport_types_list, dataset_cities, states_dict
-from Subpages.F7b_operational_functions import change_state_in_db, singular_or_plural, input_validation, operational_update_of_states, display_state_and_symbol_mapped, display_offer_logs, mapping_states, get_styling_colors
+from Subpages.F7b_operational_functions import change_state_in_db, input_validation, operational_update_of_states, display_state_and_symbol_mapped, display_offer_logs, mapping_states, get_styling_colors, df_styling_index_set_1, data_empty_fallback_info, create_pie_chart, df_change_column_name, get_parameters_countries, create_parameters_for_sql, reset_filters
 from Subpages.F7B_UI_functions import display_state_flow, display_state_flow_expander
+from Subpages.F7B_UI_offer_visualization import display_offer_visualization_ui
 
 
 
@@ -91,9 +90,9 @@ with tab1:
 with tab2:
 
     with st.form(key="user_form"):
-            offer_input_user = st.text_input(label="Offer number:", help="Insert **Offer number** you would like to see. It is based on offers created in **Function 7**.")
-           
-            submit_button = st.form_submit_button(label= "Submit", width="stretch", icon = ":material/apps:",)
+        offer_input_user = st.text_input(label="Offer number:", help="Insert **Offer number** you would like to see. It is based on offers created in **Function 7**.")
+        
+        submit_button = st.form_submit_button(label= "Submit", width="stretch", icon = ":material/apps:",)
 
 
     if submit_button:
@@ -121,85 +120,45 @@ with tab2:
 
                     operational_update_of_states(df_validation, db_engine)
 
-                    # a.OFFER
+                    # --- a.OFFER --- 
                     df_table_offer = pd.read_sql_query(sql=text(sql_table_offer), con=conn, params=params)
-                    
+
                     # Extracting data from DF -> variables
                     row_offer = df_table_offer.iloc[0]
 
-                    offer_created_date = row_offer["created_date"]
-                    offer_created_time = row_offer["created_time"]
-                    offer_need_approve_date = row_offer["need_approve_date"]
-                    offer_need_approve_time = row_offer["need_approve_time"]
-                    offer_need_approve_days = row_offer["need_approve_days"]
-                    offer_transport = row_offer["transport"]
-                    offer_service = row_offer["service"]
-                    offer_time_zone = row_offer["time_zone"]
-                    offer_time_overall = row_offer["time_overall"]
-                    offer_expected_delivery = row_offer["expected_delivery"]
-                    offer_final_price = row_offer["final_price"]
-                    offer_currency = row_offer["currency"]
-                    offer_state = row_offer["offer_state"]
 
-                    # b.DELIVERY
+                    # --- b.DELIVERY --- 
                     df_table_delivery = pd.read_sql_query(sql=text(sql_table_delivery), con=conn, params=params)
 
                     # Extracting data from DF -> variables
                     row_delivery = df_table_delivery.iloc[0]
 
-                    delivery_from_country = row_delivery["from_country"]
-                    delivery_from_city = row_delivery["from_city"]
-                    delivery_from_dtd = row_delivery["from_dtd"]
-                    delivery_to_country = row_delivery["to_country"]
-                    delivery_to_city = row_delivery["to_city"]
-                    delivery_to_dtd = row_delivery["to_dtd"]
-                    delivery_distance_length = row_delivery["distance_length"]
-                    delivery_distance_time = row_delivery["distance_time"]
-                    delivery_dtd_time = row_delivery["dtd_time"]
 
-                    # c.COSTS
+                    # --- c.COSTS --- 
                     df_table_costs = pd.read_sql_query(sql=text(sql_table_costs), con=conn, params=params)
 
                     # Extracting data from DF -> variables
                     row_costs = df_table_costs.iloc[0]
 
-                    costs_distance_cost = row_costs["distance_cost"]
-                    costs_dtd_from = row_costs["dtd_from"]
-                    costs_dtd_to = row_costs["dtd_to"]
-                    costs_shipment_value = row_costs["shipment_value"]
-                    costs_insurance = row_costs["insurance"]
-                    costs_fragile = row_costs["fragile"]
-                    costs_danger = row_costs["danger"]
 
-                    # e.EXTRA_STEPS_TIME
+                    # --- e.EXTRA_STEPS_TIME --- 
                     df_table_extra_steps_time = pd.read_sql_query(sql=text(sql_table_extra_steps_time), con=conn, params=params)  
 
                     # Extracting data from DF -> variables   
                     row_extra_steps_time = df_table_extra_steps_time.iloc[0]
-                      
-                    extra_steps_time_truck_breaks = row_extra_steps_time["truck_breaks"]
-                    extra_steps_time_shipment_transfer_dtd_from = row_extra_steps_time["shipment_transfer_dtd_from"]
-                    extra_steps_time_shipment_transfer_dtd_to = row_extra_steps_time["shipment_transfer_dtd_to"]
-                    extra_steps_time_dtd_truck_if_not_truck_main = row_extra_steps_time["dtd_truck_if_not_truck_main"]
+                        
 
-                    # e.SLA
+                    # --- e.SLA --- 
                     df_table_sla = pd.read_sql_query(sql=text(sql_table_sla), con=conn, params=params)  
 
                     # Extracting data from DF -> variables  
                     row_sla = df_table_sla.iloc[0]
 
-                    sla_time_sla = row_sla["time_sla"]
-                  
-                    # Determin singular or plural for UI
-                    day_days_str = singular_or_plural(offer_need_approve_days)
-                    hour_hours_str = singular_or_plural(offer_time_overall)
-
-                    # Get UI image for the particular offer 
-
                 
-                    ui_image_path = provide_ui_image_path(offer_transport, delivery_from_dtd, delivery_to_dtd, extra_steps_time_truck_breaks)
+                    # Get UI image for the particular offer          
+                    ui_image_path = provide_ui_image_path(row_offer["transport"], row_delivery["from_dtd"], row_delivery["to_dtd"], row_extra_steps_time["truck_breaks"])
 
-                    ui_color_coding_image_path = provide_ui_color_coding_image(offer_transport, delivery_from_dtd, delivery_to_dtd, extra_steps_time_truck_breaks)
+                    ui_color_coding_image_path = provide_ui_color_coding_image(row_offer["transport"], row_delivery["from_dtd"], row_delivery["to_dtd"], row_extra_steps_time["truck_breaks"])
 
 
                     # ========== TAB 2 UI ========================================
@@ -213,136 +172,30 @@ with tab2:
 
                     with tab2_tab1:
 
-                        display_state_and_symbol_mapped(offer_state, states_dict)
+                        display_state_and_symbol_mapped(row_offer["offer_state"], states_dict)
 
                         ''
-                        st.write(f"""
-                            - Offer number: **{offer_id}**
-                            - Offer created: **{offer_created_date} - {offer_created_time} {offer_time_zone}**
-                            - Customer to approve till: **{offer_need_approve_date} {offer_need_approve_time} - {offer_time_zone}** ({offer_need_approve_days} day{day_days_str})
-                        """)
-
-                        # UI transport workflow image
-                        ''
-                        try:
-                            st.image(ui_image_path)
-
-                        except Exception as e:
-                            print(e)
-                            st.warning("Failed to load image")
-                        
-                        # Expander 
-                        with st.expander("Transfer process", icon= ":material/help:"):
-                            try:
-                                st.image(ui_color_coding_image_path)
-
-                            except Exception as e:
-                                print(e)
-                                st.warning("Failed to load image")
-                            
-
-                            # To show DTD button or not
-                            if delivery_from_dtd > 0 or delivery_to_dtd > 0:
-
-                                st.write("- More info about DTD:")
-                                
-                                st.link_button(
-                                    label = "Go to Door-to-Door page",
-                                    url="https://dataparsing.streamlit.app/F7_description_dtd",
-                                    help="The button will redirect to the relevant page within this app for download.",
-                                    width="stretch",
-                                    icon=":material/launch:"
-                                )                       
-
-                        ''
-                        ''
-                        st.write(f"""
-                            - Delivery from **{delivery_from_city} ({delivery_from_country})** to **{delivery_to_city} ({delivery_to_country}):**
-                                - Costs: **{costs_distance_cost:,.2f} {offer_currency}**
-                                - Distance: **{delivery_distance_length:,.2f} km**
-                                - Time to cover the distance: **{delivery_distance_time:.2f} hour(s)**
-                                - Transport type: **{offer_transport}**
-                        """)
-
-
-                        # Different UI for Truck and Train or Airplane
-                        if offer_transport == 'Truck':
-
-                            ''
-                            st.write(f"""
-                                - **Door-to-Door**:
-                                    - Additional: **{delivery_from_dtd + delivery_to_dtd} km** to the distance
-                                        - {delivery_from_city}: {delivery_from_dtd} km
-                                        - {delivery_to_city}: {delivery_to_dtd} km
-                                    - Time to cover the Door-to-Door: **{delivery_dtd_time:.2f} hours(s)**
-                            """)
-
-                            ''
-                            st.write(f"""
-                            - **{offer_transport}**:
-                                - Selected service **{offer_service}** requires **{sla_time_sla:.2f} hours** for administration, load, etc. - **the SLA**  
-                                - If longer distance (including Door-to-Door time), **mandatory breaks** for driver: **{extra_steps_time_truck_breaks} hour(s)**
-                            """)
-
-                        if offer_transport in ('Train','Airplane'):
-                            ''
-                            st.write(f"""
-                                - **Door-to-Door**:
-                                    - Additional: **{delivery_from_dtd + delivery_to_dtd} km** to the distance for which **Truck is needed**
-                                        - {delivery_from_city}: {delivery_from_dtd} km
-                                        - {delivery_to_city}: {delivery_to_dtd} km
-                                    - Time to cover the Door-to-Door: **{delivery_dtd_time:.2f} hours(s)**
-                                        - Transfer {offer_transport} <-> Truck: {extra_steps_time_shipment_transfer_dtd_from + extra_steps_time_shipment_transfer_dtd_to} hour(s)
-                                        - Time for Truck ride: {extra_steps_time_dtd_truck_if_not_truck_main} hour(s)
-                            """)
-
-                            ''
-                            st.write(f"""
-                                - **{offer_transport}**:
-                                    - Selected service **{offer_service}** requires **{sla_time_sla:.2f} hours** for administration, load, etc. - **the SLA**  
-                            """)
-
-                        # This UI same for all types of transport
-                        ''
-                        st.write("- **Overall time end-to-end delivery:**")
-
-                        with st.container(border=True):
-                            st.write(f"**{offer_time_overall:.2f} hour{hour_hours_str}**")
-                    
-
-                        st.write("- **Expected delivery:**")
-                        with st.container(border=True):
-                            st.write(f"**{offer_expected_delivery} - {offer_time_zone}**")
-
-
-                        ''
-                        ''
-                        st.write(f"""
-                        - **Additional services - costs**:
-                            - Insurance extra costs: **{costs_insurance:,.2f} {offer_currency}**
-                            - Fregile goods costs: **{costs_fragile:,.2f} {offer_currency}**
-                            - Danger goods costs: **{costs_danger:,.2f} {offer_currency}**
-                            - Door-To-Door - {delivery_from_city} ({delivery_from_country}):  **{costs_dtd_from:,.2f} {offer_currency}** - ({delivery_from_dtd} km)
-                            - Door-To-Door - {delivery_to_city} ({delivery_to_country}):  **{costs_dtd_to:,.2f} {offer_currency}** - ({delivery_to_dtd} km)
-                        """)
-
-
-                        ''
-                        ''
-                        st.write("- **Final price:**")
-                        with st.container(border=True):
-                            st.write(f"**{offer_final_price:,.2f} {offer_currency}**")
+                        display_offer_visualization_ui(
+                            ui_image_path,
+                            ui_color_coding_image_path,
+                            offer_id,
+                            row_offer,
+                            row_delivery,
+                            row_costs,
+                            row_extra_steps_time,
+                            row_sla
+                        )
 
 
                     with tab2_tab2:
-                        display_state_and_symbol_mapped(offer_state, states_dict)
+                        display_state_and_symbol_mapped(row_offer["offer_state"], states_dict)
 
-                        if offer_state == "CREATED":
+                        if row_offer["offer_state"] == "CREATED":
 
                             ''
                             if st.button("Approve", 
                                 on_click=change_state_in_db,
-                                args=(True, db_engine, offer_id, offer_state, "APPROVED"),
+                                args=(True, db_engine, offer_id, row_offer["offer_state"], "APPROVED"),
                                 width="stretch",
                                 icon = ":material/check_circle:"
                                 ):
@@ -351,7 +204,7 @@ with tab2:
 
                             if st.button("Reject",
                                 on_click = change_state_in_db,
-                                args=(True, db_engine, offer_id, offer_state, "REJECTED"),
+                                args=(True, db_engine, offer_id, row_offer["offer_state"], "REJECTED"),
                                 width="stretch",
                                 icon = ":material/cancel:"
                                 ):
@@ -364,50 +217,11 @@ with tab2:
                         display_offer_logs(db_engine, sql_query_logs, offer_id, states_dict)
 
 
-
                     with tab2_tab3:
                         display_state_flow()
 
 
 # ====================== TAB 3 ======================
-# ====================== main logic for tab3 + relevant def functions ======================
-
-def reset_filters():
-    st.session_state["key_mlts_country_from"] = list_countries_upper
-    st.session_state["key_mlts_country_to"] = list_countries_upper
-    st.session_state["key_mlts_transport"] = tranport_types_list
-    st.session_state["key_mlts_currency"] = currency_list
-    st.session_state["key_checkbox_date"] = False
-    st.session_state["key_sld_number_rows"] = 20
-
-
-
-def create_parameters_for_sql(input: list, param_letter: str) -> Tuple[Dict[str, str], str]:
-    '''
-    Context: Parametrized queries using IN() in SQL are horribly slowing down returning result from PostgreSQL back to the code. Thus:
-
-    THIS FUNCTION DOES DYNAMIC MAPPING to avoid SQL injection as the SQL query is built on f-string principle
-
-    1) build of unique parameter e.g. t0, t1, t2 (depends on the param_letter)
-    2) Creation of list [":t0", ":t1", ":t2"] -> list_params_keys[] filled with values
-    3) Adding "key":"value" into dict params {} -> {"t0":"Airplane", "t1":"Train", "t2":"Truck"}
-    4) Creation of string for sql ":t0, :t1, :t2" -> string_for_sql_in
-    '''
-    list_params_keys = []
-    params = {}
-
-    i = 0
-    for value in input:
-        param_name = param_letter + str(i)
-        list_params_keys.append(":" + param_name)
-        params[param_name] = value
-        i = i + 1
-    
-    string_for_sql_in = ", ".join(list_params_keys)
-    return params, string_for_sql_in
-
-
-
 with tab3: 
 
     #From the dataset -> parse keys -> create list of countries for multiselect
@@ -444,6 +258,7 @@ with tab3:
     if "key_checkbox_date"  not in st.session_state:
         st.session_state["key_checkbox_date"] = False
 
+    # ============ UI filter ============ 
     # Multiselect - Country from
     ''
     selected_coutry_from = st.multiselect("Country from", options=list_countries_upper, key="key_mlts_country_from")
@@ -541,7 +356,13 @@ with tab3:
 
     # ===== Reset button =====
     st.write("-" *10)
-    st.button("Reset filters", on_click=reset_filters, width="stretch", icon= ":material/delete:")
+    st.button(
+        "Reset filters",
+        on_click=reset_filters,
+        args=(list_countries_upper, tranport_types_list, currency_list),
+        width="stretch",
+        icon= ":material/delete:"
+        )
 
 
     if submit_button_tab3:
@@ -562,29 +383,30 @@ with tab3:
         with db_engine.connect() as conn:
             df_table_tab_3 = pd.read_sql_query(sql=text(sql_query_tab_3), con=conn, params=params_full)
 
-            if df_table_tab_3.empty == True:
-                st.info("There was no record found in DB.")
+        if df_table_tab_3.empty == True:
+            st.info("There was no record found in DB.")
 
-            else:
-                # Dataframe styling 
-                df_table_tab_3[" "] = df_table_tab_3.index + 1
-                df_table_tab_3 = df_table_tab_3.set_index(" ")
+        else:
+            # Dataframe styling 
+            df_table_tab_3[" "] = df_table_tab_3.index + 1
+            df_table_tab_3 = df_table_tab_3.set_index(" ")
 
-                df_table_tab_3_styled = df_table_tab_3.style.format({
-                "Final price": "{:,.2f}",
-                })
+            df_table_tab_3_styled = df_table_tab_3.style.format({
+            "Final price": "{:,.2f}",
+            })
 
-                # Info message to the user that there is not that many records as expected
-                rows_from_db = df_table_tab_3.index
-                rows_from_db = rows_from_db[-1]
-                
-                ''
-                if rows_from_db != number_rows:
-                    st.info(f"There is only **{rows_from_db} records** matching the selected criteria")
+            # Info message to the user that there is not that many records as expected
+            rows_from_db = df_table_tab_3.index
+            rows_from_db = rows_from_db[-1]
+            
+            ''
+            if rows_from_db != number_rows:
+                st.info(f"There is only **{rows_from_db} records** matching the selected criteria")
 
-                st.dataframe(df_table_tab_3_styled)
+            st.dataframe(df_table_tab_3_styled)
 
 
+# ====================== TAB 4 ======================
 with tab4: 
    
     # Date picker
@@ -643,58 +465,44 @@ with tab4:
 
     if submit_button_tab4:
 
+        # Build of parameters countries
+        params_countries = get_parameters_countries(list_countries_upper)
+
+        # Build of parameters date
+        params_date = {
+            "date_from" : picked_date_from_tab4,
+            "date_to" : picked_date_to_tab4,
+        }
+
+        # Build of parameters joining -> full set of parametrs
+        params = params_date | params_countries
+
+
+        # Function retruning SQL WHERE condition/string, if filtering based on date applicable
+        sql_date_query_where_part = get_sql_part_where_date(date_query_applicable)
+
+
+        # Building of SQL queries
+        sql_query_transport = get_sql_query_transport(date_query_applicable, sql_date_query_where_part)
+        sql_query_service = get_sql_query_service(date_query_applicable, sql_date_query_where_part)
+        sql_query_from_country = get_sql_query_from_country(date_query_applicable, sql_date_query_where_part)
+        sql_query_to_country = get_sql_query_to_country(date_query_applicable, sql_date_query_where_part)
+        sql_query_dtd_with_without = get_sql_query_dtd_with_without(date_query_applicable, sql_date_query_where_part)
+        sql_query_currency = get_sql_query_currency(date_query_applicable, sql_date_query_where_part)
+        sql_query_routes = get_sql_query_routes (date_query_applicable, sql_date_query_where_part)
+
+        sql_query_from_to_country_at = get_sql_query_from_to_country(date_query_applicable, sql_date_query_where_part, "at")
+        sql_query_from_to_country_cz = get_sql_query_from_to_country(date_query_applicable, sql_date_query_where_part, "cz")
+        sql_query_from_to_country_de = get_sql_query_from_to_country(date_query_applicable, sql_date_query_where_part, "de")
+        sql_query_from_to_country_pl = get_sql_query_from_to_country(date_query_applicable, sql_date_query_where_part, "pl")
+        sql_query_from_to_country_sk = get_sql_query_from_to_country(date_query_applicable, sql_date_query_where_part, "sk")
+
+        sql_query_top_city_from = get_sql_query_city(date_query_applicable, sql_date_query_where_part, "from_city","from_country")
+        sql_query_top_city_to = get_sql_query_city(date_query_applicable, sql_date_query_where_part, "to_city","to_country")
+
+
+        # Dataframes creation
         with db_engine.connect() as conn:
-
-            # Parametrization of countries
-            def get_parameters_countries(country_list: list) -> dict:
-                
-                params_list = []
-                params_dict = {}
-
-                for item in country_list:
-                    param = item.lower()
-                    params_list.append(param)
-                    params_dict[param] = item
-
-                return params_dict
-
-            # Build of parameters countries
-            params_countries = get_parameters_countries(list_countries_upper)
-
-            # Build of parameters date
-            params_date = {
-                "date_from" : picked_date_from_tab4,
-                "date_to" : picked_date_to_tab4,
-            }
-
-            # Build of parameters joining -> full set of parametrs
-            params = params_date | params_countries
-
-
-            # Function retruning SQL WHERE condition/string, if filtering based on date applicable
-            sql_date_query_where_part = get_sql_part_where_date(date_query_applicable)
-
-
-            # Building of SQL queries
-            sql_query_transport = get_sql_query_transport(date_query_applicable, sql_date_query_where_part)
-            sql_query_service = get_sql_query_service(date_query_applicable, sql_date_query_where_part)
-            sql_query_from_country = get_sql_query_from_country(date_query_applicable, sql_date_query_where_part)
-            sql_query_to_country = get_sql_query_to_country(date_query_applicable, sql_date_query_where_part)
-            sql_query_dtd_with_without = get_sql_query_dtd_with_without(date_query_applicable, sql_date_query_where_part)
-            sql_query_currency = get_sql_query_currency(date_query_applicable, sql_date_query_where_part)
-            sql_query_routes = get_sql_query_routes (date_query_applicable, sql_date_query_where_part)
-
-            sql_query_from_to_country_at = get_sql_query_from_to_country(date_query_applicable, sql_date_query_where_part, "at")
-            sql_query_from_to_country_cz = get_sql_query_from_to_country(date_query_applicable, sql_date_query_where_part, "cz")
-            sql_query_from_to_country_de = get_sql_query_from_to_country(date_query_applicable, sql_date_query_where_part, "de")
-            sql_query_from_to_country_pl = get_sql_query_from_to_country(date_query_applicable, sql_date_query_where_part, "pl")
-            sql_query_from_to_country_sk = get_sql_query_from_to_country(date_query_applicable, sql_date_query_where_part, "sk")
-
-            sql_query_top_city_from = get_sql_query_city(date_query_applicable, sql_date_query_where_part, "from_city","from_country")
-            sql_query_top_city_to = get_sql_query_city(date_query_applicable, sql_date_query_where_part, "to_city","to_country")
-
-
-            # Dataframes creation
             df_transport_grouped = pd.read_sql_query(sql=text(sql_query_transport), con = conn, params=params)
             df_service_grouped = pd.read_sql_query(sql=text(sql_query_service), con = conn, params=params)
             df_country_from_grouped = pd.read_sql_query(sql=text(sql_query_from_country), con = conn, params=params)
@@ -712,184 +520,128 @@ with tab4:
             df_top_city_from = pd.read_sql_query(sql=text(sql_query_top_city_from), con = conn, params=params)
             df_top_city_to = pd.read_sql_query(sql=text(sql_query_top_city_to), con = conn, params=params)
 
-            dtd_with = df_dtd_with_without["With DTD"].iloc[0]
-            dtd_without = df_dtd_with_without["Without DTD"].iloc[0]
 
-            # DF extract how many records -> for UI purposes
-            number_rows_transport = df_transport_grouped["count"].sum()
+        # DF extract how many records -> for UI purposes
+        number_rows_transport = df_transport_grouped["count"].sum()
 
 
-            # DF adjustment 
-            df_dtd_with_without_adj = {
-                "Label" : ["With DTD","Without DTD"],
-                "Count" : [dtd_with, dtd_without]
-            }
+        # DF adjustment 
+        dtd_with = df_dtd_with_without["With DTD"].iloc[0]
+        dtd_without = df_dtd_with_without["Without DTD"].iloc[0]
+        
+        df_dtd_with_without_adj = {
+            "Label" : ["With DTD","Without DTD"],
+            "Count" : [dtd_with, dtd_without]
+        }
 
-            def df_change_column_name(input_df: pd.DataFrame) -> pd.DataFrame:
+
+        df_transport_grouped_renamed = df_change_column_name(df_transport_grouped)
+        df_service_grouped_renamed = df_change_column_name(df_service_grouped)
+        df_currency_grouped_renamed = df_change_column_name(df_currency_grouped)
+        df_country_from_grouped_renamed = df_change_column_name(df_country_from_grouped)
+        df_country_to_grouped_renamed = df_change_column_name(df_country_to_grouped)
+        df_top_city_from_renamed = df_change_column_name(df_top_city_from)
+        df_top_city_to_columns_renamed = df_change_column_name(df_top_city_to)
+        df_routes_columns_renamed = df_change_column_name(df_routes)
+        
+        df_country_from_grouped_styled = df_styling_index_set_1(df_country_from_grouped_renamed)
+        df_country_to_grouped_styled = df_styling_index_set_1(df_country_to_grouped_renamed)
+        df_top_city_from_styled = df_styling_index_set_1(df_top_city_from_renamed)
+        df_top_city_to_styled = df_styling_index_set_1(df_top_city_to_columns_renamed)
+        df_routes_styled = df_styling_index_set_1(df_routes_columns_renamed)
+            
+        # Charts
+        chart_transport = create_pie_chart(df_transport_grouped, "label","count")
+        chart_service = create_pie_chart(df_service_grouped, "label","count")
+        chart_country_from = create_pie_chart(df_country_from_grouped, "from_country","count")
+        chart_country_to = create_pie_chart(df_country_to_grouped, "to_country","count")
+        chart_currency = create_pie_chart(df_currency_grouped, "label","count")
+        chart_dtd = create_pie_chart(df_dtd_with_without_adj, "Label","Count") #This follows column names already assigned when DF created
+
+
+        # UI visualization
+        ''
+        ''
+        tab4_tab1, tab4_tab2, tab4_tab3, tab4_tab4, tab4_tab5, tab4_tab6 = st.tabs([
+            "Transport type",
+            "Service type",
+            "With/without DTD",
+            "Currency type",
+            "Country From & To",
+            "City From & To",
+        ])
+
+        col_layout_1 = [1.5,0.3,2]
+        col_layout_2 = [1.5,0.3,1.5]
+
+        with tab4_tab1:
+            fallback = data_empty_fallback_info(df_transport_grouped)
+
+            if fallback == False:
+                st.write(f"- Split based on selected **transport** type - total: **{number_rows_transport}**:")
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                col_tab4_1.dataframe(df_transport_grouped_renamed, hide_index=True)
+                col_tab4_3.plotly_chart(chart_transport, key="chart_transport")
+        
+        with tab4_tab2:
+            fallback = data_empty_fallback_info(df_service_grouped)
+
+            if fallback == False:
+                st.write(f"- Split based on selected **delivery service** type - total: **{number_rows_transport}**:")
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                col_tab4_1.dataframe(df_service_grouped_renamed, hide_index=True)
+                col_tab4_3.plotly_chart(chart_service, key="chart_service")
+        
+        with tab4_tab3:
+            # For the fallback I use different DF than df_dtd_with_without_adj. Reason: It doesn't work on .empty principle like other DFs
+            fallback = data_empty_fallback_info(df_transport_grouped) 
+
+            if fallback == False:
+                st.write(f"- How many times **door-to-door** was ordered - total: **{number_rows_transport}**:")
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                col_tab4_1.dataframe(df_dtd_with_without_adj)
+                col_tab4_3.plotly_chart(chart_dtd, key="chart_dtd")
+        
+        with tab4_tab4:
+            fallback = data_empty_fallback_info(df_currency_grouped)
+
+            if fallback == False:
+                st.write(f"- Split based on **currency** - total: **{number_rows_transport}**:")
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
+                col_tab4_1.dataframe(df_currency_grouped_renamed, hide_index=True)
+                col_tab4_3.plotly_chart(chart_currency, key="chart_currency")
+        
+        with tab4_tab5:
+            fallback = data_empty_fallback_info(df_country_from_grouped_styled)
+
+            if fallback == False:
+                st.write(f"- Total number: **{number_rows_transport}**:")
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_2)
+                col_tab4_1.write("- Most frequent **origin** country:")
+                col_tab4_1.dataframe(df_country_from_grouped_styled)
+                col_tab4_1.plotly_chart(chart_country_from, key="chart_country_from")
                 
-                dict_names = {
-                    "from_country" : "From country",
-                    "from_city" : "From city",
-                    "to_country" : "To country",
-                    "to_city" : "To city",
-                    "count" : "Count",
-                    "label" : "Label"
-                }
+                col_tab4_3.write("- Most frequent **destination** country:")
+                col_tab4_3.dataframe(df_country_to_grouped_styled)
+                col_tab4_3.plotly_chart(chart_country_to, key="chart_country_to")
 
-                output_df = input_df.rename(columns=dict_names)
+        with tab4_tab6:
+            fallback = data_empty_fallback_info(df_top_city_from_styled)
 
-                return output_df
+            if fallback == False:
+                st.write(f"- Total number: **{number_rows_transport}**:")
+                col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_2)
+                col_tab4_1.write("- Most frequent **origin** city:")
+                col_tab4_1.dataframe(df_top_city_from_styled)
+                col_tab4_3.write("- Most frequent **destination** city:")
+                col_tab4_3.dataframe(df_top_city_to_styled)
 
-            df_transport_grouped_renamed = df_change_column_name(df_transport_grouped)
-            df_service_grouped_renamed = df_change_column_name(df_service_grouped)
-            df_currency_grouped_renamed = df_change_column_name(df_currency_grouped)
-            df_country_from_grouped_renamed = df_change_column_name(df_country_from_grouped)
-            df_country_to_grouped_renamed = df_change_column_name(df_country_to_grouped)
-            df_top_city_from_renamed = df_change_column_name(df_top_city_from)
-            df_top_city_to_columns_renamed = df_change_column_name(df_top_city_to)
-            df_routes_columns_renamed = df_change_column_name(df_routes)
-
-            def df_styling_index_set_1(input_df: pd.DataFrame) -> pd.DataFrame:
-
-                input_df[" "] = input_df.index + 1
-                input_df = input_df.set_index(" ")
-
-                return input_df
-            
-            df_country_from_grouped_styled = df_styling_index_set_1(df_country_from_grouped_renamed)
-            df_country_to_grouped_styled = df_styling_index_set_1(df_country_to_grouped_renamed)
-            df_top_city_from_styled = df_styling_index_set_1(df_top_city_from_renamed)
-            df_top_city_to_styled = df_styling_index_set_1(df_top_city_to_columns_renamed)
-            df_routes_styled = df_styling_index_set_1(df_routes_columns_renamed)
-
-
-            # Charts def
-            def create_pie_chart(df_input, x_data, y_data):
+                st.write("- Top 20 routes:")
                 
-                chart = px.pie(
-                df_input, 
-                names = df_input[f"{x_data}"],
-                values = df_input[f"{y_data}"]
-                )
+                #Fallback warning - if not enough routes 
+                number_rows_route = df_routes.count().iloc[0]
 
-                # Adjustment to see 2 decimals always in the chart
-                chart.update_traces(texttemplate="%{percent:.2%}")
+                if 0 < number_rows_route < 20:
+                    st.info(f"There has been only **{number_rows_route} routes** following the selected date criteria")
 
-                return chart
-                
-            # # Charts
-            chart_transport = create_pie_chart(df_transport_grouped, "label","count")
-            chart_service = create_pie_chart(df_service_grouped, "label","count")
-            chart_country_from = create_pie_chart(df_country_from_grouped, "from_country","count")
-            chart_country_to = create_pie_chart(df_country_to_grouped, "to_country","count")
-            chart_currency = create_pie_chart(df_currency_grouped, "label","count")
-            chart_dtd = create_pie_chart(df_dtd_with_without_adj, "Label","Count") #This follows column names already assigned when DF created
-
-
-            # UI fallback - for case when dataframes are empty (no data following search criteria)
-            def data_empty_fallback_info(input_df: pd.DataFrame):
-
-                if input_df.empty:
-                    st.warning("No data in DB related to the selected date range")
-                    fallback = True
-
-                else:
-                    fallback = False
-
-                return fallback
-
-
-            # UI visualization
-            ''
-            ''
-            tab4_tab1, tab4_tab2, tab4_tab3, tab4_tab4, tab4_tab5, tab4_tab6 = st.tabs([
-                "Transport type",
-                "Service type",
-                "With/without DTD",
-                "Currency type",
-                "Country From & To",
-                "City From & To",
-            ])
-
-            col_layout_1 = [1.5,0.3,2]
-            col_layout_2 = [1.5,0.3,1.5]
-
-            with tab4_tab1:
-                fallback = data_empty_fallback_info(df_transport_grouped)
-
-                if fallback == False:
-                    st.write(f"- Split based on selected **transport** type - total: **{number_rows_transport}**:")
-                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
-                    col_tab4_1.dataframe(df_transport_grouped_renamed, hide_index=True)
-                    col_tab4_3.plotly_chart(chart_transport, key="chart_transport")
-            
-            with tab4_tab2:
-                fallback = data_empty_fallback_info(df_service_grouped)
-
-                if fallback == False:
-                    st.write(f"- Split based on selected **delivery service** type - total: **{number_rows_transport}**:")
-                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
-                    col_tab4_1.dataframe(df_service_grouped_renamed, hide_index=True)
-                    col_tab4_3.plotly_chart(chart_service, key="chart_service")
-            
-            with tab4_tab3:
-                # For the fallback I use different DF than df_dtd_with_without_adj. Reason: It doesn't work on .empty principle like other DFs
-                fallback = data_empty_fallback_info(df_transport_grouped) 
-
-                if fallback == False:
-                    st.write(f"- How many times **door-to-door** was ordered - total: **{number_rows_transport}**:")
-                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
-                    col_tab4_1.dataframe(df_dtd_with_without_adj)
-                    col_tab4_3.plotly_chart(chart_dtd, key="chart_dtd")
-            
-            with tab4_tab4:
-                fallback = data_empty_fallback_info(df_currency_grouped)
-
-                if fallback == False:
-                    st.write(f"- Split based on **currency** - total: **{number_rows_transport}**:")
-                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
-                    col_tab4_1.dataframe(df_currency_grouped_renamed, hide_index=True)
-                    col_tab4_3.plotly_chart(chart_currency, key="chart_currency")
-            
-            with tab4_tab5:
-                fallback = data_empty_fallback_info(df_country_from_grouped_styled)
-
-                if fallback == False:
-                    st.write(f"- Total number: **{number_rows_transport}**:")
-                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_2)
-                    col_tab4_1.write("- Most frequent **origin** country:")
-                    col_tab4_1.dataframe(df_country_from_grouped_styled)
-                    col_tab4_1.plotly_chart(chart_country_from, key="chart_country_from")
-                    
-                    col_tab4_3.write("- Most frequent **destination** country:")
-                    col_tab4_3.dataframe(df_country_to_grouped_styled)
-                    col_tab4_3.plotly_chart(chart_country_to, key="chart_country_to")
-
-                    # with st.expander("Ahojda"):
-                    #     col_tab4_1, col_tab4_2 = st.columns(2)
-                    #     col_tab4_1.dataframe(df_at)
-                    #     col_tab4_1.dataframe(df_cz)
-                    #     col_tab4_1.dataframe(df_de)
-                    #     col_tab4_1.dataframe(df_pl)
-                    #     col_tab4_1.dataframe(df_sk)
-
-            with tab4_tab6:
-                fallback = data_empty_fallback_info(df_top_city_from_styled)
-
-                if fallback == False:
-                    st.write(f"- Total number: **{number_rows_transport}**:")
-                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_2)
-                    col_tab4_1.write("- Most frequent **origin** city:")
-                    col_tab4_1.dataframe(df_top_city_from_styled)
-                    col_tab4_3.write("- Most frequent **destination** city:")
-                    col_tab4_3.dataframe(df_top_city_to_styled)
-
-                    st.write("- Top 20 routes:")
-                    
-                    #Fallback warning - if not enough routes 
-                    number_rows_route = df_routes.count().iloc[0]
-
-                    if 0 < number_rows_route < 20:
-                        st.info(f"There has been only **{number_rows_route} routes** following the selected date criteria")
-
-                    st.dataframe(df_routes_styled)
+                st.dataframe(df_routes_styled)

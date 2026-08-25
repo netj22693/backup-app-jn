@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
+import plotly.express as px
 from pandas.io.formats.style import Styler
 from sqlalchemy import text
-from typing import Optional
+from typing import Optional, Dict, Tuple
 from datetime import datetime, timezone
 from sqlalchemy import Engine, Column, String, DateTime, Integer
 from sqlalchemy.orm import declarative_base, Session
@@ -77,6 +78,83 @@ def get_styling_colors(df: pd.DataFrame) -> Styler:
     )
 
     return df_style
+
+
+def df_styling_index_set_1(input_df: pd.DataFrame) -> pd.DataFrame:
+
+    input_df[" "] = input_df.index + 1
+    input_df = input_df.set_index(" ")
+
+    return input_df
+
+
+def df_change_column_name(input_df: pd.DataFrame) -> pd.DataFrame:
+    
+    dict_names = {
+        "from_country" : "From country",
+        "from_city" : "From city",
+        "to_country" : "To country",
+        "to_city" : "To city",
+        "count" : "Count",
+        "label" : "Label"
+    }
+
+    output_df = input_df.rename(columns=dict_names)
+
+    return output_df
+
+# ===== Mapping/parametrization =====
+def get_parameters_countries(country_list: list) -> dict:
+    
+    params_list = []
+    params_dict = {}
+
+    for item in country_list:
+        param = item.lower()
+        params_list.append(param)
+        params_dict[param] = item
+
+    return params_dict
+
+def create_parameters_for_sql(input: list, param_letter: str) -> Tuple[Dict[str, str], str]:
+    '''
+    Context: Parametrized queries using IN() in SQL are horribly slowing down returning result from PostgreSQL back to the code. Thus:
+
+    THIS FUNCTION DOES DYNAMIC MAPPING to avoid SQL injection as the SQL query is built on f-string principle
+
+    1) build of unique parameter e.g. t0, t1, t2 (depends on the param_letter)
+    2) Creation of list [":t0", ":t1", ":t2"] -> list_params_keys[] filled with values
+    3) Adding "key":"value" into dict params {} -> {"t0":"Airplane", "t1":"Train", "t2":"Truck"}
+    4) Creation of string for sql ":t0, :t1, :t2" -> string_for_sql_in
+    '''
+    list_params_keys = []
+    params = {}
+
+    i = 0
+    for value in input:
+        param_name = param_letter + str(i)
+        list_params_keys.append(":" + param_name)
+        params[param_name] = value
+        i = i + 1
+    
+    string_for_sql_in = ", ".join(list_params_keys)
+    return params, string_for_sql_in
+
+# ===== Charts =====
+def create_pie_chart(df_input, x_data, y_data):
+    
+    chart = px.pie(
+    df_input, 
+    names = df_input[f"{x_data}"],
+    values = df_input[f"{y_data}"]
+    )
+
+    # Adjustment to see 2 decimals always in the chart
+    chart.update_traces(texttemplate="%{percent:.2%}")
+
+    return chart
+
+
 
 # ===== UI text adjustment =====
 def singular_or_plural(input_value: float) -> str:
@@ -159,7 +237,21 @@ def display_offer_logs(db_engine: Engine, sql_query: str, offer_id: str, mapping
             }
         )
 
+# ===== UI fallback =====
+def data_empty_fallback_info(input_df: pd.DataFrame):
 
+    '''
+    UI fallback - for case when dataframes are empty (no data following search criteria)
+    '''
+
+    if input_df.empty:
+        st.warning("No data in DB related to the selected date range")
+        fallback = True
+
+    else:
+        fallback = False
+
+    return fallback
 
 # ===== DB Update function =====
 @st.dialog("Complete!")
@@ -174,7 +266,6 @@ def state_change_not_complete():
     st.write("""
         - State change **was not** complete -> :red[**Technical issue**]
         """)
-
 
 
 def change_state_in_db(final_dialog: bool, engine: Engine, offer_id: str, was_state: str, new_state: str):
@@ -347,9 +438,6 @@ def operational_update_of_states(df: pd.DataFrame, db_engine: Engine):
         
 
 
-
-
-
 # ===== Input validation ===== 
 def input_validation(input: str) -> Optional[str]:
     '''  
@@ -376,3 +464,16 @@ def input_validation(input: str) -> Optional[str]:
         st.error(f"Invalid Offer format inserted - **{input}** is not valid. Valid format: F7-XXX")
         return None
 
+# ===== Reset button ===== 
+def reset_filters(list_countries_upper: list, tranport_types_list: list, currency_list: list):
+
+    '''
+    Reset button to clear all applied filters
+    '''
+
+    st.session_state["key_mlts_country_from"] = list_countries_upper
+    st.session_state["key_mlts_country_to"] = list_countries_upper
+    st.session_state["key_mlts_transport"] = tranport_types_list
+    st.session_state["key_mlts_currency"] = currency_list
+    st.session_state["key_checkbox_date"] = False
+    st.session_state["key_sld_number_rows"] = 20
