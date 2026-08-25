@@ -1,42 +1,15 @@
 import streamlit as st
-from sqlalchemy import create_engine, text
+from sqlalchemy import text
 import pandas as pd
 from datetime import date, timedelta
 from Subpages.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
 from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, sql_query_offer_status_validation_df, sql_query_offer_status_validation_single, sql_query_logs, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes
 from Subpages.F7_input_data import tranport_types_list, dataset_cities, states_dict
-from Subpages.F7b_operational_functions import change_state_in_db, input_validation, operational_update_of_states, display_state_and_symbol_mapped, display_offer_logs, mapping_states, get_styling_colors, df_styling_index_set_1, data_empty_fallback_info, create_pie_chart, df_change_column_name, get_parameters_countries, create_parameters_for_sql, reset_filters
-from Subpages.F7B_UI_functions import display_state_flow, display_state_flow_expander
-from Subpages.F7B_UI_offer_visualization import display_offer_visualization_ui
+from Subpages.F7b_operational_functions import connection_db, change_state_in_db, input_validation, operational_update_of_states, display_state_and_symbol_mapped, display_offer_logs, mapping_states, get_styling_colors, df_styling_index_set_1, data_empty_fallback_info, create_pie_chart, df_change_column_name, get_parameters_countries, create_parameters_for_sql, reset_filters
+from Subpages.F7b_UI_functions import display_state_flow, display_state_flow_expander, display_offer_visualization_ui
 
 
-
-@st.dialog("Error: DB not connected")
-def db_connection_fail():
-
-    st.warning("Application is not able to establish connection with DB server -> **This 7B Function is currently not available**")
-    st.stop()
-
-
-def connection_db():
-
-    try: 
-        # Load secrets
-        password = st.secrets["neon"]["password"]
-        endpoint = st.secrets["neon"]["endpoint"]
-
-        # connection string
-        conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
-
-        engine = create_engine(conn_string)
-        return engine
-
-    except Exception as e:
-        print(f"DB connection failed: {e}")
-        db_connection_fail()
-
-
-# ================ Application Screen - INPUT Buttons ========================
+# ================ Application Screen ========================
 st.write("# Find your offer:")
 ''
 
@@ -50,9 +23,11 @@ tab1, tab2, tab3, tab4 = st.tabs([
     "Analytics"
 ])
 
-#Connection can be used across tabs
+# Connection can be used across tabs
 db_engine = connection_db()
 
+
+# ====================== TAB 1 ======================
 with tab1:
 
     ''
@@ -85,8 +60,8 @@ with tab1:
             height=562
         )
 
-# ====================== TAB 2 ======================
 
+# ====================== TAB 2 ======================
 with tab2:
 
     with st.form(key="user_form"):

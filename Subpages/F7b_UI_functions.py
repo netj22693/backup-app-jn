@@ -1,7 +1,24 @@
 import streamlit as st
 import pandas as pd
 from Subpages.F7b_operational_functions import singular_or_plural
+from Subpages.Resources import Assets
 
+
+# ======= UI =======
+def display_state_flow():
+
+    st.write("") # Workaround for space on UI 
+    st.image(Assets.Images.f7_state_flow, width = 680)
+
+def display_state_flow_expander():
+
+    with st.expander("State flow", icon=":material/info:"):
+        st.image(Assets.Images.f7_state_flow, width = 580)
+        st.write("") # Workaround for space on UI
+        st.write(" - For manual **Approve/Reject** - Go to **Search for specific offer** tab and search for the offer.")
+
+
+# ======= Offer visualization function - UI =======
 def display_offer_visualization_ui(
         ui_image_path: str,
         ui_color_coding_image_path: str,
