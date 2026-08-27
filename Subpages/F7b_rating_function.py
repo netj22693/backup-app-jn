@@ -186,9 +186,7 @@ def calculate_overall_rating(rating_dict: dict) -> dict:
     return rating_dict
 
 
-def adjust_rating_for_ui(rating_dict_final: dict) -> float | int:
-
-    value = rating_dict_final["overall_rating"]["calculated_rating"]
+def adjust_rating_for_ui(value: dict) -> float | int:
 
     if value.is_integer():
         return int(value)
@@ -236,7 +234,7 @@ def calculate_rating_and_save_into_db(
 
     rating_dict_final = {"offer_id": offer_id, "rating_given_utc": datetime.now(timezone.utc)} | rating_dict_extended | {"user_text": mapping_user_text(user_text)}
 
-    rating_result = adjust_rating_for_ui(rating_dict_final)
+    rating_result = adjust_rating_for_ui(rating_dict_final["overall_rating"]["calculated_rating"])
 
     db_engine = db_connection()
 
@@ -286,7 +284,7 @@ def offer_rating_display_raiting(df:pd.DataFrame):
 
     with st.container(border=True):
 
-        st.write(f"""##### Overall rating score: {row["calculated_rating"]} / 5 ⭐""")
+        st.write(f"""##### Overall rating score: {adjust_rating_for_ui(row["calculated_rating"])} / 5 ⭐""")
 
         ''
         st.write("Customer service:")
@@ -408,7 +406,7 @@ def offer_rating_display_form(offer_id: str):
 def display_offer_rating_ui_info(rating_end: str, df: pd.DataFrame):
 
     if rating_end == "rating_end_4":
-        st.write(f"""Offer rating: **{df["calculated_rating"].iloc[0]} / 5** ⭐""")
+        st.write(f"""Offer rating: **{adjust_rating_for_ui(df["calculated_rating"].iloc[0])} / 5** ⭐""")
 
     elif rating_end == "rating_end_6":
         st.write(f"""Offer rating: :green[**Form is available for rating → you can rate it now**]""")
