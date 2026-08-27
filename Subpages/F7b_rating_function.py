@@ -147,6 +147,12 @@ def scale_recommendation(selected: str) -> int:
 
     return scale.get(selected)
 
+def mapping_user_text(text: str) -> str | None:
+
+    return None if text == "" else text
+
+
+
 def calculate_overall_rating(rating_dict: dict) -> dict:
 
     for key, item in rating_dict.items():
@@ -199,12 +205,8 @@ def calculate_rating_and_save_into_db(
     condition_shipment_stars: int | None,
     recommendation: str,
     user_text: str
-    ):
-
-    print("printuju pičo")
-    print(customer_service_stars, quality_stars, on_time_stars,       condition_shipment_stars)
-
-
+    ): 
+  
     rating_dict = {
         "customer_service_stars": {
             "value": customer_service_stars,
@@ -232,7 +234,7 @@ def calculate_rating_and_save_into_db(
 
     rating_dict_extended = calculate_overall_rating(rating_dict)
 
-    rating_dict_final = {"offer_id": offer_id, "rating_given_utc": datetime.now(timezone.utc)} | rating_dict_extended | {"user_text": user_text}
+    rating_dict_final = {"offer_id": offer_id, "rating_given_utc": datetime.now(timezone.utc)} | rating_dict_extended | {"user_text": mapping_user_text(user_text)}
 
     rating_result = adjust_rating_for_ui(rating_dict_final)
 
@@ -307,13 +309,15 @@ def offer_rating_display_raiting(df:pd.DataFrame):
         st.write(f"""⦿ {row["recommendation_text"]}""")
         st.write("")
 
-        # Tady si budu potřebovat otestovat ten NULL z DB
-        comment = row["user_text"]
-        if comment is not None:
+        # To display only if there is anything to display 
+        if row["user_text"] is not None:
 
             st.write("Additional comment:")
-            st.write(f":gray[{comment}]")
+            st.write(f""":gray[{row["user_text"]}]""")
             st.write("")
+
+        else:
+            pass
 
 
 def normalize_rating(rating: int | None) -> int:
@@ -332,35 +336,38 @@ def offer_rating_display_form(offer_id: str):
 
     with st.form(key="service_rating_form"):
 
-        ''
+        st.write("")
+        st.success("Rate from **0** to **5** stars ⭐")
+
+        st.write("")
         st.write("Customer service:")
         customer_service_stars: int | None = st.feedback(
             options="stars",
             key="customer_service"
         )
 
-        ''
+        st.write("")
         st.write("Overall quality of the delivery:")
         quality_stars: int | None = st.feedback(
             options="stars",
             key="quality_of_delivery"
         )
 
-        ''
+        st.write("")
         st.write("On-time delivery:")
         on_time_stars: int | None = st.feedback(
             options="stars",
             key="accuracy"
         )
 
-        ''
+        st.write("")
         st.write("Condition of the shipment:")
         condition_shipment_stars: int | None = st.feedback(
             options="stars",
             key="condition_shipment"
         )
 
-        ''
+        st.write("")
         st.write("Would you recommend our company:")
         recommendation: str = st.radio(
             "Would you recommend our company:",
@@ -370,7 +377,7 @@ def offer_rating_display_form(offer_id: str):
         )
 
 
-        ''
+        st.write("")
         st.write("Anything you would like to share:")
         user_text: str = st.text_input(
             label="Free text",
@@ -381,7 +388,7 @@ def offer_rating_display_form(offer_id: str):
         )
 
 
-        ''
+        st.write("")
         st.form_submit_button(
             label= "Submit",
             width="stretch",
@@ -404,7 +411,7 @@ def display_offer_rating_ui_info(rating_end: str, df: pd.DataFrame):
         st.write(f"""Offer rating: **{df["calculated_rating"].iloc[0]} / 5** ⭐""")
 
     elif rating_end == "rating_end_6":
-        st.write(f"""Offer rating: :blue[**Form is available for rating → you can rate it now**]""")
+        st.write(f"""Offer rating: :green[**Form is available for rating → you can rate it now**]""")
 
     else:
         pass
