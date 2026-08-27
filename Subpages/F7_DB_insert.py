@@ -1,5 +1,5 @@
 import streamlit as st
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Engine
 from sqlalchemy.orm import declarative_base, Session
 
 
@@ -89,7 +89,7 @@ def db_connection():
         st.warning("DB not connected")
         # tady přidám nějaký end dialog nebo něco
 
-def insert_variables_offer(engine, data):
+def insert_variables_offer(engine: Engine, data: dict):
 
     mapped_data = {
     "offer_id": data["offer_id"],
@@ -174,7 +174,7 @@ def insert_variables_offer(engine, data):
 #     "dtd_time" : time_dtd
 # }
 
-def insert_variables_delivery(engine, data):
+def insert_variables_delivery(engine: Engine, data: dict):
 
     mapped_data = {
     "offer_id": data["offer_id"],
@@ -239,7 +239,7 @@ def insert_variables_delivery(engine, data):
 #     "danger" : money_danger,
 # }
 
-def insert_variables_costs(engine, data):
+def insert_variables_costs(engine: Engine, data: dict):
 
     mapped_data = {
     "offer_id": data["offer_id"],
@@ -294,7 +294,7 @@ def insert_variables_costs(engine, data):
 #     "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to),
 # }
 
-def insert_variables_extra_steps_time(engine, data):
+def insert_variables_extra_steps_time(engine: Engine, data: dict):
 
     mapped_data = {
     "offer_id": data["offer_id"],
@@ -322,7 +322,7 @@ def insert_variables_extra_steps_time(engine, data):
         session.add(new_offer)
         session.commit()
 
-def insert_variables_go_green(engine, data):
+def insert_variables_go_green(engine: Engine, data: dict):
 
     mapped_data = {
         "offer_id": data["offer_id"],
@@ -351,7 +351,7 @@ def insert_variables_go_green(engine, data):
         session.add(new_offer)
         session.commit()
 
-def insert_variables_state_change_log(engine, data):
+def insert_variables_state_change_log(engine: Engine, data: dict):
 
     mapped_data = {
         "offer_id": data["offer_id"],
@@ -382,8 +382,37 @@ def insert_variables_state_change_log(engine, data):
         session.commit()
 
 
+def insert_variables_offer_rating(engine: Engine, data: dict):
+        
+    mapped_data = {
+        "offer_id": data["offer_id"],
+        "rating_given": data["rating_given"],
+        "delivery_at_utc": data["delivery_at_utc"],
+        "rating_possible_till_utc": data["rating_possible_till_utc"]
+    }
+
+
+    Base = declarative_base()
+
+    class State_change_log(Base):
+        __tablename__ = "offer_rating"
+        __table_args__ = {"schema": "function7"}
+
+        id = Column(Integer, primary_key=True)
+        offer_id = Column(String)
+        rating_given = Column(Float)
+        delivery_at_utc = Column(DateTime(timezone=True))
+        rating_possible_till_utc = Column(DateTime(timezone=True))
+
+    with Session(engine) as session:
+        new_offer = State_change_log(**mapped_data)
+        session.add(new_offer)
+        session.commit()
+
+
+
 # def save_to_db_main_stream(variables_extra_steps_time):
-def save_to_db_main_stream(offer_number, variables_offer, variables_delivery, variables_costs, variables_extra_steps_time, variables_go_green_dict, state_change_log_dict):
+def save_to_db_main_stream(offer_number: dict, variables_offer: dict, variables_delivery: dict, variables_costs: dict, variables_extra_steps_time: dict, variables_go_green_dict: dict, state_change_log_dict: dict, offer_rating_dict: dict):
 
 
     # tady bych dělla PDF ještě
@@ -397,6 +426,7 @@ def save_to_db_main_stream(offer_number, variables_offer, variables_delivery, va
         insert_variables_extra_steps_time(db_engine, variables_extra_steps_time)
         insert_variables_go_green(db_engine, variables_go_green_dict)
         insert_variables_state_change_log(db_engine, state_change_log_dict)
+        insert_variables_offer_rating(db_engine, offer_rating_dict)
 
         process_done(offer_number)
 

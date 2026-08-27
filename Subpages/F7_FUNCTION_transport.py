@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
-import math
 import plotly.graph_objects as go
+from datetime import timedelta
 from Subpages.F7_DB_insert import save_to_db_main_stream
 from Subpages.F7_DB_mapping import mapping_transport_type, mapping_service, mapping_time_zone, mapping_currency, mapping_agreed_till
 from Subpages.F7_PDF import create_pdf
@@ -1950,6 +1950,16 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
             "timestamp_utc": created_utc
         }
 
+
+        # 7) OFFER_RATING table 
+        # Dictionary for INSERT
+        offer_rating_dict = {
+            "offer_id": offer_number_generated,
+            "rating_given": False,
+            "delivery_at_utc": delivery_at_utc,
+            "rating_possible_till_utc": delivery_at_utc + timedelta(days=14),
+        }
+
         # PDF 
         data_for_pdf = {
             "offer_id" : offer_number_generated,
@@ -2010,6 +2020,6 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
             data = data_pdf,
             file_name=f"Offer_{offer_number_generated}.pdf",
             mime="application/pdf",
-            on_click=lambda: save_to_db_main_stream(offer_number_generated, variables_offer_dict, variables_delivery_dict, variables_costs_dict, variables_extra_steps_time_dict, variables_extra_go_green_dict, state_change_log_dict),
+            on_click=lambda: save_to_db_main_stream(offer_number_generated, variables_offer_dict, variables_delivery_dict, variables_costs_dict, variables_extra_steps_time_dict, variables_extra_go_green_dict, state_change_log_dict, offer_rating_dict),
             key="key_save_button"
         )

@@ -1,42 +1,22 @@
 import streamlit as st
-from sqlalchemy import create_engine, text
+from sqlalchemy import text
 import pandas as pd
 from datetime import date, timedelta
+import logging
+from app_logging import inicialization_logging
 from Subpages.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
-from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, sql_query_offer_status_validation_df, sql_query_offer_status_validation_single, sql_query_logs, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes
+from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, sql_query_offer_status_validation_df, sql_query_offer_status_validation_single, sql_query_logs, sql_query_offer_rating, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes
 from Subpages.F7_input_data import tranport_types_list, dataset_cities, states_dict
-from Subpages.F7b_operational_functions import change_state_in_db, input_validation, operational_update_of_states, display_state_and_symbol_mapped, display_offer_logs, mapping_states, get_styling_colors, df_styling_index_set_1, data_empty_fallback_info, create_pie_chart, df_change_column_name, get_parameters_countries, create_parameters_for_sql, reset_filters
-from Subpages.F7b_UI_functions import display_state_flow, display_state_flow_expander
-from Subpages.F7b_UI_offer_visualization import display_offer_visualization_ui
+from Subpages.F7b_operational_functions import connection_db, change_state_in_db, input_validation, operational_update_of_states, display_state_and_symbol_mapped, display_offer_logs, mapping_states, get_styling_colors, df_styling_index_set_1, data_empty_fallback_info, create_pie_chart, df_change_column_name, get_parameters_countries, create_parameters_for_sql, reset_filters
+from Subpages.F7b_UI_functions import display_state_flow, display_state_flow_expander, display_offer_visualization_ui
+from Subpages.F7b_rating_function import make_rating_validation, display_offer_rating_ui_info, display_offer_rating_ui_tab
 
 
-
-@st.dialog("Error: DB not connected")
-def db_connection_fail():
-
-    st.warning("Application is not able to establish connection with DB server -> **This 7B Function is currently not available**")
-    st.stop()
+# Inicialization of logging
+inicialization_logging()
 
 
-def connection_db():
-
-    try: 
-        # Load secrets
-        password = st.secrets["neon"]["password"]
-        endpoint = st.secrets["neon"]["endpoint"]
-
-        # connection string
-        conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
-
-        engine = create_engine(conn_string)
-        return engine
-
-    except Exception as e:
-        print(f"DB connection failed: {e}")
-        db_connection_fail()
-
-
-# ================ Application Screen - INPUT Buttons ========================
+# ================ Application Screen ========================
 st.write("# Find your offer:")
 ''
 
@@ -50,9 +30,11 @@ tab1, tab2, tab3, tab4 = st.tabs([
     "Analytics"
 ])
 
-#Connection can be used across tabs
+# Connection can be used across tabs
 db_engine = connection_db()
 
+
+# ====================== TAB 1 ======================
 with tab1:
 
     ''
@@ -85,8 +67,8 @@ with tab1:
             height=562
         )
 
-# ====================== TAB 2 ======================
 
+# ====================== TAB 2 ======================
 with tab2:
 
     with st.form(key="user_form"):
@@ -148,11 +130,18 @@ with tab2:
                     row_extra_steps_time = df_table_extra_steps_time.iloc[0]
                         
 
-                    # --- e.SLA --- 
+                    # --- h.SLA --- 
                     df_table_sla = pd.read_sql_query(sql=text(sql_table_sla), con=conn, params=params)  
 
                     # Extracting data from DF -> variables  
                     row_sla = df_table_sla.iloc[0]
+
+                    # --- n.OFFER_RATING ---
+                    df_table_offer_rating = pd.read_sql_query(sql=text(sql_query_offer_rating), con=conn, params=params)
+
+                    # Rating functionality - validation
+                    rating_end = make_rating_validation(df_table_offer_rating)
+                    logging.info(f"F7B - Rating function: {rating_end}")
 
                 
                     # Get UI image for the particular offer          
@@ -164,15 +153,18 @@ with tab2:
                     # ========== TAB 2 UI ========================================
                     ''
                     ''
-                    tab2_tab1, tab2_tab2, tab2_tab3 = st.tabs([
+                    tab2_tab1, tab2_tab2, tab2_tab3, tab2_tab4 = st.tabs([
                         f"Offer {offer_id}",
                         "State change & logs",
-                        "State flow"
+                        "State flow",
+                        "Rating"
                     ])
 
                     with tab2_tab1:
 
                         display_state_and_symbol_mapped(row_offer["offer_state"], states_dict)
+
+                        display_offer_rating_ui_info(rating_end, df_table_offer_rating)
 
                         ''
                         display_offer_visualization_ui(
@@ -216,9 +208,13 @@ with tab2:
                         # Logs table   
                         display_offer_logs(db_engine, sql_query_logs, offer_id, states_dict)
 
-
+                    # State flow
                     with tab2_tab3:
                         display_state_flow()
+
+                    # Rating function
+                    with tab2_tab4:
+                        display_offer_rating_ui_tab(offer_id, rating_end, df_table_offer_rating)
 
 
 # ====================== TAB 3 ======================
@@ -550,7 +546,7 @@ with tab4:
         df_top_city_to_styled = df_styling_index_set_1(df_top_city_to_columns_renamed)
         df_routes_styled = df_styling_index_set_1(df_routes_columns_renamed)
             
-        # # Charts
+        # Charts
         chart_transport = create_pie_chart(df_transport_grouped, "label","count")
         chart_service = create_pie_chart(df_service_grouped, "label","count")
         chart_country_from = create_pie_chart(df_country_from_grouped, "from_country","count")

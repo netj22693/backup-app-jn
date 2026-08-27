@@ -210,6 +210,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v68.2** - F7B - Offer rating function released - 27-Aug-2026
 		- **v68.1** - F7B - Code refactoring -> simplification - 25-Aug-2026
 		- **v68.0** - F7 - Sequence in DB set -> allows concurrent users - 16-Aug-2026
 		- **v67.5** - F7B upgrade of UI for better visualization of offer states TAB 1, TAB 2 - 09-Aug-2026

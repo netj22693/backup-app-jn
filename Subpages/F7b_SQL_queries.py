@@ -156,6 +156,29 @@ SELECT
     ORDER BY m.timestamp_utc  
 ;"""
 
+sql_query_offer_rating = """
+SELECT
+    n.offer_id,
+    a.offer_state,
+    n.rating_given,
+    n.customer_service_value,
+    n.quality_service_value,
+    n.ontime_value,
+    n.condition_shipment_value,
+    n.recommendation_value,
+    n.recommendation_text,
+    n.overall_sum_value,
+    n.calculated_rating,
+    n.user_text,
+    n.delivery_at_utc,
+    n.rating_possible_till_utc, 
+    n.rating_given_utc
+
+FROM function7.offer_rating n 
+    INNER JOIN function7.offer a ON (n.offer_id = a.offer_id)
+
+WHERE n.offer_id = :offer_id
+"""
 
 # ==== TAB 3 ====
 
