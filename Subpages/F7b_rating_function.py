@@ -420,8 +420,11 @@ def display_offer_rating_ui_info(rating_end: str, df: pd.DataFrame):
 def display_offer_rating_ui_tab(offer_id: str, rating_end: str, df: pd.DataFrame):
 
 
-    if rating_end in ("rating_end_1", "rating_end_5"):
-        st.info("The rating period has **expired**. Ratings are available for **14 days** after delivery.")
+    if rating_end == "rating_end_1":
+        st.info("""
+        - The rating feature **was not yet available** when this offer was processed. 
+        - The feature was released on 27-Aug-2026
+        """)
 
     elif rating_end == "rating_end_2":
         st.info("Rating becomes available when the offer is marked as **Delivered**.")
@@ -431,6 +434,9 @@ def display_offer_rating_ui_tab(offer_id: str, rating_end: str, df: pd.DataFrame
 
     elif rating_end == "rating_end_4":
         offer_rating_display_raiting(df)
+
+    elif rating_end == "rating_end_5":
+        st.info("The rating period has **expired**. Ratings are available for **14 days** after delivery.")
 
     elif rating_end == "rating_end_6":  
         offer_rating_display_form(offer_id)
