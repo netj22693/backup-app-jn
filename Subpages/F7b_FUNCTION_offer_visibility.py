@@ -157,7 +157,7 @@ with tab2:
                         f"Offer {offer_id}",
                         "State change & logs",
                         "State flow",
-                        "Rating"
+                        "Rating ★"
                     ])
 
                     with tab2_tab1:
