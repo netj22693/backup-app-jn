@@ -18,7 +18,7 @@ st.write("""
 ''
 ''
 ''
-st.image("Pictures/Function_7/F7_ERD/F7_ERD_landscape_v6.svg")
+st.image("Pictures/Function_7/F7_ERD/F7_ERD_landscape_v7.svg")
 
 ''
 ''
