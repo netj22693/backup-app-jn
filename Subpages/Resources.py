@@ -30,7 +30,7 @@ class Assets:
         f5_description_uml_seq_f5b_job = "Pictures/Function_5/F5B_UML_seq_job_v2.svg"
 
         #F7B process/state flow
-        f7_state_flow = "Pictures/Function_7/F7B_state_flow/F7B_state_flow_v2.svg"
+        f7_state_flow = "Pictures/Function_7/F7B_state_flow/F7B_state_flow_v4.svg"
 
 
     class Links:

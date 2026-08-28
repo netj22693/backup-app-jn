@@ -58,7 +58,7 @@ with var_tab1:
             """)
 
 with var_tab2:
-    st.image("Pictures/Function_7/F7_Variables/F7_desc_function_F7B_diagram_v2.svg")
+    st.image("Pictures/Function_7/F7_Variables/F7_desc_function_F7B_diagram_v3.svg")
 
     ''
     st.write("""

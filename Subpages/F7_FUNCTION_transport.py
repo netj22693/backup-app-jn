@@ -1214,6 +1214,9 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
                     - Saturday & Sunday: No delivery ->  **Monday: 10:00**
                 """)   
                 
+                ''
+                tab_info_2.image("Pictures/Function_7/F7_DTF/F7_DTF_graphical_overview_v1.svg", width=450)
+
                 tab_info_2.write("- In case that **calculated Expected delivery time** is **not** in these time frames -> **the delivery time is adjusted to fit into these**")
 
 

@@ -37,7 +37,19 @@ st.write("""
 
 ''
 ''
-st.image(Assets.Images.f7_state_flow, width = 560)
+tab1, tab2 = st.tabs([
+    "State flow",
+    "In context of milestones"
+])
+
+with tab1:
+    ''
+    st.image(Assets.Images.f7_state_flow, width = 750)
+
+with tab2:
+    ''
+    st.image("Pictures/Function_7/F7B_state_flow/F7_desc_states_workflow_and_states_v1.svg")
+
 
 
 ''
@@ -61,7 +73,7 @@ tab1, tab2 = st.tabs([
 
 with tab1:
     ''
-    st.image("Pictures/Function_7/F7B_state_flow/F7B_state_diagrams_UML_GHA_v1.svg", width=480)
+    st.image("Pictures/Function_7/F7B_state_flow/F7B_state_diagrams_UML_GHA_v2.svg", width=480)
 
 with tab2:
     ''
@@ -76,7 +88,7 @@ st.write("##### State BPMN process:")
 ''
 st.write("- The Github Actions and the application logic described by BPMN")
 ''
-st.image("Pictures/Function_7/F7B_state_flow/F7B_state_diagrams_BPMN_detail_v1.svg", width=500)
+st.image("Pictures/Function_7/F7B_state_flow/F7B_state_diagrams_BPMN_detail_v2.svg", width=500)
 
 ''
 ''
