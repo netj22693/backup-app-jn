@@ -340,6 +340,15 @@ with st.expander(
 # Buttons for redirectiong to the relevant Functions
 st.write("### Go to:")
 st.write("**Recommendation:** To firstly read the description chapters (the application navigation bar) to understand how the functions/application work.")
+
+''
+st.page_link(
+    label = "Virtual Assistant (Chatbot)",
+	page="Subpages/FVA_main_virtual_assistant.py",
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+    icon=":material/smart_toy:",
+	) 
 ''
 st.page_link(
     label = "Description about F1 and F2",

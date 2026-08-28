@@ -223,7 +223,7 @@ function_8_desc = st.Page(
 
 main_virtual_assistant = st.Page(
     "Subpages/FVA_main_virtual_assistant.py",
-    title="Virtual Assistant",
+    title="Virtual Assistant (Chatbot)",
     icon= ":material/smart_toy:"
 )
 
