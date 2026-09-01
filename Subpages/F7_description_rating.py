@@ -6,6 +6,7 @@ st.write("# Rating")
 st.write("""
 - Every offer which is in state **Delivered** can be rated
 - The rating is possible till **14 days** since the calculated delivery
+- Available in **F7B**, if conditions met
 """)
 
 ''
@@ -34,8 +35,9 @@ st.image("Pictures/Function_7/F7_rating/F7_rating_DB_context_v1.svg")
 st.write("##### Principle:")
 ''
 st.write("""
-- The process workflow describing the logic
-- The **make_rating_validation()** is the **core rating function** using the **BPMN** logic
+- The process **workflow** describing the logic
+- The **make_rating_validation()** is the **core rating function** using the **BPMN** logic, what will be displayed to the user via UI - it is based on the **current offer state** and **calculated time/milestones** from **F7**
+- The **insert_rating_data_to_db()** is the **core function** for **data insert & having the concurrency condition** preventing from overwriting 
 """)
 
 ''
