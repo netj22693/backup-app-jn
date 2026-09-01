@@ -203,6 +203,12 @@ function_7_desc_state = st.Page(
     icon= ":material/code:"
 )
 
+function_7_desc_rating = st.Page(
+    "Subpages/F7_description_rating.py",
+    title="Description - Rating",
+    icon= ":material/code:"
+)
+
 function_7b = st.Page(
     "Subpages/F7b_FUNCTION_offer_visibility.py",
     title="7B. Offer - Visibility",
@@ -281,6 +287,7 @@ pg = st.navigation(
             function_7_desc_variables,
             function_7_desc_erd_db,
             function_7_desc_state,
+            function_7_desc_rating,
             function_7_desc_dtd,
             function_7_desc_metrics,
             function_7_transport,
