@@ -4,7 +4,7 @@ st.write("# DB & ERD")
 ''
 ''
 st.write("""
-- The **data produced by F7** are inserted into **6 operational tables** - :green[**offer_id**] is the main connector/key
+- The **data produced by F7** are inserted into **7 operational tables** - :green[**offer_id**] is the main connector/key
 - The **F7 does mapping** of the values before insert to follow the **logic of lookup tables**
 - The **data are used also by F7B function** for **searching across DB** and **analytics stuff**
 - This DB design follows **standards of relational DB** concept to be **scalable**
