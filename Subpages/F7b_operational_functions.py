@@ -7,7 +7,7 @@ from pandas.io.formats.style import Styler
 from sqlalchemy import text
 from typing import Optional, Dict, Tuple
 from datetime import datetime, timezone
-from sqlalchemy import Engine, Column, String, DateTime, Integer, create_engine
+from sqlalchemy import Engine, Column, String, DateTime, Integer, create_engine, update
 from sqlalchemy.orm import declarative_base, Session
 
 
@@ -302,8 +302,16 @@ def state_change_not_complete():
         - State change **was not** complete -> :red[**Technical issue**]
         """)
 
+@st.dialog("Status not updated") 
+def state_change_not_concurrency(offer_id: str):
+    st.write(f"""
+    - Status **not** updated {offer_id} -> :blue[**Already Approved/Rejected**]
+    - There was a **concurrent user who updated** at the same time
+    - **Search/reopen the offer again** to see the state
+    """)
 
-def change_state_in_db(final_dialog: bool, engine: Engine, offer_id: str, was_state: str, new_state: str):
+    
+def change_state_in_db(engine: Engine, offer_id: str, was_state: str, new_state: str):
 
     # Preparation of data for insert
     change_note = {
@@ -336,7 +344,7 @@ def change_state_in_db(final_dialog: bool, engine: Engine, offer_id: str, was_st
         offer_state = Column(String)
 
 
-    class State_change_log(Base):
+    class StateChangeLog(Base):
         __tablename__ = "state_change_log"
         __table_args__ = {"schema": "function7"}
 
@@ -348,31 +356,74 @@ def change_state_in_db(final_dialog: bool, engine: Engine, offer_id: str, was_st
         timestamp_utc = Column(DateTime(timezone=True))
 
 
-    try:
+    # MANUAL CHANGES - done by user via UI -> followed by dialog window
+    if new_state in ("APPROVED", "REJECTED"):
 
-        # DB update
-        with Session(engine) as session:
+        try:
+            # DB update
+            with Session(engine) as session:
 
-            # Update of OFFER table
-            offer = session.get(Offer, offer_id)
-            offer.offer_state = new_state
+                offer_update_query = (
+                    update(Offer)
+                    .where(
+                        Offer.offer_id == offer_id,
+                        Offer.offer_state == "CREATED"
+                    )
+                    .values(
+                        offer_state = new_state
+                    )
+                )
 
-            # Create new record in STATE_CHANGE_LOG table
-            state_change_log = State_change_log(**mapped_data_state_change_log)
-            session.add(state_change_log)
+                result = session.execute(offer_update_query)
 
-            session.commit()
 
-        # Final dialog
-        if final_dialog == True:
-            state_change_complete(offer_id, new_state)
+                if result.rowcount == 1:
 
-    
-    except Exception as e:
-        print(f"DB Update fail: {e}")
+                    state_change_log = StateChangeLog(**mapped_data_state_change_log)
+                    session.add(state_change_log)
 
-        if final_dialog == True:
+                    session.commit()
+
+                    logging.info("F7B State change APPROVED/REJECTED - DB save - complete")
+
+                    state_change_complete(offer_id, new_state)
+
+
+                # result.rowcount == 0 -> the state of the offer was changed at the same time 
+                # Offer.offer_state = "CREATED" set upper -> if the offer is not in created, the key condition
+                # Logic preventing from overwriting due to concurrency
+                else:
+                    session.rollback()
+
+                    logging.warning(f"F7B State change APPROVED/REJECTED - DB save - not complete - CONCURRENCY - offer {offer_id}")
+
+                    state_change_not_concurrency(offer_id)
+
+        except Exception as e:
+            logging.warning(f"F7B State change - DB Update fail: {e}")
+
             state_change_not_complete()
+
+
+    # AUTOMATED CHANGES
+    else:
+        try:
+
+            # DB update
+            with Session(engine) as session:
+
+                # Update of OFFER table
+                offer = session.get(Offer, offer_id)
+                offer.offer_state = new_state
+
+                # Create new record in STATE_CHANGE_LOG table
+                state_change_log = StateChangeLog(**mapped_data_state_change_log)
+                session.add(state_change_log)
+
+                session.commit()
+      
+        except Exception as e:
+            logging.warning(f"F7B State change - DB Update fail: {e}")
 
 
 # ===== State change function ===== 
@@ -464,7 +515,6 @@ def operational_update_of_states(df: pd.DataFrame, db_engine: Engine):
 
     for offer_id, was_state, new_state in updates:
         change_state_in_db(
-            False,
             db_engine,
             offer_id,
             was_state,

@@ -187,7 +187,7 @@ with tab2:
                             ''
                             if st.button("Approve", 
                                 on_click=change_state_in_db,
-                                args=(True, db_engine, offer_id, row_offer["offer_state"], "APPROVED"),
+                                args=(db_engine, offer_id, row_offer["offer_state"], "APPROVED"),
                                 width="stretch",
                                 icon = ":material/check_circle:"
                                 ):
@@ -196,7 +196,7 @@ with tab2:
 
                             if st.button("Reject",
                                 on_click = change_state_in_db,
-                                args=(True, db_engine, offer_id, row_offer["offer_state"], "REJECTED"),
+                                args=(db_engine, offer_id, row_offer["offer_state"], "REJECTED"),
                                 width="stretch",
                                 icon = ":material/cancel:"
                                 ):
