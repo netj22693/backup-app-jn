@@ -249,26 +249,29 @@ def make_rating_validation(df: pd.DataFrame) -> str:
     now = datetime.now(timezone.utc)
 
     if df.empty:
-        return "rating_end_1"
+        return "END_RATING_NOT_POSSIBLE"
 
     else:
         row = df.iloc[0]
 
         if row["offer_state"] == "DELIVERED" and row["rating_given"] == True:
-            return "rating_end_4"
+            return "END_RATING_DISPLAY"
 
 
         elif row["offer_state"] == "DELIVERED" and row["rating_given"] == False and row["rating_possible_till_utc"] < now:
-            return "rating_end_5"
+            return "END_RATING_NOT_POSSIBLE_TIME_EXPIRED"
 
         elif row["offer_state"] == "DELIVERED" and row["rating_given"] == False and row["rating_possible_till_utc"] > now:
-            return "rating_end_6"
+            return "END_RATING_CAN_BE_GIVEN"
 
+        elif row["offer_state"] == "EXPIRED":
+            return "END_RATING_NOT_POSSIBLE_STATE_EXPIRED"
+        
         elif row["offer_state"] == "REJECTED":
-            return "rating_end_3"
+            return "END_RATING_NOT_POSSIBLE_STATE_REJECTED"
 
         else:
-            return "rating_end_2"
+            return "END_RATING_ONCE_DELIVERED"
 
 
 
@@ -405,10 +408,10 @@ def offer_rating_display_form(offer_id: str):
 
 def display_offer_rating_ui_info(rating_end: str, df: pd.DataFrame):
 
-    if rating_end == "rating_end_4":
+    if rating_end == "END_RATING_DISPLAY":
         st.write(f"""Offer rating: **{adjust_rating_for_ui(df["calculated_rating"].iloc[0])} / 5** ⭐""")
 
-    elif rating_end == "rating_end_6":
+    elif rating_end == "END_RATING_CAN_BE_GIVEN":
         st.write(f"""Offer rating: :green[**Form is available for rating → you can rate it now**]""")
 
     else:
@@ -418,23 +421,26 @@ def display_offer_rating_ui_info(rating_end: str, df: pd.DataFrame):
 def display_offer_rating_ui_tab(offer_id: str, rating_end: str, df: pd.DataFrame):
 
 
-    if rating_end == "rating_end_1":
+    if rating_end == "END_RATING_NOT_POSSIBLE":
         st.info("""
         - The rating feature **was not yet available** when this offer was processed. 
         - The feature was released on 27-Aug-2026
         """)
 
-    elif rating_end == "rating_end_2":
+    elif rating_end == "END_RATING_ONCE_DELIVERED":
         st.info("Rating becomes available when the offer is marked as **Delivered**.")
 
-    elif rating_end == "rating_end_3":
+    elif rating_end == "END_RATING_NOT_POSSIBLE_STATE_EXPIRED":
+        st.info("Rating is unavailable for **Expired** offers.")
+
+    elif rating_end == "END_RATING_NOT_POSSIBLE_STATE_REJECTED":
         st.info("Rating is unavailable for **Rejected** offers.")
 
-    elif rating_end == "rating_end_4":
+    elif rating_end == "END_RATING_DISPLAY":
         offer_rating_display_raiting(df)
 
-    elif rating_end == "rating_end_5":
+    elif rating_end == "END_RATING_NOT_POSSIBLE_TIME_EXPIRED":
         st.info("The rating period has **expired**. Ratings are available for **14 days** after delivery.")
 
-    elif rating_end == "rating_end_6":  
+    elif rating_end == "END_RATING_CAN_BE_GIVEN":  
         offer_rating_display_form(offer_id)
