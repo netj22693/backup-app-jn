@@ -59,6 +59,8 @@ tab1, tab2, tab3, tab4 = st.tabs([
     "Overview Companies"
 ])
 
+# DB engine creation
+db_engine = db_connection(function_id="F8")
 
 with tab1:
 
@@ -109,10 +111,6 @@ with tab1:
     # Submit button -> main logic TAB 1
     if submit_button:
         
-        # DB engine creation
-        db_engine = db_connection(function_id="F8")
-
-
         # preparation of inputs/for dynamic SQL query using mapping
         international = determin_international(country_from, country_to)
 
@@ -183,9 +181,6 @@ with tab1:
 
 
 with tab2:
-
-    # DB engine creation
-    db_engine = db_connection(function_id="F8")
 
     company_df = pd.read_sql("SELECT name FROM function8.company;", db_engine)
     company_list = company_df['name'].tolist()
@@ -372,9 +367,6 @@ with tab3:
     
         if input_valid is not None:
 
-            # DB engine creation
-            db_engine = db_connection(function_id="F8")
-
             df_branch_and_company = pd.read_sql(text(sql_query_branch_df), db_engine, params={"branch_id": input_valid})
 
             # Empty DF -> no branch in DB
@@ -458,8 +450,6 @@ with tab4:
         submit_button_tab3 = st.button("Companies", width= "stretch", icon=":material/table:", key="key_submit_button_tab3")
 
         if submit_button_tab3:
-            # DB engine creation
-            db_engine = db_connection(function_id="F8")
 
             # Number of companies reqistered in DB
             df_company_no = pd.read_sql(sql_query_number_companies, db_engine)

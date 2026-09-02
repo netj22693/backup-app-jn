@@ -196,6 +196,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 8:
+		- **v68.8** - Code optimization to call DB only 1x per script run (was happening 2x) - 02-Sep-2026
 		- **v68.7** - Centralized DB connection handling - 02-Sep-2026
 		- **v64.6** - TABs extended by country flags + Company info expander added - 02-July-2026
 		- **v64.5** - DFs extended by PINs and colored -> better visualization on UI - 01-July-2026
