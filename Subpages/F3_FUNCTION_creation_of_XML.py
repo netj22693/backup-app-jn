@@ -1,6 +1,6 @@
 import streamlit as st
-import xml.etree.ElementTree as ET
-from Subpages.F3_operational_functions import create_invoice_number, get_utc_time_custom_string,connection_db, mapping_additional_service, mapping_additional_service_into_field, reset, get_transport_price, mapping_country_to_table, mapping_currency_for_query, create_order_num, insert_db_not_complete, process_done, mapping_category, mapping_country, mapping_currency, mapping_extra_service, mapping_file_format, mapping_size, mapping_transport_company, insert_into_db, create_json_file, create_xml_file
+from app_db_connection import db_connection
+from Subpages.F3_operational_functions import create_invoice_number, get_utc_time_custom_string,mapping_additional_service, mapping_additional_service_into_field, reset, get_transport_price, mapping_country_to_table, mapping_currency_for_query, create_order_num, insert_db_not_complete, process_done, mapping_category, mapping_country, mapping_currency, mapping_extra_service, mapping_file_format, mapping_size, mapping_transport_company, insert_into_db, create_json_file, create_xml_file
 
 
 
@@ -167,7 +167,7 @@ if  st.button(
 
 
     else:      
-        db_engine = connection_db()
+        db_engine = db_connection(function_id="F3")
 
         currency_query = mapping_currency_for_query(currency_selb)
 

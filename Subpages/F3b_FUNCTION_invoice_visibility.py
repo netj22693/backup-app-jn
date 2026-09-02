@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 from datetime import date, timedelta
 from sqlalchemy import text
-from Subpages.F3b_operational_functions import connection_db, input_validation, input_safety_validation, get_order_details, get_company_logo_screen_details, input_validation_order_exists, df_styling, create_pie_chart, data_empty_fallback_info
+from app_db_connection import db_connection
+from Subpages.F3b_operational_functions import input_validation, input_safety_validation, get_order_details, get_company_logo_screen_details, input_validation_order_exists, df_styling, create_pie_chart, data_empty_fallback_info
 from Subpages.F3b_SQL_queries import sql_query_overview_invoices, sql_query_file_format, get_sql_part_where_date, get_sql_query_category, get_sql_query_company, get_sql_query_parcel_size, get_sql_query_currency, get_sql_query_country, get_sql_query_extra_service_type, get_sql_query_extra_service_count, get_mapping_extra_services, get_sql_query_file_format
 
 
@@ -28,7 +29,7 @@ with tab1:
     ''
     if st.button("Show last 15 offers", width="stretch", icon=":material/table:"):
 
-        db_engine = connection_db()
+        db_engine = db_connection(function_id="F3B")
 
         df = pd.read_sql(sql_query_overview_invoices, db_engine)
 
@@ -66,7 +67,7 @@ with tab2:
     if submit_button:   
 
 
-        db_engine = connection_db()            
+        db_engine = db_connection(function_id="F3B")            
 
         # Trigger function 2 only in case that valid and safe input (SQL injestion) and Order number found in DB
         if not input_validation(order_input) or not input_safety_validation(order_input) or not input_validation_order_exists(db_engine, order_input) :
@@ -173,7 +174,7 @@ with tab4:
     submit_button_tab4 = st.button("Submit", width= "stretch", icon=":material/apps:", key="key_submit_button_tab4")
 
     if submit_button_tab4:
-        db_engine = connection_db()
+        db_engine = db_connection(function_id="F3B")
 
         with db_engine.connect() as conn:
 

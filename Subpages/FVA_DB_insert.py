@@ -1,54 +1,51 @@
-import streamlit as st
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float,DateTime
+import logging
+from app_logging import inicialization_logging
+from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.orm import declarative_base, Session
 from datetime import datetime, timezone
+from app_db_connection import db_connection
+
+# Inicialization of logging
+inicialization_logging()
 
 
-def db_connection():
-
-    # Load secrets
-    password = st.secrets["neon"]["password"]
-    endpoint = st.secrets["neon"]["endpoint"]
-
-    # connection string
-    try: 
-        conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
-
-        engine = create_engine(conn_string)
-        return engine
-
-    except Exception as e:
-        print(f"DB connection failed: {e}")
-
-
-
-def insert_rating(data: dict):
+def insert_rating_into_db(data: dict):
 
     #engine creation
-    engine = db_connection()
 
-    mapped_data = {
-    "uuid": data["uuid"],
-    "thumb_rating": data["thumb"],
-    "question": data["question"],
-    "answer": data["answer"]
-    }
+    try:
+        engine = db_connection(function_id="VA")
 
-    Base = declarative_base()
+        mapped_data = {
+        "uuid": data["uuid"],
+        "thumb_rating": data["thumb"],
+        "question": data["question"],
+        "answer": data["answer"]
+        }
 
-    class Rating(Base):
-        __tablename__ = "rating"
-        __table_args__ = {"schema": "virtual_assistant"}
+        Base = declarative_base()
 
-        id = Column(Integer, primary_key=True, autoincrement=True)
-        created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+        class Rating(Base):
+            __tablename__ = "rating"
+            __table_args__ = {"schema": "virtual_assistant"}
 
-        uuid = Column(String)
-        thumb_rating = Column(Boolean)
-        question = Column(String)
-        answer = Column(String)
+            id = Column(Integer, primary_key=True, autoincrement=True)
+            created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
-    with Session(engine) as session:
-            new_offer = Rating(**mapped_data)
-            session.add(new_offer)
-            session.commit()
+            uuid = Column(String)
+            thumb_rating = Column(Boolean)
+            question = Column(String)
+            answer = Column(String)
+
+        with Session(engine) as session:
+                new_offer = Rating(**mapped_data)
+                session.add(new_offer)
+                session.commit()
+
+        logging.info(f"VA - DB insert complete")
+        return True
+
+
+    except Exception as e:
+        logging.error(f"VA - DB insert failed: {e}")
+        return False

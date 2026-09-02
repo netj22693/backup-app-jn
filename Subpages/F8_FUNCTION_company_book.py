@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-from sqlalchemy import create_engine, Engine
+from app_db_connection import db_connection
 from sqlalchemy import text
 from Subpages.F8_map import get_map, df_styling_colors_per_map
 from Subpages.F8_operational_functions import boolean_to_string_for_ui, count_rows, select_country_flag_path
@@ -31,33 +31,6 @@ HIDDEN_COLUMNS_BRANCH_INFO = {
 
 # ==== Predefined UI width variable used across TABs ====
 FLAG_IMAGE_WIDTH = 20
-
-# ==== Generic function - DB connection ====
-@st.dialog("Error: DB not connected")
-def db_connection_fail():
-
-    st.warning("Application is not able to establish connection with DB server -> **Function 8 is currently not available**")
-    st.stop()
-
-
-def db_connection() -> Engine:
-
-    # Load secrets
-    password = st.secrets["neon"]["password"]
-    endpoint = st.secrets["neon"]["endpoint"]
-
-    # connection string
-    try: 
-        conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
-
-
-        engine = create_engine(conn_string)
-        return engine
-
-    except:
-        st.warning("DB not connected")
-        db_connection_fail()
-
 
 # ==== Generic function - index ==== 
 
@@ -137,7 +110,7 @@ with tab1:
     if submit_button:
         
         # DB engine creation
-        db_engine = db_connection()
+        db_engine = db_connection(function_id="F8")
 
 
         # preparation of inputs/for dynamic SQL query using mapping
@@ -212,7 +185,7 @@ with tab1:
 with tab2:
 
     # DB engine creation
-    db_engine = db_connection()
+    db_engine = db_connection(function_id="F8")
 
     company_df = pd.read_sql("SELECT name FROM function8.company;", db_engine)
     company_list = company_df['name'].tolist()
@@ -400,7 +373,7 @@ with tab3:
         if input_valid is not None:
 
             # DB engine creation
-            db_engine = db_connection()
+            db_engine = db_connection(function_id="F8")
 
             df_branch_and_company = pd.read_sql(text(sql_query_branch_df), db_engine, params={"branch_id": input_valid})
 
@@ -486,7 +459,7 @@ with tab4:
 
         if submit_button_tab3:
             # DB engine creation
-            db_engine = db_connection()
+            db_engine = db_connection(function_id="F8")
 
             # Number of companies reqistered in DB
             df_company_no = pd.read_sql(sql_query_number_companies, db_engine)

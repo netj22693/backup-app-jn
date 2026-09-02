@@ -2,13 +2,14 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 from datetime import timedelta
+from app_db_connection import db_connection
 from Subpages.F7_DB_insert import save_to_db_main_stream
 from Subpages.F7_DB_mapping import mapping_transport_type, mapping_service, mapping_time_zone, mapping_currency, mapping_agreed_till
 from Subpages.F7_PDF import create_pdf
 from Subpages.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image, show_ui_transport_flow
 from Subpages.F7_input_data import dataset_cities, correction_list_data, criteria_dict, price_dict, dtd_options_dict, dtd_calculation_values_dict, sla_dict, extra_service_dict, UNIT_DISTANCE, TRANSPORT_SPEED, ROUND_TO
 from Subpages.F7_Go_green import call_go_green
-from Subpages.F7_operational_functions import db_connection, create_offer_number, api_get_rate, create_df_cost_trend, create_df_extra_time, create_list_transport, create_df_default_costs, determin_square_price_per_rate, get_list_cities_if_transport_available, create_df_transport_overview, get_list_cities, build_pie_chart, delivery_date_time, create_pie_chart, ui_country_selector, get_currency_option, get_list_available_transport_based_on_selected_cities, get_price_per_square, create_df_particular_transport_overview, get_price_changed_per_service_type, get_extra_time_per_service_sla, ui_input_formatter, ui_door_to_door_selector, ui_transport_offer, ui_determin_singular_plural, get_prices_extra_services, input_validation, input_validation_shipment_value, get_coordinates, L0_is_in_correction_list, get_calculation_price_distance, get_calculation_price_distance_air, get_calculation_delivery_time, get_door_to_door_time_truck, get_door_to_door_time_train_airplane, get_calculation_time_break, get_door_to_door_cost_and_distance, determin_cet_cest, format_transport_value, format_transport_value_using_zero
+from Subpages.F7_operational_functions import create_offer_number, api_get_rate, create_df_cost_trend, create_df_extra_time, create_list_transport, create_df_default_costs, determin_square_price_per_rate, get_list_cities_if_transport_available, create_df_transport_overview, get_list_cities, build_pie_chart, delivery_date_time, create_pie_chart, ui_country_selector, get_currency_option, get_list_available_transport_based_on_selected_cities, get_price_per_square, create_df_particular_transport_overview, get_price_changed_per_service_type, get_extra_time_per_service_sla, ui_input_formatter, ui_door_to_door_selector, ui_transport_offer, ui_determin_singular_plural, get_prices_extra_services, input_validation, input_validation_shipment_value, get_coordinates, L0_is_in_correction_list, get_calculation_price_distance, get_calculation_price_distance_air, get_calculation_delivery_time, get_door_to_door_time_truck, get_door_to_door_time_train_airplane, get_calculation_time_break, get_door_to_door_cost_and_distance, determin_cet_cest, format_transport_value, format_transport_value_using_zero
 
 
 # ============================================================
@@ -1091,14 +1092,12 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
 
 
     # DB connection -> Engine + getting offer number 
-    db_engine = db_connection()
+    db_engine = db_connection(function_id="F7")
 
-    if db_engine != None:
-        offer_number_generated = create_offer_number(db_engine)
+
+    # DB Generate offer number. Next available in DB + DB to block this offer number to prevent from concurrency
+    offer_number_generated = create_offer_number(db_engine)
     
-    elif db_engine == None:
-        offer_number_generated = "Error - Not possible to generate"
-
 
 
     # ============================================================

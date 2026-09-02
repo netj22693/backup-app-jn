@@ -6,7 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from Subpages.FVA_answers import ANSWERS
 from Subpages.FVA_questions import FAQ
 from Subpages.Resources import HELLO_STATEMENT
-from Subpages.FVA_DB_insert import insert_rating
+from Subpages.FVA_DB_insert import insert_rating_into_db
 
 
 
@@ -179,10 +179,12 @@ for msg in st.session_state.messages:
                     st.session_state.feedback_log.append(entry)
 
                     # DB insert ONLY on change
-                    insert_rating(entry)
+                    insert_result: bool = insert_rating_into_db(entry)
 
-                    st.info("Your feedback was recorded - thank you for rating!")
-
+                    if insert_result == True:
+                        st.info("Your feedback was recorded - thank you for rating!")
+                    else:
+                        st.warning("Your feedback was **not** saved due to **technical issue**.")
 
 # User input 
 user_input = st.chat_input("Ask your question...")
@@ -245,7 +247,7 @@ if user_input:
             st.session_state.feedback_log.append(entry)
 
             # DB insert function
-            insert_rating(entry)
+            insert_result: bool = insert_rating_into_db(entry)
 
 
 # In the current version of streamlit the button cannot be put under the chat bar

@@ -1,8 +1,9 @@
 import streamlit as st
 import xml.etree.ElementTree as ET
 import json
+from app_db_connection import db_connection
 from typing import TextIO
-from sqlalchemy import create_engine, Column, Integer, String, Engine
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import declarative_base, Session
 from Subpages.F3_operational_functions import get_utc_time_custom_string, create_json_file, create_xml_file
 
@@ -119,7 +120,6 @@ def mapping_format_DB_code(input_from: str, input_to: str) -> int:
 # Data for DB insert
 def create_data_for_log(order_number: str, mapping_from: int, mapping_to: int) -> dict:
 	
-   
     data = {
         "date": get_utc_time_custom_string('change_log'),   
         "order_number_log": order_number,
@@ -129,24 +129,6 @@ def create_data_for_log(order_number: str, mapping_from: int, mapping_to: int) -
 	}
     
     return data
-
-
-# DB connection
-def connection_db() -> Engine:
-
-	try:
-		# Load secrets
-		password = st.secrets["neon"]["password"]
-		endpoint = st.secrets["neon"]["endpoint"]
-
-		# connection string
-		conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
-
-		engine = create_engine(conn_string)
-		return engine
-	
-	except Exception as e:
-		print(f"DB connection not established: {e}")
 
 
 # Insert into DB
@@ -165,7 +147,7 @@ def write_log_into_db(data: dict):
         mapping_from = Column(String)
         mapping_to = Column(String)
 	
-    db_engine = connection_db()
+    db_engine = db_connection(function_id="F4")
 
     try:
         with Session(db_engine) as session:

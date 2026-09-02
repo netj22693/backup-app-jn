@@ -1,5 +1,6 @@
 import streamlit as st
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Engine
+from app_db_connection import db_connection
+from sqlalchemy import Column, Integer, String, Float, DateTime, Engine
 from sqlalchemy.orm import declarative_base, Session
 
 
@@ -72,22 +73,7 @@ def insert_db_not_complete():
 
 
 
-def db_connection():
 
-    # Load secrets
-    password = st.secrets["neon"]["password"]
-    endpoint = st.secrets["neon"]["endpoint"]
-
-    # connection string
-    try: 
-        conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
-
-        engine = create_engine(conn_string)
-        return engine
-
-    except:
-        st.warning("DB not connected")
-        # tady přidám nějaký end dialog nebo něco
 
 def insert_variables_offer(engine: Engine, data: dict):
 
@@ -414,10 +400,7 @@ def insert_variables_offer_rating(engine: Engine, data: dict):
 # def save_to_db_main_stream(variables_extra_steps_time):
 def save_to_db_main_stream(offer_number: dict, variables_offer: dict, variables_delivery: dict, variables_costs: dict, variables_extra_steps_time: dict, variables_go_green_dict: dict, state_change_log_dict: dict, offer_rating_dict: dict):
 
-
-    # tady bych dělla PDF ještě
-    db_engine = db_connection()
-
+    db_engine = db_connection("F7")
 
     try:
         insert_variables_offer(db_engine, variables_offer)

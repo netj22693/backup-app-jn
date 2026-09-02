@@ -4,10 +4,11 @@ import pandas as pd
 from datetime import date, timedelta
 import logging
 from app_logging import inicialization_logging
+from app_db_connection import db_connection
 from Subpages.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
 from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, sql_query_offer_status_validation_df, sql_query_offer_status_validation_single, sql_query_logs, sql_query_offer_rating, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes
 from Subpages.F7_input_data import tranport_types_list, dataset_cities, states_dict
-from Subpages.F7b_operational_functions import connection_db, change_state_in_db, input_validation, operational_update_of_states, display_state_and_symbol_mapped, display_offer_logs, mapping_states, get_styling_colors, df_styling_index_set_1, data_empty_fallback_info, create_pie_chart, df_change_column_name, get_parameters_countries, create_parameters_for_sql, reset_filters
+from Subpages.F7b_operational_functions import change_state_in_db, input_validation, operational_update_of_states, display_state_and_symbol_mapped, display_offer_logs, mapping_states, get_styling_colors, df_styling_index_set_1, data_empty_fallback_info, create_pie_chart, df_change_column_name, get_parameters_countries, create_parameters_for_sql, reset_filters
 from Subpages.F7b_UI_functions import display_state_flow, display_state_flow_expander, display_offer_visualization_ui
 from Subpages.F7b_rating_function import make_rating_validation, display_offer_rating_ui_info, display_offer_rating_ui_tab
 
@@ -31,7 +32,7 @@ tab1, tab2, tab3, tab4 = st.tabs([
 ])
 
 # Connection can be used across tabs
-db_engine = connection_db()
+db_engine = db_connection(function_id="F7B")
 
 
 # ====================== TAB 1 ======================

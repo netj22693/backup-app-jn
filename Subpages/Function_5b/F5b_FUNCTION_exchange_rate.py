@@ -1,8 +1,10 @@
 import streamlit as st
 import pandas as pd
 import logging
+from app_logging import inicialization_logging
+from app_db_connection import db_connection
 from datetime import datetime, timezone, timedelta
-from sqlalchemy import create_engine, text, Engine
+from sqlalchemy import text
 from Subpages.Function_5b.F5b_SQL_queries import sql_query_exchange_rate_data
 from Subpages.Function_5b.F5b_charts import create_chart
 
@@ -27,43 +29,8 @@ round_value = 3
 # ------------------------------------
 
 # Inicialization for logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s: %(message)s",
-    force=True
-)
+inicialization_logging()
 # ------------------------------------
-
-@st.dialog("Error: DB not connected")
-def db_connection_fail():
-
-    st.warning("Application is not able to establish connection with DB server -> **This 5B Function is currently not available**")
-    st.stop()
-
-
-def connection_db() -> Engine:
-
-    try: 
-        # Load secrets
-        password = st.secrets["neon"]["password"]
-        endpoint = st.secrets["neon"]["endpoint"]
-
-        # connection string
-        conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
-
-        engine = create_engine(conn_string)
-
-        with engine.connect() as conn:
-            logging.info("DB connection established")
-
-        return engine
-
-    except Exception as e:
-        logging.error(f"DB connection failed: {e}")
-        db_connection_fail()
-
-
-   
 
 def get_date_range(radio_input: str) -> dict:
     '''
@@ -248,7 +215,7 @@ start = dict_range_date["start"]
 end = dict_range_date["end"]
 
 # Engine creation
-db_engine = connection_db()
+db_engine = db_connection(function_id="F5B")
 
 # Creation DF from DB
 with db_engine.connect() as conn:

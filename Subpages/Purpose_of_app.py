@@ -185,6 +185,7 @@ with st.expander(
 	''
 	st.write("""
 	- Virtual Assistant (Chatbot):
+		- **v68.7** - Centralized DB connection handling & Adjustment of fallback logic if DB not connected - 02-Sep-2026
 		- **v61.2** - Thumbs up/down rating added + connected to DB to store the rating - 11-May-2026
 		- **v60.5** - Extended: by more questions to App - 04-May-2026
 		- **v60.4** - Extended: by more questions to the Chatbot & App - 30-Apr-2026
@@ -195,6 +196,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 8:
+		- **v68.7** - Centralized DB connection handling - 02-Sep-2026
 		- **v64.6** - TABs extended by country flags + Company info expander added - 02-July-2026
 		- **v64.5** - DFs extended by PINs and colored -> better visualization on UI - 01-July-2026
 		- **v64.4** - TAB 4 Branch info released - 28-Jun-2026
@@ -210,6 +212,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v68.7** - F7 & F7B - Centralized DB connection handling & F7 adjustment of fallback logic if DB not connected - 02-Sep-2026
 		- **v68.5** - F7B - Concurrency rule set for manual state update Approve/Reject (done by user via UI) - 01-Sep-2026
 		- **v68.2** - F7B - Offer rating function released - 27-Aug-2026
 		- **v68.1** - F7B - Code refactoring -> simplification - 25-Aug-2026
@@ -258,6 +261,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 5:
+		- **v68.7** - F5B - Centralized DB connection handling - 02-Sep-2026
 		- **v67.3** - F5B Scheduler to DELETE records older than 100 days from DB released - 07-Aug-2026
 		- **v63.0** - F5B Radio button (Month data, Last 30 days) + Expander with data - 01-June-2026
 		- **v61.9** - F5B rate metrics added - 18-May-2026
@@ -274,6 +278,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 4:
+		- **v68.7** - Centralized DB connection handling - 02-Sep-2026
 		- **v65.0** - Major code refactoring & clean up - 07-July-2026
 		- **v52.3** - Function description extended by Video Guide - 03-Dec-2025
 		- **v52.2** - New DB schema - SQL queries refactored - 01-Dec-2025
@@ -286,6 +291,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 3:
+		- **v68.7** - F3 & F3B - Centralized DB connection handling - 02-Sep-2026
 		- **v67.9** - F3 - Sequence in DB set -> allows concurrent users - 16-Aug-2026
 		- **v65.1** - F3B - Major code refactoring & clean up - 08-July-2026
 		- **v64.9** - F3 - Major code refactoring & clean up - 06-July-2026
