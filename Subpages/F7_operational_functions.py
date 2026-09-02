@@ -12,24 +12,6 @@ from pandas.io.formats.style import Styler
 from sqlalchemy import Engine, create_engine
 
 
-# ===== DB connection =====
-def db_connection() -> Engine:
-
-    # Load secrets
-    password = st.secrets["neon"]["password"]
-    endpoint = st.secrets["neon"]["endpoint"]
-
-    # connection string
-    try: 
-        conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
-
-        engine = create_engine(conn_string)
-        return engine
-
-    except:
-        st.warning("DB not connected - the function will not function fully.")
-        return None
-
 # ===== DB related function =====
 def create_offer_number(engine: Engine) -> str:
 

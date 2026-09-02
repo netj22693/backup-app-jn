@@ -7,30 +7,6 @@ from sqlalchemy import create_engine, text, Engine
 from Subpages.F3b_SQL_queries import sql_query_extra_service, sql_query_file_format, sql_query_mapping_log, sql_query_overview, sql_query_product, sql_query_transport, sql_query_transport_company, sql_query_order_exist
 
 
-# ===== Dialog =====
-@st.dialog("Error: DB not connected")
-def db_connection_fail():
-
-    st.warning("Application is not able to establish connection with DB server -> **This 3B Function is currently not available**")
-    st.stop()
-
-# ===== DB connection =====
-def connection_db()-> Engine:
-    # Load secrets
-    password = st.secrets["neon"]["password"]
-    endpoint = st.secrets["neon"]["endpoint"]
-
-    # connection string
-    try: 
-        conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
-
-        engine = create_engine(conn_string)
-        return engine
-
-    except:
-        db_connection_fail()
-
-
 # ===== TAB 2 validations =====
 def input_validation(order_input: str) -> bool:
 

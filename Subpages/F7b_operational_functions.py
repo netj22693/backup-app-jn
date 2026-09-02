@@ -15,33 +15,6 @@ from sqlalchemy.orm import declarative_base, Session
 # ===== Inicialization for logging ===== 
 inicialization_logging()
 
-# ===== DB connectiom =====
-@st.dialog("Error: DB not connected")
-def db_connection_fail():
-
-    st.warning("Application is not able to establish connection with DB server -> **This 7B Function is currently not available**")
-    st.stop()
-
-
-def connection_db():
-
-    try: 
-        # Load secrets
-        password = st.secrets["neon"]["password"]
-        endpoint = st.secrets["neon"]["endpoint"]
-
-        # connection string
-        conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
-
-        engine = create_engine(conn_string)
-        logging.info("DB connection established - F7B")
-        return engine
-
-    except Exception as e:
-        logging.error(f"DB connection failed - F7B: {e}")
-        db_connection_fail()
-
-
 
 # ===== Data stying =====
 def style_row(row: pd.Series, colors: pd.Series, column_name: str):
