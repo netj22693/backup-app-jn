@@ -1,197 +1,155 @@
 import streamlit as st
-from Subpages.F5_operational_functions import api_GET_request, get_result_division, get_result_multiply, get_value_formated, provide_url_string_kurzy_cz, provide_url_string_freecurrencyapi_com, parsing_data_api_freecurrency_com, parsing_data_api_kurzy_cz
+from Subpages.F6_operational_functions import orchestration_city_based_on_zipcode_search, orchestration_zipcode_based_on_city_search
 
-# =================== App screen ===================
-st.write("# Exchange Rate:")
+# ================== UI  ==========================
+
+st.write("# ZIP Code search:")
 ''
 ''
 st.write("""
-- The exchange rate is API based 
-- The information comes from [Kurzy.cz](https://www.kurzy.cz/) and [Freecurrency.com](https://app.freecurrencyapi.com/)
+- API based 
+- The information comes from 🟣 [Zipcodebase.com](https://app.zipcodebase.com) and 🟢 [Zipcodestack.com](https://app.zipcodestack.com/)
+- **Note:** The function uses **two different external systems** sending the data -> sometimes there can be no match between them.
 """)
 
 
+# ================== UI FORM 1 ==========================
+''
+''
+''
+st.write("#### 🟣 Get ZIP code(s) based on City:")
 
-# =================== API call ===================
-api_raw_data_kurzy_cz = api_GET_request(
-    url_string = provide_url_string_kurzy_cz(),
-    function_id = "F5",
-    api_name = "kurzy.cz"
-    )
+''
+with st.expander("How to use this form",
+    icon=":material/help:"
+    ):
 
-api_raw_data_freecurrency_com = api_GET_request(
-    url_string = provide_url_string_freecurrencyapi_com(),
-    function_id = "F5",
-    api_name = "freecurrency.com"
-    )
+    st.write("- Provides **ZIP code number(s) for particular city**")
 
-# =================== Parsing + Fallbacks ===================
-if api_raw_data_kurzy_cz != None:
-    eur_rate, usd_rate = parsing_data_api_kurzy_cz(api_raw_data_kurzy_cz)
-
-else:
-    st.warning("""
-    API Kurzy.cz was not connected - there are temporary values used:
-    - CZK to EUR = 24
-    - CZK to USD = 21
+    ''
+    st.write("""
+    - **Select country**
+    - **Type name** of the city -> **(:red[!])** Only **one city** per request
+    - Use **Submit button**
     """)
 
-    eur_rate = 24
-    usd_rate = 21
+
+    ''
+    ''
+    st.write("🟪 Few examples of cities you can use:")
+    st.write("""
+    - **CZ** - Czech Republic
+        - Prague
+        - Olomouc
+        - Zlin
+    """
+    )
+
+    st.write("""
+    - **SK** - Slovakia
+        - Kosice
+        - Trencin
+        - Banska Bystrica
+    """
+    )
 
 
 
-if api_raw_data_freecurrency_com != None:
-    eur_to_usd_rate = parsing_data_api_freecurrency_com(api_raw_data_freecurrency_com)
+with st.form("List of ZIP codes"):
+    country = st.selectbox("Country:",
+        ["CZ", "SK"],
+        help="Select country, based on the City you are looking for. CZ - Czech Republic, SK - Slovakia",
+        ).casefold()
+    
+    city = st.text_input("City",
+        help="Only 1 city is allowed",
+        ).capitalize()
 
-else:
-    st.warning("""
-    API Freecurrency.com was not connected - there is temporary value used:
-    - EUR to USD = 1.14
+    submit_button_1 = st.form_submit_button(
+        label="Submit",
+        use_container_width=True,
+        icon = ":material/apps:",
+        )
+    
+    # The 'if' is nested -> to keep results in the form box
+    if submit_button_1: 
+        orchestration_zipcode_based_on_city_search(city, country)
+
+
+
+
+# ================== UI FORM 2 ==========================
+
+''
+''
+''
+st.write("#### 🟢 Get city based on ZIP code:")
+
+''
+with st.expander("How to use this form",
+    icon=":material/help:"
+    ):
+
+    st.write("""- Provides **city, state/region** based on ZIP code(s)""")
+
+    ''
+    st.write("""
+    - **Select country**
+    - Type **ZIP code**
+    - You can also search for **multiple ZIP codes per request** - limitation to **10 ZIP codes per request maximum**
+    - **Expected format**: ZIPCODE, ZIPCODE, ZIPCODE,...
+    - Use coma **,** as separator
     """)
 
-    eur_to_usd_rate = 1.14
+    st.image("Pictures/Function_6/F6_menu_post_multiple.svg")
 
+    ''
+    ''
+    st.write("🟩 Few examples of ZIP codes you can use:")
 
-# =================== App screen Metrics ===================
+    st.write("""
+    - **CZ** - Czech Republic
+        - 3 ZIP codes
+        - 110 00,25 163,158 00
+    """
+    )
 
+    st.write("""
+    - **SK** - Slovakia
+        - 3 ZIP codes
+        - 013 41,013 06,811 08 
+    """
+    )
+
+with st.expander("API limitation",
+    icon=":material/sync_problem:"
+    ):
+
+    st.write("""
+    - This API allows **only 300** requests per month
+    """
+    )
+    
+
+# ================== API 2 - USER SCREEN  ==========================
 
 ''
-''
-''
-st.metric(label="EUR to CZK", value= f"{eur_rate:.3f}")
-
-st.metric(label="USD to CZK", value= f"{usd_rate:.3f}")
-
-st.metric(label="EUR to USD", value= f"{eur_to_usd_rate:.3f}")
-
-
-''
-''
-''
-''
-
-# =============== Form ==============================
-
-st.write("#### Calculation: ")
-
-with st.form(key="calculation form"):
-    czk_obj = st.number_input(
-        "CZK",
-        step=10.00,
-        min_value=0.00,
-        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
+with st.form("Get city based on ZIP code(s)"):
+    country_code = st.selectbox("Country:",
+        ["CZ", "SK"],
+        help="Select country you assume that your ZIP code is from. CZ - Czech Republic, SK - Slovakia",
         )
     
-
-    eur_obj = st.number_input(
-        "EUR",
-        step=10.00,
-        min_value=0.00,
-        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
+    zipcode = st.text_input("ZIP code",
+        help = "You can put 1 or more ZIP codes. If more the format is: ZIPcode,ZIPcode,ZIPcode... To do not overwhelm the API, put MAX 10 ZIP codes in one search."
         )
     
-
-    usd_obj = st.number_input(
-        "USD",
-        step=10.00,
-        min_value=0.00,
-        help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
+    submit_button_api_2 = st.form_submit_button(
+        label="Submit",
+        use_container_width=True,
+        icon = ":material/apps:",
         )
 
-
-    # Data formating
-    czk_obj_formatted = get_value_formated(czk_obj)
-    eur_obj_formatted = get_value_formated(eur_obj)
-    usd_obj_formatted = get_value_formated(usd_obj)
-
-    r1_czk_to_eur_formatted = get_value_formated(get_result_division(czk_obj, eur_rate))
-    r2_czk_to_usd_formatted = get_value_formated(get_result_division(czk_obj, usd_rate))
-    r3_eur_to_czk_formatted = get_value_formated(get_result_multiply(eur_obj, eur_rate))
-    r4_usd_to_czk_formatted = get_value_formated(get_result_multiply(usd_obj, usd_rate))
-    r5_eur_to_usd_formatted = get_value_formated(get_result_multiply(eur_obj, eur_to_usd_rate))
-    r6_usd_to_eur_formatted = get_value_formated(get_result_division(usd_obj, eur_to_usd_rate))
-
-# ===== Buttons =====
-
-    # ALL exchanges button 
-    ''
-    ''
-    sub_butt_all = st.form_submit_button(
-    label="To show all conversions",
-    use_container_width=True,
-    icon = ":material/apps:")
-
-    if sub_butt_all:
-        st.write(f"{czk_obj_formatted} CZK = {r1_czk_to_eur_formatted} EUR")
-        st.write(f"{czk_obj_formatted} CZK = {r2_czk_to_usd_formatted} USD")
-        st.write(f"{eur_obj_formatted} EUR = {r3_eur_to_czk_formatted} CZK")
-        st.write(f"{usd_obj_formatted} USD = {r4_usd_to_czk_formatted} CZK")
-        st.write(f"{eur_obj_formatted} EUR = {r5_eur_to_usd_formatted} USD")
-        st.write(f"{usd_obj_formatted} USD = {r6_usd_to_eur_formatted} EUR")
-
-
-    # CZK -> EUR
-    ''
-    ''
-    ''
-    sub_butt_1 = st.form_submit_button(
-    label="CZK -> EUR",
-    use_container_width=True
-    )
-
-    if sub_butt_1:
-        st.write(f"{czk_obj_formatted} CZK = {r1_czk_to_eur_formatted} EUR")
-
-    # CZK -> USD
-    sub_butt_2 = st.form_submit_button(
-    label="CZK -> USD",
-    use_container_width=True
-    )
-
-    if sub_butt_2:
-        st.write(f"{czk_obj_formatted} CZK = {r2_czk_to_usd_formatted} USD")
-
-    # EUR -> CZK
-    ''
-    ''
-    sub_butt_3 = st.form_submit_button(
-    label="EUR -> CZK",
-    use_container_width=True
-    )
-
-    if sub_butt_3:
-        st.write(f"{eur_obj_formatted} EUR = {r3_eur_to_czk_formatted} CZK")
-
-
-    # USD -> CZK
-    sub_butt_4 = st.form_submit_button(
-    label="USD -> CZK",
-    use_container_width=True
-    )
-
-    if sub_butt_4:
-        st.write(f"{usd_obj_formatted} USD = {r4_usd_to_czk_formatted} CZK")
-
-    
-    
-    # EUR -> USD
-    ''
-    ''
-    sub_butt_5 = st.form_submit_button(
-    label="EUR -> USD",
-    use_container_width=True
-    )
-
-    if sub_butt_5:
-        st.write(f"{eur_obj_formatted} EUR = {r5_eur_to_usd_formatted} USD")
-
-    
-    # USD -> EUR
-    sub_butt_6 = st.form_submit_button(
-    label="USD -> EUR",
-    use_container_width=True
-    )
-
-    if sub_butt_6:
-        st.write(f"{usd_obj_formatted} USD = {r6_usd_to_eur_formatted} EUR")
+    # The 'if' is nested -> to keep results in the form box
+    if submit_button_api_2: 
+        orchestration_city_based_on_zipcode_search(zipcode, country_code)
