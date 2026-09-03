@@ -1,87 +1,35 @@
-import requests
-import json
 import streamlit as st
-from typing import Optional
+from Subpages.F5_operational_functions import api_GET_request, get_result_division, get_result_multiply, get_value_formated, provide_url_string_kurzy_cz, provide_url_string_freecurrencyapi_com, parsing_data_api_freecurrency_com, parsing_data_api_kurzy_cz
 
-# =================== App screen part UI 1 ===================
+# =================== App screen ===================
 st.write("# Exchange Rate:")
 ''
 ''
 st.write("""
 - The exchange rate is API based 
-- The information comes from https://www.kurzy.cz/ and https://app.freecurrencyapi.com/
+- The information comes from [Kurzy.cz](https://www.kurzy.cz/) and [Freecurrency.com](https://app.freecurrencyapi.com/)
 """)
 
-# =================== API functions ===================
-@st.cache_data(ttl=3600)
-def api_GET_request(url_string: str) -> Optional[str]: 
-
-    try:
-        api_response = requests.get(url_string, verify=False, timeout=5).text
-        return api_response
-
-    except Exception as e:
-        print(f"Error GET request: {e}")
-        return None
-
-
-def api_1_kurzy_parsing(data_input: str) -> Optional[float]:
-
-    try:
-        data_json = json.loads(data_input)
-
-        # Search for data in the API defined format - JSON
-        eur_rate_parsed = data_json['kurzy']['EUR']['dev_stred']
-        usd_rate_parsed = data_json['kurzy']['USD']['dev_stred']
-
-        eur_rate_parsed = round(eur_rate_parsed, 3)
-        usd_rate_parsed = round(usd_rate_parsed, 3)
-
-        return eur_rate_parsed, usd_rate_parsed
-
-    except Exception as e:
-        print(f"Error parsing API 1: {e}")
-
-        eur_rate_parsed = None
-        usd_rate_parsed = None
-        return eur_rate_parsed, usd_rate_parsed
-
-
-def api_2_freecurrency_parsing(data_input: str) -> Optional[float]:
-
-    try:
-        data_json = json.loads(data_input)
-
-        # Search for data in the API defined format - JSON
-        eur_to_usd_rate_parsed = data_json['data']['USD']
-        eur_to_usd_rate_parsed = round(eur_to_usd_rate_parsed, 3)
-
-        return eur_to_usd_rate_parsed
-
-    except Exception as e:
-        print(f"Error parsing API 2: {e}")
-
-        eur_to_usd_rate_parsed = None
-        return eur_to_usd_rate_parsed
-
-# =================== Connection string build ===================
-api_1_kurzy_url_string = "https://data.kurzy.cz/json/meny/b[1].json"
-
-secrets_api_2 = st.secrets["F5_api_2"]["password"]
-api_2_freecurrency_url_string = f"https://api.freecurrencyapi.com/v1/latest?apikey={secrets_api_2}&currencies=USD&base_currency=EUR"
 
 
 # =================== API call ===================
-api_1_kurzy = api_GET_request(api_1_kurzy_url_string)
-api_2_freecurrency = api_GET_request(api_2_freecurrency_url_string)
+api_raw_data_kurzy_cz = api_GET_request(
+    url_string = provide_url_string_kurzy_cz(),
+    function_id = "F5",
+    api_name = "kurzy.cz"
+    )
 
+api_raw_data_freecurrency_com = api_GET_request(
+    url_string = provide_url_string_freecurrencyapi_com(),
+    function_id = "F5",
+    api_name = "freecurrency.com"
+    )
 
-# =================== Parsing ===================
-if api_1_kurzy != None:
-    eur_rate, usd_rate = api_1_kurzy_parsing(api_1_kurzy)
+# =================== Parsing + Fallbacks ===================
+if api_raw_data_kurzy_cz != None:
+    eur_rate, usd_rate = parsing_data_api_kurzy_cz(api_raw_data_kurzy_cz)
 
-if api_1_kurzy == None  or eur_rate == None or usd_rate == None:
-
+else:
     st.warning("""
     API Kurzy.cz was not connected - there are temporary values used:
     - CZK to EUR = 24
@@ -92,11 +40,11 @@ if api_1_kurzy == None  or eur_rate == None or usd_rate == None:
     usd_rate = 21
 
 
-if api_2_freecurrency != None:
-    eur_to_usd_rate = api_2_freecurrency_parsing(api_2_freecurrency)
 
-if api_2_freecurrency == None or eur_to_usd_rate == None:
+if api_raw_data_freecurrency_com != None:
+    eur_to_usd_rate = parsing_data_api_freecurrency_com(api_raw_data_freecurrency_com)
 
+else:
     st.warning("""
     API Freecurrency.com was not connected - there is temporary value used:
     - EUR to USD = 1.14
@@ -105,23 +53,7 @@ if api_2_freecurrency == None or eur_to_usd_rate == None:
     eur_to_usd_rate = 1.14
 
 
-# =================== Calculating functions ===================
-
-def get_result_division(a: float,b: float) -> float:
-    result = a / b
-    return result
-    
-def get_result_multiply(a: float,b: float) -> float:
-    result = a * b
-    return result
-
-# =================== Formatting for UI ===================
-
-def get_value_formated(input: float) -> str:
-    result = f"{input:,.2f}". replace(",", " ")
-    return result
-
-# =================== App screen part UI 2 ===================
+# =================== App screen Metrics ===================
 
 
 ''
@@ -142,7 +74,7 @@ st.metric(label="EUR to USD", value= f"{eur_to_usd_rate:.3f}")
 # =============== Form ==============================
 
 st.write("#### Calculation: ")
-# User inputs
+
 with st.form(key="calculation form"):
     czk_obj = st.number_input(
         "CZK",
@@ -167,27 +99,20 @@ with st.form(key="calculation form"):
         help = "You can either click on the +- icons or write the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals write it manualy."
         )
 
-    # Calculation
-    r1_czk_to_eur = get_result_division(czk_obj, eur_rate)
-    r2_czk_to_usd = get_result_division(czk_obj, usd_rate)
-    r3_eur_to_czk = get_result_multiply(eur_obj, eur_rate)
-    r4_usd_to_czk = get_result_multiply(usd_obj, usd_rate)
-    r5_eur_to_usd = get_result_multiply(eur_obj, eur_to_usd_rate)
-    r6_usd_to_eur = get_result_division(usd_obj, eur_to_usd_rate)
 
-    # Formatting 
+    # Data formating
     czk_obj_formatted = get_value_formated(czk_obj)
     eur_obj_formatted = get_value_formated(eur_obj)
     usd_obj_formatted = get_value_formated(usd_obj)
 
-    r1_czk_to_eur_formatted = get_value_formated(r1_czk_to_eur)
-    r2_czk_to_usd_formatted = get_value_formated(r2_czk_to_usd)
-    r3_eur_to_czk_formatted = get_value_formated(r3_eur_to_czk)
-    r4_usd_to_czk_formatted = get_value_formated(r4_usd_to_czk)
-    r5_eur_to_usd_formatted = get_value_formated(r5_eur_to_usd)
-    r6_usd_to_eur_formatted = get_value_formated(r6_usd_to_eur)
+    r1_czk_to_eur_formatted = get_value_formated(get_result_division(czk_obj, eur_rate))
+    r2_czk_to_usd_formatted = get_value_formated(get_result_division(czk_obj, usd_rate))
+    r3_eur_to_czk_formatted = get_value_formated(get_result_multiply(eur_obj, eur_rate))
+    r4_usd_to_czk_formatted = get_value_formated(get_result_multiply(usd_obj, usd_rate))
+    r5_eur_to_usd_formatted = get_value_formated(get_result_multiply(eur_obj, eur_to_usd_rate))
+    r6_usd_to_eur_formatted = get_value_formated(get_result_division(usd_obj, eur_to_usd_rate))
 
-# ----- Buttons ------
+# ===== Buttons =====
 
     # ALL exchanges button 
     ''

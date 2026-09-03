@@ -262,6 +262,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 5:
+		- **v68.9** - F5 - Code refactored: def functions moved ot separate .py - 03-Sep-2026
 		- **v68.7** - F5B - Centralized DB connection handling - 02-Sep-2026
 		- **v67.3** - F5B Scheduler to DELETE records older than 100 days from DB released - 07-Aug-2026
 		- **v63.0** - F5B Radio button (Month data, Last 30 days) + Expander with data - 01-June-2026
