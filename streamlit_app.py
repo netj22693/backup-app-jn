@@ -70,7 +70,7 @@ function_3_BPMN = st.Page(
     )
 
 function_3_erd = st.Page(
-    "Subpages/F3_ERD.py",
+    "Subpages/F3_description_ERD.py",
     title="Description - DB & ERD",
     icon= ":material/code:"
     )
@@ -236,12 +236,6 @@ main_virtual_assistant = st.Page(
 
 
 
-# For dev/test purposes - on 31-Dec-2025 use_container_width= will be depricated in context of plotly 
-test_7 = st.Page(
-    "Subpages/Dev_deprication_Dec_2025/F7_Function_dev_test.py",
-    title="TEST_F7_deprication",
-    icon= ":material/code:"
-)
 
 # Navigation:
 pg = st.navigation(
@@ -251,7 +245,7 @@ pg = st.navigation(
             main_virtual_assistant
             ],
             
-        # "TESTING": [testing, testuju_stsession, test_7],
+        # "TESTING": [testing, testuju_stsession],
 
         "Functions 1 and 2" : [
             fun_1and2_descrip,

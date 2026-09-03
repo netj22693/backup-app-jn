@@ -50,6 +50,6 @@ class Assets:
         f7_description = "https://dataparsing.streamlit.app/F7_description"
         f8_description = "https://dataparsing.streamlit.app/F8_description"
         # ERD
-        f3_f4_description_erd = "https://dataparsing.streamlit.app/F3_ERD"
+        f3_f4_description_erd = "https://dataparsing.streamlit.app/F3_description_ERD"
         f7_description_erd = "https://dataparsing.streamlit.app/F7_description_ERD_DB"
         f8_descriptin_erd = "https://dataparsing.streamlit.app/F8_description#db-structure-erd"

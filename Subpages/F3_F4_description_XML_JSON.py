@@ -288,7 +288,7 @@ st.write("-------")
 
 st.page_link(
     label = "Next page",
-	page="Subpages/F3_ERD.py",
+	page="Subpages/F3_description_ERD.py",
 	help="The button will redirect to the relevant page within this app.",
 	use_container_width=True,
     icon=":material/east:",
