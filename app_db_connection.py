@@ -26,10 +26,11 @@ def db_connection(function_id: str) -> Engine:
     # Load secrets
     password = st.secrets["neon"]["password"]
     endpoint = st.secrets["neon"]["endpoint"]
+    user = st.secrets["neon"]["user"]
 
     # connection string
     try: 
-        conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+        conn_string = f"postgresql+psycopg2://{user}:{password}@{endpoint}.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
         engine = create_engine(conn_string)
         logging.info(f"{function_id} - DB connection established")
