@@ -60,16 +60,14 @@ with st.expander("API JSON structure - Kurzy.cz", icon= ":material/help:"):
 	""")
 
 	st.write("""
-	- These fields are parsed:
+	- These fields are **parsed**:
 		- "EUR" : { "dev_stred" : float value }
 		- "USD" : { "dev_stred" : float value }
 	""")	
 
 
 	''
-	''
-	''
-	st.write("The full JSON data:")
+	st.write("- The **static** JSON API **Response**")
 	st.code(
 		json_api_structure_1,
 		language= 'json',
@@ -109,9 +107,7 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 	""")
 
 	''
-	''
-	''
-	st.write("Customized JSON API data:")
+	st.write("- Customized API **response**")
 	st.code(
 		json_api_structure_2,
 		language= 'json',
@@ -120,13 +116,13 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 
 	''
 	''
-	st.write("External API portal allows:")
 	st.write("""
-	- Monitor the API requests and HTTP codes
-	- See statistics
-	- Troubleshooting and reproducing of requests
-	- Retrospectivelly see every JSON response
-	- Filtering based on date, time, HTTP code/state
+	- External API portal:
+		- Monitoring of API requests & HTTP codes
+		- Statistics
+		- Troubleshooting & reproducing of requests
+		- Retrospectivelly see every JSON Response
+		- Filtering based on date, time, HTTP code/state
 	""")
 
 	''
@@ -135,8 +131,7 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 	st.image("Pictures/Function_5/F5_description_api_statistics_another.png")
 	''
 	''
-	''
-	st.write("- This API is **limited to 1k requests per month**")
+	st.write("- API is **limited to 1k requests per month**")
 	if st.button(
 		"API Usage",
 		use_container_width=True,

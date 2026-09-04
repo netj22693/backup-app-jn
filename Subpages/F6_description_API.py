@@ -115,13 +115,13 @@ with st.expander("API JSON structure - Zipcodestack.com", icon=":material/help:"
 
   ''
   ''
-  st.write("External API portal allows:")
   st.write("""
-  - Monitor the API requests and HTTP codes
-  - See statistics
-  - Troubleshooting and reproducing of requests
-  - Retrospectivelly see every JSON response
-  - Filtering based on date, time, HTTP code/state
+  - External API portal:
+    - Monitoring of API requests & HTTP codes
+    - Statistics
+    - Troubleshooting & reproducing of requests
+    - Retrospectivelly see every JSON Response
+    - Filtering based on date, time, HTTP code/state
   """)
 
 
@@ -134,7 +134,7 @@ with st.expander("API JSON structure - Zipcodestack.com", icon=":material/help:"
   ''
   ''
   ''
-  st.write("- This API is **limited to 300 requests per month**")
+  st.write("- API is **limited to 300 requests per month**")
 
   if st.button(
     "API Usage",
