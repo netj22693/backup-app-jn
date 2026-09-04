@@ -9,7 +9,7 @@ st.write("# Exchange Rate:")
 ''
 st.write("""
 - The exchange rate is API based 
-- The information comes from ⚫[Kurzy.cz](https://www.kurzy.cz/) and 🔵[Freecurrencyapi.com](https://app.freecurrencyapi.com/)
+- The data comes from ⚫[Kurzy.cz](https://www.kurzy.cz/) and 🔵[Freecurrencyapi.com](https://app.freecurrencyapi.com/)
 """)
 
 

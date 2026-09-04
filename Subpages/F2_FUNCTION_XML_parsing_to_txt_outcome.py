@@ -316,7 +316,7 @@ if object_from_upload is not None:
 
 
     # SQL 3 
-    with st.expander("SQL Queries 3 & Pie Charts - % Ratio", icon = ":material/clock_loader_60:"):
+    with st.expander("SQL Queries 3 & Pie Charts - % Ratio", icon = ":material/clock_loader_40:"):
 
         sql_query_percentage_category = get_sql_query_percentage_product_prices_category(value_total_sum)
 
