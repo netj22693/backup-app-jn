@@ -52,9 +52,12 @@ with st.expander("API JSON structure - Zipcodebase.com", icon=":material/help:")
   """)
 
   ''
-  ''
-  ''
-  st.write("The full JSON data:")
+  st.write("""
+  - API **Response**
+    - **"query"** object with the parameters which were in GET Request
+    - **"results"** as array with the ZIP codes related to the query
+  """)
+
   st.code(
     json_api_structure_1,
     language='json',
@@ -97,7 +100,12 @@ with st.expander("API JSON structure - Zipcodestack.com", icon=":material/help:"
   """)
 
   ''
-  st.write("""- API **Response** returns in object **"query"** the parameters which were in GET Request""")
+  st.write("""
+  - API **Response**
+    - **"query"** object with the parameters which were in GET Request
+    - **"results"** object containing nested arrays of objects
+  """)
+
   st.code(
     json_api_structure_2,
     language='json',
