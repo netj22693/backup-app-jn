@@ -1,10 +1,8 @@
 import pandas as pd
-import requests
 import streamlit as st
-from typing import Optional
 import logging
 from app_logging import inicialization_logging
-from app_api import api_GET_request_with_cashing, provide_url_string_zipcodebase_com, provide_url_string_zipcodestack_com, provide_paramaters_zipcodebase_com, provide_paramaters_zipcodestack_com
+from app_api import api_GET_cache_1h, get_url_string_for_GET_api, provide_paramaters_zipcodebase_com, provide_paramaters_zipcodestack_com
 
 # ===== Inicialization for logging =====
 inicialization_logging()
@@ -97,8 +95,8 @@ def orchestration_zipcode_based_on_city_search(city: str, country: str):
     headers, params = provide_paramaters_zipcodebase_com(city, country)
 
     # API request
-    data_json = api_GET_request_with_cashing(
-        url_string= provide_url_string_zipcodebase_com(),
+    data_json = api_GET_cache_1h(
+        url_string= get_url_string_for_GET_api("zipcodebase_com_code_city"),
         function_id="F6",
         api_name="zipcodebase.com",
         headers=headers, 
@@ -254,8 +252,8 @@ def orchestration_city_based_on_zipcode_search(zipcode: str | None, country_code
     headers, params = provide_paramaters_zipcodestack_com(zipcode, country_code)
 
     # API request
-    data_json = api_GET_request_with_cashing(
-        url_string= provide_url_string_zipcodestack_com(),
+    data_json = api_GET_cache_1h(
+        url_string= get_url_string_for_GET_api("zipcodestack_com"),
         function_id="F6",
         api_name="zipcodestack.com",
         headers=headers, 

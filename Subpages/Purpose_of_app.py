@@ -213,6 +213,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v69.1** - F7 - Centralized API handling - 04-Sep-2026
 		- **v68.7** - F7 & F7B - Centralized DB connection handling & F7 adjustment of fallback logic if DB not connected - 02-Sep-2026
 		- **v68.5** - F7B - Concurrency rule set for manual state update Approve/Reject (done by user via UI) - 01-Sep-2026
 		- **v68.2** - F7B - Offer rating function released - 27-Aug-2026

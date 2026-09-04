@@ -1,16 +1,17 @@
 import streamlit as st
-import requests
-import json
 import pandas as pd
 import plotly.express as px
-import time
 import math
+import logging
+from app_logging import inicialization_logging
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 from plotly.graph_objects import Figure
 from pandas.io.formats.style import Styler
-from sqlalchemy import Engine, create_engine
+from sqlalchemy import Engine
 
+# ===== Inicialization for logging =====
+inicialization_logging()
 
 # ===== DB related function =====
 def create_offer_number(engine: Engine) -> str:
@@ -27,41 +28,24 @@ def create_offer_number(engine: Engine) -> str:
     return f"F7-{query_result}"
 
 # ===== API =====
-def api_get_rate() -> tuple[float, float]:
+def data_parsing_api(data_json: dict) -> tuple[float, float]:
     
     try:
+        usd_to_czk_rate = round(data_json['data']['CZK'], 2)
+        usd_to_eur_rate = round(data_json['data']['EUR'], 2)
 
-        api_key = st.secrets["F7_api"]["password_7"]
-
-        api_freecurrency_api = f"https://api.freecurrencyapi.com/v1/latest?apikey={api_key}&currencies=EUR%2CCZK"
-
-        #get reguest
-        @st.cache_data(ttl=3600)
-        def get_response_api(api_freecurrency_api):
-            api_1 = requests.get(api_freecurrency_api, verify=False, timeout=5).text
-            return api_1
-
-        api_1 = get_response_api(api_freecurrency_api)
-
-
-        # JSON format creation
-        api_1_json = json.loads(api_1)
-
-
-        # Parsing
-        usd_to_czk_rate = api_1_json['data']['CZK']
-        usd_to_czk_rate = round(usd_to_czk_rate, 2)
-
-        usd_to_eur_rate = api_1_json['data']['EUR']
-        usd_to_eur_rate = round(usd_to_eur_rate, 2)
+        logging.info(f"F7 - Parsing API - freecurrencyapi.com - SUCCESS")
 
         return  usd_to_czk_rate, usd_to_eur_rate
 
-    except:
+
+    except Exception as e:
+        logging.error(f"F7 - Error data parsing API - freecurrencyapi.com: {e}")
+        
         st.warning("""
-        - Apologies, API refused to make a connection. So to see the function, there are predefined values for the currency exchange rate.
+        - Technical issue with API. Temporary values will be used.
         """
-    )
+        )
 
         # MAIN - Testing rate for my documentation is 
         usd_to_czk_rate = 21.94

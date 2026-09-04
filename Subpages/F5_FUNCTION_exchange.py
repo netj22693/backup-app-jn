@@ -1,5 +1,7 @@
 import streamlit as st
-from Subpages.F5_operational_functions import api_GET_request, get_result_division, get_result_multiply, get_value_formated, provide_url_string_kurzy_cz, provide_url_string_freecurrencyapi_com, parsing_data_api_freecurrency_com, parsing_data_api_kurzy_cz
+from app_api import api_GET_cache_1h, get_url_string_for_GET_api
+from Subpages.F5_operational_functions import get_result_division, get_result_multiply, get_value_formated, parsing_data_api_freecurrencyapi_com, parsing_data_api_kurzy_cz
+
 
 # =================== App screen ===================
 st.write("# Exchange Rate:")
@@ -7,22 +9,22 @@ st.write("# Exchange Rate:")
 ''
 st.write("""
 - The exchange rate is API based 
-- The information comes from [Kurzy.cz](https://www.kurzy.cz/) and [Freecurrency.com](https://app.freecurrencyapi.com/)
+- The information comes from ⚫[Kurzy.cz](https://www.kurzy.cz/) and 🔵[Freecurrencyapi.com](https://app.freecurrencyapi.com/)
 """)
 
 
 
 # =================== API call ===================
-api_raw_data_kurzy_cz = api_GET_request(
-    url_string = provide_url_string_kurzy_cz(),
+api_raw_data_kurzy_cz = api_GET_cache_1h(
+    url_string = get_url_string_for_GET_api("kurzy_cz"),
     function_id = "F5",
     api_name = "kurzy.cz"
     )
 
-api_raw_data_freecurrency_com = api_GET_request(
-    url_string = provide_url_string_freecurrencyapi_com(),
+api_raw_data_freecurrencyapi_com = api_GET_cache_1h(
+    url_string = get_url_string_for_GET_api("freecurrencyapi_com_EUR_to_USD"),
     function_id = "F5",
-    api_name = "freecurrency.com"
+    api_name = "freecurrencyapi.com"
     )
 
 # =================== Parsing + Fallbacks ===================
@@ -41,12 +43,12 @@ else:
 
 
 
-if api_raw_data_freecurrency_com != None:
-    eur_to_usd_rate = parsing_data_api_freecurrency_com(api_raw_data_freecurrency_com)
+if api_raw_data_freecurrencyapi_com != None:
+    eur_to_usd_rate = parsing_data_api_freecurrencyapi_com(api_raw_data_freecurrencyapi_com)
 
 else:
     st.warning("""
-    API Freecurrency.com was not connected - there is temporary value used:
+    API Freecurrencyapi.com was not connected - there is temporary value used:
     - EUR to USD = 1.14
     """)
 
