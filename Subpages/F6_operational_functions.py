@@ -197,7 +197,7 @@ def validation_request_vs_response_zipcodes(zipcode_user_input: str, zipcode_res
                 not_in_response_list.append(item)
 
 
-        logging.warning(f"F6 - Validation of missing ZIP codes - SUCCESS")
+        logging.info(f"F6 - Validation of missing ZIP codes - SUCCESS")
 
         return not_in_response_list 
 
@@ -214,7 +214,7 @@ def city_search_result_visualization(parsed_data: list, data_json: dict, zipcode
     tab1,tab2 = st.tabs(["Table","Raw data"])
 
     if len(zipcode_not_in_response) > 0:
-        tab1.info(f"No result for: {zipcode_not_in_response}")
+        tab1.info(f"**No** result returned for: **{zipcode_not_in_response}**")
 
     for value in parsed_data:
 
@@ -254,6 +254,11 @@ def zipcodes_into_list(zipcode: str) -> list[str]:
 
 def remove_all_spaces(data_input: str):
     return data_input.replace(" ", "")
+
+
+def zipcodes_from_list_to_string(data_input: list) -> str:
+    return ",".join(data_input)
+
 
 def regex_validation_zipcodes_input(zipcode_input: str) -> str:
 
@@ -310,17 +315,21 @@ def orchestration_city_based_on_zipcode_search(zipcode_requested: str | None, co
         return
 
     # String into list[str]
-    zipcode_requested_list = zipcodes_into_list(zipcode_requested)
-
-    # Removing of duplicities in the list, if any (input: '11000','11000' -> output: '11000' )
-    # Why: If duplicities not removed, the API Request parameters in URL: 11000,25163,11000,11000,11000,11000,11000,11000  -> not the best to send it although the external syste has a logic of removing duplicities
-    zipcode_requested_list = list(dict.fromkeys(zipcode_requested_list))
+    zipcode_requested_list: list[str] = zipcodes_into_list(zipcode_requested)
 
 
     # Input validation - limit 10 ZIP codes
     if len(zipcode_requested_list) > 10:
         st.warning("Request is limited to 10 ZIP codes -> there was more provided")
         return     
+
+    # Removing of duplicities in the list, if any (input: '11000','11000' -> output: '11000' )
+    # Why: If duplicities not removed, the API Request parameters in URL: 11000,25163,11000,11000,11000,11000,11000,11000  -> not the best to send it although the external syste has a logic of removing duplicities
+    zipcode_requested_list = list(dict.fromkeys(zipcode_requested_list))
+
+    # Back to the string for API parametrs input - without duplicated ZIP codes
+    zipcode_requested: str = zipcodes_from_list_to_string(zipcode_requested_list)
+    st.write(zipcode_requested)
 
 
     # Creation of parametrs for API
