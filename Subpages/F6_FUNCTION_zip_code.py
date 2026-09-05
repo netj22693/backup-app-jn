@@ -38,9 +38,9 @@ with st.expander("How to use this form",
         "Valid",
         "Not valid ✖"
     ])
-    tab_1.image("Pictures/Function_6/F6_rules_formatting_city_possitive_v1.svg")
+    tab_1.image("Pictures/Function_6/F6_rules_formatting_city_possitive_v2.svg")
 
-    tab_2.info("TBD")
+    tab_2.image("Pictures/Function_6/F6_rules_formatting_city_negative_v2.svg")
 
     ''
     ''
@@ -48,16 +48,21 @@ with st.expander("How to use this form",
     st.write("""
     - **CZ** - Czech Republic
         - Prague
+        - Brno
         - Olomouc
-        - Zlin
+        - Zlín
+        - Frýdek-Místek
+        - Český Těšín
+        - Nová Ves u Nového Města na Moravě
     """
     )
 
     st.write("""
     - **SK** - Slovakia
-        - Kosice
-        - Trencin
+        - Košice
+        - Trenčín
         - Banska Bystrica
+        - Bratislava
     """
     )
 
@@ -114,9 +119,9 @@ with st.expander("How to use this form",
         "Not valid ✖"
     ])
 
-    tab_1.image("Pictures/Function_6/F6_rules_formatting_zipcodes_possitive_v2.svg")
+    tab_1.image("Pictures/Function_6/F6_rules_formatting_zipcode_possitive_v2.svg")
 
-    tab_2.image("Pictures/Function_6/F6_rules_formatting_zipcodes_negative_v2.svg")
+    tab_2.image("Pictures/Function_6/F6_rules_formatting_zipcode_negative_v2.svg")
 
 
     ''
@@ -142,6 +147,7 @@ with st.expander("API limitation",
 
     st.write("""
     - This API allows **only 300** requests per month
+    - **Please be mindful of your requests** 😊💚
     """
     )
     

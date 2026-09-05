@@ -96,18 +96,42 @@ def adjust_data_for_visualization(data: list) ->  tuple[pd.Series, str]:
     data_series = pd.Series(data, name="ZIP codes",)
     data_series.index += 1
 
-    string_zip_codes = ", ".join(data_series)
+    string_zip_codes = [
+    ", ".join(data_series[i:i + 10])
+    for i in range(0, len(data_series), 10)
+    ]   
 
     return data_series, string_zip_codes
 
 
 def zipcode_search_result_visualization(data_series: pd.Series, string_zip_codes: str):
 
+    num_strings = (len(string_zip_codes))
+
+    if num_strings > 1:
+        text = "These **strings** can be used in the search box below 🟢. Automatically split by **10 ZIP codes per line** due to limit per request." 
+
+        if num_strings >= 2:
+            mindfull_text= """
+            - **Please be mindful of your requests** 😊💚
+            - Avoid making unnecessary API calls, **the API is limited.**"""
+
+    else:
+        text = "This **string** can be used in the search box below 🟢"
+
+    # UI 
     st.write("")
     st.write(data_series)
     st.write("")
-    st.write("This string can be used in the search box below 🟢:")
-    st.write(string_zip_codes)
+    st.write(text)
+    if num_strings >= 2:
+        st.write(mindfull_text)
+    st.write("")
+
+
+    for string in string_zip_codes:
+        st.write(string)
+
     st.write("")
     st.caption(r"**\*NOTE:** The below search uses **different external system** -> it is possible that there will not be 100% match.")
 
