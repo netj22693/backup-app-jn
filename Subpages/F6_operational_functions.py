@@ -12,6 +12,40 @@ inicialization_logging()
 # ===================================================
 # -------- 🟣 Get ZIP code(s) based on City --------
 # ===================================================
+
+def regex_validation_city_input(city_input: str, country_code: str) -> tuple[str, int]:
+
+    '''
+    Rule: 
+    - Allows CZ/SK letters
+    - For the external API, there needs to be , as separater when passed as parameters
+    - not other characters allowed -> REGEX validation stop it
+    '''
+
+    pattern = {
+        "CZ": {
+            "rule": r"^[A-Za-zÁČĎÉĚÍŇÓŘŠŤÚŮÝŽáčďéěíňóřšťúůýž -]{1,33}$",
+            "length": 33
+        },
+        "SK": {
+            "rule": r"^[A-Za-zÁÄČĎÉÍĹĽŇÓÔŔŠŤÚÝŽáäčďéíĺľňóôŕšťúýž -]{1,23}$",
+            "length": 23
+        }
+    }
+
+    country_pattern = pattern.get(country_code)
+    allowed_length = country_pattern["length"]
+
+
+    if len(city_input) > allowed_length:
+        return "NOT_PASSED_TOO_LONG", allowed_length
+
+    elif re.fullmatch(country_pattern["rule"], city_input):
+        return "PASSED", allowed_length
+    
+    else:
+        return "NOT_PASSED", allowed_length
+    
 def parsing_data_zipcodebase_com(data_json: dict) -> list | str:
 
     '''
@@ -69,12 +103,12 @@ def adjust_data_for_visualization(data: list) ->  tuple[pd.Series, str]:
 
 def zipcode_search_result_visualization(data_series: pd.Series, string_zip_codes: str):
 
-    ''
+    st.write("")
     st.write(data_series)
-    ''
-    st.write("- This string can be used in the search below 🟢:")
+    st.write("")
+    st.write("This string can be used in the search box below 🟢:")
     st.write(string_zip_codes)
-    ''
+    st.write("")
     st.caption(r"**\*NOTE:** The below search uses **different external system** -> it is possible that there will not be 100% match.")
 
 
@@ -86,9 +120,28 @@ def orchestration_zipcode_based_on_city_search(city: str, country: str):
     In case of not possible to continue -> return
     '''
 
+    # Input normaliyation
+    city = city.strip().casefold()
+
+
     # Input validation
     if not city:
         st.warning("**Missing input** - Please provide City")
+        return
+
+    # Regex validation
+    regex_result, allowed_length = regex_validation_city_input(city, country)
+
+    if regex_result == "NOT_PASSED_TOO_LONG":
+        st.warning(f"""
+        The city input is too long. Max number of characters for {country} is **{allowed_length}**.
+        """)
+        return
+
+    elif regex_result == "NOT_PASSED":
+        st.warning(f"""
+        Not allowed characters in the city input.
+        """)
         return
 
     # Creation of parametrs for API
@@ -132,6 +185,7 @@ def orchestration_zipcode_based_on_city_search(city: str, country: str):
         st.warning("""
         **Technical issue** -> please report it on the main page **Report bug** section.
         """)  
+        return
 
     # Happy path:
     else:
@@ -209,6 +263,7 @@ def validation_request_vs_response_zipcodes(zipcode_user_input: str, zipcode_res
 
 def city_search_result_visualization(parsed_data: list, data_json: dict, zipcode_not_in_response: list):
 
+    st.write("")
     st.write("##### Results:")
             
     tab1,tab2 = st.tabs(["Table","Raw data"])
@@ -329,8 +384,6 @@ def orchestration_city_based_on_zipcode_search(zipcode_requested: str | None, co
 
     # Back to the string for API parametrs input - without duplicated ZIP codes
     zipcode_requested: str = zipcodes_from_list_to_string(zipcode_requested_list)
-    st.write(zipcode_requested)
-
 
     # Creation of parametrs for API
     headers, params = provide_paramaters_zipcodestack_com(zipcode_requested, country_code)

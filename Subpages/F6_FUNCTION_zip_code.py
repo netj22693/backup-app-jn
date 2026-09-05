@@ -67,11 +67,11 @@ with st.form("List of ZIP codes"):
     country = st.selectbox("Country:",
         ["CZ", "SK"],
         help="Select country, based on the City you are looking for. CZ - Czech Republic, SK - Slovakia",
-        ).casefold()
+        )
     
     city = st.text_input("City",
         help="Only 1 city is allowed",
-        ).capitalize()
+        )
 
     submit_button_1 = st.form_submit_button(
         label="Submit",
