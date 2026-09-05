@@ -97,7 +97,7 @@ def provide_paramaters_zipcodebase_com(city:str, country_code: str) -> tuple[dic
 
 
 # Zipcodestack.com
-def provide_paramaters_zipcodestack_com(zipcode:str, country_code: str) -> tuple[dict, tuple]:
+def provide_paramaters_zipcodestack_com(zipcode: str, country_code: str) -> tuple[dict, tuple]:
 
     headers = { 
         "apikey": st.secrets["F6_api_2"]["password_2"]

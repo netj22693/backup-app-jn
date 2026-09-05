@@ -98,26 +98,28 @@ with st.expander("How to use this form",
     st.write("""
     - **Select country**
     - Type **ZIP code**
-    - You can also search for **multiple ZIP codes per request** - limitation to **10 ZIP codes per request maximum**
+    - You can search for **multiple ZIP codes in one request** - limitation **10 ZIP codes**
+    - If **multiple** ZIP codes, use **comma ,** as separator
     """)
 
-    st.write("- **Accepted formats**: ZIPCODE, ZIPCODE, ZIPCODE,...  (comma **,** as separator)")
+    ''
+    st.write("- **Accepted formats**:")
     st.image("Pictures/Function_6/F6_rules_formatting_v1.svg")
 
+    ''
+    ''
     ''
     ''
     st.write("🟩 Few examples of ZIP codes you can use:")
 
     st.write("""
     - **CZ** - Czech Republic
-        - 3 ZIP codes
         - 110 00, 251 63, 158 00
     """
     )
 
     st.write("""
     - **SK** - Slovakia
-        - 3 ZIP codes
         - 013 41, 013 06, 811 08 
     """
     )

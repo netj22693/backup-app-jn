@@ -253,7 +253,8 @@ with st.expander(
 	''
 	st.write("""
 	- Function 6:
-		- **v69.0** - Code refactored: Centralized API handling, Reworked fallback logic & executing orchestration, better UI visualization - 03-Sep-2026
+		- **v69.3** - Searchbox (input ZIP code returns City), better user input validation & normalization -> saves API calls with wrong data in Requests - 04-Sep-2026
+	- **v69.0** - Code refactored: Centralized API handling, Reworked fallback logic & executing orchestration, better UI visualization - 03-Sep-2026
 		- **v50.1** - Code refactored: into blocks - 14-Nov-2025
 		- **v12.1** - Better visualization of results (tabs) - 06-July-2025
 		- **v12.0** - APIs not called in case of empty forms (missing inputs) - to not waste API calls - 06-July-2025
