@@ -34,8 +34,14 @@ with st.expander("How to use this form",
     """)
 
     ''
-    st.write("- **Accepted formats:**")
-    st.image("Pictures/Function_6/F6_rules_formatting_city_v1.svg")
+    tab_1, tab_2 = st.tabs([
+        "Valid",
+        "Not valid ✖"
+    ])
+    tab_1.image("Pictures/Function_6/F6_rules_formatting_city_possitive_v1.svg")
+
+    tab_2.info("TBD")
+
     ''
     ''
     st.write("🟪 Few examples of cities you can use:")
@@ -103,10 +109,16 @@ with st.expander("How to use this form",
     """)
 
     ''
-    st.write("- **Accepted formats**:")
-    st.image("Pictures/Function_6/F6_rules_formatting_v1.svg")
+    tab_1, tab_2 = st.tabs([
+        "Valid",
+        "Not valid ✖"
+    ])
 
-    ''
+    tab_1.image("Pictures/Function_6/F6_rules_formatting_zipcodes_possitive_v2.svg")
+
+    tab_2.image("Pictures/Function_6/F6_rules_formatting_zipcodes_negative_v2.svg")
+
+
     ''
     ''
     ''
@@ -144,7 +156,7 @@ with st.form("Get city based on ZIP code(s)"):
         )
     
     zipcode = st.text_input("ZIP code",
-        help = "You can put 1 or more ZIP codes. If more the format is: ZIPcode,ZIPcode,ZIPcode... To do not overwhelm the API, put MAX 10 ZIP codes in one search."
+        help = "You can put 1 to 10 ZIP codes."
         )
     
     submit_button_api_2 = st.form_submit_button(
