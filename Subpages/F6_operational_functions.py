@@ -109,12 +109,12 @@ def zipcode_search_result_visualization(data_series: pd.Series, string_zip_codes
     num_strings = (len(string_zip_codes))
 
     if num_strings > 1:
-        text = "These **strings** can be used in the search box below 🟢. Automatically split by **10 ZIP codes per line** due to limit per request." 
+        text = "These **strings** can be used in the search box below 🟢. Split by **10 ZIP codes per line** - limit per request." 
 
         if num_strings >= 2:
             mindfull_text= """
-            - **Please be mindful of your requests** 😊💚
-            - Avoid making unnecessary API calls, **the API is limited.**"""
+            - **Please use the API responsibly and avoid unnecessary API calls** 😊💚
+            """
 
     else:
         text = "This **string** can be used in the search box below 🟢"

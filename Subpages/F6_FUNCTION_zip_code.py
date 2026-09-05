@@ -147,7 +147,7 @@ with st.expander("API limitation",
 
     st.write("""
     - This API allows **only 300** requests per month
-    - **Please be mindful of your requests** 😊💚
+    - **Please use the API responsibly and avoid unnecessary API calls** 😊💚
     """
     )
     
