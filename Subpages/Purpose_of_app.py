@@ -237,6 +237,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 6:
+		- **v69.5** - Extended by validation/normalization using XREF dictionaries - 07-Sep-2026
 		- **v69.4** - Reworked normalization & validation of user input to reduce unnecessary API calls - 05-Sep-2026
 		- **v69.0** - Code refactored: Centralized API handling, Reworked fallback logic & executing orchestration, better UI visualization - 03-Sep-2026
 		- **v50.1** - Code refactored: into blocks - 14-Nov-2025

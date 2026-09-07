@@ -2,8 +2,11 @@ import re
 import pandas as pd
 import streamlit as st
 import logging
+import unicodedata
 from app_logging import inicialization_logging
 from app_api import api_GET_cache_1h, get_url_string_for_GET_api, provide_paramaters_zipcodebase_com, provide_paramaters_zipcodestack_com
+from Subpages.F6_input_data import cities_api_aliases, cities_normalized_not_unique, cities_not_unique_name
+
 
 # ===== Inicialization for logging =====
 inicialization_logging()
@@ -45,7 +48,100 @@ def regex_validation_city_input(city_input: str, country_code: str) -> tuple[str
     
     else:
         return "NOT_PASSED", allowed_length
-    
+
+
+def remove_diacritic(city: str) -> str:
+
+    ''''
+    - unicodedata.normalize("NFKD") splits string by characters
+    - character with diacritic is split into two č → c + ˇ
+    - for loop again connects the split characters, if not unicode (which ˇ isn't), it will not connect 
+    - týnec -> tyˊnec -> tynec
+    '''
+
+    try: 
+        normalized = unicodedata.normalize("NFKD", city)
+
+        result = ""
+
+        for character in normalized:
+            if not unicodedata.combining(character):
+                result += character
+
+        logging.info(f"F6 - Remove diacritics - COMPLETE: from: {city} -> to: {result}")
+        return result
+
+    except Exception as e:
+        logging.warning(f"F6 - Remove diacritics - FAILED: {e}")
+        return city
+
+
+def is_city_in_xref(city: str, country_code: str, data: dict, check_type: str) -> bool:
+
+	'''
+	Uses XREF dict
+	A) IS_CITY_NAME_UNIQUE
+		To recognize city which name is not unique -> the same city name appears in multiple regions	
+	
+	B) IS_NORMALIZED_CITY_NAME_UNIQUE
+		To recognize cities which have unique names before normalization but after normalization the uniqueness is gone	
+	'''
+	try:	
+		for object in data[country_code]:
+			normalized = object["normalized"]
+			xref_name = object ["name"]
+
+			if normalized == city: 
+
+				logging.info(f"F6 - XREF check: {check_type} - MATCH - {city} | {normalized} | {xref_name} - SUCCESS")
+
+				return True
+
+		else:
+			logging.info(f"F6 - XREF check: {check_type} - NO MATCH - SUCCESS")
+			return False
+
+
+	except KeyError:
+		logging.warning(f"F6 - XREF check: {check_type} - KEY ERROR - FAIL")
+		return False
+
+	except Exception as e:
+		logging.warning(f"F6 - XREF check: {check_type} - FAIL: {e}")
+		return False
+
+
+def check_city_multiple_names(city: str, country_code: str, data: dict) -> str:
+
+	'''
+	To unifie cities which have both czech and official english name worldwide known
+	user: praha -> api: prague
+	'''
+	try:	
+		for object in data[country_code]:
+			normalized = object["normalized"]
+			api_name = object ["api"]
+
+			if normalized == city: 
+
+				logging.info(f"F6 - XREF check: MULTIPLE NAMES - MATCH - {city} | {normalized} -> {api_name} - SUCCESS")
+
+				return api_name
+
+		else:
+			logging.info(f"F6 - XREF check: MULTIPLE NAMES - NO MATCH - SUCCESS")
+			return city
+
+
+	except KeyError:
+		logging.warning(f"F6 - XREF check: MULTIPLE NAMES - KEY ERROR - FAIL")
+		return city
+
+	except Exception as e:
+		logging.warning(f"F6 - XREF check: MULTIPLE NAMES - FAIL: {e}")
+		return city
+
+
 def parsing_data_zipcodebase_com(data_json: dict) -> list | str:
 
     '''
@@ -104,9 +200,17 @@ def adjust_data_for_visualization(data: list) ->  tuple[pd.Series, str]:
     return data_series, string_zip_codes
 
 
-def zipcode_search_result_visualization(data_series: pd.Series, string_zip_codes: str):
+def zipcode_search_result_visualization(data_series: pd.Series, list_of_strings_zipcodes: list[str], city_name_not_unique: bool, city_name_normalized_not_unique: bool, len_zipcodes: int):
 
-    num_strings = (len(string_zip_codes))
+
+    # XREF result info
+    text_city_name_not_unique = f"This city **name is shared by multiple cities in multiple regions**. You can use the search box below to verify the correct city and ZIP code."
+
+    text_city_name_normalized_not_unique = "The city **name may correspond to multiple cities** in **multiple regions** because **diacritics**. You can use the search box below to verify the correct ZIP code."
+
+
+    # String text logic
+    num_strings = (len(list_of_strings_zipcodes))
 
     if num_strings > 1:
         text = "These **strings** can be used in the search box below :green[⬤]. Split by **10 ZIP codes per line** - limit per request." 
@@ -119,17 +223,25 @@ def zipcode_search_result_visualization(data_series: pd.Series, string_zip_codes
     else:
         text = "This **string** can be used in the search box below :green[⬤]"
 
+
     # UI 
     st.write("")
     st.write(data_series)
+    if city_name_not_unique == True and len_zipcodes > 1:
+        st.write("")
+        st.info(text_city_name_not_unique)
+
+    if city_name_normalized_not_unique == True:
+        st.write("")
+        st.info(text_city_name_normalized_not_unique)
+    
     st.write("")
     st.write(text)
     if num_strings >= 2:
         st.write(mindfull_text)
     st.write("")
 
-
-    for string in string_zip_codes:
+    for string in list_of_strings_zipcodes:
         st.write(string)
 
     st.write("")
@@ -137,7 +249,7 @@ def zipcode_search_result_visualization(data_series: pd.Series, string_zip_codes
 
 
 
-def orchestration_zipcode_based_on_city_search(city: str, country: str):
+def orchestration_zipcode_based_on_city_search(city: str, country_code: str):
 
     '''
     Function making orchestration and validation of zipcode search based on city and country inputs
@@ -154,11 +266,11 @@ def orchestration_zipcode_based_on_city_search(city: str, country: str):
         return
 
     # Regex validation
-    regex_result, allowed_length = regex_validation_city_input(city, country)
+    regex_result, allowed_length = regex_validation_city_input(city, country_code)
 
     if regex_result == "NOT_PASSED_TOO_LONG":
         st.warning(f"""
-        The city input is too long. Max number of characters for {country} is **{allowed_length}**.
+        The city input is too long. Max number of characters for {country_code} is **{allowed_length}**.
         """)
         return
 
@@ -168,8 +280,32 @@ def orchestration_zipcode_based_on_city_search(city: str, country: str):
         """)
         return
 
+    # Normalization of latin diacritics 
+    city = remove_diacritic(city)
+
+    # Normalization using XREFs
+    city_name_not_unique = is_city_in_xref(
+		city,
+		country_code,
+		cities_not_unique_name,
+		"IS_CITY_NAME_UNIQUE"
+		)
+	
+    city_name_normalized_not_unique = is_city_in_xref(
+        city,
+        country_code,
+        cities_normalized_not_unique,
+        "IS_NORMALIZED_CITY_NAME_UNIQUE"
+        )
+
+    city = check_city_multiple_names(
+        city,
+        country_code,
+        cities_api_aliases
+    )
+
     # Creation of parametrs for API
-    headers, params = provide_paramaters_zipcodebase_com(city, country)
+    headers, params = provide_paramaters_zipcodebase_com(city, country_code)
 
     # API request
     data_json = api_GET_cache_1h(
@@ -180,6 +316,7 @@ def orchestration_zipcode_based_on_city_search(city: str, country: str):
         params=params,
         timeout=2
         )
+
 
     # Validation of response date
     if not data_json:
@@ -213,9 +350,16 @@ def orchestration_zipcode_based_on_city_search(city: str, country: str):
 
     # Happy path:
     else:
-        data_series, string_zip_codes = adjust_data_for_visualization(parsed_data)
 
-        zipcode_search_result_visualization(data_series, string_zip_codes)
+        data_series, list_of_strings_zip_codes = adjust_data_for_visualization(parsed_data)
+
+        zipcode_search_result_visualization(
+            data_series,
+            list_of_strings_zip_codes,
+            city_name_not_unique,
+            city_name_normalized_not_unique,
+            len(parsed_data)
+            )
 
 
 
@@ -312,14 +456,17 @@ def city_search_result_visualization(parsed_data: list, data_json: dict, zipcode
             region_list.append(result['state_en'])
 
         # DF creation
-        result_dict = pd.DataFrame({
+        result_df = pd.DataFrame({
             "ZIP code": postal_code_list,
             "City name": city_list,
             "Region": region_list
         })
 
-        result_dict.index += 1
-        tab1.write(result_dict)   
+        result_df = result_df.sort_values("City name", ascending=True)
+        result_df = result_df.reset_index(drop=True)
+
+        result_df.index += 1
+        tab1.write(result_df)   
 
 
 def zipcodes_into_list(zipcode: str) -> list[str]:
