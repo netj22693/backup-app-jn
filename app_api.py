@@ -55,10 +55,10 @@ def get_url_string_for_GET_api(key: str) -> str:
         # 1) F6 - 🟣 zipcodebase.com - Get ZIP code(s) based on City
         "zipcodebase_com_code_city": f"https://app.zipcodebase.com/api/v1/code/city?apikey={st.secrets['F6_api_1']['password_1']}",
 
-        # 2) F6 - 🟢 zipcodestack.com - Get city based on ZIP code
+        # 2) F6 - 🟠 zipcodestack.com - Get city based on ZIP code
         "zipcodestack_com": "https://api.zipcodestack.com/v1/search",
 
-        # 3) F6 - 🟢 zipcodestack.com - API statistics of usage of 2)
+        # 3) F6 - 🟠 zipcodestack.com - API statistics of usage of 2)
         "zipcodestack_com_statistics": f"https://api.zipcodestack.com/v1/status?apikey={st.secrets['F6_api_2']['password_2']}",
 
         # 4) F5 - ⚫ kurzy.cz

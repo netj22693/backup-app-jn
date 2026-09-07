@@ -8,7 +8,7 @@ st.write("# ZIP Code search:")
 ''
 st.write("""
 - API based 
-- The data comes from 🟣 [Zipcodebase.com](https://app.zipcodebase.com) and 🟢 [Zipcodestack.com](https://app.zipcodestack.com/)
+- The data comes from :orange[⬤] [Zipcodebase.com](https://app.zipcodebase.com) and :green[⬤] [Zipcodestack.com](https://app.zipcodestack.com/)
 - **Note:** The function uses **two different external systems** sending the data -> sometimes there can be no match between them.
 """)
 
@@ -17,7 +17,7 @@ st.write("""
 ''
 ''
 ''
-st.write("#### 🟣 Get ZIP code(s) based on City:")
+st.write("#### :orange[⬤] Get ZIP code(s) based on City:")
 
 ''
 with st.expander("How to use this form",
@@ -44,7 +44,7 @@ with st.expander("How to use this form",
 
     ''
     ''
-    st.write("🟪 Few examples of cities you can use:")
+    st.write(":orange[⬤] Few examples of cities you can use:")
     st.write("""
     - **CZ** - Czech Republic
         - Prague
@@ -96,7 +96,7 @@ with st.form("List of ZIP codes"):
 ''
 ''
 ''
-st.write("#### 🟢 Get city based on ZIP code:")
+st.write("#### :green[⬤] Get city based on ZIP code:")
 
 ''
 with st.expander("How to use this form",
@@ -127,7 +127,7 @@ with st.expander("How to use this form",
     ''
     ''
     ''
-    st.write("🟩 Few examples of ZIP codes you can use:")
+    st.write(":green[⬤] Few examples of ZIP codes you can use:")
 
     st.write("""
     - **CZ** - Czech Republic

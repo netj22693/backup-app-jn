@@ -9,7 +9,7 @@ st.write("# Description - Function 6")
 ''
 ''
 st.write("""
-- **Function 6:** ZIP code - 🟣 Get ZIP code(s) based on City, 🟢 Get City based on ZIP code - **API based**
+- **Function 6:** ZIP code - :orange[⬤] Get ZIP code(s) based on City, :green[⬤] Get City based on ZIP code - **API based**
 """
 )
 ''
@@ -28,7 +28,7 @@ st.write("##### ZIP codes:")
 
 st.write("""
 - API based (open API)
-- Comes from external system [Zipcodebase.com](https://app.zipcodebase.com/) 🟣
+- Comes from external system [Zipcodebase.com](https://app.zipcodebase.com/) :orange[⬤]
 - Insert City -> Get ZIP codes
 """
 )
@@ -75,7 +75,7 @@ with st.expander("API JSON structure - Zipcodebase.com", icon=":material/help:")
 ''
 ''
 st.write("""
-- Comes from external system [Zipcodestack.com](https://app.zipcodestack.com/) 🟢
+- Comes from external system [Zipcodestack.com](https://app.zipcodestack.com/) :green[⬤]
 - Insert ZIP code(s) -> Get City/Cities
 """
 )
@@ -187,7 +187,7 @@ with tab1:
 
   ''
   st.write("""
-  - Frequency of data updates from **Zipcodebase.com** 🟣
+  - Frequency of data updates from **Zipcodebase.com** :orange[⬤]
     - **They say**: We constantly update and verify our data from multiple sources to ensure the accuracy of our data.
     - **They say**: An uptime of 99.9%, calculated on the past 12 months.
   """)
@@ -195,7 +195,7 @@ with tab1:
   ''
   ''
   st.write("""
-  - Data quality **Zipcodestack.com** 🟢
+  - Data quality **Zipcodestack.com** :green[⬤]
     - **They say**: Our postal code database is updated regularly to ensure high accuracy. We source our data from official postal services and government databases, making it reliable for business use, address validation, and shipping calculations.
     - **They say**: We update our postal code database monthly for most countries. For regions with frequent postal code changes, we provide more frequent updates to ensure you always have access to the most current data.
   """)
@@ -247,7 +247,7 @@ with tab3:
   """)
 
   ''
-  st.write("🟣 Zipcodebase.com:")
+  st.write(":orange[⬤] Zipcodebase.com:")
 
   st.code("""
   {
@@ -261,7 +261,7 @@ with tab3:
   }
   """, language="json", wrap_lines=True)
 
-  st.write("🟢 Zipcodestack.com:")
+  st.write(":green[⬤] Zipcodestack.com:")
 
   st.code("""
   {

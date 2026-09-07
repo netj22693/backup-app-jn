@@ -34,7 +34,7 @@ st.write("##### Actual conversion rate:")
 
 st.write("""
 - API based (open API)
-- Comes from external system [Kurzy.cz](https://www.kurzy.cz/) ⚫	
+- Comes from external system [Kurzy.cz](https://www.kurzy.cz/) ⬤	
 - CZK  to EUR and USD	 
 """
 )
@@ -80,7 +80,7 @@ with st.expander("API JSON structure - Kurzy.cz", icon= ":material/help:"):
 ''
 ''
 st.write("""
-- Comes from external system [Freecurrencyapi.com](https://app.freecurrencyapi.com/) 🔵
+- Comes from external system [Freecurrencyapi.com](https://app.freecurrencyapi.com/) :blue[⬤]
 - EUR to USD	 
 """
 )
@@ -179,7 +179,7 @@ st.write("""
 
 ''
 st.write("""
-- Frequency of data updates from **Kurzy.cz** ⚫ 
+- Frequency of data updates from **Kurzy.cz** ⬤ 
 	- **They say**: Exchange rates are updated continuously, with a few minutes delay compared to the source.
 	- Based on my observing should be 1x per 24 hours
 	- History can be seen (Page in Czech language): https://www.kurzy.cz/kurzy-men/kurzovni-listek/csob/
@@ -188,7 +188,7 @@ st.write("""
 
 ''
 st.write("""
-- Frequency of data updates from **Freecurrencyapi.com** 🔵
+- Frequency of data updates from **Freecurrencyapi.com** :blue[⬤]
 	- **They say**: The currency data on freecurrencyapi.com is updated on a daily basis. This means that while the API provides live and historical exchange rates, the data is refreshed once a day with end-of-day figures. 
 	- 1x per 24 hours
 """
