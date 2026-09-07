@@ -119,12 +119,12 @@ def check_city_multiple_names(city: str, country_code: str, data: dict) -> str:
 	'''
 	try:	
 		for object in data[country_code]:
-			normalized = object["normalized"]
-			api_name = object ["api"]
+			normalized = object["user_input_normalized"]
+			api_name = object ["api_to_use"]
 
 			if normalized == city: 
 
-				logging.info(f"F6 - XREF check: MULTIPLE NAMES - MATCH - {city} | {normalized} -> {api_name} - SUCCESS")
+				logging.info(f"F6 - XREF check: MULTIPLE OFFICIAL NAMES - MATCH - {city} | {normalized} -> {api_name} - SUCCESS")
 
 				return api_name
 

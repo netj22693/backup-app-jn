@@ -1,8 +1,8 @@
 # Cities which have both czech and official english name worldwide known
 cities_api_aliases = {
     "CZ": [
-        {"normalized": "praha", "api": "prague"},
-        {"normalized": "pilsen", "api": "plzen"},
+        {"user_input_normalized": "praha", "api_to_use": "prague"},
+        {"user_input_normalized": "pilsen", "api_to_use": "plzen"},
     ],
     "SK": []
 }
