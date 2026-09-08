@@ -32,17 +32,16 @@ st.image("Pictures/Function_7/F7_rating/F7_rating_DB_context_v1.svg")
 ''
 ''
 ''
-st.write("##### Principle:")
+st.write("##### Process flow:")
 ''
 st.write("""
-- The process **workflow** describing the logic
 - The **make_rating_validation()** is the **core rating function** using the **BPMN** logic, what will be displayed to the user via UI - it is based on the **current offer state** and **calculated time/milestones** from **F7**
 - The **insert_rating_data_to_db()** is the **core function** for **data insert & having the concurrency condition** preventing from overwriting 
 """)
 
 ''
 ''
-st.image("Pictures/Function_7/F7_rating/F7_rating_principle_v1.svg")
+st.image("Pictures/Function_7/F7_rating/F7_rating_principle_v2.svg")
 
 
 
