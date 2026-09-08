@@ -1,11 +1,40 @@
 
-# For visibility the API structure from kurzy.cz
-json_api_structure_1 = """
+json_scenario_1_zipcodestack = """
+{
+	"message": "You used all your monthly requests. Please upgrade your plan at https://app.zipcodestack.com/subscription"
+}
+"""
+
+json_scenario_2_zipcodebase = """
 {
 	"query": {
-		"city": "Zlin",
+		"city": "not existing city",  <--- Not existing city
 		"state": null,
-		"country": "cz"
+		"country": "CZ"
+	},
+	"results": []  <--- No data
+}
+"""
+
+json_scenario_2_zipcodestack = """
+{
+	"query": {
+		"codes": [
+		"00000"  <--- Not existing ZIP code
+		],
+		"country": "CZ"
+	},
+	"results": {}  <--- No data
+}
+"""
+
+# For visibility the API structure from zipcodebase.com
+json_api_structure_zipcodebase = """
+{
+	"query": {
+		"city": "zlin",
+		"state": null,
+		"country": "CZ"
 	},
 	"results": [
 		"760 01",
@@ -14,19 +43,19 @@ json_api_structure_1 = """
 }
 """
 
-# For visibility the API structure from freecurrencyapi.com
-json_api_structure_2 = """
+# For visibility the API structure from zipcodestack.com 
+json_api_structure_zipcodestack = """
 {
   "query": {
     "codes": [
-      "251 63",
-      "110 00",
-      "140 21"
+      "25163",
+      "11000",
+      "14021"
     ],
     "country": "CZ"
   },
   "results": {
-    "251 63": [
+    "25163": [
       {
         "postal_code": "251 63",
         "country_code": "CZ",
@@ -149,7 +178,7 @@ json_api_structure_2 = """
         "state_code": "88"
       }
     ],
-    "110 00": [
+    "11000": [
       {
         "postal_code": "110 00",
         "country_code": "CZ",
