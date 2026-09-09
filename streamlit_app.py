@@ -10,16 +10,31 @@ st.logo("Pictures/V2_pictures/Logo_7.png", size='large')
 
 
 # ============== Pages as objects ====================
-testing = st.Page(
-    "Subpages/testuju.py",
-    title="TESTING"
-    )
 
-app_purpose = st.Page(
+# ----- Landing page -----
+landing_page = st.Page(
     "Subpages/Purpose_of_app.py",
     title="Purpose of this application",
     icon= ":material/home:"
     )
+
+# ----- VA -----
+VA_function = st.Page(
+    "Subpages/FVA_main_virtual_assistant.py",
+    title="Virtual Assistant (Chatbot)",
+    icon= ":material/smart_toy:"
+)
+
+# ----- Test pages -----
+test_1 = st.Page(
+    "Subpages/Testing/TEST_1.py",
+    title="TESTING"
+    )
+
+test_2 = st.Page(
+    "Subpages/Testing/TEST_2.py",
+    title="session"
+)
 
 
 # ----- F1 & F2 -----
@@ -35,238 +50,204 @@ F1_F2_descritpion_xml_xsd = st.Page(
     icon= ":material/code:"
     )
 
-F1_function_download = st.Page(
+F1_function = st.Page(
     "Subpages/F1_FUNCTION_XML_dowload.py",
     title="1. XML - Download",
     icon = ":material/play_circle:"
     )
 
-F2_function_parsing = st.Page(
+F2_function = st.Page(
     "Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
     title="2. XML - Parsing, Validation, Vizualization",
     icon = ":material/play_circle:"
     )
 
-function_3 = st.Page(
-    "Subpages/F3_FUNCTION_creation_of_XML.py",
-    title="3. Invoice - Creation - XML/JSON",
-    icon = ":material/play_circle:"
-    )
 
-function_3b = st.Page(
-    "Subpages/F3b_FUNCTION_invoice_visibility.py",
-    title="3B. Invoice - Visibility",
-    icon = ":material/play_circle:"
-    )
-
-function_3_BPMN = st.Page(
-    "Subpages/F3_F4_description_BPMN.py",
-    title="Description - BPMN",
-    icon= ":material/code:"
-    )
-
-function_3_erd = st.Page(
-    "Subpages/F3_description_ERD.py",
-    title="Description - DB & ERD",
-    icon= ":material/code:"
-    )
-
-testuju_stsession = st.Page(
-    "Subpages/sessionstate.py",
-    title="session"
-)
-
-
-
-fun_3_archm = st.Page(
-    "Subpages/F3_description_archimate.py",
-    title="Description - ArchiMate",
-    icon= ":material/code:"
-)
-
-fun_4 = st.Page(
-    "Subpages/F4_FUNCTION_translation_mapping.py",
-    title="4. Invoice - Mapping - XML/JSON",
-    icon = ":material/play_circle:"
-)
-
-fun_3_xml_json = st.Page(
-    "Subpages/F3_F4_description_XML_JSON.py",
-    title="Description - JSON & XML Schemas",
-    icon= ":material/code:"
-)
-
-fun_3and4_descrip = st.Page(
+# ----- F3 & F4 -----
+F3_F4_description = st.Page(
     "Subpages/F3_F4_description.py",
     title="Description - Functions",
     icon= ":material/code:"
 )
 
-fun_3_UML = st.Page(
-    "Subpages/F3_description_UML.py",
-    title="Description - UML",
+F3_F4_description_xml_json = st.Page(
+    "Subpages/F3_F4_description_XML_JSON.py",
+    title="Description - JSON & XML Schemas",
     icon= ":material/code:"
 )
 
-function_5 = st.Page(
-    "Subpages/F5_FUNCTION_exchange.py",
-    title="5. Exchange Rate",
-    icon= ":material/play_circle:"
+F3_F4_description_erd = st.Page(
+    "Subpages/F3_description_ERD.py",
+    title="Description - DB & ERD",
+    icon= ":material/code:"
+    )
+
+F3_function = st.Page(
+    "Subpages/F3_FUNCTION_creation_of_XML.py",
+    title="3. Invoice - Creation - XML/JSON",
+    icon = ":material/play_circle:"
+    )
+
+F3B_function = st.Page(
+    "Subpages/F3b_FUNCTION_invoice_visibility.py",
+    title="3B. Invoice - Visibility",
+    icon = ":material/play_circle:"
+    )
+
+F4_function = st.Page(
+    "Subpages/F4_FUNCTION_translation_mapping.py",
+    title="4. Invoice - Mapping - XML/JSON",
+    icon = ":material/play_circle:"
 )
 
-function_5_desc_api = st.Page(
+# ----- F5 -----
+F5_description = st.Page(
     "Subpages/F5_description_API.py",
     title="Description - API & DB",
     icon= ":material/code:"
 )
 
-function_5b = st.Page(
+F5_function = st.Page(
+    "Subpages/F5_FUNCTION_exchange.py",
+    title="5. Exchange Rate",
+    icon= ":material/play_circle:"
+)
+
+F5B_function = st.Page(
     "Subpages/Function_5b/F5b_FUNCTION_exchange_rate.py",
     title="5B. Exchange Rate Trend",
     icon= ":material/play_circle:"
 )
 
-
-function_6_zipcode = st.Page(
-    "Subpages/F6_FUNCTION_zip_code.py",
-    title="6. ZIP code",
-    icon= ":material/play_circle:"
-)
-
-function_6_desc_api = st.Page(
+# ----- F6 -----
+F6_descritpion = st.Page(
     "Subpages/F6_description_API.py",
     title="Description - API",
     icon= ":material/code:"
 )
 
-function_7_transport = st.Page(
-    "Subpages/F7_FUNCTION_transport.py",
-    title="7. Transportation",
+F6_function = st.Page(
+    "Subpages/F6_FUNCTION_zip_code.py",
+    title="6. ZIP code",
     icon= ":material/play_circle:"
 )
 
-function_7_desc = st.Page(
+# ----- F7 -----
+F7_descritpion = st.Page(
     "Subpages/F7_description.py",
     title="Description - Function",
     icon= ":material/code:"
 )
 
-
-function_7_desc_dtd = st.Page(
-    "Subpages/F7_description_dtd.py",
-    title="Description - Door-to-Door",
+F7_description_architecture = st.Page(
+    "Subpages/F7_description_architecture.py",
+    title="Description - Architecture",
     icon= ":material/code:"
 )
 
-function_7_desc_metrics = st.Page(
-    "Subpages/F7_description_metrics.py",
-    title="Description - Use Cases & Metrics",
-    icon= ":material/code:"
-)
-
-
-function_7_desc_variables = st.Page(
-    "Subpages/F7_description_variables.py",
-    title="Description - Variables",
-    icon= ":material/code:"
-)
-
-function_7_desc_erd_db = st.Page(
+F7_description_db = st.Page(
     "Subpages/F7_description_ERD_DB.py",
     title="Description - DB & ERD",
     icon= ":material/code:"
 )
 
-function_7_desc_state = st.Page(
+F7_description_state = st.Page(
     "Subpages/F7_description_state.py",
     title="Description - State flow",
     icon= ":material/code:"
 )
 
-function_7_desc_rating = st.Page(
+F7_description_rating = st.Page(
     "Subpages/F7_description_rating.py",
     title="Description - Rating",
     icon= ":material/code:"
 )
 
-function_7b = st.Page(
+F7_description_dtd = st.Page(
+    "Subpages/F7_description_dtd.py",
+    title="Description - Door-to-Door",
+    icon= ":material/code:"
+)
+
+F7_description_metrics = st.Page(
+    "Subpages/F7_description_metrics.py",
+    title="Description - Use Cases & Metrics",
+    icon= ":material/code:"
+)
+
+F7_function = st.Page(
+    "Subpages/F7_FUNCTION_transport.py",
+    title="7. Transportation",
+    icon= ":material/play_circle:"
+)
+
+F7B_function = st.Page(
     "Subpages/F7b_FUNCTION_offer_visibility.py",
     title="7B. Offer - Visibility",
     icon= ":material/play_circle:"
 )
 
-function_8_company_book = st.Page(
-    "Subpages/F8_FUNCTION_company_book.py",
-    title="8. Company Book",
-    icon= ":material/play_circle:"
-)
-
-function_8_desc = st.Page(
+# ----- F8 -----
+F8_description = st.Page(
     "Subpages/F8_description.py",
     title="Description - DB & Function",
     icon= ":material/code:"
 )
 
-main_virtual_assistant = st.Page(
-    "Subpages/FVA_main_virtual_assistant.py",
-    title="Virtual Assistant (Chatbot)",
-    icon= ":material/smart_toy:"
+F8_function = st.Page(
+    "Subpages/F8_FUNCTION_company_book.py",
+    title="8. Company Book",
+    icon= ":material/play_circle:"
 )
 
 
-
-
-
-# Navigation:
+# ===== Navigation: =====
 pg = st.navigation(
     {
         "About this application": [
-            app_purpose,
-            main_virtual_assistant
+            landing_page,
+            VA_function
             ],
             
-        # "TESTING": [testing, testuju_stsession],
+        # "TESTING": [test_1, test_2],
 
         "Functions 1 and 2" : [
             F1_F2_description,
             F1_F2_descritpion_xml_xsd,
-            F1_function_download, 
-            F2_function_parsing
+            F1_function, 
+            F2_function
             ],
         "Functions 3 and 4": [
-            fun_3and4_descrip,
-            function_3_BPMN,
-            fun_3_UML,
-            fun_3_archm,
-            fun_3_xml_json,
-            function_3_erd,
-            function_3,
-            function_3b,
-            fun_4
+            F3_F4_description,
+            F3_F4_description_xml_json,
+            F3_F4_description_erd,
+            F3_function,
+            F3B_function,
+            F4_function
             ],
         "Function 5": [
-            function_5_desc_api,
-            function_5,
-            function_5b
+            F5_description,
+            F5_function,
+            F5B_function
         ],
         "Function 6": [
-            function_6_desc_api,
-            function_6_zipcode
+            F6_descritpion,
+            F6_function
         ],
         "Function 7": [
-            function_7_desc,
-            function_7_desc_variables,
-            function_7_desc_erd_db,
-            function_7_desc_state,
-            function_7_desc_rating,
-            function_7_desc_dtd,
-            function_7_desc_metrics,
-            function_7_transport,
-            function_7b,
+            F7_descritpion,
+            F7_description_architecture,
+            F7_description_db,
+            F7_description_state,
+            F7_description_rating,
+            F7_description_dtd,
+            F7_description_metrics,
+            F7_function,
+            F7B_function,
         ],
         "Function 8" : [
-            function_8_desc,
-            function_8_company_book
+            F8_description,
+            F8_function
         ]
 
     },

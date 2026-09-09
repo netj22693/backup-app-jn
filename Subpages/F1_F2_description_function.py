@@ -25,13 +25,13 @@ with st.expander("Video guide", icon= ":material/youtube_activity:"):
 
 ''
 ''
+''
 st.write("##### Business scenario:") 
 st.write(
 "Simplified version of case when a company does a purchase from other company/e-shop on frequent bases -> XML invoice defined for invoicing."
 )
 
-st.write(" ")
-
+''
 st.write("##### Process:") 
 st.write("""
 1) Dowload XML (keep existing or you can update it) 
@@ -39,6 +39,7 @@ st.write("""
 """
 )
 
+''
 ''
 ''
 st.write("##### Upload XML process:")
@@ -98,7 +99,6 @@ with tab2:
 
 
 with tab3:
-
   ''
   st.image("Pictures/Function_2/F2_BPMN_HL_data_validation_v4.svg")
   ''
@@ -177,7 +177,7 @@ with tab1:
 
 with tab2:
   ''
-  st.image("Pictures/Function_2/F2 - UML_Activity diagram_2.svg", width=520)
+  st.image("Pictures/Function_2/F2_UML_Activity_diagram_2.svg", width=520)
   ''
 
 with tab3:

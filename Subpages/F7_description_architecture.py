@@ -1,11 +1,11 @@
 import streamlit as st
 
 
-st.write("# Variables")
+st.write("# Function Architecture")
 ''
 ''
 st.write("""
-        - **Mind map** of the **Functions 7 and 7B** code
+        - **Architecture** of the **Functions 7 and 7B** code
         - **Simplified overview** to help to understand the **dependencies/relationships in the code** -> which can be beneficial for new development and testing/troubleshooting
         - **Paradigm:** Procedural & Functional programming
         """)
