@@ -1,5 +1,4 @@
 import streamlit as st
-import xml.etree.ElementTree as ET
 from Subpages.Resources import Assets
 from Subpages.Description.F1_F2_xml_structures import xml_data_euro, xml_data_koruna, xml_data_usdollar, xml_empty_template
 
