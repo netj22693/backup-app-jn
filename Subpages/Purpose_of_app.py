@@ -403,7 +403,7 @@ st.page_link(
 	) 
 ''
 st.page_link(
-    label = "Description about F5",
+    label = "Description about F5 and F5B",
 	page= Assets.Paths.Description.f5,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
@@ -443,7 +443,7 @@ st.page_link(
 
 ''
 st.page_link(
-    label = "Description about F7",
+    label = "Description about F7 and 7B",
 	page= Assets.Paths.Description.f7,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
