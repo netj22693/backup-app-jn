@@ -159,7 +159,7 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 # Archimate
 st.write("##### Archimate Diagram:") 
 ''
-st.image("Pictures/Function_5/F5_description_archimate_api.svg")
+st.image("Pictures/Function_5/F5_description_archimate_api_v2.svg")
 
 ''
 ''

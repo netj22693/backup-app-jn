@@ -199,7 +199,7 @@ tab2.image("Pictures/Function_6/F6_process_flow_detail_zipcodestack_v2.svg")
 ''
 st.write("##### Description of the APIs:")
 ''
-st.image("Pictures/Function_6/F6_description_archimate_api.svg")
+st.image("Pictures/Function_6/F6_description_archimate_api_v2.svg")
 
 ''
 ''
