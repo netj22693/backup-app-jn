@@ -347,7 +347,7 @@ More details can be found here [here]({Assets.Links.App.f5_description_backgroun
 - ZIP codes based on city
 - or city based on ZIP codes\n\n
 The function uses 2 APIs as a source of data.\n\n
-More details can be found in the function description [here]({Assets.Links.App.f5_description}) :point_left:""",
+More details can be found in the function description [here]({Assets.Links.App.f6_description}) :point_left:""",
 "image": Assets.Images.uml_f6
 },
 
