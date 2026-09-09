@@ -39,7 +39,7 @@ test_2 = st.Page(
 
 # ----- F1 & F2 -----
 F1_F2_description = st.Page(
-    "Subpages/F1_F2_description_function.py",
+    Assets.Paths.Descritpion.f1_f2,
     title="Description - Functions",
     icon= ":material/code:"
 )

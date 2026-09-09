@@ -349,7 +349,7 @@ st.page_link(
 ''
 st.page_link(
     label = "Description about F1 and F2",
-	page="Subpages/F1_F2_description_function.py",
+	page= Assets.Paths.Descritpion.f1_f2,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
     icon=":material/code:",

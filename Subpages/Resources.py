@@ -53,3 +53,8 @@ class Assets:
         f3_f4_description_erd = "https://dataparsing.streamlit.app/F3_description_ERD"
         f7_description_erd = "https://dataparsing.streamlit.app/F7_description_ERD_DB"
         f8_descriptin_erd = "https://dataparsing.streamlit.app/F8_description#db-structure-erd"
+
+
+    class Paths:
+        class Descritpion:
+            f1_f2 = "Subpages/Description.py/F1_F2_description_function.py"
