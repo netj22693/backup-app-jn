@@ -128,7 +128,7 @@ with st.expander(
 ):	
 	''
 	st.image("Pictures/linkedin-logo-2013-1.svg", width=95)
-	st.write(f"- Do you like this app? :) LinkedIn profile [Here]({Assets.LinksExternal.linked_in})")
+	st.write(f"- Do you like this app? :) LinkedIn profile [Here]({Assets.Links.External.linked_in})")
 	st.write("- Author: Jan Netolicka")
 
 
