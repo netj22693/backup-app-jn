@@ -258,5 +258,5 @@ pg.run()
 
 # ============= side bar caption ===================
 st.sidebar.caption(
-    f"Do you like this app? :) LinkedIn [Here]({Assets.Links.linked_in})"
+    f"Do you like this app? :) LinkedIn [Here]({Assets.Links.External.linked_in})"
 )

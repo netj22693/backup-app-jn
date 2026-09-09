@@ -45,13 +45,13 @@ If you are interested in releases, go to main page :house:-> Expander: **Release
         - images
         - links\n\n
 
-- :rocket: **LLM** - currently there is **no** LLM behind. The bot uses only mathematical principle based on functions from sklearn / Scikit-Learn [here]({Assets.Links.sklearn_library}) :point_left:.
+- :rocket: **LLM** - currently there is **no** LLM behind. The bot uses only mathematical principle based on functions from sklearn / Scikit-Learn [here]({Assets.Links.External.sklearn_library}) :point_left:.
 """,
 "image": Assets.Images.va_variables
 },
 
 "llm_principle": {
-"text": f""":rocket: **LLM** - currently there is **no** LLM behind. The bot uses only mathematical principle based on functions from sklearn / Scikit-Learn [here]({Assets.Links.sklearn_library}) :point_left:.
+"text": f""":rocket: **LLM** - currently there is **no** LLM behind. The bot uses only mathematical principle based on functions from sklearn / Scikit-Learn [here]({Assets.Links.External.sklearn_library}) :point_left:.
 """,
 "image": None
 },
@@ -96,9 +96,9 @@ If you are interested in releases, go to main page :house:-> Expander: **Release
 - The application uses **PostgreSQL DB**:elephant: which runs on **NEON DB cloud** :green_heart:.
 - The relations **READ/WRITE** per functions can be seen in **the Archimate diagram**.\n\n
 👉 You can find more details about DB structures:
-- **Functions 3 & 4**: [here]({Assets.Links.f3_f4_description_erd})
-- **Function 7 & 7B**: [here]({Assets.Links.f7_description_erd})
-- **Function 8**: [here]({Assets.Links.f8_descriptin_erd})
+- **Functions 3 & 4**: [here]({Assets.Links.App.f3_f4_description_erd})
+- **Function 7 & 7B**: [here]({Assets.Links.App.f7_description_erd})
+- **Function 8**: [here]({Assets.Links.App.f8_descriptin_erd})
 """,
 "image": Assets.Images.archimate_main
 },
@@ -179,7 +179,7 @@ Or **questions related to specific functions**:
 "author" : {
 "text": f"""
 - The application was built by Jan Netolicka. :wave::v:
-- LinkedIn profile [Here]({Assets.Links.linked_in}) :panda_face:
+- LinkedIn profile [Here]({Assets.Links.External.linked_in}) :panda_face:
 """,
 "image": None
 },
@@ -190,8 +190,8 @@ Or **questions related to specific functions**:
 **Extensible Markup Language (XML)** is a markup language and file format for storing, transmitting, and reconstructing data. It defines a set of rules for encoding documents in a format that is both human-readable and machine-readable. 
 
 👉 You can find more details how XML is used in this application:
-- **Functions 1 & 2**: [here]({Assets.Links.f2_xml_xsd})
-- **Function 3**: [here]({Assets.Links.f3_f4_xml_xsd})
+- **Functions 1 & 2**: [here]({Assets.Links.App.f2_xml_xsd})
+- **Function 3**: [here]({Assets.Links.App.f3_f4_xml_json})
 """,
 "image": None
 },
@@ -204,9 +204,9 @@ Or **questions related to specific functions**:
 - **If XML is not fully in line with XSD, there is a fallback logic. Reason: it prevents code from crashing. :ok_hand:**
 
 👉 You can find more details:
-- **Function 1 & 2**: [here]({Assets.Links.f2_xml_xsd}) 
-- **Function 2 - XML against XSD validation**: [here]({Assets.Links.f2_xml_xsd_validation})
-- **Function 3**: [here]({Assets.Links.f3_f4_xml_xsd})
+- **Function 1 & 2**: [here]({Assets.Links.App.f2_xml_xsd}) 
+- **Function 2 - XML against XSD validation**: [here]({Assets.Links.App.f2_xml_xsd_validation})
+- **Function 3**: [here]({Assets.Links.App.f3_f4_xml_json})
 """,
 "image": Assets.Images.f2_xml_xsd_validation
 },
@@ -216,9 +216,9 @@ Or **questions related to specific functions**:
 **JSON (JavaScript Object Notation)** is a lightweight, text-based data-interchange format used to store and transport data, often between a server and a web application. It is language-independent, human-readable, and based on **key/value pairs**. It is widely used in **API outputs**, configuration files, and AJAX, serving as a faster, modern alternative to XML. 
 
 👉 You can find more details how JSON is used in this application:
-- **Function 3 and 4**: [here]({Assets.Links.f3_f4_json}) - building our own JSON
-- **Function 5**: [here]({Assets.Links.f5_description}) - JSON used in API from external system
-- **Function 6**: [here]({Assets.Links.f6_description}) - JSON used in API from external system
+- **Function 3 and 4**: [here]({Assets.Links.App.f3_f4_xml_json}) - building our own JSON
+- **Function 5**: [here]({Assets.Links.App.f5_description}) - JSON used in API from external system
+- **Function 6**: [here]({Assets.Links.App.f6_description}) - JSON used in API from external system
 """,
 "image": None
 },
@@ -276,7 +276,7 @@ Or **questions related to specific functions**:
 "function_2_xml" : {
 "text": f"""**XML** for **Function 2** can be donwloaded from **Function 1**.\n\n
 
-👉 **Funtion 1**: [here]({Assets.Links.f1_function})
+👉 **Funtion 1**: [here]({Assets.Links.App.f1_function})
 """,
 "image": None
 },
@@ -299,7 +299,7 @@ Or **questions related to specific functions**:
 - XML → JSON 
 - or JSON → XML\n\n
 There is a log about the change stored in DB.\n\n
-More details can be found in the function description [here]({Assets.Links.f3_description}) :point_left:""",
+More details can be found in the function description [here]({Assets.Links.App.f3_description}) :point_left:""",
 "image": Assets.Images.uml_f3_f3b_f4
 },
 
@@ -308,7 +308,7 @@ More details can be found in the function description [here]({Assets.Links.f3_de
 "text": f"""**Function 5:** Exchange rate/calculation (CZK, EUR, USD).\n\n
 - It is a simple calculator which uses actual conversion rate 
 - There are 2 open APIs from external systems providing the conversion rate\n\n
-More details can be found in the function description [here]({Assets.Links.f5_description}) :point_left:
+More details can be found in the function description [here]({Assets.Links.App.f5_description}) :point_left:
 """,
 "image": Assets.Images.uml_f5
 },
@@ -321,7 +321,7 @@ More details can be found in the function description [here]({Assets.Links.f5_de
 - The data collection is independent on human/user
 
 For more details about the background job:
-- Description [here]({Assets.Links.f5_description_background_job}) :point_left:
+- Description [here]({Assets.Links.App.f5_description_background_job}) :point_left:
 - Ask chatbot: **background job** :dart:
 """,
 "image": Assets.Images.uml_f5
@@ -336,7 +336,7 @@ For more details about the background job:
 - The job calls **both APIs** (like F5 uses) and inserts the results **into DB**
 - It runs independently in the background, not dependent on human action
 
-More details can be found here [here]({Assets.Links.f5_description_background_job}) :point_left:
+More details can be found here [here]({Assets.Links.App.f5_description_background_job}) :point_left:
 """,
 "image": Assets.Images.f5_description_uml_seq_f5b_job
 },
@@ -347,7 +347,7 @@ More details can be found here [here]({Assets.Links.f5_description_background_jo
 - ZIP codes based on city
 - or city based on ZIP codes\n\n
 The function uses 2 APIs as a source of data.\n\n
-More details can be found in the function description [here]({Assets.Links.f5_description}) :point_left:""",
+More details can be found in the function description [here]({Assets.Links.App.f5_description}) :point_left:""",
 "image": Assets.Images.uml_f6
 },
 
@@ -364,7 +364,7 @@ More details can be found in the function description [here]({Assets.Links.f5_de
 - Uses API as source of data - actual exchange rate\n\n
 - Outcome of this function is **PDF file (Offer)** and the **data are saved into DB**.
 
-More details can be found in the function description [here]({Assets.Links.f7_description}) :point_left:
+More details can be found in the function description [here]({Assets.Links.App.f7_description}) :point_left:
 """,
 "image": Assets.Images.uml_f7_f7b
 },
@@ -375,7 +375,7 @@ More details can be found in the function description [here]({Assets.Links.f7_de
 - The 7B uses data created in Function 7
 - There is multiple tabs allowing to search and filter in the already created offers
 - The data also allows to make an analytic stuff/data visualization using tables and charts\n\n
-The data is taken from database. More details about the **DB structure** can be found in the description here [here]({Assets.Links.f7_description_erd}) :point_left:
+The data is taken from database. More details about the **DB structure** can be found in the description here [here]({Assets.Links.App.f7_description_erd}) :point_left:
 
 """,
 "image": Assets.Images.uml_f7_f7b
@@ -389,7 +389,7 @@ The data is taken from database. More details about the **DB structure** can be 
 - Multiple tabs allowing different point of views on the data 
 - Source of data is DB running on cloud\n\n
 
-More details can be found in the function description [here]({Assets.Links.f8_description}) :point_left:
+More details can be found in the function description [here]({Assets.Links.App.f8_description}) :point_left:
 """,
 "image": Assets.Images.uml_f8
 },

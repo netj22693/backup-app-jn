@@ -34,25 +34,32 @@ class Assets:
 
 
     class Links:
-        linked_in = "https://www.linkedin.com/in/jan-netolicka-12209a221/"
-        sklearn_library = "https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html"
-        # Functions
-        f1_function = "https://dataparsing.streamlit.app/F1_FUNCTION_XML_dowload"
-        #Description
-        f2_xml_xsd = "https://dataparsing.streamlit.app/~/+/F1_F2_description_XML_XSD#xsd-xml-schema"
-        f2_xml_xsd_validation = "https://dataparsing.streamlit.app/~/+/F1_F2_description_XML_XSD#xml-against-xsd-validation"
-        f3_f4_xml_xsd = "https://dataparsing.streamlit.app/~/+/F3_description_XML#xsd-xml-schema"
-        f3_f4_json = "https://dataparsing.streamlit.app/F3_F4_description_json#json-schema"
-        f3_description = "https://dataparsing.streamlit.app/F3_F4_description#functions-3-and-4"
-        f5_description = "https://dataparsing.streamlit.app/F5_description_API"
-        f5_description_background_job = "https://dataparsing.streamlit.app/~/+/F5_description_API#function-5-function-5-b-background-job-and-erd"
-        f6_description = "https://dataparsing.streamlit.app/F6_description_API"
-        f7_description = "https://dataparsing.streamlit.app/F7_description"
-        f8_description = "https://dataparsing.streamlit.app/F8_description"
-        # ERD
-        f3_f4_description_erd = "https://dataparsing.streamlit.app/F3_description_ERD"
-        f7_description_erd = "https://dataparsing.streamlit.app/F7_description_ERD_DB"
-        f8_descriptin_erd = "https://dataparsing.streamlit.app/F8_description#db-structure-erd"
+        class App:
+            # Functions
+            f1_function = "https://dataparsing.streamlit.app/F1_FUNCTION_XML_dowload"
+
+            # Description
+            f3_description = "https://dataparsing.streamlit.app/F3_F4_description#functions-3-and-4"
+            f5_description = "https://dataparsing.streamlit.app/F5_description_API"
+            f5_description_background_job = "https://dataparsing.streamlit.app/~/+/F5_description_API#function-5-function-5-b-background-job-and-erd"
+            f6_description = "https://dataparsing.streamlit.app/F6_description_API"
+            f7_description = "https://dataparsing.streamlit.app/F7_description"
+            f8_description = "https://dataparsing.streamlit.app/F8_description"
+
+            # ERD
+            f3_f4_description_erd = "https://dataparsing.streamlit.app/F3_F4_description_ERD"
+            f7_description_erd = "https://dataparsing.streamlit.app/F7_description_ERD_DB"
+            f8_descriptin_erd = "https://dataparsing.streamlit.app/F8_description#db-structure-erd"
+
+            # XML, XSD, JSON, JSON Schema
+            f2_xml_xsd = "https://dataparsing.streamlit.app/~/+/F1_F2_description_XML_XSD#xsd-xml-schema"
+            f2_xml_xsd_validation = "https://dataparsing.streamlit.app/~/+/F1_F2_description_XML_XSD#validation-xml-against-xml-schema"
+            f3_f4_xml_json = "https://dataparsing.streamlit.app/~/+/F3_F4_description_XML_JSON#json-and-xml-schemas"
+
+
+        class External:
+            linked_in = "https://www.linkedin.com/in/jan-netolicka-12209a221/"
+            sklearn_library = "https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html"
 
 
     class Paths:

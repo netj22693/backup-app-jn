@@ -235,7 +235,7 @@ st.page_link(
 
 st.page_link(
 	label = "Previous page",
-	page= Assets.Paths.Description.f1_f2,
+	page= Assets.Paths.Description.f1_f2_xml_xsd,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/west:"

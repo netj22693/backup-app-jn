@@ -128,7 +128,7 @@ with st.expander(
 ):	
 	''
 	st.image("Pictures/linkedin-logo-2013-1.svg", width=95)
-	st.write(f"- Do you like this app? :) LinkedIn profile [Here]({Assets.Links.linked_in})")
+	st.write(f"- Do you like this app? :) LinkedIn profile [Here]({Assets.LinksExternal.linked_in})")
 	st.write("- Author: Jan Netolicka")
 
 
@@ -443,7 +443,7 @@ st.page_link(
 
 ''
 st.page_link(
-    label = "Function 7",
+    label = "Description about F7",
 	page= Assets.Paths.Description.f7,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
