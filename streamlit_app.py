@@ -21,31 +21,27 @@ app_purpose = st.Page(
     icon= ":material/home:"
     )
 
-app_description_ArM = st.Page(
-    "Subpages/F1_F2_description_archimate.py",
-    title="Description - ArchiMate",
+
+# ----- F1 & F2 -----
+F1_F2_description = st.Page(
+    "Subpages/F1_F2_description_function.py",
+    title="Description - Functions",
     icon= ":material/code:"
-    )
+)
 
-app_description_BPMN = st.Page(
-    "Subpages/F1_F2_description_BPMN.py",
-    title="Description - BPMN",
-    icon= ":material/code:"
-    )
-
-download = st.Page(
-    "Subpages/F1_FUNCTION_XML_dowload.py",
-    title="1. XML - Download",
-    icon = ":material/play_circle:"
-    )
-
-xsd = st.Page(
+F1_F2_descritpion_xml_xsd = st.Page(
     "Subpages/F1_F2_description_XML_XSD.py",
     title="Description - XML Schema",
     icon= ":material/code:"
     )
 
-parsing = st.Page(
+F1_function_download = st.Page(
+    "Subpages/F1_FUNCTION_XML_dowload.py",
+    title="1. XML - Download",
+    icon = ":material/play_circle:"
+    )
+
+F2_function_parsing = st.Page(
     "Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
     title="2. XML - Parsing, Validation, Vizualization",
     icon = ":material/play_circle:"
@@ -80,11 +76,7 @@ testuju_stsession = st.Page(
     title="session"
 )
 
-fun_1and2_descrip = st.Page(
-    "Subpages/F1_F2_description_function.py",
-    title="Description - Functions",
-    icon= ":material/code:"
-)
+
 
 fun_3_archm = st.Page(
     "Subpages/F3_description_archimate.py",
@@ -107,18 +99,6 @@ fun_3_xml_json = st.Page(
 fun_3and4_descrip = st.Page(
     "Subpages/F3_F4_description.py",
     title="Description - Functions",
-    icon= ":material/code:"
-)
-
-fun_2_DB_ERT = st.Page(
-    "Subpages/F2_description_DB_ERT.py",
-    title="Description - DB & ERD",
-    icon= ":material/code:"
-)
-
-fun_2_UML = st.Page(
-    "Subpages/F2_description_UML.py",
-    title="Description - UML",
     icon= ":material/code:"
 )
 
@@ -248,13 +228,10 @@ pg = st.navigation(
         # "TESTING": [testing, testuju_stsession],
 
         "Functions 1 and 2" : [
-            fun_1and2_descrip,
-            app_description_BPMN,
-            fun_2_UML,
-            app_description_ArM,
-            xsd,
-            download, 
-            parsing
+            F1_F2_description,
+            F1_F2_descritpion_xml_xsd,
+            F1_function_download, 
+            F2_function_parsing
             ],
         "Functions 3 and 4": [
             fun_3and4_descrip,

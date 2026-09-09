@@ -281,7 +281,7 @@ st.page_link(
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/F1_F2_description_archimate.py",
+	page="Subpages/F1_F2_description_function.py",
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/west:"
