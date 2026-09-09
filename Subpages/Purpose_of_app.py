@@ -349,7 +349,7 @@ st.page_link(
 ''
 st.page_link(
     label = "Description about F1 and F2",
-	page= Assets.Paths.Descritpion.f1_f2,
+	page= Assets.Paths.Description.f1_f2,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
     icon=":material/code:",
@@ -372,7 +372,7 @@ st.page_link(
 ''
 st.page_link(
     label = "Description about F3 and F4",
-	page="Subpages/F3_F4_description.py",
+	page= Assets.Paths.Description.f3_f4,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
     icon=":material/code:",
@@ -390,7 +390,7 @@ st.page_link(
 	label = "Function 3B",
 	page="Subpages/F3b_FUNCTION_invoice_visibility.py",
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
 	icon=":material/play_circle:",
 	)
 
@@ -404,7 +404,7 @@ st.page_link(
 ''
 st.page_link(
     label = "Description about F5",
-	page="Subpages/F5_description_API.py",
+	page= Assets.Paths.Description.f5,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
     icon=":material/code:",
@@ -427,7 +427,7 @@ st.page_link(
 ''
 st.page_link(
     label = "Description about F6",
-	page="Subpages/F6_description_API.py",
+	page= Assets.Paths.Description.f6,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
     icon=":material/code:",
@@ -443,8 +443,8 @@ st.page_link(
 
 ''
 st.page_link(
-    label = "Description about F7",
-	page="Subpages/F7_description.py",
+    label = "Function 7",
+	page= Assets.Paths.Description.f7,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
     icon=":material/code:",
@@ -469,7 +469,7 @@ st.page_link(
 ''
 st.page_link(
     label = "Description about F8",
-	page="Subpages/F8_description.py",
+	page= Assets.Paths.Description.f8,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
     icon=":material/code:",

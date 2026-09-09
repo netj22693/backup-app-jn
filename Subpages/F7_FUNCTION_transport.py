@@ -890,12 +890,12 @@ with st.expander("Door-to-Door", icon= ":material/info:"):
     st.write("- **More details**:")
 
     st.link_button(
-                label = "Go to Door-to-Door page",
-                url="https://dataparsing.streamlit.app/F7_description_dtd",
-                help="The button will redirect to the relevant page within this app for download.",
-                width="stretch",
-                icon=":material/launch:"
-            )
+        label = "Go to Door-to-Door page",
+        url="https://dataparsing.streamlit.app/F7_description_dtd",
+        help="The button will redirect to the relevant page within this app for download.",
+        width="stretch",
+        icon=":material/launch:"
+    )
 
 
     ''

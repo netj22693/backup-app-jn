@@ -1,4 +1,5 @@
 import streamlit as st
+from Subpages.Resources import Assets
 from app_db_connection import db_connection
 from sqlalchemy import Column, Integer, String, Float, DateTime, Engine
 from sqlalchemy.orm import declarative_base, Session
@@ -20,7 +21,7 @@ def final_dialogs_goto():
 
     st.page_link(
     label = "Function F8 - Description",
-    page="Subpages/F8_description.py",
+    page= Assets.Paths.Description.f8,
     help="The button will redirect to the relevant page within this app.",
     use_container_width=True,
     icon=":material/code:",

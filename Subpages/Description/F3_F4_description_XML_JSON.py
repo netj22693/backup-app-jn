@@ -1,5 +1,6 @@
 import streamlit as st
-from Subpages.F3_F4_xml_json_structures import xml_message_example, xsd_as_string, json_message_example, json_schema, json_structure_rules_header, json_structure_rules_detail, json_structure_rules_transportation, xsd_structure_rules_header, xsd_structure_rules_detail, xsd_structure_rules_transportation
+from Subpages.Resources import Assets
+from Subpages.Description.F3_F4_xml_json_structures import xml_message_example, xsd_as_string, json_message_example, json_schema, json_structure_rules_header, json_structure_rules_detail, json_structure_rules_transportation, xsd_structure_rules_header, xsd_structure_rules_detail, xsd_structure_rules_transportation
 
 # ============= Variables - text ==========================
 DESC_HEADER = """
@@ -288,16 +289,16 @@ st.write("-------")
 
 st.page_link(
     label = "Next page",
-	page="Subpages/F3_description_ERD.py",
+	page= Assets.Paths.Description.f3_f4_erd,
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
     icon=":material/east:",
 	) 
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/F3_F4_description.py",
+	page= Assets.Paths.Description.f3_f4,
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
 	icon=":material/west:"
 	) 

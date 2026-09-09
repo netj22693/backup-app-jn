@@ -39,13 +39,13 @@ test_2 = st.Page(
 
 # ----- F1 & F2 -----
 F1_F2_description = st.Page(
-    Assets.Paths.Descritpion.f1_f2,
+    Assets.Paths.Description.f1_f2,
     title="Description - Functions",
     icon= ":material/code:"
 )
 
 F1_F2_descritpion_xml_xsd = st.Page(
-    "Subpages/F1_F2_description_XML_XSD.py",
+    Assets.Paths.Description.f1_f2_xml_xsd,
     title="Description - XML Schema",
     icon= ":material/code:"
     )
@@ -65,19 +65,19 @@ F2_function = st.Page(
 
 # ----- F3 & F4 -----
 F3_F4_description = st.Page(
-    "Subpages/F3_F4_description.py",
+    Assets.Paths.Description.f3_f4,
     title="Description - Functions",
     icon= ":material/code:"
 )
 
 F3_F4_description_xml_json = st.Page(
-    "Subpages/F3_F4_description_XML_JSON.py",
+    Assets.Paths.Description.f3_f4_xml_json,
     title="Description - JSON & XML Schemas",
     icon= ":material/code:"
 )
 
 F3_F4_description_erd = st.Page(
-    "Subpages/F3_description_ERD.py",
+    Assets.Paths.Description.f3_f4_erd,
     title="Description - DB & ERD",
     icon= ":material/code:"
     )
@@ -102,7 +102,7 @@ F4_function = st.Page(
 
 # ----- F5 -----
 F5_description = st.Page(
-    "Subpages/F5_description_API.py",
+    Assets.Paths.Description.f5,
     title="Description - API & DB",
     icon= ":material/code:"
 )
@@ -121,7 +121,7 @@ F5B_function = st.Page(
 
 # ----- F6 -----
 F6_descritpion = st.Page(
-    "Subpages/F6_description_API.py",
+    Assets.Paths.Description.f6,
     title="Description - API",
     icon= ":material/code:"
 )
@@ -134,43 +134,43 @@ F6_function = st.Page(
 
 # ----- F7 -----
 F7_descritpion = st.Page(
-    "Subpages/F7_description.py",
+    Assets.Paths.Description.f7,
     title="Description - Function",
     icon= ":material/code:"
 )
 
 F7_description_architecture = st.Page(
-    "Subpages/F7_description_architecture.py",
+    Assets.Paths.Description.f7_architecture,
     title="Description - Architecture",
     icon= ":material/code:"
 )
 
 F7_description_db = st.Page(
-    "Subpages/F7_description_ERD_DB.py",
+    Assets.Paths.Description.f7_db,
     title="Description - DB & ERD",
     icon= ":material/code:"
 )
 
 F7_description_state = st.Page(
-    "Subpages/F7_description_state.py",
+    Assets.Paths.Description.f7_state,
     title="Description - State flow",
     icon= ":material/code:"
 )
 
 F7_description_rating = st.Page(
-    "Subpages/F7_description_rating.py",
+    Assets.Paths.Description.f7_rating,
     title="Description - Rating",
     icon= ":material/code:"
 )
 
 F7_description_dtd = st.Page(
-    "Subpages/F7_description_dtd.py",
+    Assets.Paths.Description.f7_dtd,
     title="Description - Door-to-Door",
     icon= ":material/code:"
 )
 
 F7_description_metrics = st.Page(
-    "Subpages/F7_description_metrics.py",
+    Assets.Paths.Description.f7_metrics,
     title="Description - Use Cases & Metrics",
     icon= ":material/code:"
 )
@@ -189,7 +189,7 @@ F7B_function = st.Page(
 
 # ----- F8 -----
 F8_description = st.Page(
-    "Subpages/F8_description.py",
+    Assets.Paths.Description.f8,
     title="Description - DB & Function",
     icon= ":material/code:"
 )

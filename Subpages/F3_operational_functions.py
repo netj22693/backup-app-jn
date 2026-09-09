@@ -3,6 +3,7 @@ import json
 import xml.etree.ElementTree as ET
 import streamlit as st
 import pandas as pd
+from Subpages.Resources import Assets
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, Engine, text
 from sqlalchemy.orm import declarative_base, Session
 
@@ -359,7 +360,7 @@ def final_dialogs_goto():
 
     st.page_link(
         label = "Function 5 - Description - API",
-        page="Subpages/F5_description_API.py",
+        page= Assets.Paths.Description.f5,
         help="The button will redirect to the relevant page within this app.",
         use_container_width=True,
         icon=":material/code:",

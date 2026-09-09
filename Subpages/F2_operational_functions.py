@@ -3,10 +3,10 @@ import time
 import pandas as pd
 from pandas.io.formats.style import Styler
 import plotly.express as px
-import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element
 from lxml import etree
 from plotly.graph_objects import Figure
+from Subpages.Resources import Assets
 
 
 # ==== Final close dialog ====
@@ -16,7 +16,7 @@ def close_function():
     ''
     st.page_link(
         label = "Function 3 - Description",
-        page="Subpages/F3_F4_description.py",
+        page= Assets.Paths.Description.f3_f4,
         help="The button will redirect to the relevant page within this app.",
         width="stretch",
         icon=":material/code:",

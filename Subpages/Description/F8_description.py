@@ -81,6 +81,6 @@ st.page_link(
 	label = "Function 8",
 	page="Subpages/F8_FUNCTION_company_book.py",
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
 	icon=":material/play_circle:"
 	) 

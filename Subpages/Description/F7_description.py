@@ -1,4 +1,5 @@
 import streamlit as st
+from Subpages.Resources import Assets
 
 
 
@@ -605,8 +606,8 @@ st.write("-------")
 
 st.page_link(
     label = "Next page",
-	page="Subpages/F7_description_variables.py",
+	page= Assets.Paths.Description.f7_architecture,
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
     icon=":material/east:",
 	) 

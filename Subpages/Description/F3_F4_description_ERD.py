@@ -1,4 +1,5 @@
 import streamlit as st
+from Subpages.Resources import Assets
 
 
 st.write("# DB & ERD:")
@@ -134,14 +135,14 @@ st.page_link(
 	label = "Go to: Function 3",
 	page="Subpages/F3_FUNCTION_creation_of_XML.py",
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
 	icon=":material/play_circle:",
 	) 
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/F3_F4_description_XML_JSON.py",
+	page= Assets.Paths.Description.f3_f4_xml_json,
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
 	icon=":material/west:"
 	) 

@@ -1,4 +1,5 @@
 import streamlit as st
+from Subpages.Resources import Assets
 
 st.write("# Description - Functions 3 & 4")
 ''
@@ -157,8 +158,8 @@ st.write("-------")
 
 st.page_link(
     label = "Next page",
-	page="Subpages/F3_F4_description_XML_JSON.py",
+	page= Assets.Paths.Description.f3_f4_xml_json,
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
     icon=":material/east:",
 	) 

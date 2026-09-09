@@ -5,6 +5,7 @@ from app_db_connection import db_connection
 from typing import TextIO
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import declarative_base, Session
+from Subpages.Resources import Assets
 from Subpages.F3_operational_functions import get_utc_time_custom_string, create_json_file, create_xml_file
 
 
@@ -23,7 +24,7 @@ def final_dialogs_goto():
 
     st.page_link(
     label = "Function F5 - Description",
-    page="Subpages/F5_description_API.py",
+    page= Assets.Paths.Description.f5,
     help="The button will redirect to the relevant page within this app.",
     use_container_width=True,
     icon=":material/code:",

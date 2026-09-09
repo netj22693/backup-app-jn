@@ -232,9 +232,9 @@ with tab4:
 st.write("-------")
 
 st.page_link(
-    label = "Next page",
-	page="Subpages/F1_F2_description_XML_XSD.py",
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-    icon=":material/east:",
-	) 
+  label ="Next page",
+  page= Assets.Paths.Description.f1_f2_xml_xsd,
+  help="The button will redirect to the relevant page within this app.",
+  width="stretch",
+  icon=":material/east:",
+  ) 

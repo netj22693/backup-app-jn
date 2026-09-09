@@ -1,6 +1,6 @@
 import streamlit as st
 # import of xsd structure from different file
-from Subpages.F1_F2_xml_structures import xsd_structure, xsd_structure_rules_detail, xsd_structure_rules_header
+from Subpages.Description.F1_F2_xml_structures import xsd_structure, xsd_structure_rules_detail, xsd_structure_rules_header
 from Subpages.Resources import Assets
 
 
@@ -281,7 +281,7 @@ st.page_link(
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/F1_F2_description_function.py",
+	page= Assets.Paths.Description.f1_f2,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/west:"

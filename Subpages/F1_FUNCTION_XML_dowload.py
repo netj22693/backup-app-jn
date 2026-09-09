@@ -1,6 +1,7 @@
 import streamlit as st
 import xml.etree.ElementTree as ET
-from Subpages.F1_F2_xml_structures import xml_data_euro, xml_data_koruna, xml_data_usdollar, xml_empty_template
+from Subpages.Resources import Assets
+from Subpages.Description.F1_F2_xml_structures import xml_data_euro, xml_data_koruna, xml_data_usdollar, xml_empty_template
 
 
 # ======================== Screen part ==================================
@@ -234,7 +235,7 @@ st.page_link(
 
 st.page_link(
 	label = "Previous page",
-	page="Subpages/F1_F2_description_XML_XSD.py",
+	page= Assets.Paths.Description.f1_f2,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/west:"

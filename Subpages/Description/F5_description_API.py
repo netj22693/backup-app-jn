@@ -1,7 +1,7 @@
 import streamlit as st
 from app_api import api_GET_cache_10min, get_url_string_for_GET_api
 from Subpages.F5_F6_statistics_api_visualization import display_statistics
-from Subpages.F5_json_structures import json_api_structure_1, json_api_structure_2
+from Subpages.Description.F5_json_structures import json_api_structure_1, json_api_structure_2
 from Subpages.Resources import Assets
 
 
@@ -247,6 +247,6 @@ st.page_link(
 	label = "Function 5",
 	page="Subpages/F5_FUNCTION_exchange.py",
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
 	icon=":material/play_circle:"
 	) 

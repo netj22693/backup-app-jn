@@ -1,4 +1,5 @@
 import streamlit as st 
+from Subpages.Resources import Assets
 
 st.write("# DB & ERD")
 ''
@@ -66,17 +67,17 @@ st.code(sql_2, language="sql")
 st.write("-------")
 
 st.page_link(
-	label = "Next page",
-	page="Subpages/F7_description_state.py",
-	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
-	icon=":material/east:"
-	) 
+  label = "Next page",
+  page= Assets.Paths.Description.f7_state,
+  help="The button will redirect to the relevant page within this app.",
+  width="stretch",
+  icon=":material/east:"
+  ) 
 
 st.page_link(
-    label = "Previous page",
-	page="Subpages/F7_description_variables.py",
-	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
-    icon=":material/west:",
-	) 
+  label = "Previous page",
+  page= Assets.Paths.Description.f7_architecture,
+  help="The button will redirect to the relevant page within this app.",
+  width="stretch",
+  icon=":material/west:",
+  ) 

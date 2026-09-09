@@ -120,16 +120,16 @@ st.write("-------")
 
 st.page_link(
 	label = "Next page",
-	page="Subpages/F7_description_rating.py",
+	page= Assets.Paths.Description.f7_rating,
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
 	icon=":material/east:"
 	) 
 
 st.page_link(
     label = "Previous page",
-	page="Subpages/F7_description_ERD_DB.py",
+	page= Assets.Paths.Description.f7_db,
 	help="The button will redirect to the relevant page within this app.",
-	use_container_width=True,
+	width="stretch",
     icon=":material/west:",
 	) 

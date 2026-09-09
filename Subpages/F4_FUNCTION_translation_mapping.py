@@ -1,6 +1,4 @@
 import streamlit as st
-import xml.etree.ElementTree as ET
-import json
 from Subpages.F4_operational_functions import write_log_into_db, display_goto_links, parsing_xml_mapping_to_json, parsing_json_mapping_to_xml
 
 

@@ -56,5 +56,19 @@ class Assets:
 
 
     class Paths:
-        class Descritpion:
-            f1_f2 = "Subpages/Description.py/F1_F2_description_function.py"
+        class Description:
+            f1_f2 = "Subpages/Description/F1_F2_description_function.py"
+            f1_f2_xml_xsd = "Subpages/Description/F1_F2_description_XML_XSD.py"
+            f3_f4 = "Subpages/Description/F3_F4_description.py"
+            f3_f4_xml_json = "Subpages/Description/F3_F4_description_XML_JSON.py"
+            f3_f4_erd = "Subpages/Description/F3_F4_description_ERD.py"
+            f5 = "Subpages/Description/F5_description_API.py"
+            f6 = "Subpages/Description/F6_description_API.py"
+            f7 = "Subpages/Description/F7_description.py"
+            f7_architecture = "Subpages/Description/F7_description_architecture.py"
+            f7_db = "Subpages/Description/F7_description_ERD_DB.py"
+            f7_state = "Subpages/Description/F7_description_state.py"
+            f7_rating = "Subpages/Description/F7_description_rating.py"
+            f7_dtd = "Subpages/Description/F7_description_dtd.py"
+            f7_metrics = "Subpages/Description/F7_description_metrics.py"
+            f8 = "Subpages/Description/F8_description.py"
