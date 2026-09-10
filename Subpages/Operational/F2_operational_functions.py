@@ -61,7 +61,7 @@ def xsd_not_passed():
         ''
         st.link_button(
                     label = "Go to: Function 1",
-                    url="https://dataparsing.streamlit.app/F1_FUNCTION_XML_dowload",
+                    url= Assets.Links.App.f1_function,
                     help="The button will redirect to the relevant page within this app.",
                     width="stretch",
                     icon=":material/launch:",
@@ -73,7 +73,7 @@ def xsd_not_passed():
 
         st.link_button(
                     label = "XML principles for this Function 2",
-                    url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
+                    url= Assets.Links.App.f2_xml_xsd,
                     help="The button will redirect to the relevant page within this app.",
                     width="stretch",
                     icon=":material/launch:",
