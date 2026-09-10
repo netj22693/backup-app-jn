@@ -13,7 +13,7 @@ def final_dialogs_goto():
 
     st.page_link(
     label = "Function F7B - Offer visibility",
-    page="Subpages/F7b_FUNCTION_offer_visibility.py",
+    page= Assets.Paths.Function.f7b,
     help="The button will redirect to the relevant page within this app.",
     use_container_width=True,
     icon=":material/play_circle:",

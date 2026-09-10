@@ -4,7 +4,7 @@ import pandas as pd
 from pandas.io.formats.style import Styler
 from typing import NamedTuple
 from sqlalchemy import text, Engine
-from Subpages.F3b_SQL_queries import sql_query_extra_service, sql_query_file_format, sql_query_mapping_log, sql_query_overview, sql_query_product, sql_query_transport, sql_query_transport_company, sql_query_order_exist
+from Subpages.SQL.F3b_SQL_queries import sql_query_extra_service, sql_query_file_format, sql_query_mapping_log, sql_query_overview, sql_query_product, sql_query_transport, sql_query_transport_company, sql_query_order_exist
 
 
 # ===== TAB 2 validations =====

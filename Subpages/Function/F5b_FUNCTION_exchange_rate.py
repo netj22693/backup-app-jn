@@ -5,8 +5,8 @@ from app_logging import inicialization_logging
 from app_db_connection import db_connection
 from datetime import datetime, timezone, timedelta
 from sqlalchemy import text
-from Subpages.Function_5b.F5b_SQL_queries import sql_query_exchange_rate_data
-from Subpages.Function_5b.F5b_charts import create_chart
+from Subpages.SQL.F5b_SQL_queries import sql_query_exchange_rate_data
+from Subpages.Services.F5b_charts import create_chart
 
 # =================== App UI  ===================
 st.write("# Exchange Rate - Trend:")

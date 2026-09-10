@@ -133,7 +133,7 @@ st.write("-------")
 
 st.page_link(
 	label = "Go to: Function 3",
-	page="Subpages/F3_FUNCTION_creation_of_XML.py",
+	page= Assets.Paths.Function.f3,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/play_circle:",

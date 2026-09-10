@@ -2,9 +2,9 @@ import pandas as pd
 import streamlit as st
 from app_db_connection import db_connection
 from sqlalchemy import text
-from Subpages.F8_map import get_map, df_styling_colors_per_map
-from Subpages.F8_operational_functions import boolean_to_string_for_ui, count_rows, select_country_flag_path
-from Subpages.F8_SQL_queries import sql_query_number_companies, sql_query_number_branches, sql_query_company_overview, sql_query_branch_info_df, sql_query_branch_df,sql_query_branch_for_map, sql_query_branch_size, sql_query_company_table, get_sql_query_international_domestic, determin_transport_for_db_query, mapping_country, mapping_transport_type, create_df_branches_country, create_pin_column
+from Subpages.Services.F8_map import get_map, df_styling_colors_per_map
+from Subpages.Operational.F8_operational_functions import boolean_to_string_for_ui, count_rows, select_country_flag_path
+from Subpages.SQL.F8_SQL_queries import sql_query_number_companies, sql_query_number_branches, sql_query_company_overview, sql_query_branch_info_df, sql_query_branch_df,sql_query_branch_for_map, sql_query_branch_size, sql_query_company_table, get_sql_query_international_domestic, determin_transport_for_db_query, mapping_country, mapping_transport_type, create_df_branches_country, create_pin_column
 
 
 # ==== Business data - lists the F8 works with ====

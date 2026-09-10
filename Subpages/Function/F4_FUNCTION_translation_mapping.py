@@ -1,5 +1,6 @@
 import streamlit as st
-from Subpages.F4_operational_functions import write_log_into_db, display_goto_links, parsing_xml_mapping_to_json, parsing_json_mapping_to_xml
+from Subpages.Resources import Assets
+from Subpages.Operational.F4_operational_functions import write_log_into_db, display_goto_links, parsing_xml_mapping_to_json, parsing_json_mapping_to_xml
 
 
 # ====================== USER SCREEN =============================
@@ -90,7 +91,7 @@ with st.expander(
     """)
 	st.page_link(
         label = "Function 3",
-        page="Subpages/F3_FUNCTION_creation_of_XML.py",
+        page= Assets.Paths.Function.f3,
         help="The button will redirect to the relevant page within this app.",
         use_container_width=True,
         icon=":material/play_circle:",

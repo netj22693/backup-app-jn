@@ -6,7 +6,7 @@ from typing import TextIO
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import declarative_base, Session
 from Subpages.Resources import Assets
-from Subpages.F3_operational_functions import get_utc_time_custom_string, create_json_file, create_xml_file
+from Subpages.Operational.F3_operational_functions import get_utc_time_custom_string, create_json_file, create_xml_file
 
 
 # ===== Dialogs =====
@@ -16,7 +16,7 @@ def final_dialogs_goto():
 
     st.page_link(
     label = "Function F3B - Invoice visibility",
-    page="Subpages/F3b_FUNCTION_invoice_visibility.py",
+    page= Assets.Paths.Function.f3b,
     help="The button will redirect to the relevant page within this app.",
     use_container_width=True,
     icon=":material/play_circle:",
@@ -32,7 +32,7 @@ def final_dialogs_goto():
 
     st.page_link(
     label = "Function F5 - Exchange Rate",
-    page="Subpages/F5_FUNCTION_exchange.py",
+    page= Assets.Paths.Function.f5,
     help="The button will redirect to the relevant page within this app.",
     use_container_width=True,
     icon=":material/play_circle:",
@@ -77,7 +77,7 @@ def display_goto_links():
     ''
     st.page_link(
         label = "Function 5 - Description",
-        page="Subpages/F5_description_API.py",
+        page= Assets.Paths.Description.f5,
         help="The button will redirect to the relevant page within this app.",
         use_container_width=True,
         icon=":material/code:",
@@ -85,7 +85,7 @@ def display_goto_links():
 
     st.page_link(
         label = "Function 5",
-        page="Subpages/F5_FUNCTION_exchange.py",
+        page= Assets.Paths.Function.f5,
         help="The button will redirect to the relevant page within this app.",
         use_container_width=True,
         icon=":material/play_circle:",

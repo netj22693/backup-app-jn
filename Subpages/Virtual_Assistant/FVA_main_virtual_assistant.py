@@ -3,10 +3,10 @@ import time
 import uuid
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from Subpages.FVA_answers import ANSWERS
-from Subpages.FVA_questions import FAQ
+from Subpages.Virtual_Assistant.FVA_answers import ANSWERS
+from Subpages.Virtual_Assistant.FVA_questions import FAQ
 from Subpages.Resources import HELLO_STATEMENT
-from Subpages.FVA_DB_insert import insert_rating_into_db
+from Subpages.Virtual_Assistant.FVA_DB_insert import insert_rating_into_db
 
 
 

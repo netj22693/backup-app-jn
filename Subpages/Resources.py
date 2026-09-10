@@ -60,9 +60,16 @@ class Assets:
         class External:
             linked_in = "https://www.linkedin.com/in/jan-netolicka-12209a221/"
             sklearn_library = "https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html"
-
+            git_hub = "https://github.com/netj22693/backup-app-jn/blob/main/streamlit_app.py"
 
     class Paths:
+
+        class App:
+            main_page = "Subpages/Purpose_of_app.py"
+
+        class VirtualAssistant:
+            va = "Subpages/Virtual_Assistant/FVA_main_virtual_assistant.py"
+
         class Description:
             f1_f2 = "Subpages/Description/F1_F2_description_function.py"
             f1_f2_xml_xsd = "Subpages/Description/F1_F2_description_XML_XSD.py"
@@ -79,3 +86,16 @@ class Assets:
             f7_dtd = "Subpages/Description/F7_description_dtd.py"
             f7_metrics = "Subpages/Description/F7_description_metrics.py"
             f8 = "Subpages/Description/F8_description.py"
+
+        class Function:
+            f1 = "Subpages/Function/F1_FUNCTION_XML_dowload.py"
+            f2 = "Subpages/Function/F2_FUNCTION_XML_parsing_to_txt_outcome.py"
+            f3 = "Subpages/Function/F3_FUNCTION_creation_of_XML.py"
+            f3b = "Subpages/Function/F3b_FUNCTION_invoice_visibility.py"
+            f4 = "Subpages/Function/F4_FUNCTION_translation_mapping.py"
+            f5 = "Subpages/Function/F5_FUNCTION_exchange.py"
+            f5b = "Subpages/Function/F5b_FUNCTION_exchange_rate.py"
+            f6 = "Subpages/Function/F6_FUNCTION_zip_code.py"
+            f7 = "Subpages/Function/F7_FUNCTION_transport.py"
+            f7b = "Subpages/Function/F7b_FUNCTION_offer_visibility.py"
+            f8 = "Subpages/Function/F8_FUNCTION_company_book.py"

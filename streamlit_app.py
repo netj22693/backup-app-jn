@@ -13,14 +13,14 @@ st.logo("Pictures/V2_pictures/Logo_7.png", size='large')
 
 # ----- Landing page -----
 landing_page = st.Page(
-    "Subpages/Purpose_of_app.py",
+    Assets.Paths.App.main_page,
     title="Purpose of this application",
     icon= ":material/home:"
     )
 
 # ----- VA -----
 VA_function = st.Page(
-    "Subpages/FVA_main_virtual_assistant.py",
+    Assets.Paths.VirtualAssistant.va,
     title="Virtual Assistant (Chatbot)",
     icon= ":material/smart_toy:"
 )
@@ -51,13 +51,13 @@ F1_F2_descritpion_xml_xsd = st.Page(
     )
 
 F1_function = st.Page(
-    "Subpages/F1_FUNCTION_XML_dowload.py",
+    Assets.Paths.Function.f1,
     title="1. XML - Download",
     icon = ":material/play_circle:"
     )
 
 F2_function = st.Page(
-    "Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
+    Assets.Paths.Function.f2,
     title="2. XML - Parsing, Validation, Vizualization",
     icon = ":material/play_circle:"
     )
@@ -83,19 +83,19 @@ F3_F4_description_erd = st.Page(
     )
 
 F3_function = st.Page(
-    "Subpages/F3_FUNCTION_creation_of_XML.py",
+    Assets.Paths.Function.f3,
     title="3. Invoice - Creation - XML/JSON",
     icon = ":material/play_circle:"
     )
 
 F3B_function = st.Page(
-    "Subpages/F3b_FUNCTION_invoice_visibility.py",
+    Assets.Paths.Function.f3b,
     title="3B. Invoice - Visibility",
     icon = ":material/play_circle:"
     )
 
 F4_function = st.Page(
-    "Subpages/F4_FUNCTION_translation_mapping.py",
+    Assets.Paths.Function.f4,
     title="4. Invoice - Mapping - XML/JSON",
     icon = ":material/play_circle:"
 )
@@ -108,13 +108,13 @@ F5_description = st.Page(
 )
 
 F5_function = st.Page(
-    "Subpages/F5_FUNCTION_exchange.py",
+    Assets.Paths.Function.f5,
     title="5. Exchange Rate",
     icon= ":material/play_circle:"
 )
 
 F5B_function = st.Page(
-    "Subpages/Function_5b/F5b_FUNCTION_exchange_rate.py",
+    Assets.Paths.Function.f5b,
     title="5B. Exchange Rate Trend",
     icon= ":material/play_circle:"
 )
@@ -127,7 +127,7 @@ F6_descritpion = st.Page(
 )
 
 F6_function = st.Page(
-    "Subpages/F6_FUNCTION_zip_code.py",
+    Assets.Paths.Function.f6,
     title="6. ZIP code",
     icon= ":material/play_circle:"
 )
@@ -176,13 +176,13 @@ F7_description_metrics = st.Page(
 )
 
 F7_function = st.Page(
-    "Subpages/F7_FUNCTION_transport.py",
+    Assets.Paths.Function.f7,
     title="7. Transportation",
     icon= ":material/play_circle:"
 )
 
 F7B_function = st.Page(
-    "Subpages/F7b_FUNCTION_offer_visibility.py",
+    Assets.Paths.Function.f7b,
     title="7B. Offer - Visibility",
     icon= ":material/play_circle:"
 )
@@ -195,7 +195,7 @@ F8_description = st.Page(
 )
 
 F8_function = st.Page(
-    "Subpages/F8_FUNCTION_company_book.py",
+    Assets.Paths.Function.f8,
     title="8. Company Book",
     icon= ":material/play_circle:"
 )

@@ -361,7 +361,7 @@ st.write("-------")
 
 st.page_link(
 	label = "Function 7",
-	page="Subpages/F7_FUNCTION_transport.py",
+	page= Assets.Paths.Function.f7,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/play_circle:"

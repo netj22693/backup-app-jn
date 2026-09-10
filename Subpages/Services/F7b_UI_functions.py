@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from Subpages.F7b_operational_functions import singular_or_plural
+from Subpages.Operational.F7b_operational_functions import singular_or_plural
 from Subpages.Resources import Assets
 
 

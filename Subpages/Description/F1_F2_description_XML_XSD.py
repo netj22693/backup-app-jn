@@ -1,6 +1,6 @@
 import streamlit as st
 # import of xsd structure from different file
-from Subpages.Description.F1_F2_xml_structures import xsd_structure, xsd_structure_rules_detail, xsd_structure_rules_header
+from Subpages.Data.F1_F2_xml_structures import xsd_structure, xsd_structure_rules_detail, xsd_structure_rules_header
 from Subpages.Resources import Assets
 
 
@@ -273,7 +273,7 @@ st.write("-------")
 
 st.page_link(
     label = "Go to: Function 1",
-	page="Subpages/F1_FUNCTION_XML_dowload.py",
+	page= Assets.Paths.Function.f1,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
     icon=":material/play_circle:",

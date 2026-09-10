@@ -140,7 +140,7 @@ with st.expander(
 ):	
 
 	''
-	st.write("- GitHub code repository link [Here](https://github.com/netj22693/backup-app-jn/blob/main/streamlit_app.py)")
+	st.write(f"- GitHub code repository link [Here]({Assets.Links.External.git_hub})")
 	st.image("Pictures/Github_archimate_2.svg")
 
 # Web app - expander
@@ -341,7 +341,7 @@ st.write("**Recommendation:** To firstly read the description chapters (the appl
 ''
 st.page_link(
     label = "Virtual Assistant (Chatbot)",
-	page="Subpages/FVA_main_virtual_assistant.py",
+	page= Assets.Paths.VirtualAssistant.va,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
     icon=":material/smart_toy:",
@@ -356,7 +356,7 @@ st.page_link(
 	) 
 st.page_link(
 	label = "Function 1",
-	page="Subpages/F1_FUNCTION_XML_dowload.py",
+	page= Assets.Paths.Function.f1,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/play_circle:"
@@ -364,7 +364,7 @@ st.page_link(
 
 st.page_link(
 	label = "Function 2",
-	page="Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
+	page= Assets.Paths.Function.f2,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/play_circle:"
@@ -380,7 +380,7 @@ st.page_link(
 
 st.page_link(
 	label = "Function 3",
-	page="Subpages/F3_FUNCTION_creation_of_XML.py",
+	page= Assets.Paths.Function.f3,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/play_circle:"
@@ -388,7 +388,7 @@ st.page_link(
 
 st.page_link(
 	label = "Function 3B",
-	page="Subpages/F3b_FUNCTION_invoice_visibility.py",
+	page= Assets.Paths.Function.f3b,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/play_circle:",
@@ -396,7 +396,7 @@ st.page_link(
 
 st.page_link(
 	label = "Function 4",
-	page="Subpages/F4_FUNCTION_translation_mapping.py",
+	page= Assets.Paths.Function.f4,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/play_circle:"
@@ -412,14 +412,14 @@ st.page_link(
 
 st.page_link(
 	label = "Function 5",
-	page="Subpages/F5_FUNCTION_exchange.py",
+	page= Assets.Paths.Function.f5,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/play_circle:"
 	)
 st.page_link(
 	label = "Function 5B",
-	page="Subpages/Function_5b/F5b_FUNCTION_exchange_rate.py",
+	page= Assets.Paths.Function.f5b,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/play_circle:"
@@ -435,7 +435,7 @@ st.page_link(
 
 st.page_link(
 	label = "Function 6",
-	page="Subpages/F6_FUNCTION_zip_code.py",
+	page= Assets.Paths.Function.f6,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/play_circle:"
@@ -452,7 +452,7 @@ st.page_link(
 
 st.page_link(
 	label = "Function 7",
-	page="Subpages/F7_FUNCTION_transport.py",
+	page= Assets.Paths.Function.f7,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/play_circle:"
@@ -460,7 +460,7 @@ st.page_link(
 
 st.page_link(
 	label = "Function 7B",
-	page="Subpages/F7b_FUNCTION_offer_visibility.py",
+	page= Assets.Paths.Function.f7b,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/play_circle:"
@@ -477,7 +477,7 @@ st.page_link(
 
 st.page_link(
 	label = "Function 8",
-	page="Subpages/F8_FUNCTION_company_book.py",
+	page= Assets.Paths.Function.f8,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/play_circle:"

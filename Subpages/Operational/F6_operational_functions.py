@@ -5,7 +5,7 @@ import logging
 import unicodedata
 from app_logging import inicialization_logging
 from app_api import api_GET_cache_1h, get_url_string_for_GET_api, provide_paramaters_zipcodebase_com, provide_paramaters_zipcodestack_com
-from Subpages.F6_input_data import cities_api_aliases, cities_normalized_not_unique, cities_not_unique_name
+from Subpages.Data.F6_input_data import cities_api_aliases, cities_normalized_not_unique, cities_not_unique_name
 
 
 # ===== Inicialization for logging =====

@@ -1,7 +1,8 @@
 import streamlit as st
+from Subpages.Resources import Assets
 from app_api import api_GET_cache_10min, get_url_string_for_GET_api
-from Subpages.F5_F6_statistics_api_visualization import display_statistics
-from Subpages.Description.F6_json_structures import json_api_structure_zipcodebase, json_api_structure_zipcodestack, json_scenario_1_zipcodestack, json_scenario_2_zipcodebase, json_scenario_2_zipcodestack
+from Subpages.Services.F5_F6_statistics_api_visualization import display_statistics
+from Subpages.Data.F6_json_structures import json_api_structure_zipcodebase, json_api_structure_zipcodestack, json_scenario_1_zipcodestack, json_scenario_2_zipcodebase, json_scenario_2_zipcodestack
 
 
 # ==================== Application screen + backend functions ==============
@@ -268,7 +269,7 @@ st.write("-------")
 
 st.page_link(
   label="Function 6",
-  page="Subpages/F6_FUNCTION_zip_code.py",
+  page= Assets.Paths.Function.f6,
   help="The button will redirect to the relevant page within this app.",
   width="stretch",
   icon=":material/play_circle:"

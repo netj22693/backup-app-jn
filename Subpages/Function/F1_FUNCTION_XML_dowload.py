@@ -1,6 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
-from Subpages.Description.F1_F2_xml_structures import xml_data_euro, xml_data_koruna, xml_data_usdollar, xml_empty_template
+from Subpages.Data.F1_F2_xml_structures import xml_data_euro, xml_data_koruna, xml_data_usdollar, xml_empty_template
 
 
 # ======================== Screen part ==================================
@@ -143,7 +143,7 @@ with tab4:
         ''
         st.link_button(
             label = "Go to XSD page",
-            url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
+            url= Assets.Links.App.f2_xml_xsd,
             help="The button will redirect to the relevant page within this app for download.",
             width="stretch",
             icon=":material/launch:"
@@ -193,7 +193,7 @@ with tab4:
         ''
         st.page_link(
             label = "Go to Function 2",
-            page="Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
+            page= Assets.Paths.Function.f2,
             help="The button will redirect to the relevant page within this app.",
             width="stretch",
             icon=":material/play_circle:"
@@ -226,7 +226,7 @@ st.write("-------")
 
 st.page_link(
     label = "Go to: Function 2",
-	page="Subpages/F2_FUNCTION_XML_parsing_to_txt_outcome.py",
+	page= Assets.Paths.Function.f2,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
     icon=":material/play_circle:",

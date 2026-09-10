@@ -4,10 +4,10 @@ import pandas as pd
 from datetime import date, timedelta
 from typing import Optional,Dict, Tuple
 import plotly.express as px
-from Subpages.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
-from Subpages.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, sql_query_offer_status_validation_df, sql_query_offer_status_validation_single, sql_query_logs, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes
-from Subpages.F7_input_data import tranport_types_list, dataset_cities
-from Subpages.F7b_operational_functions import change_state_in_db, singular_or_plural, input_validation, operational_update_of_states, display_offer_state, display_offer_logs
+from Subpages.Services.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
+from Subpages.SQL.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, sql_query_offer_status_validation_df, sql_query_offer_status_validation_single, sql_query_logs, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes
+from Subpages.Data.F7_input_data import tranport_types_list, dataset_cities
+from Subpages.Operational.F7b_operational_functions import change_state_in_db, singular_or_plural, input_validation, operational_update_of_states, display_offer_state, display_offer_logs
 
 
 

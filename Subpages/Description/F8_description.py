@@ -1,4 +1,5 @@
 import streamlit as st
+from Subpages.Resources import Assets
 
 # ==================== Application screen ==============
 st.write("# Description - Function 8")
@@ -79,7 +80,7 @@ st.write("-------")
 
 st.page_link(
 	label = "Function 8",
-	page="Subpages/F8_FUNCTION_company_book.py",
+	page= Assets.Paths.Function.f8,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/play_circle:"

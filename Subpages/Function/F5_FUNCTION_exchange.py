@@ -1,6 +1,6 @@
 import streamlit as st
 from app_api import api_GET_cache_1h, get_url_string_for_GET_api
-from Subpages.F5_operational_functions import get_result_division, get_result_multiply, get_value_formated, parsing_data_api_freecurrencyapi_com, parsing_data_api_kurzy_cz
+from Subpages.Operational.F5_operational_functions import get_result_division, get_result_multiply, get_value_formated, parsing_data_api_freecurrencyapi_com, parsing_data_api_kurzy_cz
 
 
 # =================== App screen ===================
