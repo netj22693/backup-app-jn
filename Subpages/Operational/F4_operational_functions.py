@@ -40,7 +40,7 @@ def final_dialogs_goto():
 
     st.page_link(
     label = "Home page",
-    page="Subpages/Purpose_of_app.py",
+    page= Assets.Paths.App.main_page,
     help="The button will redirect to the relevant page within this app.",
     use_container_width=True,
     icon=":material/home:",
