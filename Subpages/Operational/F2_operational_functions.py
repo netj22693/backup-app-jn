@@ -1,5 +1,6 @@
 import streamlit as st
 import time
+import logging
 import pandas as pd
 from pandas.io.formats.style import Styler
 import plotly.express as px
@@ -7,6 +8,11 @@ from xml.etree.ElementTree import Element
 from lxml import etree
 from plotly.graph_objects import Figure
 from Subpages.Resources import Assets
+from app_logging import inicialization_logging
+
+
+# ===== Inicialization for logging =====
+inicialization_logging()
 
 # ==== XSD not passed ====
 def xsd_not_passed():
@@ -51,6 +57,7 @@ def xsd_not_passed():
 
     st.stop()
 
+
 # ======= Function for validation uploaded XML against XSD =========
 
 def validate_xml_against_xsd(xml_path: str, xsd_path: str):
@@ -65,13 +72,17 @@ def validate_xml_against_xsd(xml_path: str, xsd_path: str):
 
             # If validation passes -> F2 logic can continue 
             if result == True:
+                logging.info("F2 - XML validation XSD - PASSED")
                 pass
 
             else:
+                logging.warning("F2 - XML validation XSD - NOT PASSED - XML does not match XSD")
                 xsd_not_passed()
 
-        except:
+        except Exception as e:
+            logging.warning(f"F2 - XML validation XSD - NOT PASSED - Exception: {e}")
             xsd_not_passed()
+
 
 # ======= Data validation -> displays on UI ======
 def data_validation(total_sum: float, sum_price: float, currency: str) -> str:
