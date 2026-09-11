@@ -1,7 +1,6 @@
 import streamlit as st
 from app_db_connection import db_connection
-from Subpages.Dialog.F3_dialog import process_done, insert_db_not_complete
-from Subpages.Operational.F3_operational_functions import create_invoice_number, get_utc_time_custom_string,mapping_additional_service, mapping_additional_service_into_field, reset, get_transport_price, mapping_country_to_table, mapping_currency_for_query, create_order_num, mapping_category, mapping_country, mapping_currency, mapping_extra_service, mapping_file_format, mapping_size, mapping_transport_company, insert_into_db, create_json_file, create_xml_file
+from Subpages.Operational.F3_operational_functions import create_invoice_number, get_utc_time_custom_string,mapping_additional_service, mapping_additional_service_into_field, reset, get_transport_price, mapping_country_to_table, mapping_currency_for_query, create_order_num, mapping_category, mapping_country, mapping_currency, mapping_extra_service, mapping_size, mapping_transport_company, create_json_file, create_xml_file, on_download_click
 
 
 
@@ -260,22 +259,7 @@ if  st.button(
         "currency": mapped_currency,
         # + "file_format": mapped_file_format - by which this is extended bellow, once one of download buttons pushed
         }
-           
-                   
-        def on_download_click(file_format):
-
-            mapped_file_format = mapping_file_format(file_format)
-
-            data_for_insert.update({"file_format": mapped_file_format})
-
-            try:
-                insert_into_db(db_engine, data_for_insert)
-                process_done(order_number_str)
-
-            except Exception as e:
-                print(f"Insert failed: {e}")
-                insert_db_not_complete()
-        
+                 
 
         # ================= UI - DOWNLOAD + FINALIZTION OF THE PROCESS ===========
         st.write("#### Summary of your order:")
@@ -300,11 +284,12 @@ if  st.button(
         ''
         ''
         st.info(f"""
-                - When **Download button** used:
-                    - A file will be created - **XML** or **JSON**
-                    - Data will be stored into **DB** - Order number: **{order_number_str}** 
-                - If change of data needed:
-                    - Go up > Change data > Push Submit button again""")
+        - When **Download button** used:
+            - A file will be created - **XML** or **JSON**
+            - Data will be stored into **DB** - Order number: **{order_number_str}** 
+        - If change of data needed:
+            - Go up > Change data > Push Submit button again
+        """)
         
         ''
         st.write("###### Download:")  
@@ -316,7 +301,12 @@ if  st.button(
             file_name=file_name_xml_fstring,
             use_container_width=True,
             icon=":material/download:",
-            on_click=lambda: on_download_click("XML")
+            on_click=lambda: on_download_click(
+                db_engine,
+                "XML",
+                data_for_insert,
+                order_number_str              
+                )
         )
 
         
@@ -326,7 +316,12 @@ if  st.button(
             file_name = file_name_json_fstring,
             use_container_width=True,
             icon = ":material/download:",
-            on_click=lambda: on_download_click("JSON")
+            on_click=lambda: on_download_click(
+                db_engine,
+                "JSON",
+                data_for_insert,
+                order_number_str 
+                )
         )
 
             

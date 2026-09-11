@@ -3,10 +3,14 @@ import json
 import xml.etree.ElementTree as ET
 import streamlit as st
 import pandas as pd
-from Subpages.Resources import Assets
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, Engine, text
+from sqlalchemy import Column, Integer, String, Boolean, Float, Engine, text
 from sqlalchemy.orm import declarative_base, Session
+import logging
+from app_logging import inicialization_logging
+from Subpages.Dialog.F3_dialog import process_done, insert_db_not_complete
 
+# ===== Inicialization for logging =====
+inicialization_logging()
 
 # ===== FUnction to create INV number =====
 def create_invoice_number(order_num: int) -> str:
@@ -33,7 +37,7 @@ def get_utc_time_custom_string(purpose: str) -> str:
         return time.strftime("%Y-%m-%d %H:%M:%S", now)
     
     else:
-        print("Function: get utc time: Invalid input")
+        logging.warning("Function: get utc time: Invalid input")
 
 
 # ===== Mapping =====
@@ -321,6 +325,22 @@ def insert_into_db(engine: Engine, data: dict):
         new_invoice = Invoice(**data)
         session.add(new_invoice)
         session.commit()
+
+
+def on_download_click(db_engine: Engine, file_format: str, data: dict, order_number: str):
+
+    mapped_fileformat = mapping_file_format(file_format)
+
+    data.update({"file_format": mapped_fileformat})
+
+    try:
+        insert_into_db(db_engine, data)
+        logging.info("F3 - DB insert - SUCCESS")
+        process_done(order_number)
+
+    except Exception as e:
+        logging.warning(f"F3 - DB insert - FAIL: {e}")
+        insert_db_not_complete()
 
 
 # ===== Clear of inputs - Reset button =====
