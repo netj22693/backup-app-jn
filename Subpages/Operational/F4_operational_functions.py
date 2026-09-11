@@ -10,7 +10,7 @@ from Subpages.Operational.F3_operational_functions import get_utc_time_custom_st
 
 
 # ===== Mapping for DB purpose =====
-def mapping_format_DB_code(input_from: str, input_to: str) -> int:
+def mapping_format_db_code(input_from: str, input_to: str) -> int:
 
 	mapping = {
 		"XML" : 1,
@@ -114,7 +114,7 @@ def parsing_xml_mapping_to_json(object_xml: TextIO) -> tuple[str, str, dict]:
 
     file_name = f"{parsed_data_to_dict['invoice_number']}.json"
 
-    mapping_from, mapping_to = mapping_format_DB_code("XML","JSON")
+    mapping_from, mapping_to = mapping_format_db_code("XML","JSON")
 
     data_for_log_db = create_data_for_log(parsed_data_to_dict['order_number'], mapping_from, mapping_to)
 
@@ -168,7 +168,7 @@ def parsing_json_mapping_to_xml(object_json: TextIO) -> tuple[str, str, dict]:
 
     file_name_xml_fstring = f"{parsed_data_to_dict['invoice_number']}.xml"
 
-    mapping_from, mapping_to = mapping_format_DB_code("JSON","XML")
+    mapping_from, mapping_to = mapping_format_db_code("JSON","XML")
 
     data_for_log_db = create_data_for_log(parsed_data_to_dict['order_number'], mapping_from, mapping_to)
 

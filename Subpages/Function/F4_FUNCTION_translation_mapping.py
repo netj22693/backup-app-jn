@@ -1,8 +1,13 @@
 import streamlit as st
 from Subpages.Resources import Assets
+import logging
+from app_logging import inicialization_logging
 from Subpages.Dialog.F4_dialog import display_goto_links
 from Subpages.Operational.F4_operational_functions import write_log_into_db, parsing_xml_mapping_to_json, parsing_json_mapping_to_xml
 
+
+# ===== Inicialization for logging =====
+inicialization_logging()
 
 # ====================== USER SCREEN =============================
 # Split of the screen into 2 columns
@@ -40,7 +45,7 @@ if object_upl_xml is not None:
             )
 
     except Exception as e:
-        print(f"Parsing process not complete - {e}")
+        logging.warning(f"F4 - Parsing process XML -> JSON - FAIL: {e}")
         col1.error("The uploaded file is not supported by this application")
         json_object_returned = None
     
@@ -76,7 +81,7 @@ if object_upl_json is not None:
             )
 
     except Exception as e:
-        print(f"Parsing process not complete - {e}")
+        logging.warning(f"F4 - Parsing process JSON -> XML - FAIL: {e}")
         col2.error("The uploaded file is not supported by this application")
 
 
