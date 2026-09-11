@@ -2,8 +2,9 @@ import pandas as pd
 import streamlit as st
 import logging
 from datetime import datetime, timezone
+from app_db_connection import db_connection
 from app_logging import inicialization_logging
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float,DateTime, Engine, update
+from sqlalchemy import Column, Integer, String, Boolean, Float,DateTime, Engine, update
 from sqlalchemy.orm import declarative_base, Session
 from Subpages.Dialog.F7b_dialog import rating_already_submitted, rating_complete, rating_not_saved
 
@@ -11,25 +12,6 @@ from Subpages.Dialog.F7b_dialog import rating_already_submitted, rating_complete
 
 # ===== Inicialization for logging ===== 
 inicialization_logging()
-
-# ===== DB save ===== 
-def db_connection() -> Engine:
-
-    # Load secrets
-    password = st.secrets["neon"]["password"]
-    endpoint = st.secrets["neon"]["endpoint"]
-
-    # connection string
-    try: 
-        conn_string = f"postgresql+psycopg2://neondb_owner:{password}@{endpoint}.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
-
-        engine = create_engine(conn_string)
-        logging.info("DB connection established")
-        return engine
-
-    except Exception as e:
-        logging.error(f"DB connection failed: {e}")
-
 
 
 
@@ -158,7 +140,9 @@ def calculate_overall_rating(rating_dict: dict) -> dict:
     # Extending of the dict
     rating_dict["overall_rating"] = {
         "sum_value": overall_rating_value,
-        "calculated_rating" : overall_rating_calculated
+
+        # Bug fix 11-Sep-2026: round() due to avoid floating-point precision (3.4999999999999996 -> 3.5)
+        "calculated_rating" : round(overall_rating_calculated, 2)
     }
 
     return rating_dict
@@ -214,7 +198,7 @@ def calculate_rating_and_save_into_db(
 
     rating_result = adjust_rating_for_ui(rating_dict_final["overall_rating"]["calculated_rating"])
 
-    db_engine = db_connection()
+    db_engine = db_connection("F7B Rating")
 
     insert_rating_data_to_db(db_engine, rating_dict_final, rating_result)
 
