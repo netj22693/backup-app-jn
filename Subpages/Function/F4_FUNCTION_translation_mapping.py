@@ -1,6 +1,7 @@
 import streamlit as st
 from Subpages.Resources import Assets
-from Subpages.Operational.F4_operational_functions import write_log_into_db, display_goto_links, parsing_xml_mapping_to_json, parsing_json_mapping_to_xml
+from Subpages.Dialog.F4_dialog import display_goto_links
+from Subpages.Operational.F4_operational_functions import write_log_into_db, parsing_xml_mapping_to_json, parsing_json_mapping_to_xml
 
 
 # ====================== USER SCREEN =============================

@@ -1,79 +1,8 @@
 import streamlit as st
-from Subpages.Resources import Assets
 from app_db_connection import db_connection
 from sqlalchemy import Column, Integer, String, Float, DateTime, Engine
 from sqlalchemy.orm import declarative_base, Session
-
-
-
-
-def final_dialogs_goto():
-    ''
-    st.write("**Go to:**")
-
-    st.page_link(
-    label = "Function F7B - Offer visibility",
-    page= Assets.Paths.Function.f7b,
-    help="The button will redirect to the relevant page within this app.",
-    use_container_width=True,
-    icon=":material/play_circle:",
-    )
-
-    st.page_link(
-    label = "Function F8 - Description",
-    page= Assets.Paths.Description.f8,
-    help="The button will redirect to the relevant page within this app.",
-    use_container_width=True,
-    icon=":material/code:",
-    )
-
-    st.page_link(
-    label = "Home page",
-    page="Subpages/Purpose_of_app.py",
-    help="The button will redirect to the relevant page within this app.",
-    use_container_width=True,
-    icon=":material/home:",
-    )
-
-
-@st.dialog("Complete!")
-def process_done(offer_number_input):
-    st.write(f"""
-        - PDF offer was generated -> :green[**Complete**]
-        - The offer **{offer_number_input}** was inserted into DB -> :green[**Complete**]
-        """)
-    ''
-    final_dialogs_goto()
-
-
-@st.dialog("Insert into DB failed") 
-def insert_db_not_complete():
-    st.write("""
-        - PDF offer was generated -> :green[**Complete**]
-        - But the offer **was not** inserted into DB -> :red[**Technical issue**]
-        """)
-    ''
-    final_dialogs_goto()
-
-
-# TEST 
-# europe_date_part = "06-Dec-25"
-# europe_time_part = "12:04"
-# cet_cest_now= "CET"
-# offer_id = "F7-101"
-# customer_approve_date = "11-Dec-25"
-# customer_approve_time = "12:05"
-# agreed_till_str = "5 days"
-# selected_transport = "Truck"
-# urgency = "Standard"
-# cet_cest_now = "CET"
-# overall_time_truck = 38.42
-# delivery_dt_formated = "Monday - 15-Dec-25 by 10:00"
-# final_price = 27513.23
-# selected_currency = "euro"
-
-
-
+from Subpages.Dialog.F7_dialog import insert_db_not_complete,process_done
 
 
 def insert_variables_offer(engine: Engine, data: dict):
@@ -130,37 +59,6 @@ def insert_variables_offer(engine: Engine, data: dict):
         session.add(new_offer)
         session.commit()
 
-
-
-
-# TEST
-
-# offer_number_generated = "F1-129"
-# country_code_from = "AT"
-# from_city = "Prahahaha"
-# from_city_extra_doortdoor = 10
-# country_code_to = "DE"
-# to_city = "Berlin"
-# to_city_extra_doortdoor = 20
-# distance = 888.88
-# time_journey = 12.12
-# time_dtd = 14
-
-
-
-# variables_delivery_dict = {
-#     "offer_id" : offer_number_generated,
-#     "from_country" : country_code_from,
-#     "from_city" : from_city,
-#     "from_dtd" : from_city_extra_doortdoor,
-#     "to_country" : country_code_to,
-#     "to_city" : to_city,
-#     "to_dtd" : to_city_extra_doortdoor,
-#     "distance_length" : distance,
-#     "distance_time" : time_journey,
-#     "dtd_time" : time_dtd
-# }
-
 def insert_variables_delivery(engine: Engine, data: dict):
 
     mapped_data = {
@@ -200,32 +98,6 @@ def insert_variables_delivery(engine: Engine, data: dict):
         session.commit()
 
 
-# TEST
-
-# offer_number_generated = "F1-555"
-# mapped_currency = 1
-# price = 111111.11
-# door_from_result = 22.11
-# door_to_result = 33.11
-# shipment_value = 444.55
-# money_insurance = 666.66
-# money_fragile = 777.77
-# money_danger = 888.88
-
-
-
-# variables_costs_dict = {
-#     "offer_id" : offer_number_generated,
-#     "currency" : mapped_currency,
-#     "distance_cost" : price,
-#     "dtd_from" : door_from_result,
-#     "dtd_to" : door_to_result,
-#     "shipment_value" : shipment_value,
-#     "insurance" : money_insurance,
-#     "fragile" : money_fragile,
-#     "danger" : money_danger,
-# }
-
 def insert_variables_costs(engine: Engine, data: dict):
 
     mapped_data = {
@@ -262,24 +134,6 @@ def insert_variables_costs(engine: Engine, data: dict):
         session.add(new_offer)
         session.commit()
 
-
-
-# TEST
-# offer_number_generated = "F1-121"
-# time_break = 1.17
-# transfer_time_from = 1
-# transfer_time_to = 2
-# truck_time_dtd_air_train_from = 3
-# truck_time_dtd_air_train_to = 4
-
-
-# variables_extra_steps_time_dict = {
-#     "offer_id" : offer_number_generated,
-#     "truck_breaks" : time_break,
-#     "shipment_transfer_dtd_from" : transfer_time_from,
-#     "shipment_transfer_dtd_to" : transfer_time_to,
-#     "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to),
-# }
 
 def insert_variables_extra_steps_time(engine: Engine, data: dict):
 

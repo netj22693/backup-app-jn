@@ -62,7 +62,7 @@ def display_offer_visualization_ui(
             
             st.link_button(
                 label = "Go to Door-to-Door page",
-                url="https://dataparsing.streamlit.app/F7_description_dtd",
+                url= Assets.Links.App.f7_description_dtd,
                 help="The button will redirect to the relevant page within this app for download.",
                 width="stretch",
                 icon=":material/launch:"

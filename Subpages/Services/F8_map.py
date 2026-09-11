@@ -4,7 +4,6 @@ import pydeck as pdk
 from pandas.io.formats.style import Styler
 
 
-
 def get_map(df: pd.DataFrame, map_size: str):
 
     '''

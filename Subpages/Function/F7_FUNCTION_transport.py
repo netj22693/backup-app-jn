@@ -4,6 +4,7 @@ import plotly.graph_objects as go
 from datetime import timedelta
 from app_api import api_GET_cache_1h, get_url_string_for_GET_api
 from app_db_connection import db_connection
+from Subpages.Resources import Assets
 from Subpages.Services.F7_DB_insert import save_to_db_main_stream
 from Subpages.Services.F7_DB_mapping import mapping_transport_type, mapping_service, mapping_time_zone, mapping_currency, mapping_agreed_till
 from Subpages.Services.F7_PDF import create_pdf
@@ -891,7 +892,7 @@ with st.expander("Door-to-Door", icon= ":material/info:"):
 
     st.link_button(
         label = "Go to Door-to-Door page",
-        url="https://dataparsing.streamlit.app/F7_description_dtd",
+        url= Assets.Links.App.f7_description_dtd,
         help="The button will redirect to the relevant page within this app for download.",
         width="stretch",
         icon=":material/launch:"

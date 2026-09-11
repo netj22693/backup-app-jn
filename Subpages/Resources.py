@@ -44,6 +44,7 @@ class Assets:
             f5_description_background_job = "https://dataparsing.streamlit.app/~/+/F5_description_API#function-5-function-5-b-background-job-and-erd"
             f6_description = "https://dataparsing.streamlit.app/F6_description_API"
             f7_description = "https://dataparsing.streamlit.app/F7_description"
+            f7_description_dtd = "https://dataparsing.streamlit.app/F7_description_dtd"
             f8_description = "https://dataparsing.streamlit.app/F8_description"
 
             # ERD
