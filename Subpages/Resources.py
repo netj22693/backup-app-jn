@@ -13,7 +13,7 @@ HELLO_STATEMENT = """👋 Hi! I'm your FAQ chatbot. You can ask me:
 class Assets:
     class Images:
         va_variables = "Pictures/Virtual_asistant/VA_principle_variables_v2.svg"
-        architecture_landscape = "Pictures/App_landscape_architecture_v9.svg"
+        architecture_landscape = "Pictures/Architecture/App_landscape_architecture_v10.svg"
         archimate_main = "Pictures/Archimate_functions_overview_v15.svg"
         # UML
         uml_f1_f2 = "Pictures/Overall_UML_F1 and F2_v2.svg"
@@ -67,6 +67,7 @@ class Assets:
 
         class App:
             main_page = "Subpages/Purpose_of_app.py"
+            app_architecture = "Subpages/Description/APP_description_app_architecture.py"
 
         class VirtualAssistant:
             va = "Subpages/Virtual_Assistant/FVA_main_virtual_assistant.py"

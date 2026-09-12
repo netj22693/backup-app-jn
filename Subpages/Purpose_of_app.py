@@ -346,6 +346,13 @@ st.page_link(
 	width="stretch",
     icon=":material/smart_toy:",
 	) 
+st.page_link(
+    label = "Application Architecture",
+	page= Assets.Paths.App.app_architecture,
+	help="The button will redirect to the relevant page within this app.",
+	width="stretch",
+    icon=":material/architecture:",
+	) 
 ''
 st.page_link(
     label = "Description about F1 and F2",

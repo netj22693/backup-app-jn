@@ -18,6 +18,13 @@ landing_page = st.Page(
     icon= ":material/home:"
     )
 
+# ----- Application architecture page -----
+app_description_architecture = st.Page(
+    Assets.Paths.App.app_architecture,
+    title="Application Architecture",
+    icon= ":material/architecture:"
+    )
+
 # ----- VA -----
 VA_function = st.Page(
     Assets.Paths.VirtualAssistant.va,
@@ -206,7 +213,8 @@ pg = st.navigation(
     {
         "About this application": [
             landing_page,
-            VA_function
+            VA_function,
+            app_description_architecture
             ],
             
         # "TESTING": [test_1, test_2],
