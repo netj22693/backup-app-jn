@@ -3,11 +3,12 @@ import pandas as pd
 import plotly.express as px
 import logging
 from app_logging import inicialization_logging
+from Subpages.Dialog.F7b_dialog import state_change_complete, state_change_not_complete, state_change_not_concurrency
 from pandas.io.formats.style import Styler
 from sqlalchemy import text
 from typing import Optional, Dict, Tuple
 from datetime import datetime, timezone
-from sqlalchemy import Engine, Column, String, DateTime, Integer, create_engine, update
+from sqlalchemy import Engine, Column, String, DateTime, Integer, update
 from sqlalchemy.orm import declarative_base, Session
 
 
@@ -261,29 +262,7 @@ def data_empty_fallback_info(input_df: pd.DataFrame):
 
     return fallback
 
-# ===== DB Update function =====
-@st.dialog("Complete!")
-def state_change_complete(offer_id: str, new_status: str):
-    st.write(f"""
-        - State change -> :green[**Complete**]
-        - The offer **{offer_id}** has been changed to **{new_status}**
-        """)
-
-@st.dialog("Technical issue") 
-def state_change_not_complete():
-    st.write("""
-        - State change **was not** complete -> :red[**Technical issue**]
-        """)
-
-@st.dialog("Status not updated") 
-def state_change_not_concurrency(offer_id: str):
-    st.write(f"""
-    - Status **not** updated {offer_id} -> :blue[**Already Approved/Rejected**]
-    - There was a **concurrent user who updated** at the same time
-    - **Search/reopen the offer again** to see the state
-    """)
-
-    
+# ===== DB Update function =====   
 def change_state_in_db(engine: Engine, offer_id: str, was_state: str, new_state: str):
 
     # Preparation of data for insert
