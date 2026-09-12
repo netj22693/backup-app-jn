@@ -4,11 +4,11 @@ import plotly.graph_objects as go
 from datetime import timedelta
 from app_api import api_GET_cache_1h, get_url_string_for_GET_api
 from app_db_connection import db_connection
-from Subpages.Resources import Assets
 from Subpages.Services.F7_DB_insert import save_to_db_main_stream
 from Subpages.Services.F7_DB_mapping import mapping_transport_type, mapping_service, mapping_time_zone, mapping_currency, mapping_agreed_till
 from Subpages.Services.F7_PDF import create_pdf
 from Subpages.Services.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image, show_ui_transport_flow
+from Subpages.Expander.F7_expanders import display_expander_transport_type_comparison, display_expander_truck, display_expander_sla, display_expander_extra_services, display_expander_fragile_goods, display_expander_danger_goods, display_expander_door_to_door, display_expander_unit_price
 from Subpages.Data.F7_input_data import dataset_cities, correction_list_data, criteria_dict, price_dict, dtd_options_dict, dtd_calculation_values_dict, sla_dict, extra_service_dict, UNIT_DISTANCE, TRANSPORT_SPEED, ROUND_TO
 from Subpages.Services.F7_Go_green import call_go_green
 from Subpages.Operational.F7_operational_functions import create_offer_number, data_parsing_api, create_df_cost_trend, create_df_extra_time, create_list_transport, create_df_default_costs, determin_square_price_per_rate, get_list_cities_if_transport_available, create_df_transport_overview, get_list_cities, build_pie_chart, delivery_date_time, create_pie_chart, ui_country_selector, get_currency_option, get_list_available_transport_based_on_selected_cities, get_price_per_square, create_df_particular_transport_overview, get_price_changed_per_service_type, get_extra_time_per_service_sla, ui_input_formatter, ui_door_to_door_selector, ui_transport_offer, ui_determin_singular_plural, get_prices_extra_services, input_validation, input_validation_shipment_value, get_coordinates, L0_is_in_correction_list, get_calculation_price_distance, get_calculation_price_distance_air, get_calculation_delivery_time, get_door_to_door_time_truck, get_door_to_door_time_train_airplane, get_calculation_time_break, get_door_to_door_cost_and_distance, determin_cet_cest, format_transport_value, format_transport_value_using_zero
@@ -20,8 +20,6 @@ from Subpages.Operational.F7_operational_functions import create_offer_number, d
 
 # Input creation - variables
 list_transport = create_list_transport(price_dict)
-
-extra_time_df = create_df_extra_time(sla_dict, list_transport)
 
 # API call - get exhange rates
 
@@ -483,59 +481,9 @@ price_square_tab2_air = get_price_per_square(price_list, selected_currency, 'Air
 
 
 ''
-with st.expander("Transport type comparison", icon=":material/info:"):
+display_expander_transport_type_comparison()
 
-    ''
-    st.write("""
-             - There is few factors to consider:
-                - Time, Costs
-                - Type of Cargo 
-                - Infrasture availability  
-             
-             """)
-
-    ''
-    st.image("Pictures/Function_7/F7_transport_comparison_table.svg")
-
-
-with st.expander("Truck / Road", icon=":material/local_shipping:"):
-
-    ''
-    st.write(f"""- Average speed: **{TRANSPORT_SPEED['truck']} km/h**""")
-    st.write("""- Every city is available -> no restrictions""")
-    st.write("""- But the **driver needs mandatory breaks** which can prolong the journey/delivery time""")
-
-
-    ''
-    st.write("###### Mandatory breaks:")
-
-    st.write("""
-             - The cargo can be impacted by **mandatory breaks for the driver**
-             - This also **influences the time of the delivery**
-             """)
-    
-    st.write("""
-             - **Rules/law**:
-                - A driver can drive **4.5 hours** and then needs to take a **mandatory 45 minutes break**
-                - A driver can drive for **9 hours a day** max.   
-                - After the 9 hours mandatory **10 hours break** before continuing to drive 
-                - **Exception:** in case that the distance is **within 10 hours** of driving, exception can be made                        
-             """)
-
-    ''
-    st.write(" -> Distance is **not** longer than **4.5 hours** - no mandatory break")
-    st.write(" -> Distance is **longer** than **4.5 hours** - mandatory **45 minutes** break")
-    st.write(" -> Distance is **not** longer than **9 hours** - mandatory **45 minutes** break")
-    st.write(" -> Distance is **not** longer than **10 hours** (exception) - mandatory **2x  45 minutes** break")
-    st.write(" -> In case that the distance is longer than **9 and 10 hours** (10+) - there is **45 minutes** break + **10 hours** break")
-    
-    ''
-    st.caption("""
-               * Example of journey between 9 - 10 hours -> the exception: Most (CZ) - Poprad (SK)
-               * Example of journey longer than 9 or 10 hours with 10 hours sleep break: Teplice (CZ) - Kosice (SK) or Karlovy Vary (CZ) - Kosice (SK)
-                """)
-
-
+display_expander_truck()
 
 with st.expander("Train / Rails", icon=":material/train:"):
 
@@ -587,8 +535,6 @@ with st.expander("Train / Rails", icon=":material/train:"):
         st.image("Pictures/Function_7/F7_train_cityname_pl.svg", width = 410)
         ''
         st.dataframe(create_df_particular_transport_overview(train_pl, "City PL"))
-
-
 
 
 with st.expander("Airplane", icon=":material/travel:"):
@@ -646,15 +592,11 @@ urgency = st.radio("Delivery service:", urgency_offer, index=1, captions=[
         "Fast administration process -> delivery as soon as possible",
         "Within 2-3 days cargo should be ready to go",
         "5-10 days to get cargo ready to go ",
-    ],)
+        ],)
 
 ''
 ''
-with st.expander("**SLA** - Service Level Agreement (Express, Standard, Slow)", icon= ":material/contract:"):
-
-    ''
-    st.write(" - **Time** - Cargo on its way till this time - **HOURS**")
-    st.dataframe(extra_time_df, hide_index=True)
+display_expander_sla(create_df_extra_time(sla_dict, list_transport))
 
 
 if urgency  == 'Express' or urgency == 'Slow':
@@ -714,15 +656,7 @@ else:
 
 # Expanders
 ''
-with st.expander("Unit price", icon= ":material/info:"):
-
-    ''
-    st.write("- Is a price per specific distance")
-    st.write("- The function/calculation works based on **coordinate system**")
-    st.write("- Unit means specific field in this coordinate system")
-    st.write("- **Based on the units, distance and price is calculated**")
-    st.write(f"- **1 unit is approximatelly ~ {UNIT_DISTANCE} km** (but not always - there are some variables/coeficients making calculation corrections, depending on case City A to City B)")
-    st.write(f"- If the distance is **less than** ~ {UNIT_DISTANCE} km (You travel within 1 unit), the final price is calculated as 1 unit. This also helps to keep profit for the business.  Example: Teplice <-> Most")
+display_expander_unit_price()
 
 ''
 ''
@@ -806,45 +740,11 @@ else:
 
 ''
 ''
-with st.expander("Extra services - Overview", icon= ":material/info:"):
+display_expander_extra_services(extra_service_dict)
 
-    ''
-    st.write("""
-    - Multiple choices can be selected
-    - Note: **Airplane** - Danger goods is **not allowed**
-    """)
+display_expander_fragile_goods()
 
-    ''
-    st.write(f"""
-    - Costs:
-        - Insurance extra -> **{extra_service_dict['insurance']}%** from shipment value
-        - Fragile goods -> **{extra_service_dict['fragile']}%** from shipment value
-        - Danger goods -> **{extra_service_dict['danger']}%** from shipment value
-    """)
-
-    st.image("Pictures/Function_7/F7_table_shipment_value.svg")
-
-with st.expander("Fragile goods", icon= ":material/quick_reference:"):
-
-    ''
-    st.write("""
-    - Overview of goods and the common type of transport
-    """)
-
-    st.image("Pictures/Function_7/F7_table_fragile_truck_train.svg")
-    st.image("Pictures/Function_7/F7_table_fragile_airplane.svg")
-
-with st.expander("Danger goods", icon= ":material/warning:"):
-
-    ''
-    st.write("""
-    - Overview of goods and the common type of transport
-    - Note: **Airplane** - Danger goods is **not allowed**
-    """)
-
-    st.image("Pictures/Function_7/F7_table_danger_truck_train.svg")
-
-
+display_expander_danger_goods()
 
 ''
 ''
@@ -859,67 +759,7 @@ radio_dtd_to = ui_door_to_door_selector(dtd_options_dict, selected_transport, "r
     
 
 ''
-with st.expander("Door-to-Door", icon= ":material/info:"):
-
-    ''
-    st.write("""
-    - **The point of Door-to-Door is to define whether:**
-        - The transport between cities will be just from City A to City B **configured upper**
-        - Or eventually from/to somewhere else within defined areas (City, ~ 10km, ~20km)
-    """)
-
-    ''
-    st.write(""" 
-    - **Truck:**
-        - **City** - everywhere within City area **for free**
-        - **10 km** radius - **500 koruna** ; **20 euro**
-        - **20 km** radius - **1 000 koruna** ; **40 euro**
-    """)
-
-    ''
-    st.write(""" 
-    - **Train and Airplane:**
-        - Measured from Train Station or Airport
-        - **Higher price** due to need of **Truck** and **Shipment transfer**
-            - **No** - pick up/delivery just from/to Train Station/Airport by Train/Airplane
-            - **10 km** radius - **1 000 koruna** ; **40 euro** (Truck needed)
-            - **20 km** radius - **1 500 koruna** ; **60 euro** (Truck needed)
-    """)
-
-
-    ''
-    st.write("- **More details**:")
-
-    st.link_button(
-        label = "Go to Door-to-Door page",
-        url= Assets.Links.App.f7_description_dtd,
-        help="The button will redirect to the relevant page within this app for download.",
-        width="stretch",
-        icon=":material/launch:"
-    )
-
-
-    ''
-    ''
-    st.write("###### Simple view/example:")
-
-    st.image("Pictures/Function_7/F7_dtd_legend.svg")
-
-    ''
-    st.image("Pictures/Function_7/F7_dtd_abb_air.svg", width= 370)
-
-    ''
-    st.write(""" 
-    - Selected transport between **A** and **B** - **Airplane**
-    - Service **ordered** just from the **A** point ('From city') - **Airport**
-    - Delivery to **B** point ('To' city) - **Airport**, but customer pays extra delivery to point **B in the area of 20km**
-    """)
-    st.write(""" 
-    - Result:
-        -  Customer will deliver the Shipment to point **A** (Airport) **on his own**
-        - **A** to **B** distance (Airport to Airport) will be provided by our company (Airplane)
-        - Customer pays for delivery to **B - 20km** -> our company will make a shipment transfer from **Airplane to Truck** for the last **20 km**     
-    """)
+display_expander_door_to_door()
 
 ''
 ''
