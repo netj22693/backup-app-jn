@@ -35,6 +35,9 @@ class Assets:
 
     class Links:
         class App:
+
+            app_description_architecture = "https://dataparsing.streamlit.app/APP_description_app_architecture"
+
             # Functions
             f1_function = "https://dataparsing.streamlit.app/F1_FUNCTION_XML_dowload"
 

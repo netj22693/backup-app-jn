@@ -58,16 +58,23 @@ If you are interested in releases, go to main page :house:-> Expander: **Release
 
 
 "overview": {
-"text": """The application has **multiple functions inspired by real business use-cases**. It uses:
+"text": f"""The application has **multiple functions inspired by real business use-cases**. It uses:
 - **REST APIs** 
 - **PostgreSQL DB**
-- Principle of standard CRUD operations (specifically **C**reate and **R**ead)""",
+- Principle of standard CRUD operations (specifically **C**reate, **R**ead and **U**pdate)
+
+👉 You can find more details about the application architecture [here]({Assets.Links.App.app_description_architecture})
+""",
 "image": Assets.Images.architecture_landscape
 },
 
 
 "overview_principle": {
-"text": "The application has multiple functions inspired by real business use-cases.",
+"text": f"""
+The application has multiple functions inspired by real business use-cases.
+
+👉 You can find more details about the application architecture [here]({Assets.Links.App.app_description_architecture})
+""",
 "image": None
 },
 
@@ -227,9 +234,9 @@ Or **questions related to specific functions**:
 "text": f"""
 **API (Application Programming Interface)** is a set of rules and endpoints that allows different software systems to communicate with each other.
 
-- **In simple terms:** An API lets one application request data or actions from another without needing to know how it’s implemented internallysystem
+- **In simple terms:** API allows application to request data or actions from another application without needing to know how it's implemented
 \n\n
-- **In context of this application:** There are **GET methods** / type of APIs used to get data from other systems.
+- **In context of this application:** There is **GET method** / type of APIs used to get data from external systems.
 """,
 "image": Assets.Images.architecture_landscape
 },
