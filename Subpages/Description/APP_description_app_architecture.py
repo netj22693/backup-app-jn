@@ -75,7 +75,7 @@ st.write("""
   - **Input data** - Data and structures supporting the Function logic. Typically XREF, logic dictionaries, data structures etc.
   - **SQL queries** - Function specific queries for DB
   - **Dialog** - Function specific dialog windows for UI
-  - **Expanders** - Wider UI text kept separated to have cleaner code
+  - **Expanders** - Wider UI text kept separated to have cleaner and not that heavy code
   - **Schedulers** - Scripts for GitHub Actions
 """)
 
