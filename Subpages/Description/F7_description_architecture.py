@@ -19,7 +19,7 @@ var_tab1, var_tab2, var_tab3 = st.tabs([
 ])
 
 with var_tab1:
-    st.image("Pictures/Function_7/F7_Variables/F7_desc_function_diagram_v10.svg")
+    st.image("Pictures/Function_7/F7_Variables/F7_desc_function_diagram_v11.svg")
 
     ''
     st.write("""
@@ -59,7 +59,7 @@ with var_tab1:
             """)
 
 with var_tab2:
-    st.image("Pictures/Function_7/F7_Variables/F7_desc_function_F7B_diagram_v3.svg")
+    st.image("Pictures/Function_7/F7_Variables/F7_desc_function_F7B_diagram_v4.svg")
 
     ''
     st.write("""
