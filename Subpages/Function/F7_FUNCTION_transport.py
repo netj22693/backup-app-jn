@@ -842,10 +842,6 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
     ])
 
 
-    # Get UI image for the particular offer 
-    ui_image_path = provide_ui_image_path(selected_transport, from_city_extra_doortdoor, to_city_extra_doortdoor, time_break)
-    ui_color_coding_image_path = provide_ui_color_coding_image(selected_transport, from_city_extra_doortdoor, to_city_extra_doortdoor, time_break)
-
     # UI transport workflow image
     ''
     with tab_final_1:
