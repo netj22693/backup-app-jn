@@ -4,14 +4,15 @@ import plotly.graph_objects as go
 from datetime import timedelta
 from app_api import api_GET_cache_1h, get_url_string_for_GET_api
 from app_db_connection import db_connection
+from Subpages.Services.F7b_UI_functions import display_offer_visualization_ui
 from Subpages.Services.F7_DB_insert import save_to_db_main_stream
 from Subpages.Services.F7_DB_mapping import mapping_transport_type, mapping_service, mapping_time_zone, mapping_currency, mapping_agreed_till
 from Subpages.Services.F7_PDF import create_pdf
-from Subpages.Services.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image, show_ui_transport_flow
+from Subpages.Services.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
 from Subpages.Expander.F7_expanders import display_expander_transport_type_comparison, display_expander_truck, display_expander_sla, display_expander_extra_services, display_expander_fragile_goods, display_expander_danger_goods, display_expander_door_to_door, display_expander_unit_price, display_expander_currency_and_rate, display_expander_train, display_expander_air, display_expander_city_overview
 from Subpages.Data.F7_input_data import dataset_cities, correction_list_data, criteria_dict, price_dict, dtd_options_dict, dtd_calculation_values_dict, sla_dict, extra_service_dict, UNIT_DISTANCE, TRANSPORT_SPEED, ROUND_TO
 from Subpages.Services.F7_Go_green import call_go_green
-from Subpages.Operational.F7_operational_functions import create_offer_number, data_parsing_api, create_df_cost_trend, create_df_extra_time, create_list_transport, create_df_default_costs, determin_square_price_per_rate, get_list_cities_if_transport_available, create_df_transport_overview, get_list_cities, build_pie_chart, delivery_date_time, create_pie_chart, ui_country_selector, get_currency_option, get_list_available_transport_based_on_selected_cities, get_price_per_square, create_df_particular_transport_overview, get_price_changed_per_service_type, get_extra_time_per_service_sla, ui_input_formatter, ui_door_to_door_selector, ui_transport_offer, ui_determin_singular_plural, get_prices_extra_services, input_validation, input_validation_shipment_value, get_coordinates, L0_is_in_correction_list, get_calculation_price_distance, get_calculation_price_distance_air, get_calculation_delivery_time, get_door_to_door_time_truck, get_door_to_door_time_train_airplane, get_calculation_time_break, get_door_to_door_cost_and_distance, determin_cet_cest, format_transport_value, format_transport_value_using_zero
+from Subpages.Operational.F7_operational_functions import create_offer_number, data_parsing_api, create_df_cost_trend, create_df_extra_time, create_list_transport, create_df_default_costs, determin_square_price_per_rate, get_list_cities_if_transport_available, create_df_transport_overview, get_list_cities, build_pie_chart, delivery_date_time, create_pie_chart, ui_country_selector, get_currency_option, get_list_available_transport_based_on_selected_cities, get_price_per_square, create_df_particular_transport_overview, get_price_changed_per_service_type, get_extra_time_per_service_sla, ui_input_formatter, ui_door_to_door_selector, ui_transport_offer, get_prices_extra_services, input_validation, input_validation_shipment_value, get_coordinates, L0_is_in_correction_list, get_calculation_price_distance, get_calculation_price_distance_air, get_calculation_delivery_time, get_door_to_door_time_truck, get_door_to_door_time_train_airplane, get_calculation_time_break, get_door_to_door_cost_and_distance, determin_cet_cest, format_transport_value, format_transport_value_using_zero
 
 
 # ============================================================
@@ -756,6 +757,74 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
     offer_number_generated = create_offer_number(db_engine)
     
 
+    # Finalization of inputs for TAB1 UI
+    if selected_transport == 'Truck':
+        time_physical_move = time_journey + time_break + time_dtd
+        overall_time = time_journey + time_break + extra_time + time_dtd
+
+    elif selected_transport in ('Train', 'Airplane'):
+        time_physical_move = time_journey + time_dtd
+        overall_time = time_journey + extra_time + time_dtd
+
+    
+    delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time, delivery_at_utc, approve_till_utc, created_utc, transport_start_utc = delivery_date_time(overall_time,agreed_till, time_physical_move, True)
+
+    cet_cest_delivery = determin_cet_cest(delivery_dt)
+    cet_cest_now = determin_cet_cest(date_time_europe)
+
+    final_price = price + money_insurance + money_fragile + money_danger + door_to_result + door_from_result
+
+    # Creation of Series for UI function
+    row_offer = pd.Series({
+        "created_date": europe_date_part, 
+        "created_time": europe_time_part,
+        "need_approve_date": customer_approve_date,
+        "need_approve_time": customer_approve_time,
+        "need_approve_days": mapping_agreed_till(agreed_till_str), # INT
+        "need_approve_days_str" : agreed_till_str,
+        "need_approve_hours": agreed_till,
+        "transport": selected_transport,
+        "service": urgency,
+        "time_zone": determin_cet_cest(date_time_europe),
+        "time_overall": overall_time,
+        "expected_delivery": delivery_dt_formated,
+        "final_price": final_price,
+        "currency": selected_currency
+    })
+
+
+    row_delivery = pd.Series({
+        "from_country": country_code_from,
+        "from_city": from_city,
+        "from_dtd": from_city_extra_doortdoor,
+        "to_country": country_code_to,
+        "to_city": to_city ,
+        "to_dtd": to_city_extra_doortdoor,
+        "distance_length": distance,
+        "distance_time": time_journey,
+        "dtd_time": time_dtd,
+    })
+
+    row_costs = pd.Series({
+        "distance_cost": price,
+        "insurance": money_insurance, 
+        "fragile": money_fragile,
+        "danger": money_danger,
+        "dtd_from": door_from_result, 
+        "dtd_to": door_to_result,
+    })
+
+    row_extra_steps_time = pd.Series({
+        "truck_breaks": time_break,
+        "shipment_transfer_dtd_from": transfer_time_from,
+        "shipment_transfer_dtd_to": transfer_time_to,
+        "dtd_truck_if_not_truck_main": truck_time_dtd_air_train_from + truck_time_dtd_air_train_to, 
+    })
+
+    row_sla = pd.Series({
+        "time_sla": extra_time,
+    })
+
 
     # ============================================================
     # ------ UI visualization & additional calculations ----------
@@ -780,216 +849,17 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
     # UI transport workflow image
     ''
     with tab_final_1:
-        if selected_transport == 'Truck':
-
-            time_truck_physical_move = (time_journey + time_break + time_dtd)
-            overall_time_truck = (time_journey + time_break + extra_time + time_dtd)
-
-            #overall_time_db - for DB purpose unified variable (the same will have train and truck)
-            overall_time_db = overall_time_truck 
-
-
-            delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time, delivery_at_utc, approve_till_utc, created_utc, transport_start_utc = delivery_date_time(overall_time_truck,agreed_till, time_truck_physical_move, True)
-
-            cet_cest_delivery = determin_cet_cest(delivery_dt)
-            cet_cest_now = determin_cet_cest(date_time_europe)
-
-
-
-            ''
-            st.write(f"""
-                - Offer number: **{offer_number_generated}**
-                - Offer created: **{europe_date_part} - {europe_time_part} {cet_cest_now}**
-                - Customer to approve till: **{customer_approve_date} - {customer_approve_time} {cet_cest_now}** ({agreed_till_str})
-            """)
-
-
-            # UI transport workflow image
-            ''
-            show_ui_transport_flow(ui_image_path, ui_color_coding_image_path)
-
-
-            ''
-            st.write(f"""
-                - Delivery from **{from_city} ({country_code_from})** to **{to_city} ({country_code_to}):**
-                    - Costs: **{price:,.2f} {selected_currency}**
-                    - Distance: **{distance:,.2f} km**
-                    - Time to cover the distance: **{time_journey:.2f} hour(s)**
-                    - Transport type: **{selected_transport}**
-            """)
-
-            ''
-            st.write(f"""
-                - **Door-to-Door**:
-                    - Additional: **{from_city_extra_doortdoor + to_city_extra_doortdoor} km** to the distance
-                        - {from_city}: {from_city_extra_doortdoor} km
-                        - {to_city}: {to_city_extra_doortdoor} km
-                    - Time to cover the Door-to-Door: **{time_dtd:.2f} hours(s)**
-            """)
-
-            ''
-            st.write(f"""
-                - **{selected_transport}**:
-                    - Selected service **{urgency}** requires **{extra_time:.2f} hours** for administration, load, etc. - **the SLA**  
-                    - If longer distance (including Door-to-Door time), **mandatory breaks** for driver: **{time_break} hour(s)**
-            """)
-
-            ''
-            st.write("- **Overall time end-to-end delivery:**")
-
-            with st.container(border=True):
-                st.write(f"**{overall_time_truck:.2f} {ui_determin_singular_plural(overall_time_truck)}**")
-
-
-
-            st.write("- **Expected delivery:**")
-            with st.container(border=True):
-                st.write(f"**{delivery_dt_formated} - {cet_cest_delivery}**")
-            
-            with st.expander("Info", icon=":material/help:"):
-
-                tab_info_1, tab_info_2 = st.tabs([
-                    "How",
-                    "DTF - Delivery Time Frame"
-                ])
-
-
-                tab_info_1.write(f"""
-                    - Calculated based on:
-                        - Current time and date: **{europe_date_part} - {europe_time_part} - {cet_cest_now}**
-                        - Overall end-to-end delivery: **{overall_time_truck:.2f} {ui_determin_singular_plural(overall_time_truck)}**
-                        - Time till the customer needs to approve the offer: **{agreed_till} hours** ({agreed_till_str})
-                """)    
-
-                tab_info_1.write("- **If the result does not fit to DTF (Delivery Time Frame) -> it is asjusted accordingly the DTF rules**")
-
-
-                tab_info_2.write(f"""
-                    - Monday: **10:00 - 22:00**
-                    - Tuesday - Friday : **07:00 - 22:00**
-                    - Saturday & Sunday: No delivery ->  **Monday: 10:00**
-                """)   
-                
-                ''
-                tab_info_2.image("Pictures/Function_7/F7_DTF/F7_DTF_graphical_overview_v1.svg", width=450)
-
-                tab_info_2.write("- In case that **calculated Expected delivery time** is **not** in these time frames -> **the delivery time is adjusted to fit into these**")
-
-
-
-
-        elif selected_transport == 'Train' or 'Airplane':
-
-            time_train_air_physical_move = time_journey + time_dtd
-            overall_time_train_air = time_journey + extra_time + time_dtd
-
-            #overall_time_db - for DB purpose unified variable (the same will have train and truck)
-            overall_time_db = overall_time_train_air
-
-            delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time, delivery_at_utc, approve_till_utc, created_utc, transport_start_utc = delivery_date_time(overall_time_train_air,agreed_till, time_train_air_physical_move, True)
-
-            cet_cest_delivery = determin_cet_cest(delivery_dt)
-            cet_cest_now = determin_cet_cest(date_time_europe)
-
-
-
-            ''
-            st.write(f"""
-                - Offer number: **{offer_number_generated}**
-                - Offer created: **{europe_date_part} - {europe_time_part} {cet_cest_now}**
-                - Customer to approve till: **{customer_approve_date} - {customer_approve_time} {cet_cest_now}** ({agreed_till_str})
-            """)
-
-            # UI transport workflow image
-            ''
-            show_ui_transport_flow(ui_image_path, ui_color_coding_image_path)
-
-            ''
-            st.write(f"""
-                - Delivery from **{from_city} ({country_code_from})** to **{to_city} ({country_code_to}):**
-                    - Costs: **{price:,.2f} {selected_currency}**
-                    - Distance: **{distance:,.2f} km**
-                    - Time to cover the distance: **{time_journey:.2f} hour(s)**
-                    - Transport type: **{selected_transport}**
-            """)
-
-            ''
-            st.write(f"""
-            - **Door-to-Door**:
-                - Additional: **{from_city_extra_doortdoor + to_city_extra_doortdoor} km** to the distance for which **Truck is needed**
-                    - {from_city}: {from_city_extra_doortdoor} km
-                    - {to_city}: {to_city_extra_doortdoor} km
-                - Time to cover the Door-to-Door: **{time_dtd:.2f} hours(s)**
-                    - Transfer {selected_transport} <-> Truck: {transfer_time_from + transfer_time_to} hour(s)
-                    - Time for Truck ride: {truck_time_dtd_air_train_from + truck_time_dtd_air_train_to} hour(s)
-            """)
-
-            ''
-            st.write(f"""
-            - **{selected_transport}**:
-                - Selected service **{urgency}** requires **{extra_time:.2f} hours** for administration, load, etc. - **the SLA**  
-            """)
-
-            ''
-            st.write("- **Overall time end-to-end delivery:**")
-
-            with st.container(border=True):
-                st.write(f"**{overall_time_train_air:.2f} {ui_determin_singular_plural(overall_time_train_air)}**")
-        
-
-
-            st.write("- **Expected delivery:**")
-            with st.container(border=True):
-                st.write(f"**{delivery_dt_formated} - {cet_cest_delivery}**")
-            
-            with st.expander("Info", icon=":material/help:"):
-
-                tab_info_ta_1, tab_info_ta_2 = st.tabs([
-                    "How",
-                    "DTF - Delivery Time Frame"
-                ])
-
-
-                tab_info_ta_1.write(f"""
-                - Calculated based on:
-                    - Current time and date: **{europe_date_part} - {europe_time_part} - {cet_cest_now}**
-                    - Overall end-to-end delivery: **{overall_time_train_air:.2f} {ui_determin_singular_plural(overall_time_train_air)}**
-                    - Time till the customer needs to approve the offer: **{agreed_till} hours** ({agreed_till_str})
-                """)    
-
-                tab_info_ta_1.write("- **If the result does not fit to DTF (Delivery Time Frame) -> it is asjusted accordingly the DTF rules**")
-
-
-
-                tab_info_ta_2.write(f"""
-                    - Monday: **10:00 - 22:00**
-                    - Tuesday - Friday : **07:00 - 22:00**
-                    - Saturday & Sunday: No delivery ->  **Monday: 10:00**
-                    """)   
-                
-                tab_info_ta_2.write("- In case that calculated delivery time is **not** in these time frames -> **the delivery time is adjsuted to fit into these**")
-
-
-        ''
-        ''
-        st.write(f"""
-        - **Additional services - costs**:
-            - Insurance extra costs: **{money_insurance:,.2f} {selected_currency}**
-            - Fregile goods costs: **{money_fragile:,.2f} {selected_currency}**
-            - Danger goods costs: **{money_danger:,.2f} {selected_currency}**
-            - Door-To-Door - {from_city} ({country_code_from}):  **{door_from_result:,.2f} {selected_currency}** - ({from_city_extra_doortdoor} km)
-            - Door-To-Door - {to_city} ({country_code_to}):  **{door_to_result:,.2f} {selected_currency}** - ({to_city_extra_doortdoor} km)
-        """)
-
-
-        ''
-        ''
-        st.write("- **Final price:**")
-        with st.container(border=True):
-
-            final_price = price + money_insurance + money_fragile + money_danger + door_to_result + door_from_result
-
-            st.write(f"**{final_price:,.2f} {selected_currency}**")
+        display_offer_visualization_ui(
+            "F7",
+            provide_ui_image_path(selected_transport, from_city_extra_doortdoor, to_city_extra_doortdoor, time_break),
+            provide_ui_color_coding_image(selected_transport, from_city_extra_doortdoor, to_city_extra_doortdoor, time_break),
+            offer_number_generated,
+            row_offer,
+            row_delivery,
+            row_costs,
+            row_extra_steps_time,
+            row_sla
+            )
 
 
 
@@ -1531,7 +1401,7 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
             "selected_transport" : mapped_selected_transport,
             "service" : mapped_service,
             "time_zone" : mapped_time_zone,
-            "time_overall" : overall_time_db,
+            "time_overall" : overall_time,
             "expected_delivery" : delivery_dt_formated,
             "final_price" : final_price,
             "currency" : mapped_currency,
@@ -1621,7 +1491,7 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
             "service" : urgency,
             "service_time": extra_time,
             "time_zone" : cet_cest_now,
-            "time_overall" : overall_time_db,
+            "time_overall" : overall_time,
             "expected_delivery" : delivery_dt_formated,
             "final_price" : final_price,
             "currency" : selected_currency,

@@ -1,155 +1,1542 @@
 import streamlit as st
-from Subpages.Operational.F6_operational_functions import orchestration_city_based_on_zipcode_search, orchestration_zipcode_based_on_city_search
+import pandas as pd
+import plotly.graph_objects as go
+from datetime import timedelta
+from app_api import api_GET_cache_1h, get_url_string_for_GET_api
+from app_db_connection import db_connection
+from Subpages.Services.F7b_UI_functions import display_offer_visualization_ui
+from Subpages.Services.F7_DB_insert import save_to_db_main_stream
+from Subpages.Services.F7_DB_mapping import mapping_transport_type, mapping_service, mapping_time_zone, mapping_currency, mapping_agreed_till
+from Subpages.Services.F7_PDF import create_pdf
+from Subpages.Services.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
+from Subpages.Expander.F7_expanders import display_expander_transport_type_comparison, display_expander_truck, display_expander_sla, display_expander_extra_services, display_expander_fragile_goods, display_expander_danger_goods, display_expander_door_to_door, display_expander_unit_price, display_expander_currency_and_rate, display_expander_train, display_expander_air, display_expander_city_overview
+from Subpages.Data.F7_input_data import dataset_cities, correction_list_data, criteria_dict, price_dict, dtd_options_dict, dtd_calculation_values_dict, sla_dict, extra_service_dict, UNIT_DISTANCE, TRANSPORT_SPEED, ROUND_TO
+from Subpages.Services.F7_Go_green import call_go_green
+from Subpages.Operational.F7_operational_functions import create_offer_number, data_parsing_api, create_df_cost_trend, create_df_extra_time, create_list_transport, create_df_default_costs, determin_square_price_per_rate, get_list_cities_if_transport_available, create_df_transport_overview, get_list_cities, build_pie_chart, delivery_date_time, create_pie_chart, ui_country_selector, get_currency_option, get_list_available_transport_based_on_selected_cities, get_price_per_square, create_df_particular_transport_overview, get_price_changed_per_service_type, get_extra_time_per_service_sla, ui_input_formatter, ui_door_to_door_selector, ui_transport_offer, get_prices_extra_services, input_validation, input_validation_shipment_value, get_coordinates, L0_is_in_correction_list, get_calculation_price_distance, get_calculation_price_distance_air, get_calculation_delivery_time, get_door_to_door_time_truck, get_door_to_door_time_train_airplane, get_calculation_time_break, get_door_to_door_cost_and_distance, determin_cet_cest, format_transport_value, format_transport_value_using_zero
 
-# ================== UI  ==========================
 
-st.write("# ZIP Code search:")
+# ============================================================
+# ---------------- Data input creation for UI ----------------
+# ============================================================
+
+# Input creation - variables
+list_transport = create_list_transport(price_dict)
+
+# API call - get exhange rates
+
+api_response_data = api_GET_cache_1h(
+    url_string = get_url_string_for_GET_api("freecurrencyapi_com_EUR_to_CZK"),
+    function_id = "F7",
+    api_name = "freecurrencyapi.com"
+)
+
+usd_to_czk_rate, usd_to_eur_rate = data_parsing_api(api_response_data)
+
+
+# Creation of DFs per currency for UI purposes
+criteria_dataset_kc = create_df_cost_trend("kc", criteria_dict)
+criteria_dataset_eur = create_df_cost_trend("eur", criteria_dict)
+
+
+price_list = {
+
+    "koruna" : {
+        "Truck" : determin_square_price_per_rate(price_dict, criteria_dict, "kc", 'truck', usd_to_czk_rate),
+        "Train" : determin_square_price_per_rate(price_dict, criteria_dict, "kc", 'train', usd_to_czk_rate),
+        "Airplane" : determin_square_price_per_rate(price_dict, criteria_dict, "kc", 'airplane', usd_to_czk_rate)
+        },
+    "euro" : {
+        "Truck" : determin_square_price_per_rate(price_dict, criteria_dict, "eur", 'truck', usd_to_eur_rate),
+        "Train" : determin_square_price_per_rate(price_dict, criteria_dict, "eur", 'train', usd_to_eur_rate),
+        "Airplane" : determin_square_price_per_rate(price_dict, criteria_dict, "eur", 'airplane', usd_to_eur_rate)
+    }
+}
+
+# Lists and counts for UI widgets and Statistic charts   
+train_at, count_train_at = get_list_cities_if_transport_available(dataset_cities, 'at', 'train')
+train_cz, count_train_cz = get_list_cities_if_transport_available(dataset_cities, 'cz', 'train')
+train_de, count_train_de = get_list_cities_if_transport_available(dataset_cities, 'de', 'train')
+train_pl, count_train_pl = get_list_cities_if_transport_available(dataset_cities, 'pl', 'train')
+train_sk, count_train_sk = get_list_cities_if_transport_available(dataset_cities, 'sk', 'train')
+
+
+air_at, count_air_at = get_list_cities_if_transport_available(dataset_cities, 'at', 'air')
+air_cz, count_air_cz = get_list_cities_if_transport_available(dataset_cities, 'cz', 'air')
+air_de, count_air_de = get_list_cities_if_transport_available(dataset_cities, 'de', 'air')
+air_pl, count_air_pl = get_list_cities_if_transport_available(dataset_cities, 'pl', 'air')
+air_sk, count_air_sk = get_list_cities_if_transport_available(dataset_cities, 'sk', 'air')
+
+
+list_at_az, count_list_at = get_list_cities(dataset_cities, 'at')
+list_cz_az, count_list_cz = get_list_cities(dataset_cities, 'cz')
+list_de_az, count_list_de = get_list_cities(dataset_cities, 'de')
+list_pl_az, count_list_pl = get_list_cities(dataset_cities, 'pl')
+list_sk_az, count_list_sk = get_list_cities(dataset_cities, 'sk')
+
+
+# Note: in the current business logic Truck is available in every city as mode of transport
+count_truck_cz = count_list_cz
+count_truck_sk = count_list_sk
+count_truck_at = count_list_at
+count_truck_de = count_list_de
+count_truck_pl = count_list_pl
+
+# Difference between number of cities in each country(overall) minus number fo cities based on particular transport -> For Static charts
+diff_truck_cz = count_list_cz - count_truck_cz
+diff_train_cz = count_list_cz - count_train_cz
+diff_air_cz = count_list_cz - count_air_cz
+
+diff_truck_sk = count_list_sk - count_truck_sk
+diff_train_sk = count_list_sk - count_train_sk
+diff_air_sk = count_list_sk - count_air_sk
+
+diff_truck_at = count_list_at - count_truck_at
+diff_train_at = count_list_at - count_train_at
+diff_air_at = count_list_at - count_air_at
+
+diff_truck_de = count_list_de - count_truck_de
+diff_train_de = count_list_de - count_train_de
+diff_air_de = count_list_de - count_air_de
+
+diff_truck_pl = count_list_pl - count_truck_pl
+diff_train_pl = count_list_pl - count_train_pl
+diff_air_pl = count_list_pl - count_air_pl
+
+
+# DFs for pie charts 
+data_pie_truck_overall = pd.DataFrame({
+    "Number" : [
+        (count_truck_cz + count_truck_sk + count_truck_at + count_truck_de + count_truck_pl),
+        (diff_truck_cz + diff_truck_sk + diff_truck_at + diff_truck_de + diff_truck_pl )],
+    "Result" : ["Available", "Not available",]
+    })
+
+
+data_pie_truck_overall = pd.DataFrame({
+    "Number" : [
+        (count_truck_cz + count_truck_sk + count_truck_at + count_truck_de + count_truck_pl),
+        (diff_truck_cz + diff_truck_sk + diff_truck_at + diff_truck_de + diff_truck_pl )],
+    "Result" : ["Available", "Not available",]
+    })
+
+data_pie_train_overall = pd.DataFrame({
+    "Number" : [
+        (count_train_cz + count_train_sk + count_train_at + count_train_de + count_train_pl),
+        (diff_train_cz + diff_train_sk + diff_train_at + diff_train_de + diff_train_pl)],
+    "Result" : ["Available", "Not available",]
+    })
+
+
+data_pie_air_overall = pd.DataFrame({
+    "Number" : [
+        (count_air_cz + count_air_sk + count_air_at + count_air_de + count_air_pl),
+        (diff_air_cz + diff_air_sk + diff_air_at + diff_air_de + diff_air_pl)],
+    "Result" : ["Available", "Not available",]
+    })
+
+
+
+# ============================================================
+# ---------------- UI top part of the screen  ----------------
+# ============================================================
+
+st.write("# Transport calculation")
+
 ''
 ''
-st.write("""
-- API based 
-- The information comes from 🟣 [Zipcodebase.com](https://app.zipcodebase.com) and 🟢 [Zipcodestack.com](https://app.zipcodestack.com/)
-- **Note:** The function uses **two different external systems** sending the data -> sometimes there can be no match between them.
-""")
-
-
-# ================== UI FORM 1 ==========================
 ''
 ''
+
+st.image("Pictures/Function_7/F7_map_V2_v4.svg")
 ''
-st.write("#### 🟣 Get ZIP code(s) based on City:")
-
 ''
-with st.expander("How to use this form",
-    icon=":material/help:"
-    ):
-
-    st.write("- Provides **ZIP code number(s) for particular city**")
-
-    ''
-    st.write("""
-    - **Select country**
-    - **Type name** of the city -> **(:red[!])** Only **one city** per request
-    - Use **Submit button**
-    """)
+with st.expander("Delivery area - Central Europe", icon = ":material/pin_drop:"):
+    st.image("Pictures/Function_7/F7_map_central_europe.svg")
 
 
-    ''
-    ''
-    st.write("🟪 Few examples of cities you can use:")
-    st.write("""
-    - **CZ** - Czech Republic
-        - Prague
-        - Olomouc
-        - Zlin
-    """
-    )
+display_expander_city_overview(
+    create_df_transport_overview(dataset_cities, 'at'),
+    create_df_transport_overview(dataset_cities, 'cz'),
+    create_df_transport_overview(dataset_cities, 'de'),
+    create_df_transport_overview(dataset_cities, 'sk'),
+    create_df_transport_overview(dataset_cities, 'pl')
+)
 
-    st.write("""
-    - **SK** - Slovakia
-        - Kosice
-        - Trencin
-        - Banska Bystrica
-    """
-    )
+with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
 
-
-
-with st.form("List of ZIP codes"):
-    country = st.selectbox("Country:",
-        ["CZ", "SK"],
-        help="Select country, based on the City you are looking for. CZ - Czech Republic, SK - Slovakia",
-        ).casefold()
+    st.write(f"""
+        - Number of cities: **{count_list_cz + count_list_sk + count_list_at + count_list_de + count_list_pl}**
+        - **CZ** - Czech Republic: **{count_list_cz}**
+        - **SK** - Slovakia: **{count_list_sk}**
+        - **AT** - Austria: **{count_list_at}**
+        - **DE** - Germany: **{count_list_de}**
+        - **PL** - Poland: **{count_list_pl}**
+        """)
     
-    city = st.text_input("City",
-        help="Only 1 city is allowed",
-        ).capitalize()
+    ''
+    st.write("Charts show figures/ratio of **how many cities is available** (:green[**GREEN**]) or not available **based on Transport type**.")
+    ''
 
-    submit_button_1 = st.form_submit_button(
-        label="Submit",
-        use_container_width=True,
-        icon = ":material/apps:",
+
+    fig_pie_truck_overall = create_pie_chart(data_pie_truck_overall, "Truck")
+    fig_pie_train_overall = create_pie_chart(data_pie_train_overall, "Train")
+    fig_pie_air_overall = create_pie_chart(data_pie_air_overall, "Airplane")
+
+
+
+
+    # https://plotly.streamlit.app/Bar_Charts
+
+    # -----  Chart ---- CZ and SK ---- 
+    x_cz_sk = [
+        ["CZ", "CZ", "CZ", "SK", "SK", "SK", "AT", "AT", "AT", "DE", "DE", "DE", "PL", "PL", "PL"],
+        ['Truck','Train', 'Air', 'Truck','Train', 'Air', 'Truck','Train', 'Air', 'Truck','Train', 'Air', 'Truck','Train', 'Air']
+    ]
+
+    y_available = [count_truck_cz,count_train_cz,count_air_cz,count_truck_sk,count_train_sk,count_air_sk, count_truck_at,count_train_at,count_air_at, count_truck_de,count_train_de,count_air_de, count_truck_pl,count_train_pl,count_air_pl ]
+    y_not_available = [diff_truck_cz,diff_train_cz,diff_air_cz,diff_truck_sk,diff_train_sk,diff_air_sk, diff_truck_at,diff_train_at,diff_air_at, diff_truck_de,diff_train_de,diff_air_de, diff_truck_pl,diff_train_pl,diff_air_pl]
+
+
+    fig_cz_sk = go.Figure()
+    fig_cz_sk.add_bar(x=x_cz_sk,y=y_available, name= "Available", text = y_available,
+        marker=dict(
+            color='rgba(0, 105, 0, 0.8)',
+            # line=dict(color='rgba(7, 7, 7, 1)', width=1)
+        )
+    )
+    
+    fig_cz_sk.add_bar(x=x_cz_sk,y=y_not_available, name= "Not available", text = y_not_available,
+        marker=dict(
+            color='rgba(175, 175, 175, 0.66)',
+            # line=dict(color='rgba(7, 7, 7, 1)', width=1)
+        )
+    )
+
+    fig_cz_sk.update_layout(barmode="relative")
+    fig_cz_sk.update_layout(title = "Transport type availability - Country split")
+
+
+    # -----  Chart ----  Overall ---- 
+    x_overall = ['Truck','Train', 'Airplane']
+
+    y_available_overall = [(count_truck_cz + count_truck_sk + count_truck_at + count_truck_de + count_truck_pl), (count_train_cz + count_train_sk + count_train_at + count_train_de + count_train_pl),(count_air_cz + count_air_sk + count_air_at + count_air_de + count_air_pl)]
+    y_not_availab_overall = [(diff_truck_cz + diff_truck_sk + diff_truck_at + diff_truck_de + diff_truck_pl),(diff_train_cz + diff_train_sk + diff_train_at + diff_train_de + diff_train_pl), (diff_air_cz + diff_air_sk + diff_air_at + diff_air_de + diff_air_pl)]
+
+    fig_overall = go.Figure()
+    fig_overall.add_bar(x=x_overall,y=y_available_overall, name= "Available", text = y_available_overall,
+        marker=dict(
+            color='rgba(0, 105, 0, 0.8)',
+            # line=dict(color='rgba(7, 7, 7, 1)', width=1)
+        )
+    )
+    fig_overall.add_bar(x=x_overall,y=y_not_availab_overall, name= "Not available", text = y_not_availab_overall,
+        marker=dict(
+            color='rgba(175, 175, 175, 0.66)',
+            # line=dict(color='rgba(7, 7, 7, 1)', width=1)
+        )
+    )
+
+    fig_overall.update_layout(barmode="relative")
+    fig_overall.update_layout(title = "Transport type availability")
+
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
+        "Bar - Split",
+        "Bar - Overall",
+        "% Overall",
+        "% CZ",
+        "% SK",
+        "% AT",
+        "% DE",
+        "% PL"
+        ])
+
+
+    # Changed deprication  - Here I defined the config based on new rules
+    config_chart = {
+       "template": "streamlit" 
+    }
+
+    with tab1:
+        with st.container(border=True):
+            st.plotly_chart(fig_cz_sk, config=config_chart)
+                       
+    with tab2:
+        with st.container(border=True):
+            st.plotly_chart(fig_overall, config=config_chart)
+
+    with tab3:
+        with st.container(border=True):
+            col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
+            col_stat_1.plotly_chart(fig_pie_truck_overall, config=config_chart)
+            col_stat_2.plotly_chart(fig_pie_train_overall, config=config_chart)
+            col_stat_3.plotly_chart(fig_pie_air_overall, config=config_chart)
+            
+    # CZ
+    with tab4:
+        with st.container(border=True):
+            col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
+            col_stat_1.plotly_chart(build_pie_chart(list_cz_az, list_cz_az, "CZ Truck"), config=config_chart)
+            col_stat_2.plotly_chart(build_pie_chart(list_cz_az, train_cz, "CZ Train"), config=config_chart)
+            col_stat_3.plotly_chart(build_pie_chart(list_cz_az, air_cz, "CZ Airplane"), config=config_chart)
+
+    # SK
+    with tab5:
+        with st.container(border=True):
+            col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
+            col_stat_1.plotly_chart(build_pie_chart(list_sk_az, list_sk_az, "SK Truck"), config=config_chart)
+            col_stat_2.plotly_chart(build_pie_chart(list_sk_az, train_sk, "SK Train"), config=config_chart)
+            col_stat_3.plotly_chart(build_pie_chart(list_sk_az, air_sk, "SK Airplane"))
+
+    # AT
+    with tab6:
+        with st.container(border=True):
+            col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
+            col_stat_1.plotly_chart(build_pie_chart(list_at_az, list_at_az, "AT Truck"), config=config_chart)
+            col_stat_2.plotly_chart(build_pie_chart(list_at_az, train_at, "AT Train"), config=config_chart)
+            col_stat_3.plotly_chart(build_pie_chart(list_at_az, air_at, "AT Airplane"), config=config_chart)
+
+    # DE
+    with tab7:
+        with st.container(border=True):
+            col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
+            col_stat_1.plotly_chart(build_pie_chart(list_de_az, list_de_az, "DE Truck"), config=config_chart)
+            col_stat_2.plotly_chart(build_pie_chart(list_de_az, train_de, "DE Train"), config=config_chart)
+            col_stat_3.plotly_chart(build_pie_chart(list_de_az, air_de, "DE Airplane"), config=config_chart)
+
+    # PL
+    with tab8:
+        with st.container(border=True):
+            col_stat_1, col_stat_2, col_stat_3 = st.columns(3, gap = "large")
+            col_stat_1.plotly_chart(build_pie_chart(list_pl_az, list_pl_az, "PL Truck"), config=config_chart)
+            col_stat_2.plotly_chart(build_pie_chart(list_pl_az, train_pl, "PL Train"), config=config_chart)
+            col_stat_3.plotly_chart(build_pie_chart(list_pl_az, air_pl, "PL Airplane"), config=config_chart) # Changed deprication
+
+           
+display_expander_currency_and_rate(
+    usd_to_czk_rate,
+    usd_to_eur_rate,
+    criteria_dataset_kc,
+    criteria_dataset_eur,
+    create_df_default_costs(price_dict, list_transport, "kc", "Koruna"),
+    create_df_default_costs(price_dict, list_transport, "eur", "euro")
+)
+
+# UI Filters 
+''
+''
+''
+city_options = {
+    "cz": list_cz_az,
+    "sk": list_sk_az,
+    "at": list_at_az,
+    "de": list_de_az,
+    "pl": list_pl_az,
+}
+
+col1, col2 = st.columns(2, gap="large")
+
+from_country, from_city, country_code_from = ui_country_selector(
+    city_options,
+    col1,
+    "Country from:",
+    "key_select_box_from"
+)
+
+to_country, to_city, country_code_to = ui_country_selector(
+    city_options,
+    col2,
+    "Country to:",
+    "key_select_box_to"
+)
+
+
+currency = get_currency_option(from_country,to_country)
+
+# UI
+''
+''
+''
+selected_currency = st.radio(
+    "Currency:",
+    currency
+)
+
+
+transport_options_list = get_list_available_transport_based_on_selected_cities(dataset_cities, from_country, to_country, from_city,to_city)
+
+# UI
+''
+selected_transport = st.radio("Transport type:", transport_options_list)
+
+
+
+# Calculation of price per square based on selected transport -> influencing UI
+price_square = get_price_per_square(price_list, selected_currency,selected_transport)
+
+price_square_tab2_truck = get_price_per_square(price_list, selected_currency, 'Truck')
+price_square_tab2_train = get_price_per_square(price_list, selected_currency, 'Train')
+price_square_tab2_air = get_price_per_square(price_list, selected_currency, 'Airplane')
+
+
+
+''
+display_expander_transport_type_comparison()
+
+display_expander_truck()
+
+display_expander_train(
+  create_df_particular_transport_overview(train_at, "City AT"),
+  create_df_particular_transport_overview(train_cz, "City CZ"),
+  create_df_particular_transport_overview(train_de, "City DE"),
+  create_df_particular_transport_overview(train_sk, "City SK"),
+  create_df_particular_transport_overview(train_pl, "City PL"),
+)
+
+display_expander_air(
+  create_df_particular_transport_overview(air_at, "City AT"),
+  create_df_particular_transport_overview(air_cz, "City CZ"),
+  create_df_particular_transport_overview(air_de, "City DE"),
+  create_df_particular_transport_overview(air_sk, "City SK"),
+  create_df_particular_transport_overview(air_pl, "City PL"),
+)
+
+
+# Radio - urgency input
+urgency_offer = ['Express', 'Standard', 'Slow']
+
+''
+''
+urgency = st.radio("Delivery service:", urgency_offer, index=1, captions=[
+        "Fast administration process -> delivery as soon as possible",
+        "Within 2-3 days cargo should be ready to go",
+        "5-10 days to get cargo ready to go ",
+        ],)
+
+''
+''
+display_expander_sla(create_df_extra_time(sla_dict, list_transport))
+
+
+if urgency  == 'Express' or urgency == 'Slow':
+    price_square = get_price_changed_per_service_type(sla_dict, price_square, selected_transport, urgency)
+
+    # TAB 2 values
+    price_square_tab2_truck = get_price_changed_per_service_type(sla_dict, price_square_tab2_truck, 'Truck', urgency)
+    price_square_tab2_train = get_price_changed_per_service_type(sla_dict, price_square_tab2_train, 'Train', urgency)
+    price_square_tab2_air = get_price_changed_per_service_type(sla_dict, price_square_tab2_air, 'Airplane', urgency) 
+
+
+# IMPORTANT: Airplane has a different way of calculating price per square
+if selected_transport == 'Airplane':
+    price_square = price_square / UNIT_DISTANCE
+
+
+# 09-Sep-2025 - tab2 final - the logic upper "if air" here to happen no matter what transport type selected  
+price_square_tab2_air = price_square_tab2_air / UNIT_DISTANCE
+
+
+
+# Get values of extra time needed, accrodingly to selected transport mode + for all transports for TAB 2 logic
+extra_time = get_extra_time_per_service_sla(sla_dict, selected_transport, urgency)
+
+extra_time_tab2_truck = get_extra_time_per_service_sla(sla_dict, 'Truck', urgency)
+extra_time_tab2_train = get_extra_time_per_service_sla(sla_dict, 'Train', urgency)
+extra_time_tab2_air = get_extra_time_per_service_sla(sla_dict, 'Airplane', urgency)
+
+
+
+# Build of the extra time string for UI purpose
+if urgency == 'Express' or urgency == 'Standard':
+    
+    str_extra_time = str(extra_time)
+    extra_time_vizualization = (str_extra_time + " " + "hours")
+
+
+if urgency == 'Slow':
+    extra_time_callc = extra_time / 24
+    extra_time_callc = int(extra_time_callc)
+    extra_time_callc = str(extra_time_callc)
+    extra_time_vizualization = (extra_time_callc + " " + "days")
+
+
+
+''
+st.write(f" - **{selected_transport}** - **{urgency}** -> the cargo can be on its way in **{extra_time_vizualization}**.")
+
+if selected_transport == 'Airplane':
+    st.write(f" - Unit price for distance calculation: **{(price_square * UNIT_DISTANCE):,.2f}** {selected_currency}")
+
+
+else:
+    st.write(f" - Unit price for distance calculation: **{price_square:,.2f} {selected_currency}**")
+
+
+# Expanders
+''
+display_expander_unit_price()
+
+''
+''
+st.write("**Extra services:**")
+
+col_ch_1, col_ch_2, col_ch_3 = st.columns(3)
+
+check_isurance = col_ch_1.checkbox("Insurance extra")
+
+check_fragile = col_ch_2.checkbox("Fragile goods")
+
+if selected_transport == 'Airplane':
+    check_danger = col_ch_3.checkbox("Danger goods", disabled= True)
+    col_ch_3.caption("*Not allowed in aircraft")
+
+else:
+    check_danger = col_ch_3.checkbox("Danger goods")
+
+
+# Determintation of value/option
+if selected_currency == 'koruna':
+    step_defined = 50_000
+    min_value = 50_000
+    max_value = 25_000_000
+    help_info = ("""
+        - Type a value of your shipment. It will be used for calculation. 
+        - Min value 50 000 koruna
+        - Max value 25 000 000 koruna
+        """)
+
+
+if selected_currency == 'euro':
+    step_defined = 10_000
+    min_value = 5_000
+    max_value = 1_000_000
+    help_info = ("""
+        - Type a value of your shipment. It will be used for calculation. 
+        - Min value: 5 000 euro
+        - Max value: 1 000 000 euro
+        """)
+
+
+# Extra services
+if check_isurance or check_fragile or check_danger is True:
+    ''
+    shipment_value = st.number_input(
+        label=f"Shipment value - currency: **{selected_currency}**",
+        value=None,
+        placeholder="Type shipment value",
+        min_value= min_value,
+        max_value= max_value,
+        # step = step_defined,
+        help = help_info
         )
     
-    # The 'if' is nested -> to keep results in the form box
-    if submit_button_1: 
-        orchestration_zipcode_based_on_city_search(city, country)
+    if shipment_value == None:
+        st.warning("Please insert shipment value")
 
+    else:
+        formated_shipment_value_str = ui_input_formatter(shipment_value)
+        st.write(f"- Inserted value: **{formated_shipment_value_str}** {selected_currency}.")
 
+        money_insurance = get_prices_extra_services(extra_service_dict, shipment_value, check_isurance, 'insurance')
+        money_fragile = get_prices_extra_services(extra_service_dict, shipment_value, check_fragile, 'fragile')
+        money_danger  = get_prices_extra_services(extra_service_dict, shipment_value, check_danger, 'danger')
 
+        # Bug fix 13-Aug-25 - this line prevents case when Truck/Train selected first -> danger goods checked -> change to 'Airplane' so the checked stays (even if the check box is locked) -> app used to calculate the danger value also for Airplane. Fix to make variable always 0
+        if selected_transport == 'Airplane':
+            money_danger = 0
 
-# ================== UI FORM 2 ==========================
+else:
+    shipment_value = None
+
+    # Creating new variables as 0 
+    money_insurance = 0
+    money_fragile = 0
+    money_danger = 0
+
+# UI
+''
+''
+display_expander_extra_services(extra_service_dict)
+
+display_expander_fragile_goods()
+
+display_expander_danger_goods()
+
+# UI
+''
+''
+st.write("**Delivery specification - Door-to-Door:**")
+
+st.write(f"From city ({from_city} - {country_code_from}):")
+radio_dtd_from= ui_door_to_door_selector(dtd_options_dict, selected_transport, "radio_dtd_1")
+
+''
+st.write(f"To city ({to_city} - {country_code_to}):")
+radio_dtd_to = ui_door_to_door_selector(dtd_options_dict, selected_transport, "radio_dtd_2")
+    
+# UI
+''
+display_expander_door_to_door()
 
 ''
 ''
-''
-st.write("#### 🟢 Get city based on ZIP code:")
+st.write("**Customer needs to approve the transport offer till:**")
+agreed_till, agreed_till_str = ui_transport_offer()
+
+st.caption("2 days set as default. Can be changed accordingly to customer's need.")
+
+
+# ============================================================
+# --------------- UI - Submit button -> trigger --------------
+# ============================================================
 
 ''
-with st.expander("How to use this form",
-    icon=":material/help:"
-    ):
+st.write("------")
+if st.button("Submit", width="stretch", icon=":material/apps:"):
 
-    st.write("""- Provides **city, state/region** based on ZIP code(s)""")
+    # Validation of user inputs
+    input_validation(from_city,to_city)
 
-    ''
-    st.write("""
-    - **Select country**
-    - Type **ZIP code**
-    - You can also search for **multiple ZIP codes per request** - limitation to **10 ZIP codes per request maximum**
-    - **Expected format**: ZIPCODE, ZIPCODE, ZIPCODE,...
-    - Use coma **,** as separator
-    """)
+    input_validation_shipment_value(shipment_value, check_isurance, check_fragile, check_danger)
 
-    st.image("Pictures/Function_6/F6_menu_post_multiple.svg")
+    # Get coordinates of selected cities -> create dict
+    from_big_r, from_big_c = get_coordinates(dataset_cities, from_country, from_city, 'big')
+    from_small_r, from_small_c = get_coordinates(dataset_cities, from_country, from_city, 'small')
 
-    ''
-    ''
-    st.write("🟩 Few examples of ZIP codes you can use:")
+    to_big_r, to_big_c = get_coordinates(dataset_cities, to_country, to_city, 'big')
+    to_small_r, to_small_c = get_coordinates(dataset_cities, to_country, to_city, 'small')
 
-    st.write("""
-    - **CZ** - Czech Republic
-        - 3 ZIP codes
-        - 110 00,25 163,158 00
-    """
-    )
 
-    st.write("""
-    - **SK** - Slovakia
-        - 3 ZIP codes
-        - 013 41,013 06,811 08 
-    """
-    )
+    coordinates = {
+        "from": {
+            "big_r": from_big_r,
+            "big_c": from_big_c,
+            "small_r": from_small_r,
+            "small_c": from_small_c
+        },
+        "to": {
+            "big_r": to_big_r,
+            "big_c": to_big_c,
+            "small_r": to_small_r,
+            "small_c": to_small_c
+        }
+    }
 
-with st.expander("API limitation",
-    icon=":material/sync_problem:"
-    ):
+ 
+    # Calculation of distance and price based on transport type
+    if selected_transport == 'Truck' or selected_transport == 'Train':
+        distance, price, result = L0_is_in_correction_list(from_city, to_city, correction_list_data, price_square, UNIT_DISTANCE)
 
-    st.write("""
-    - This API allows **only 300** requests per month
-    """
-    )
+        if result is not True:
+            price, distance = get_calculation_price_distance(coordinates, price_square, UNIT_DISTANCE)
+
+
+    if selected_transport == 'Airplane':
+        price, distance = get_calculation_price_distance_air(from_small_r, to_small_r,from_small_c, to_small_c, price_square)
+
+
+    # Calculation time journey
+    time_journey  = get_calculation_delivery_time(distance,selected_transport, TRANSPORT_SPEED)
+
+    # DTD calculation based on transport type
+    if selected_transport == 'Truck':
+        time_dtd_from = get_door_to_door_time_truck(dtd_calculation_values_dict, radio_dtd_from)
+        time_dtd_to = get_door_to_door_time_truck(dtd_calculation_values_dict, radio_dtd_to)
+
+        time_dtd = time_dtd_from + time_dtd_to
+
+        time_journy_incl_dtd = time_journey + time_dtd_from + time_dtd_to
+
+        # Manadatorz breask fro Truck driver
+        time_break = get_calculation_time_break(time_journy_incl_dtd)
+
+
+        # For DB purposes to cover if scenario 'Train' and 'Air' to have values/variables for insert
+        transfer_time_from = 0.00
+        transfer_time_to = 0.00
+        truck_time_dtd_air_train_from = 0.00
+        truck_time_dtd_air_train_to = 0.00
+
+
+    if selected_transport == 'Train' or selected_transport == 'Airplane':
+        time_dtd_from, transfer_time_from, truck_time_dtd_air_train_from = get_door_to_door_time_train_airplane(dtd_calculation_values_dict, radio_dtd_from)
+        time_dtd_to, transfer_time_to, truck_time_dtd_air_train_to  = get_door_to_door_time_train_airplane(dtd_calculation_values_dict, radio_dtd_to)
+
+
+        time_dtd = time_dtd_from + time_dtd_to
+    
+        time_journy_incl_dtd = time_journey + time_dtd_from + time_dtd_to
+
+        # For DB purposes to cover if scenario 'Truck' to have values/variables for insert
+        time_break = 0.00
+
+
+    # # DTD - distance and price
+    door_from_result, from_city_extra_doortdoor = get_door_to_door_cost_and_distance(dtd_calculation_values_dict, radio_dtd_from, selected_currency, selected_transport)
+    door_to_result, to_city_extra_doortdoor = get_door_to_door_cost_and_distance(dtd_calculation_values_dict, radio_dtd_to, selected_currency, selected_transport)
+
+
+
+
+    # ============================================================
+    # --------------- Calculations for TAB 2 logic ---------------
+    # ============================================================
+
+
+    # Calling all the functions with Truck, Train, Air inputs
+
+    # TAB 2 - Truck
+    tab2_distance_truck, tab2_price_truck, result_correction_list_tab2_truck = L0_is_in_correction_list(from_city, to_city, correction_list_data, price_square_tab2_truck, UNIT_DISTANCE)
+
+    if result_correction_list_tab2_truck == False:
+        tab2_price_truck, tab2_distance_truck = get_calculation_price_distance(coordinates, price_square_tab2_truck, UNIT_DISTANCE)
+
+    # TAB 2 - Train
+    tab2_distance_train, tab2_price_train, result_correction_list_tab2_train = L0_is_in_correction_list(from_city, to_city, correction_list_data, price_square_tab2_train, UNIT_DISTANCE)
+
+    if result_correction_list_tab2_train == False:
+        tab2_price_train, tab2_distance_train = get_calculation_price_distance(coordinates, price_square_tab2_train, UNIT_DISTANCE)
+
+
+    # TAB 2 - Airplane
+    tab2_price_air, tab2_distance_air = get_calculation_price_distance_air(from_small_r, to_small_r,from_small_c, to_small_c, price_square_tab2_air)
+
     
 
-# ================== API 2 - USER SCREEN  ==========================
+    tab2_time_journey_truck  = get_calculation_delivery_time(tab2_distance_truck, 'Truck', TRANSPORT_SPEED)
+    tab2_time_journey_train  = get_calculation_delivery_time(tab2_distance_train, 'Train', TRANSPORT_SPEED)
+    tab2_time_journey_air  = get_calculation_delivery_time(tab2_distance_air, 'Airplane', TRANSPORT_SPEED)
 
-''
-with st.form("Get city based on ZIP code(s)"):
-    country_code = st.selectbox("Country:",
-        ["CZ", "SK"],
-        help="Select country you assume that your ZIP code is from. CZ - Czech Republic, SK - Slovakia",
-        )
     
-    zipcode = st.text_input("ZIP code",
-        help = "You can put 1 or more ZIP codes. If more the format is: ZIPcode,ZIPcode,ZIPcode... To do not overwhelm the API, put MAX 10 ZIP codes in one search."
-        )
+    # Truck DTD  and Time break 
+    tab2_time_dtd_from_truck = get_door_to_door_time_truck(dtd_calculation_values_dict, radio_dtd_from)
+    tab2_time_dtd_to_truck = get_door_to_door_time_truck(dtd_calculation_values_dict, radio_dtd_to)
+
+    tab2_time_dtd_truck = tab2_time_dtd_from_truck + tab2_time_dtd_to_truck
+
+    tab2_time_journy_incl_dtd_truck = tab2_time_journey_truck + tab2_time_dtd_from_truck + tab2_time_dtd_to_truck
+
+    tab2_time_break = get_calculation_time_break(tab2_time_journy_incl_dtd_truck)
+
+
+    # Train DTD
+    tab2_time_dtd_from_train, tab2_transfer_time_from_train, tab2_truck_time_dtd_from_train = get_door_to_door_time_train_airplane(dtd_calculation_values_dict, radio_dtd_from)
+    tab2_time_dtd_to_train, tab2_transfer_time_to_train, tab2_truck_time_dtd_to_train = get_door_to_door_time_train_airplane(dtd_calculation_values_dict, radio_dtd_to)
+
+
+    tab2_time_dtd_train = tab2_time_dtd_from_train + tab2_time_dtd_to_train
+
+    tab2_time_journy_incl_dtd_train = tab2_time_journey_train + tab2_time_dtd_train
+
+
+    # Air DTD
+    tab2_time_dtd_from_air, tab2_transfer_time_from_air, tab2_truck_time_dtd_from_air = get_door_to_door_time_train_airplane(dtd_calculation_values_dict, radio_dtd_from)
+    tab2_time_dtd_to_air, tab2_transfer_time_to_air, tab2_truck_time_dtd_to_air = get_door_to_door_time_train_airplane(dtd_calculation_values_dict, radio_dtd_to)
+
+    tab2_time_dtd_air = tab2_time_dtd_from_air + tab2_time_dtd_to_air
+
+    tab2_time_journy_incl_dtd_air = tab2_time_journey_air + tab2_time_dtd_air
+
+
+
+    # DTD price/costs
+    # Note: the function is designed to return tuple (2 variables) ->  Return price & This *_ is unpacking to ignor the rest
+    tab2_door_to_result_truck, *_ = get_door_to_door_cost_and_distance(dtd_calculation_values_dict, radio_dtd_to, selected_currency, 'Truck')
+    tab2_door_to_result_train, *_ = get_door_to_door_cost_and_distance(dtd_calculation_values_dict, radio_dtd_to, selected_currency, 'Train')
+    tab2_door_to_result_air, *_ = get_door_to_door_cost_and_distance(dtd_calculation_values_dict, radio_dtd_to, selected_currency, 'Airplane')
+
+    tab2_door_from_result_truck, *_ = get_door_to_door_cost_and_distance(dtd_calculation_values_dict, radio_dtd_from, selected_currency, 'Truck')
+    tab2_door_from_result_train, *_ = get_door_to_door_cost_and_distance(dtd_calculation_values_dict, radio_dtd_from, selected_currency, 'Train')
+    tab2_door_from_result_air, *_ = get_door_to_door_cost_and_distance(dtd_calculation_values_dict, radio_dtd_from, selected_currency, 'Airplane')
+
+
+    # DB connection -> Engine + getting offer number 
+    db_engine = db_connection(function_id="F7")
+
+
+    # DB Generate offer number. Next available in DB + DB to block this offer number to prevent from concurrency
+    offer_number_generated = create_offer_number(db_engine)
     
-    submit_button_api_2 = st.form_submit_button(
-        label="Submit",
-        use_container_width=True,
-        icon = ":material/apps:",
+
+    # Finalization of inputs for TAB1 UI
+    if selected_transport == 'Truck':
+        time_physical_move = time_journey + time_break + time_dtd
+        overall_time = time_journey + time_break + extra_time + time_dtd
+
+    elif selected_transport in ('Train', 'Airplane'):
+        time_physical_move = time_journey + time_dtd
+        overall_time = time_journey + extra_time + time_dtd
+
+    
+    delivery_dt, delivery_dt_formated, date_time_europe, europe_date_part, europe_time_part, customer_approve_date, customer_approve_time, delivery_at_utc, approve_till_utc, created_utc, transport_start_utc = delivery_date_time(overall_time,agreed_till, time_physical_move, True)
+
+    cet_cest_delivery = determin_cet_cest(delivery_dt)
+    cet_cest_now = determin_cet_cest(date_time_europe)
+
+    final_price = price + money_insurance + money_fragile + money_danger + door_to_result + door_from_result
+
+    # Creation of Series for UI function
+    row_offer = pd.Series({
+        "created_date": europe_date_part, 
+        "created_time": europe_time_part,
+        "need_approve_date": customer_approve_date,
+        "need_approve_time": customer_approve_time,
+        "need_approve_days": mapping_agreed_till(agreed_till_str), # INT
+        "need_approve_days_str" : agreed_till_str,
+        "need_approve_hours": agreed_till,
+        "transport": selected_transport,
+        "service": urgency,
+        "time_zone": determin_cet_cest(date_time_europe),
+        "time_overall": overall_time,
+        "expected_delivery": delivery_dt_formated,
+        "final_price": final_price,
+        "currency": selected_currency
+    })
+
+
+    row_delivery = pd.Series({
+        "from_country": country_code_from,
+        "from_city": from_city,
+        "from_dtd": from_city_extra_doortdoor,
+        "to_country": country_code_to,
+        "to_city": to_city ,
+        "to_dtd": to_city_extra_doortdoor,
+        "distance_length": distance,
+        "distance_time": time_journey,
+        "dtd_time": time_dtd,
+    })
+
+    row_costs = pd.Series({
+        "distance_cost": price,
+        "insurance": money_insurance, 
+        "fragile": money_fragile,
+        "danger": money_danger,
+        "dtd_from": door_from_result, 
+        "dtd_to": door_to_result,
+    })
+
+    row_extra_steps_time = pd.Series({
+        "truck_breaks": time_break,
+        "shipment_transfer_dtd_from": transfer_time_from,
+        "shipment_transfer_dtd_to": transfer_time_to,
+        "dtd_truck_if_not_truck_main": truck_time_dtd_air_train_from + truck_time_dtd_air_train_to, 
+    })
+
+    row_sla = pd.Series({
+        "time_sla": extra_time,
+    })
+
+
+    # ============================================================
+    # ------ UI visualization & additional calculations ----------
+    # ============================================================
+    ''
+    ''
+    st.write("##### Calculated values:")
+    '' 
+
+
+    tab_final_1, tab_final_2,tab_final_3 = st.tabs([
+        f"Offer - {selected_transport}",
+        "Analytics & Other transports",
+        "Go Green - CO₂"
+    ])
+
+
+    # Get UI image for the particular offer 
+    ui_image_path = provide_ui_image_path(selected_transport, from_city_extra_doortdoor, to_city_extra_doortdoor, time_break)
+    ui_color_coding_image_path = provide_ui_color_coding_image(selected_transport, from_city_extra_doortdoor, to_city_extra_doortdoor, time_break)
+
+    # UI transport workflow image
+    ''
+    with tab_final_1:
+        display_offer_visualization_ui(
+            "F7",
+            provide_ui_image_path(selected_transport, from_city_extra_doortdoor, to_city_extra_doortdoor, time_break),
+            provide_ui_color_coding_image(selected_transport, from_city_extra_doortdoor, to_city_extra_doortdoor, time_break),
+            offer_number_generated,
+            row_offer,
+            row_delivery,
+            row_costs,
+            row_extra_steps_time,
+            row_sla
+            )
+
+
+
+    # TAB 2
+    with tab_final_2:
+
+        transport_options_list_str = ', '.join(transport_options_list)
+
+        ''
+        st.write(f"""
+            - Transport: **{from_city} ({country_code_from}) - {to_city} ({country_code_to})** 
+            - Available transport options: **{transport_options_list_str}**""")
+
+        if len(transport_options_list) == 1:
+            st.warning(f"For {from_city} ({country_code_from}) - {to_city} ({country_code_to}) there is **only {transport_options_list_str}** available -> **no other transport option**")
+
+        with st.expander("Color-coding charts", icon= ":material/help:"):
+            st.image("Pictures/Function_7/F7_tab2_colorcoding.svg")
+            pass
+
+
+        # Truck - current logic has Truck available in every city -> no need to call function
+        tab2_time_journey_truck_rounded = round(tab2_time_journey_truck, ROUND_TO)
+        tab2_time_journey_train_rounded = format_transport_value(transport_options_list, 'Train', tab2_time_journey_train, ROUND_TO)
+        tab2_time_journey_air_rounded = format_transport_value(transport_options_list, 'Airplane', tab2_time_journey_air, ROUND_TO)
+
+         # Truck - current logic has Truck available in every city -> no need to call function
+        tab2_price_truck_rounded = round(tab2_price_truck, ROUND_TO)
+        tab2_price_train_rounded = format_transport_value(transport_options_list, 'Train', tab2_price_train, ROUND_TO)
+        tab2_price_air_rounded = format_transport_value(transport_options_list, 'Airplane', tab2_price_air, ROUND_TO)
+
+
+        df_tab2_transport = pd.DataFrame({
+            "Transport type" : ['Truck','Train','Airplane'],
+
+            "Distance (km)" : [
+                # Truck - current logic has truck available in every city -> no need to call function
+                round(tab2_distance_truck, ROUND_TO),
+                # Train
+                format_transport_value(transport_options_list, 'Train', tab2_distance_train, ROUND_TO),
+                # Airplane
+                format_transport_value(transport_options_list, 'Airplane', tab2_distance_air, ROUND_TO)
+            ],
+
+            "Time (hours)" : [tab2_time_journey_truck_rounded, tab2_time_journey_train_rounded, tab2_time_journey_air_rounded],
+
+            f"Price ({selected_currency})" : [tab2_price_truck_rounded, tab2_price_train_rounded, tab2_price_air_rounded],
+        })
+
+
+        df_tab2_transport.drop(df_tab2_transport.loc[df_tab2_transport['Time (hours)']== 'n/a'].index, inplace=True)
+
+        df_tab2_transport_styled = df_tab2_transport.style.format({
+            "Distance (km)": "{:,.2f}",
+            "Time (hours)" : "{:.2f}",
+            f"Price ({selected_currency})": "{:,.2f}",
+        })
+
+
+       
+        tab2_door_result_truck = tab2_door_from_result_truck + tab2_door_to_result_truck
+        tab2_door_result_train = tab2_door_from_result_train + tab2_door_to_result_train
+        tab2_door_result_air = tab2_door_from_result_air + tab2_door_to_result_air
+
+        tab2_door_result_train = format_transport_value(transport_options_list, 'Train', tab2_door_result_train, ROUND_TO)
+        tab2_door_result_air = format_transport_value(transport_options_list, 'Airplane', tab2_door_result_air, ROUND_TO)
+
+
+        df_tab2_dtd = pd.DataFrame({
+            "Transport type" : ['Truck','Train','Airplane'],
+
+            "Time (hours)**" : [
+                # Truck - current logic has truck available in every city -> no need to call function
+                tab2_time_dtd_truck,
+
+                # Train
+                format_transport_value(transport_options_list, 'Train', tab2_time_dtd_train, ROUND_TO),
+
+                # Airplane
+                format_transport_value(transport_options_list, 'Airplane', tab2_time_dtd_air, ROUND_TO)
+                ],
+
+
+            f"Price ({selected_currency})" : [tab2_door_result_truck, tab2_door_result_train, tab2_door_result_air],
+        })
+
+        df_tab2_dtd.drop(df_tab2_dtd.loc[df_tab2_dtd['Time (hours)**']== 'n/a'].index, inplace=True)
+
+        df_tab2_dtd = df_tab2_dtd.style.format({
+            "Time (hours)**" : "{:.2f}",
+            f"Price ({selected_currency})": "{:,.2f}",
+        })
+
+
+
+        #TAB 2 time
+        tab2_overall_time_truck = tab2_time_journey_truck_rounded + tab2_time_break + extra_time_tab2_truck + tab2_time_dtd_truck
+        tab2_overall_time_train = tab2_time_journey_train + extra_time_tab2_train + tab2_time_dtd_train
+        tab2_overall_time_air = tab2_time_journey_air + extra_time_tab2_air + tab2_time_dtd_air
+
+
+        tab2_overall_time_truck_rounded = round(tab2_overall_time_truck, ROUND_TO)
+        tab2_overall_time_train_rounded = format_transport_value(transport_options_list, 'Train', tab2_overall_time_train, ROUND_TO)
+        tab2_overall_time_air_rounded = format_transport_value(transport_options_list, 'Airplane', tab2_overall_time_air, ROUND_TO)
+
+
+
+        # TAB 2 price
+        tab2_price_overall_truck = round(tab2_price_truck + money_insurance + money_fragile + money_danger + tab2_door_from_result_truck + tab2_door_to_result_truck, ROUND_TO)
+        tab2_price_overall_train = round(tab2_price_train + money_insurance + money_fragile + money_danger + tab2_door_from_result_train + tab2_door_to_result_train, ROUND_TO)
+
+        # 10-Sep-25: Bug fix - air does NOT include '+ money_danger'because it is not allowed to trnasport dnager goods in airplane. Bug detail: this prevents from case when user selects 'danger goods - True' when having Truck or Train and then switch to Airplane (bug was also counting with the variable which is not following business logic)
+        tab2_price_overall_air = round(tab2_price_air + money_insurance + money_fragile + tab2_door_from_result_air + tab2_door_to_result_air, ROUND_TO)
+
+
+        tab2_price_overall_train = format_transport_value(transport_options_list, 'Train', tab2_price_overall_train, ROUND_TO)
+        tab2_price_overall_air = format_transport_value(transport_options_list, 'Airplane', tab2_price_overall_air, ROUND_TO)
+
+
+
+        # ============================================================
+        # -------------- Calculations for TAB 2 charts ---------------
+        # ============================================================
+
+        # Data -> Variables for charts -> in case that transport type not available for combination of cities -> make the variable as 0. 
+
+        # 1. Transfer time - From A   - Train, Air
+        tab2_transfer_time_from_train_adj_r0 = format_transport_value_using_zero(transport_options_list, 'Train', tab2_transfer_time_from_train, ROUND_TO)
+        tab2_transfer_time_from_air_adj_r0 = format_transport_value_using_zero(transport_options_list, 'Airplane', tab2_transfer_time_from_air, ROUND_TO)
+
+
+        # 2. Time - From A  - Train, Air
+        tab2_truck_time_dtd_from_train_adj_r0 = format_transport_value_using_zero(transport_options_list, 'Train', tab2_truck_time_dtd_from_train, ROUND_TO)
+        tab2_truck_time_dtd_from_air_adj_r0 = format_transport_value_using_zero(transport_options_list, 'Airplane', tab2_truck_time_dtd_from_air, ROUND_TO)
+
+
+        # 3. Transfer time - From B - Train, Air
+        tab2_transfer_time_to_train_adj_r0 = format_transport_value_using_zero(transport_options_list, 'Train', tab2_transfer_time_to_train, ROUND_TO)
+        tab2_transfer_time_to_air_adj_r0 = format_transport_value_using_zero(transport_options_list, 'Airplane', tab2_transfer_time_to_air, ROUND_TO)
+
+       
+        # 4. Time - From B - Train, Air
+        tab2_truck_time_dtd_to_train_adj_r0 = format_transport_value_using_zero(transport_options_list, 'Train', tab2_truck_time_dtd_to_train, ROUND_TO)
+        tab2_truck_time_dtd_to_air_adj_r0 = format_transport_value_using_zero(transport_options_list, 'Airplane', tab2_truck_time_dtd_to_air, ROUND_TO)
+
+
+        # 5. Transfer time sum (from + to) 
+        tab2_train_transf_sum = tab2_transfer_time_from_train_adj_r0 + tab2_transfer_time_to_train_adj_r0
+        tab2_air_transf_sum = tab2_transfer_time_from_air_adj_r0 + tab2_transfer_time_to_air_adj_r0
+
+
+        # 6. Price - dtd from (A)  - Train, Air
+        tab2_door_from_result_train_adj_r0 = format_transport_value_using_zero(transport_options_list, 'Train', tab2_door_from_result_train, ROUND_TO)
+        tab2_door_from_result_air_adj_r0 = format_transport_value_using_zero(transport_options_list, 'Airplane', tab2_door_from_result_air, ROUND_TO)
+
+
+        # 7. Price - dtd to (B)  - Train, Air
+        tab2_door_to_result_train_adj_r0 = format_transport_value_using_zero(transport_options_list, 'Train', tab2_door_to_result_train, ROUND_TO) 
+        tab2_door_to_result_air_adj_r0 = format_transport_value_using_zero(transport_options_list, 'Airplane', tab2_door_to_result_air, ROUND_TO)
+
+
+        # 8. sum of extra services (air has not money_danger as not allowed to transport in Air)
+        sum_extra_services_truck_train = money_fragile + money_insurance + money_danger
+        sum_extra_services_air = money_fragile + money_insurance
+
+        tab2_extra_services_train_r0 = format_transport_value_using_zero(transport_options_list, 'Train', sum_extra_services_truck_train, ROUND_TO)  
+        tab2_sum_extra_services_air_r0 = format_transport_value_using_zero(transport_options_list, 'Airplane', sum_extra_services_air, ROUND_TO)
+
+
+        # 9. sum costs distance + dtd 
+        tab2_dist_dtd_truck = tab2_door_result_truck + tab2_price_truck_rounded
+        tab2_dist_dtd_train = tab2_door_result_train + tab2_price_train_rounded
+        tab2_dist_dtd_air = tab2_door_result_air + tab2_price_air_rounded
+
+        tab2_dist_dtd_train_r0 = format_transport_value_using_zero(transport_options_list, 'Train', tab2_dist_dtd_train, ROUND_TO)  
+        tab2_dist_dtd_air_r0 = format_transport_value_using_zero(transport_options_list, 'Airplane', tab2_dist_dtd_air, ROUND_TO)
+
+
+        # 10. Overall time (Distance + DTD + Transfer + Breaks) - Service time  -> Time of physical movement of the shipment 
+        tab2_ov_time_truck = tab2_overall_time_truck - extra_time_tab2_truck
+        tab2_ov_time_train = tab2_overall_time_train - extra_time_tab2_train
+        tab2_ov_time_air = tab2_overall_time_air - extra_time_tab2_air
+
+        tab2_ov_time_train_r0 = format_transport_value_using_zero(transport_options_list, 'Train', tab2_ov_time_train, ROUND_TO) 
+        tab2_ov_time_air_r0 = format_transport_value_using_zero(transport_options_list, 'Airplane', tab2_ov_time_air, ROUND_TO)
+
+
+        # 11. Conditions for keeping exact same time/variable  + getting the Expected delivery also for other transport types
+
+        if selected_transport == 'Truck':
+            tab2_delivery_dt_formated_truck = delivery_dt_formated
+        
+        else:
+            tab2_delivery_dt_truck, tab2_delivery_dt_formated_truck, tab2_date_time_europe_truck, tab2_europe_date_part_truck, tab2_europe_time_part_truck, tab2_customer_approve_date_truck, tab2_customer_approve_time_truck = delivery_date_time(tab2_overall_time_truck_rounded,agreed_till)
+
+
+        if selected_transport == 'Train':
+            tab2_delivery_dt_formated_train = delivery_dt_formated  
+
+        else:
+            tab2_delivery_dt_train, tab2_delivery_dt_formated_train, tab2_date_time_europe_train, tab2_europe_date_part_train, tab2_europe_time_part_train, tab2_customer_approve_date_train, tab2_customer_approve_time_train = delivery_date_time(tab2_overall_time_train,agreed_till)
+
+
+        if selected_transport == 'Airplane':
+            tab2_delivery_dt_formated_air = delivery_dt_formated  
+
+        else:
+            tab2_delivery_dt_air, tab2_delivery_dt_formated_air, tab2_date_time_europe_air, tab2_europe_date_part_air, tab2_europe_time_part_air, tab2_customer_approve_date_air, tab2_customer_approve_time_air = delivery_date_time(tab2_overall_time_air,agreed_till)
+
+
+
+
+        df_tab2_overall_time = pd.DataFrame({
+            "Transport type" : ['Truck','Train','Airplane'],
+            "Time (hours)" : [tab2_overall_time_truck_rounded, tab2_overall_time_train_rounded, tab2_overall_time_air_rounded],
+            f"Price ({selected_currency})" : [tab2_price_overall_truck, tab2_price_overall_train, tab2_price_overall_air],
+            f"Expected delivery ({cet_cest_now})" : [tab2_delivery_dt_formated_truck, tab2_delivery_dt_formated_train ,tab2_delivery_dt_formated_air]
+        })
+
+
+        df_tab2_overall_time.drop(df_tab2_overall_time.loc[df_tab2_overall_time['Time (hours)']== 'n/a'].index, inplace=True)
+
+
+        df_tab2_overall_time = df_tab2_overall_time.style.format({
+            "Time (hours)" : "{:.2f}",
+            f"Price ({selected_currency})": "{:,.2f}",
+        })
+
+
+
+        extra_time_tab2_train_adj = format_transport_value(transport_options_list, 'Train', extra_time_tab2_train, ROUND_TO)
+        extra_time_tab2_air_adj = format_transport_value(transport_options_list, 'Airplane', extra_time_tab2_air, ROUND_TO)
+
+        df_tab2_service = pd.DataFrame({
+            "Transport type" : ['Truck','Train','Airplane'],
+            "Time (hours)" : [extra_time_tab2_truck, extra_time_tab2_train_adj, extra_time_tab2_air_adj]
+        })
+
+        df_tab2_service.drop(df_tab2_service.loc[df_tab2_service['Time (hours)']== 'n/a'].index, inplace=True)
+
+
+        tab2_truck_break_for_df = {
+            "Transport type" : 'Truck',
+            "Mandatory break (hours)" : tab2_time_break    
+        }
+
+        df_tab2_truck_break = pd.DataFrame(tab2_truck_break_for_df, index=[0])
+
+
+
+        df_tab2_extra_s = pd.DataFrame({
+            "Extra service" : ["Insurance extra", "Fragile goods", "Danger goods"],
+            f"Price ({selected_currency})" : [money_insurance, money_fragile, money_danger],
+        })
+
+        df_tab2_extra_s = df_tab2_extra_s.style.format({
+            f"Price ({selected_currency})" : "{:,.2f}",
+        })
+
+
+
+        # ============================================================
+        # ------------------- TAB 2 Charts creation ------------------
+        # ============================================================
+
+        # ------- Chart - Time overall including administartion -------  
+        x_transport_time = ['Truck','Train', 'Airplane']
+
+        y_time_overall = [tab2_ov_time_truck, tab2_ov_time_train_r0, tab2_ov_time_air_r0]
+        y_time_service = [extra_time_tab2_truck, extra_time_tab2_train_adj, extra_time_tab2_air_adj] 
+
+        fig_tab2_time_o = go.Figure()
+
+
+        fig_tab2_time_o.add_bar(x=x_transport_time,y=y_time_service, name= f"Administration - Service: {urgency}",
+            marker=dict(
+                color='rgba(187, 188, 191, 0.8)',
+            )
+        )
+        fig_tab2_time_o.add_bar(x=x_transport_time,y=y_time_overall, name= "Transport/Delivery",
+            marker=dict(
+                color='rgba(0, 112, 192, 1)',
+            )
         )
 
-    # The 'if' is nested -> to keep results in the form box
-    if submit_button_api_2: 
-        orchestration_city_based_on_zipcode_search(zipcode, country_code)
+        fig_tab2_time_o.update_layout(barmode="relative")
+        fig_tab2_time_o.update_layout(title = "Time - Overall (hours)")  
+
+
+        # ------- Chart - Time overall just transports ------- 
+        x_transport_time = ['Truck','Train', 'Airplane']
+
+        y_time_overall_2 = [tab2_ov_time_truck, tab2_ov_time_train_r0, tab2_ov_time_air_r0]
+
+        fig_tab2_time_o2 = go.Figure()
+
+        fig_tab2_time_o2.add_bar(x=x_transport_time,y=y_time_overall_2, name= "Transport/Delivery",
+            marker=dict(
+                color='rgba(0, 112, 192, 1)',
+            )
+        )
+
+        fig_tab2_time_o2.update_layout(barmode="relative")
+        fig_tab2_time_o2.update_layout(title = "Time - Overall transport (hours)")  
+
+
+        # ------- Chart - Price overall ------- 
+        x_transport_price_o = ['Truck','Train', 'Airplane']
+
+        y_price_overall = [tab2_dist_dtd_truck, tab2_dist_dtd_train_r0, tab2_dist_dtd_air_r0]
+        y_price_services = [sum_extra_services_truck_train, tab2_extra_services_train_r0, tab2_sum_extra_services_air_r0 ] 
+
+        fig_tab2_price_o = go.Figure()
+
+
+        fig_tab2_price_o.add_bar(x=x_transport_price_o,y=y_price_services, name= f"Extra services",
+            marker=dict(
+                color='rgba(20, 19, 18, 0.8)',
+            )
+        )
+        fig_tab2_price_o.add_bar(x=x_transport_price_o,y=y_price_overall, name= "Transport/Delivery",
+            marker=dict(
+                color='rgba(0, 112, 192, 1)',
+            )
+        )
+
+        fig_tab2_price_o.update_layout(barmode="relative")
+        fig_tab2_price_o.update_layout(title = f"Price - Overall ({selected_currency})")  
+
+
+        # ============================================================
+        # ------------------------- TAB 2 UI -------------------------
+        # ============================================================
+        ''
+        ''
+        with st.container(border=True):
+            st.write("###### Overall Time and Price end-to-end delivery:")
+
+            ''
+            
+            st.dataframe(df_tab2_overall_time, hide_index=True)
+
+            with st.expander("Chart - Time", icon= ":material/bar_chart:"):
+
+                tab_exp_cht_1, tab_exp_cht_2 = st.tabs([
+                    "Overall",
+                    "Transport without administration"
+                ])
+
+                config_chart_tab2 = {
+                    "template": "streamlit"
+                }
+
+                with tab_exp_cht_1:
+                    st.plotly_chart(fig_tab2_time_o, config=config_chart_tab2) # Changed deprication
+
+
+                with tab_exp_cht_2:
+
+                    col_exp_cht_1, col_exp_cht_2 = st.columns(2)
+
+                    col_exp_cht_1.plotly_chart(fig_tab2_time_o2, config=config_chart_tab2) # Changed deprication
+
+                    col_exp_cht_2.write("""
+                    - **Time to cover the transport -> physical movement of the shipment**
+                    - **Truck:** Distance + DTD + Breaks
+                    - **Train:** Distance + DTD + Transfer
+                    - **Airplane:** Distance + DTD + Transfer
+                    """)
+
+            with st.expander("Chart - Price", icon= ":material/bar_chart:"):
+                st.plotly_chart(fig_tab2_price_o, config=config_chart_tab2) # Changed deprication
+
+                st.write("- Note (!): Danger goods is **not allowed in Airplane** -> not counted")
+                col_exp_pr_1, col_exp_pr_2 = st.columns(2)
+
+                col_exp_pr_1.dataframe(df_tab2_extra_s, hide_index=True)
+
+
+        with st.container(border=True):
+            st.write("###### Detail:")
+            st.write(f"- {from_city} ({country_code_from}) - {to_city} ({country_code_to})")
+
+            st.dataframe(df_tab2_transport_styled, hide_index=True)
+
+            col_break_1, col_break_2 = st.columns(2)
+            col_break_1.dataframe(df_tab2_truck_break, hide_index=True)
+
+            ''
+            st.write(f"""
+                - Door-to-Door:
+                    - {from_city} ({country_code_from}): **{from_city_extra_doortdoor} km**
+                    - {to_city} ({country_code_to}): **{to_city_extra_doortdoor} km**
+                """)
+
+            st.dataframe(df_tab2_dtd, hide_index=True)
+
+            st.caption("""
+            ** For **Train** and **Airplane** - includes time for transfer Truck <-> Train/Airplane
+            """)
+
+        # ============================================================
+        # ---------- TAB 2 Charts creation DETAIL section ------------
+        # ============================================================
+
+        # ------- Chart Time ------- 
+            x_transport = ['Truck','Train', 'Airplane']
+
+            y_time_distance = [tab2_time_journey_truck_rounded, tab2_time_journey_train_rounded, tab2_time_journey_air_rounded]
+            y_time_dtd_a = [tab2_time_dtd_from_truck,tab2_truck_time_dtd_from_train_adj_r0,tab2_truck_time_dtd_from_air_adj_r0]
+            y_time_dtd_b = [tab2_time_dtd_to_truck,tab2_truck_time_dtd_to_train_adj_r0,tab2_truck_time_dtd_to_air_adj_r0]
+            y_time_transfer = [0, tab2_train_transf_sum, tab2_air_transf_sum]
+            y_time_break = [tab2_time_break , 0, 0]
+            # y_time_service = [extra_time_tab2_truck, extra_time_tab2_train_adj, extra_time_tab2_air_adj] 
+
+            fig_tab2_time = go.Figure()
+
+            fig_tab2_time.add_bar(x=x_transport,y=y_time_distance, name= "Distance",
+                marker=dict(
+                    color='rgba(219, 238, 243, 1)',
+                )
+            )
+
+            fig_tab2_time.add_bar(x=x_overall,y=y_time_dtd_a, name= f"DTD {from_city}",
+                marker=dict(
+                    color='rgba(254, 229, 153, 1)',
+                )
+            )
+
+            fig_tab2_time.add_bar(x=x_overall,y=y_time_dtd_b, name= f"DTD {to_city}",
+                marker=dict(
+                    color='rgba(229, 185, 181, 1)',
+                )
+            )
+
+            fig_tab2_time.add_bar(x=x_overall,y=y_time_transfer, name= f"Transfer",
+                marker=dict(
+                    color='rgba(235, 241, 223, 1)',
+                )
+            )
+
+            fig_tab2_time.add_bar(x=x_overall,y=y_time_break, name= f"Break Truck",
+                marker=dict(
+                    color='rgba(248, 241, 235, 1)',
+                )
+            )
+
+            fig_tab2_time.update_layout(barmode="relative")
+            fig_tab2_time.update_layout(title = "Time - Distance & DTD (hours)")            
+
+
+            # ------- Chart Price ------- 
+            x_price_transport = ['Truck','Train', 'Airplane']
+
+            y_price_distance = [tab2_price_truck_rounded, tab2_price_train_rounded, tab2_price_air_rounded]
+
+            y_price_dtd_a = [tab2_door_from_result_truck,
+            tab2_door_from_result_train_adj_r0,tab2_door_from_result_air_adj_r0]
+
+            y_price_dtd_b = [tab2_door_to_result_truck,tab2_door_to_result_train_adj_r0,tab2_door_to_result_air_adj_r0]
+
+            fig_overall_2 = go.Figure()
+
+            fig_overall_2.add_bar(x=x_price_transport,y=y_price_distance, name= "Distance",
+                marker=dict(
+                    color='rgba(219, 238, 243, 1)',
+                )
+            )
+
+
+            fig_overall_2.add_bar(x=x_overall,y=y_price_dtd_a, name= f"DTD {from_city}",
+                marker=dict(
+                    color='rgba(254, 229, 153, 1)',
+                )
+            )
+            fig_overall_2.add_bar(x=x_overall,y=y_price_dtd_b, name= f"DTD {to_city}",
+                marker=dict(
+                    color='rgba(229, 185, 181, 1)',
+                )
+            )
+
+            fig_overall_2.update_layout(barmode="relative")
+            fig_overall_2.update_layout(title = f"Price - Distance & DTD ({selected_currency})")
+
+
+
+            with st.expander("Chart - Time - Distance & DTD", icon= ":material/bar_chart:"):
+                st.plotly_chart(fig_tab2_time, config=config_chart_tab2) # Changed deprication
+
+
+            with st.expander("Chart - Price - Distance & DTD", icon= ":material/bar_chart:"):
+                st.plotly_chart(fig_overall_2, config=config_chart_tab2) # Changed deprication
+
+            ''
+            st.write(f"- Selected service - **{urgency}**")
+
+            col_urg_1, col_urg_2 = st.columns(2)
+            col_urg_1.dataframe(df_tab2_service, width='stretch', hide_index=True)   # Changed deprication   
+
+
+    with tab_final_3:
+
+        # Calling Go Green function
+        df_go_green_main_df, df_go_green_main_df_styled, df_emissions_values_db,df_emissions_values_db_styled, variables_go_green_dict_returned = call_go_green(db_engine, from_city_extra_doortdoor, to_city_extra_doortdoor, df_tab2_transport, selected_transport)
+
+
+        # UI
+        col1,col2 = st.columns(2)
+
+        col1.image("Pictures/Function_7/F7_Go_green/F7_go_green_environment.svg", width=100)
+
+        st.dataframe(df_go_green_main_df_styled, hide_index=True)
+
+        with st.expander("Emissions", icon=":material/co2:"):
+            st.write("- **Note:** DTD is served by **Truck** -> emissions for Truck")
+            st.dataframe(df_emissions_values_db_styled, hide_index=True)
+            
+
+        # ============================================================
+        # ---------- DB, PDF data preparations + mapping -------------
+        # ============================================================
+
+        # 1) OFFER table
+        # Mapping      
+        mapped_selected_transport = mapping_transport_type(selected_transport)
+        mapped_service =  mapping_service(urgency)
+        mapped_time_zone =  mapping_time_zone(cet_cest_now)
+        mapped_currency =  mapping_currency(selected_currency)
+        mapped_agreed_till = mapping_agreed_till(agreed_till_str)
+
+        # Dictionary for INSERT
+        variables_offer_dict = {
+            "offer_id" : offer_number_generated,
+            "europe_date_part" : europe_date_part, # 06-Dec-25
+            "europe_time_part" : europe_time_part, # 12:04
+            "customer_approve_date":customer_approve_date,
+            "customer_approve_time" : customer_approve_time,
+            "agreed_till_str": mapped_agreed_till,
+            "selected_transport" : mapped_selected_transport,
+            "service" : mapped_service,
+            "time_zone" : mapped_time_zone,
+            "time_overall" : overall_time,
+            "expected_delivery" : delivery_dt_formated,
+            "final_price" : final_price,
+            "currency" : mapped_currency,
+            "created_utc": created_utc,
+            "approve_till_utc": approve_till_utc,
+            "transport_start_utc": transport_start_utc,
+            "delivery_at_utc": delivery_at_utc,
+            "offer_state": "CREATED" # Default hardcoded state for insert
+            }
+
+        # 2) DELIVERY table 
+        # Dictionary for INSERT
+        variables_delivery_dict = {
+            "offer_id" : offer_number_generated,
+            "from_country" : country_code_from,
+            "from_city" : from_city,
+            "from_dtd" : from_city_extra_doortdoor,
+            "to_country" : country_code_to,
+            "to_city" : to_city,
+            "to_dtd" : to_city_extra_doortdoor,
+            "distance_length" : distance,
+            "distance_time" : time_journey,
+            "dtd_time" : time_dtd
+        }
+
+        # 3) COSTS table 
+        # Dictionary for INSERT
+        variables_costs_dict = {
+            "offer_id" : offer_number_generated,
+            "currency" : mapped_currency,
+            "distance_cost" : price,
+            "dtd_from" : door_from_result,
+            "dtd_to" : door_to_result,
+            "shipment_value" : shipment_value,
+            "insurance" : money_insurance,
+            "fragile" : money_fragile,
+            "danger" : money_danger,
+        }
+
+        # 4) EXTRA_STEPS_TIME table 
+        # Dictionary for INSERT
+        variables_extra_steps_time_dict = {
+            "offer_id" : offer_number_generated,
+            "truck_breaks" : time_break,
+            "shipment_transfer_dtd_from" : transfer_time_from,
+            "shipment_transfer_dtd_to" : transfer_time_to,
+            "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to),
+        }
+
+        # 5) GO_GREEN table
+        # Dictionary for INSERT
+        offer_id = {
+            "offer_id" : offer_number_generated,
+        }
+
+        variables_extra_go_green_dict = offer_id | variables_go_green_dict_returned
+
+        # 6) STATE_CHANGE_LOG table 
+        # Dictionary for INSERT
+        state_change_log_dict = {
+            "offer_id": offer_number_generated,
+            "state_from": " ",
+            "state_to": "CREATED",
+            "change_note": "Created by user - Function 7",
+            "timestamp_utc": created_utc
+        }
+
+
+        # 7) OFFER_RATING table 
+        # Dictionary for INSERT
+        offer_rating_dict = {
+            "offer_id": offer_number_generated,
+            "rating_given": False,
+            "delivery_at_utc": delivery_at_utc,
+            "rating_possible_till_utc": delivery_at_utc + timedelta(days=14),
+        }
+
+        # PDF 
+        data_for_pdf = {
+            "offer_id" : offer_number_generated,
+            "europe_date_part" : europe_date_part, 
+            "europe_time_part" : europe_time_part, 
+            "customer_approve_date":customer_approve_date,
+            "customer_approve_time" : customer_approve_time,
+            "agreed_till_str": agreed_till_str,
+            "selected_transport" : selected_transport,
+            "service" : urgency,
+            "service_time": extra_time,
+            "time_zone" : cet_cest_now,
+            "time_overall" : overall_time,
+            "expected_delivery" : delivery_dt_formated,
+            "final_price" : final_price,
+            "currency" : selected_currency,
+            "from_country" : country_code_from,
+            "from_city" : from_city,
+            "from_dtd" : from_city_extra_doortdoor,
+            "to_country" : country_code_to,
+            "to_city" : to_city,
+            "to_dtd" : to_city_extra_doortdoor,
+            "distance_length" : distance,
+            "distance_time" : time_journey,
+            "dtd_time" : time_dtd,
+            "distance_cost" : price,
+            "dtd_from" : door_from_result,
+            "dtd_to" : door_to_result,
+            "shipment_value" : shipment_value,
+            "insurance" : money_insurance,
+            "fragile" : money_fragile,
+            "danger" : money_danger,
+            "truck_breaks" : time_break,
+            "shipment_transfer_dtd_from" : transfer_time_from,
+            "shipment_transfer_dtd_to" : transfer_time_to,
+            "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to)
+        }
+
+
+    # Final button moved at the end of the code
+    # Reason: the button calls save to DB function -> I need Go Green data to be saved as well
+    with tab_final_1:
+        ''
+        ''
+        st.info("""
+        - Note:
+            - If you want to check the **Analytics** and **Go Green** tabs, do it before this button
+            - This button will **close the results**
+            - **It is final step to confirm the offer -> closing the function**
+            """)
+        
+        st.download_button(
+            "Generate PDF file & Save the offer into DB",
+            width="stretch",
+            icon=":material/sports_score:",
+            data = create_pdf(data_for_pdf, selected_transport),
+            file_name=f"Offer_{offer_number_generated}.pdf",
+            mime="application/pdf",
+            on_click=lambda: save_to_db_main_stream(offer_number_generated, variables_offer_dict, variables_delivery_dict, variables_costs_dict, variables_extra_steps_time_dict, variables_extra_go_green_dict, state_change_log_dict, offer_rating_dict),
+            key="key_save_button"
+        )

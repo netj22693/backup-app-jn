@@ -1,8 +1,12 @@
 import streamlit as st
 import pandas as pd
+import logging
+from app_logging import inicialization_logging
 from Subpages.Operational.F7b_operational_functions import singular_or_plural
 from Subpages.Resources import Assets
 
+# ===== Inicialization for logging ===== 
+inicialization_logging()
 
 # ======= UI =======
 def display_state_flow():
@@ -20,6 +24,7 @@ def display_state_flow_expander():
 
 # ======= Offer visualization function - UI =======
 def display_offer_visualization_ui(
+        function_id: str,
         ui_image_path: str,
         ui_color_coding_image_path: str,
         offer_id: str,
@@ -42,31 +47,34 @@ def display_offer_visualization_ui(
         st.image(ui_image_path)
 
     except Exception as e:
-        print(e)
+        logging.warning(f"{function_id} - Transport FLOW image NOT loaded. Exception: {e}, Path: {ui_image_path}")
         st.warning("Failed to load image")
     
-    # Expander 
+    # Expander UI transport image notation
     with st.expander("Transfer process", icon= ":material/help:"):
         try:
             st.image(ui_color_coding_image_path)
 
         except Exception as e:
-            print(e)
+            logging.warning(f"{function_id} - Transport NOTATION image NOT loaded. Exception: {e}, Path: {ui_image_path}")
             st.warning("Failed to load image")
         
 
         # To show DTD button or not
-        if row_delivery["from_dtd"] > 0 or row_delivery["to_dtd"] > 0:
+        if function_id == "F7B":
+            if row_delivery["from_dtd"] > 0 or row_delivery["to_dtd"] > 0:
 
-            st.write("- More info about DTD:")
-            
-            st.link_button(
-                label = "Go to Door-to-Door page",
-                url= Assets.Links.App.f7_description_dtd,
-                help="The button will redirect to the relevant page within this app for download.",
-                width="stretch",
-                icon=":material/launch:"
-            )                       
+                st.write("- More info about DTD:")
+                
+                st.link_button(
+                    label = "Go to Door-to-Door page",
+                    url= Assets.Links.App.f7_description_dtd,
+                    help="The button will redirect to the relevant page within this app for download.",
+                    width="stretch",
+                    icon=":material/launch:"
+                )                       
+
+
 
     st.write("")
     st.write("")
@@ -79,7 +87,7 @@ def display_offer_visualization_ui(
     """)
 
 
-    # Different UI for Truck and Train or Airplane
+    # Different UI for Truck and Train & Airplane
     if row_offer["transport"] == 'Truck':
 
         st.write("")
@@ -117,7 +125,9 @@ def display_offer_visualization_ui(
             - Selected service **{row_offer["service"]}** requires **{row_sla["time_sla"]:.2f} hours** for administration, load, etc. - **the SLA**  
         """)
 
-    # This UI same for all types of transport
+
+
+
     st.write("")
     st.write("- **Overall time end-to-end delivery:**")
 
@@ -128,6 +138,39 @@ def display_offer_visualization_ui(
     st.write("- **Expected delivery:**")
     with st.container(border=True):
         st.write(f"""**{row_offer["expected_delivery"]} - {row_offer["time_zone"]}**""")
+
+
+    # To be displayed only for F7
+    if function_id == 'F7':
+        with st.expander("Info", icon=":material/help:"):
+
+            tab_info_1, tab_info_2 = st.tabs([
+                "How",
+                "DTF - Delivery Time Frame"
+            ])
+
+
+            tab_info_1.write(f"""
+            - Calculated based on:
+                - Current time and date: **{row_offer["created_date"]} - {row_offer["created_time"]} - {row_offer["time_zone"]}**
+                - Overall end-to-end delivery: **{row_offer["time_overall"]:.2f} hour{singular_or_plural(row_offer["time_overall"])}**
+                - Time till the customer needs to approve the offer: **{row_offer["need_approve_hours"]} hours** ({row_offer["need_approve_days_str"]})
+            """)    
+
+            tab_info_1.write("- **If the result does not fit to DTF (Delivery Time Frame) -> it is asjusted accordingly the DTF rules**")
+
+
+            tab_info_2.write(f"""
+            - Monday: **10:00 - 22:00**
+            - Tuesday - Friday : **07:00 - 22:00**
+            - Saturday & Sunday: No delivery ->  **Monday: 10:00**
+            """)   
+            
+            ''
+            tab_info_2.image("Pictures/Function_7/F7_DTF/F7_DTF_graphical_overview_v1.svg", width=450)
+
+            tab_info_2.write("- In case that **calculated Expected delivery time** is **not** in these time frames -> **the delivery time is adjusted to fit into these**")
+
 
 
     st.write("")

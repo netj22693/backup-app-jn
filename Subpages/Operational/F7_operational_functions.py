@@ -401,7 +401,7 @@ def L0_is_in_correction_list(from_city: str, to_city: str, correction_list_data:
             price = ((price_square/unit_distance) * distance)
             result = True
 
-            print("L0 - Correction list -> value taken")
+            logging.info("F7 - Distance: L0 - Correction list -> value taken")
 
             return distance, price, result
     
@@ -426,14 +426,14 @@ def get_calculation_price_distance(coordinates: dict, price_square: float, unit_
 
     # L1
     if (big_result_r == 0 and big_result_c == 0) and (small_result_r <= 1 and small_result_c <= 1):
-        print("L1")
+        logging.info("F7 - Distance: L1")
 
         return price_square, unit_distance
 
 
     # L2
     elif small_result_r <= 1 and small_result_c <= 1:
-        print("L2")
+        logging.info("F7 - Distance: L2")
 
         distance = 2 * 24.15 
         price = price_square
@@ -445,7 +445,7 @@ def get_calculation_price_distance(coordinates: dict, price_square: float, unit_
 
         # L3A_R0C0
         if small_result_r == 0:
-            print("L3A_R0C0 - 1")
+            logging.info("F7 - Distance: L3A_R0C0 - 1")
 
             distance = small_result_c * 31.86
             price = (distance/unit_distance) * price_square
@@ -454,7 +454,7 @@ def get_calculation_price_distance(coordinates: dict, price_square: float, unit_
         
 
         elif small_result_c == 0:
-            print("L3A_R0C0 - 2")
+            logging.info("F7 - Distance: L3A_R0C0 - 2")
 
             distance = small_result_r * 31.86
             price = (distance/unit_distance) * price_square
@@ -466,7 +466,7 @@ def get_calculation_price_distance(coordinates: dict, price_square: float, unit_
         comp = small_result_r + small_result_c
                 
         if comp < 8:
-            print("L3B - 1")
+            logging.info("F7 - Distance: L3B - 1")
 
             distance = 35.5 * calculate_pythagoras(small_result_r, small_result_c)
             price = (distance/unit_distance) * price_square
@@ -475,7 +475,7 @@ def get_calculation_price_distance(coordinates: dict, price_square: float, unit_
 
 
         elif 8 <= comp < 10:
-            print("L3B - 2")
+            logging.info("F7 - Distance: L3B - 2")
 
             calcul = (small_result_r + small_result_c - 2)
 
@@ -487,7 +487,7 @@ def get_calculation_price_distance(coordinates: dict, price_square: float, unit_
 
 
         elif 10 <= comp < 13:
-            print("L3B - 3")
+            logging.info("F7 - Distance: L3B - 3")
             
             distance = 33.2 * calculate_pythagoras(small_result_r, small_result_c)
             price = (distance/unit_distance) * price_square
@@ -496,7 +496,7 @@ def get_calculation_price_distance(coordinates: dict, price_square: float, unit_
         
         
         elif 13 <= comp < 16:
-            print("L3B - 4")
+            logging.info("F7 - Distance: L3B - 4")
 
             distance = 35.68 * calculate_pythagoras(small_result_r, small_result_c)
             price = (distance/unit_distance) * price_square
@@ -505,7 +505,7 @@ def get_calculation_price_distance(coordinates: dict, price_square: float, unit_
         
         # 5 a 6 zkusím pythagorovu větu 
         elif 16 <= comp < 18:
-            print("L3B - 5")
+            logging.info("F7 - Distance: L3B - 5")
 
             distance = 34.24 * calculate_pythagoras(small_result_r, small_result_c)
             price = (distance/unit_distance) * price_square
@@ -514,7 +514,7 @@ def get_calculation_price_distance(coordinates: dict, price_square: float, unit_
         
 
         elif 18 <= comp:
-            print("L3B - 6")
+            logging.info("F7 - Distance: L3B - 6")
 
             distance = 36.75 * calculate_pythagoras(small_result_r, small_result_c)
             price = (distance/unit_distance) * price_square
@@ -522,7 +522,7 @@ def get_calculation_price_distance(coordinates: dict, price_square: float, unit_
             return price, distance
 
         else:
-            print("ERROR in: get_calculation_price_distance - if/elif/else condition not set")
+            logging.warning("F7 - Distance: ERROR in: get_calculation_price_distance - if/elif/else condition not set")
 
 
 
@@ -533,7 +533,7 @@ def get_calculation_price_distance_air(from_small_r: int, to_small_r: int, from_
     uses diagonal move
     '''
 
-    print("L1 - AIR")
+    logging.info("F7 - Distance: L1 - AIR")
 
     small_r = abs(from_small_r - to_small_r)
     small_c = abs(from_small_c - to_small_c)
@@ -826,15 +826,6 @@ def ui_input_formatter(value: float) -> str:
     list_space.reverse()
     final_str = ''.join(list_space)
     return final_str
-
-
-def ui_determin_singular_plural(time_input: float) -> str:
-
-    if time_input >= 2:
-        return 'hours'
-
-    else:
-        return 'hour'
 
 
 # ===== Date time functions =====

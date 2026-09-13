@@ -169,6 +169,7 @@ with tab2:
 
                         ''
                         display_offer_visualization_ui(
+                            "F7B",
                             ui_image_path,
                             ui_color_coding_image_path,
                             offer_id,

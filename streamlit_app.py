@@ -35,12 +35,12 @@ VA_function = st.Page(
 # ----- Test pages -----
 test_1 = st.Page(
     "Subpages/Testing/TEST_1.py",
-    title="TESTING"
+    title="TESTING_1"
     )
 
 test_2 = st.Page(
     "Subpages/Testing/TEST_2.py",
-    title="session"
+    title="TESTING_2"
 )
 
 
