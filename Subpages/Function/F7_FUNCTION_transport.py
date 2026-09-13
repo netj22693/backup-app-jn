@@ -8,7 +8,7 @@ from Subpages.Services.F7_DB_insert import save_to_db_main_stream
 from Subpages.Services.F7_DB_mapping import mapping_transport_type, mapping_service, mapping_time_zone, mapping_currency, mapping_agreed_till
 from Subpages.Services.F7_PDF import create_pdf
 from Subpages.Services.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image, show_ui_transport_flow
-from Subpages.Expander.F7_expanders import display_expander_transport_type_comparison, display_expander_truck, display_expander_sla, display_expander_extra_services, display_expander_fragile_goods, display_expander_danger_goods, display_expander_door_to_door, display_expander_unit_price
+from Subpages.Expander.F7_expanders import display_expander_transport_type_comparison, display_expander_truck, display_expander_sla, display_expander_extra_services, display_expander_fragile_goods, display_expander_danger_goods, display_expander_door_to_door, display_expander_unit_price, display_expander_currency_and_rate, display_expander_train, display_expander_air, display_expander_city_overview
 from Subpages.Data.F7_input_data import dataset_cities, correction_list_data, criteria_dict, price_dict, dtd_options_dict, dtd_calculation_values_dict, sla_dict, extra_service_dict, UNIT_DISTANCE, TRANSPORT_SPEED, ROUND_TO
 from Subpages.Services.F7_Go_green import call_go_green
 from Subpages.Operational.F7_operational_functions import create_offer_number, data_parsing_api, create_df_cost_trend, create_df_extra_time, create_list_transport, create_df_default_costs, determin_square_price_per_rate, get_list_cities_if_transport_available, create_df_transport_overview, get_list_cities, build_pie_chart, delivery_date_time, create_pie_chart, ui_country_selector, get_currency_option, get_list_available_transport_based_on_selected_cities, get_price_per_square, create_df_particular_transport_overview, get_price_changed_per_service_type, get_extra_time_per_service_sla, ui_input_formatter, ui_door_to_door_selector, ui_transport_offer, ui_determin_singular_plural, get_prices_extra_services, input_validation, input_validation_shipment_value, get_coordinates, L0_is_in_correction_list, get_calculation_price_distance, get_calculation_price_distance_air, get_calculation_delivery_time, get_door_to_door_time_truck, get_door_to_door_time_train_airplane, get_calculation_time_break, get_door_to_door_cost_and_distance, determin_cet_cest, format_transport_value, format_transport_value_using_zero
@@ -135,9 +135,6 @@ data_pie_air_overall = pd.DataFrame({
 
 
 
-
-
-
 # ============================================================
 # ---------------- UI top part of the screen  ----------------
 # ============================================================
@@ -153,68 +150,27 @@ st.image("Pictures/Function_7/F7_map_V2_v4.svg")
 ''
 ''
 with st.expander("Delivery area - Central Europe", icon = ":material/pin_drop:"):
-
     st.image("Pictures/Function_7/F7_map_central_europe.svg")
 
 
-with st.expander("City overview", icon = ":material/pin_drop:"):
-
-    ''
-    tab_co1, tab_co2, tab_co3, tab_co4, tab_co5 = st.tabs([
-        "CZ",
-        "SK",
-        "AT",
-        "DE",
-        "PL"
-    ])
-
-    with tab_co1:
-        st.write("- **Czech Republic:**")
-        ''
-        st.image("Pictures/Function_7/F7_cities_cz.svg")
-        ''
-        st.dataframe(create_df_transport_overview(dataset_cities, 'cz'))
-    
-    with tab_co2:
-        st.write("- **Slovakia:**")
-        ''
-        st.image("Pictures/Function_7/F7_cities_sk.svg", width= 520)
-        ''        
-        st.dataframe(create_df_transport_overview(dataset_cities, 'sk'))
-
-    with tab_co3:
-        st.write("- **Austria:**")
-        ''
-        st.image("Pictures/Function_7/F7_cities_at.svg", width= 520)
-        ''
-        st.dataframe(create_df_transport_overview(dataset_cities, 'at'))
-
-    with tab_co4:
-        st.write("- **Germany:**")
-        ''
-        st.image("Pictures/Function_7/F7_cities_de.svg", width= 420)
-        ''
-        st.dataframe(create_df_transport_overview(dataset_cities, 'de'))
-
-    with tab_co5:
-        st.write("- **Poland:**")
-        ''
-        st.image("Pictures/Function_7/F7_cities_pl.svg", width= 420)
-        ''
-        st.dataframe(create_df_transport_overview(dataset_cities, 'pl'))
-
-
+display_expander_city_overview(
+    create_df_transport_overview(dataset_cities, 'at'),
+    create_df_transport_overview(dataset_cities, 'cz'),
+    create_df_transport_overview(dataset_cities, 'de'),
+    create_df_transport_overview(dataset_cities, 'sk'),
+    create_df_transport_overview(dataset_cities, 'pl')
+)
 
 with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
 
     st.write(f"""
-             - Number of cities: **{count_list_cz + count_list_sk + count_list_at + count_list_de + count_list_pl}**
-                - **CZ** - Czech Republic: **{count_list_cz}**
-                - **SK** - Slovakia: **{count_list_sk}**
-                - **AT** - Austria: **{count_list_at}**
-                - **DE** - Germany: **{count_list_de}**
-                - **PL** - Poland: **{count_list_pl}**
-             """)
+        - Number of cities: **{count_list_cz + count_list_sk + count_list_at + count_list_de + count_list_pl}**
+        - **CZ** - Czech Republic: **{count_list_cz}**
+        - **SK** - Slovakia: **{count_list_sk}**
+        - **AT** - Austria: **{count_list_at}**
+        - **DE** - Germany: **{count_list_de}**
+        - **PL** - Poland: **{count_list_pl}**
+        """)
     
     ''
     st.write("Charts show figures/ratio of **how many cities is available** (:green[**GREEN**]) or not available **based on Transport type**.")
@@ -302,14 +258,10 @@ with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
     with tab1:
         with st.container(border=True):
             st.plotly_chart(fig_cz_sk, config=config_chart)
-           
-  
-             
+                       
     with tab2:
         with st.container(border=True):
             st.plotly_chart(fig_overall, config=config_chart)
-
-
 
     with tab3:
         with st.container(border=True):
@@ -318,7 +270,6 @@ with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
             col_stat_2.plotly_chart(fig_pie_train_overall, config=config_chart)
             col_stat_3.plotly_chart(fig_pie_air_overall, config=config_chart)
             
-
     # CZ
     with tab4:
         with st.container(border=True):
@@ -359,71 +310,17 @@ with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
             col_stat_2.plotly_chart(build_pie_chart(list_pl_az, train_pl, "PL Train"), config=config_chart)
             col_stat_3.plotly_chart(build_pie_chart(list_pl_az, air_pl, "PL Airplane"), config=config_chart) # Changed deprication
 
+           
+display_expander_currency_and_rate(
+    usd_to_czk_rate,
+    usd_to_eur_rate,
+    criteria_dataset_kc,
+    criteria_dataset_eur,
+    create_df_default_costs(price_dict, list_transport, "kc", "Koruna"),
+    create_df_default_costs(price_dict, list_transport, "eur", "euro")
+)
 
-
-            
-with st.expander("Currency and rate - API", icon = ":material/payments:"):
-
-    ''
-    ''
-    col_r1,col_r2 = st.columns(2)
-
-    col_r1.metric(label="USD to CZK", value= usd_to_czk_rate)
-
-    col_r2.metric(label="USD to EUR", value= usd_to_eur_rate)
-
-    ''
-    st.write("- This is a **dynamic part** - API based")
-    st.write("- **Exchange rate of the day** influences the costs/price within calculations")
-
-
-    ''
-    tab_c1, tab_c2 = st.tabs([
-        "Koruna",
-        "Euro"
-    ])
-
-    with tab_c1:
-        st.write("###### CZ - koruna:")
-        st.dataframe(criteria_dataset_kc, hide_index=True)
-        ''
-
-        st.write("Overview:")
-        st.write("""
-                - These **1-unit** costs per transport type have been set for **default** rate ( 21 <= x < 22 ) for **Standard** delivery service
-                """)
-        st.caption(f"**1 unit is approximatelly ~ {UNIT_DISTANCE} km** (but not always - there are some variables/coeficients making calculation corrections, depending on case City A to City B)")
-
-        col_r3,col_r4 = st.columns(2)
-        col_r3.dataframe(create_df_default_costs(price_dict, list_transport, "kc", "Koruna"), hide_index=True, width='stretch')
-
-        st.write("""
-                - In case that the **rate is in** this range the application calculates with these **default** values
-                - In case that the **rate is different** the relevant % increas/decrease is calculated **from the default values**
-                """)
-
-
-    with tab_c2:
-        st.write("###### SK, AT, DE, PL - euro:")
-        st.dataframe(criteria_dataset_eur, hide_index=True)
-        ''
-
-        st.write("Overview:")
-        st.write("""
-                - These **1-unit** costs per transport type have been set for **default** rate ( 0.82 <= x < 0.87 ) for **Standard** delivery service
-                """)
-        st.caption(f"**1 unit is approximatelly ~ {UNIT_DISTANCE} km** (but not always - there are some variables/coeficients making calculation corrections, depending on case City A to City B)")
-
-
-        col_r3,col_r4 = st.columns(2)
-        col_r3.dataframe(create_df_default_costs(price_dict, list_transport, "eur", "euro"), hide_index=True, width='stretch')
-
-        st.write("""
-                - In case that the **rate is in** this range the application calculates with these **default** values
-                - In case that the **rate is different** the relevant % increas/decrease is calculated **from the default values**
-                """)
-
-# Filters 
+# UI Filters 
 ''
 ''
 ''
@@ -454,6 +351,7 @@ to_country, to_city, country_code_to = ui_country_selector(
 
 currency = get_currency_option(from_country,to_country)
 
+# UI
 ''
 ''
 ''
@@ -485,102 +383,21 @@ display_expander_transport_type_comparison()
 
 display_expander_truck()
 
-with st.expander("Train / Rails", icon=":material/train:"):
+display_expander_train(
+  create_df_particular_transport_overview(train_at, "City AT"),
+  create_df_particular_transport_overview(train_cz, "City CZ"),
+  create_df_particular_transport_overview(train_de, "City DE"),
+  create_df_particular_transport_overview(train_sk, "City SK"),
+  create_df_particular_transport_overview(train_pl, "City PL"),
+)
 
-    ''
-    st.write(f"""- Average speed: **{TRANSPORT_SPEED['train']} km/h**""")
-    st.write("""
-    -   Train does **not need breaks** for the driver (in comparison with Truck)
-        - The transport planning includes also **change of the drivers**, if it is that long
-        - Train jurney is **not** interrupted by mandatory breaks  
-    """)
-
-    st.write("""- But is **less flexible** - Only some cities connected by rails""")
-
-
-    tab_t1, tab_t2, tab_t3, tab_t4, tab_t5 = st.tabs([
-        "CZ",
-        "SK", 
-        "AT",
-        "DE",
-        "PL"
-    ])
-
-    with tab_t1:
-        ''
-        st.image("Pictures/Function_7/F7_train_cityname_cz.svg", width = 580)
-        ''
-        st.dataframe(create_df_particular_transport_overview(train_cz, "City CZ"))
-
-    with tab_t2:
-        ''
-        st.image("Pictures/Function_7/F7_train_cityname_sk.svg", width = 460)
-        ''
-        st.dataframe(create_df_particular_transport_overview(train_sk, "City SK"))
-
-    with tab_t3:
-        ''
-        st.image("Pictures/Function_7/F7_train_cityname_at.svg", width = 430)
-        ''
-        st.dataframe(create_df_particular_transport_overview(train_at, "City AT"))
-
-    with tab_t4:
-        ''
-        st.image("Pictures/Function_7/F7_train_cityname_de.svg", width = 360)
-        ''
-        st.dataframe(create_df_particular_transport_overview(train_de, "City DE"))
-
-    with tab_t5:
-        ''
-        st.image("Pictures/Function_7/F7_train_cityname_pl.svg", width = 410)
-        ''
-        st.dataframe(create_df_particular_transport_overview(train_pl, "City PL"))
-
-
-with st.expander("Airplane", icon=":material/travel:"):
-    ''
-    st.write(f"""- Average speed: **{TRANSPORT_SPEED['airplane']} km/h**""")
-    st.write("""- Very expensive but fast -> Beneficial for time critical goods/transports""")
-    st.write("""- Only some cities connected""")
-    ''
-
-    tab_a1, tab_a2, tab_a3, tab_a4, tab_a5 = st.tabs([
-        "CZ",
-        "SK",
-        "AT",
-        "DE",
-        "PL"        
-    ])
-
-    with tab_a1:
-        ''
-        st.image("Pictures/Function_7/F7_air_cityname_cz.svg", width = 580)
-        ''
-        st.dataframe(create_df_particular_transport_overview(air_cz, "City CZ"))
-
-    with tab_a2:
-        ''
-        st.image("Pictures/Function_7/F7_air_cityname_sk.svg", width = 460)
-        ''
-        st.dataframe(create_df_particular_transport_overview(air_sk, "City SK"))
-
-    with tab_a3:
-        ''
-        st.image("Pictures/Function_7/F7_air_cityname_at.svg", width = 430)
-        ''
-        st.dataframe(create_df_particular_transport_overview(air_at, "City AT"))
-
-    with tab_a4:
-        ''
-        st.image("Pictures/Function_7/F7_air_cityname_de.svg", width = 360)
-        ''
-        st.dataframe(create_df_particular_transport_overview(air_de, "City DE"))
-
-    with tab_a5:
-        ''
-        st.image("Pictures/Function_7/F7_air_cityname_pl.svg", width = 410)
-        ''
-        st.dataframe(create_df_particular_transport_overview(air_pl, "City PL"))
+display_expander_air(
+  create_df_particular_transport_overview(air_at, "City AT"),
+  create_df_particular_transport_overview(air_cz, "City CZ"),
+  create_df_particular_transport_overview(air_de, "City DE"),
+  create_df_particular_transport_overview(air_sk, "City SK"),
+  create_df_particular_transport_overview(air_pl, "City PL"),
+)
 
 
 # Radio - urgency input
@@ -600,7 +417,6 @@ display_expander_sla(create_df_extra_time(sla_dict, list_transport))
 
 
 if urgency  == 'Express' or urgency == 'Slow':
-
     price_square = get_price_changed_per_service_type(sla_dict, price_square, selected_transport, urgency)
 
     # TAB 2 values
@@ -693,10 +509,10 @@ if selected_currency == 'euro':
     min_value = 5_000
     max_value = 1_000_000
     help_info = ("""
-            - Type a value of your shipment. It will be used for calculation. 
-            - Min value: 5 000 euro
-            - Max value: 1 000 000 euro
-            """)
+        - Type a value of your shipment. It will be used for calculation. 
+        - Min value: 5 000 euro
+        - Max value: 1 000 000 euro
+        """)
 
 
 # Extra services
@@ -727,8 +543,6 @@ if check_isurance or check_fragile or check_danger is True:
         if selected_transport == 'Airplane':
             money_danger = 0
 
-
-
 else:
     shipment_value = None
 
@@ -737,7 +551,7 @@ else:
     money_fragile = 0
     money_danger = 0
 
-
+# UI
 ''
 ''
 display_expander_extra_services(extra_service_dict)
@@ -746,6 +560,7 @@ display_expander_fragile_goods()
 
 display_expander_danger_goods()
 
+# UI
 ''
 ''
 st.write("**Delivery specification - Door-to-Door:**")
@@ -757,7 +572,7 @@ radio_dtd_from= ui_door_to_door_selector(dtd_options_dict, selected_transport, "
 st.write(f"To city ({to_city} - {country_code_to}):")
 radio_dtd_to = ui_door_to_door_selector(dtd_options_dict, selected_transport, "radio_dtd_2")
     
-
+# UI
 ''
 display_expander_door_to_door()
 
@@ -808,7 +623,6 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
  
     # Calculation of distance and price based on transport type
     if selected_transport == 'Truck' or selected_transport == 'Train':
-
         distance, price, result = L0_is_in_correction_list(from_city, to_city, correction_list_data, price_square, UNIT_DISTANCE)
 
         if result is not True:
@@ -816,7 +630,6 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
 
 
     if selected_transport == 'Airplane':
-
         price, distance = get_calculation_price_distance_air(from_small_r, to_small_r,from_small_c, to_small_c, price_square)
 
 
@@ -825,8 +638,6 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
 
     # DTD calculation based on transport type
     if selected_transport == 'Truck':
-
-
         time_dtd_from = get_door_to_door_time_truck(dtd_calculation_values_dict, radio_dtd_from)
         time_dtd_to = get_door_to_door_time_truck(dtd_calculation_values_dict, radio_dtd_to)
 
@@ -846,7 +657,6 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
 
 
     if selected_transport == 'Train' or selected_transport == 'Airplane':
-
         time_dtd_from, transfer_time_from, truck_time_dtd_air_train_from = get_door_to_door_time_train_airplane(dtd_calculation_values_dict, radio_dtd_from)
         time_dtd_to, transfer_time_to, truck_time_dtd_air_train_to  = get_door_to_door_time_train_airplane(dtd_calculation_values_dict, radio_dtd_to)
 
@@ -877,14 +687,12 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
     tab2_distance_truck, tab2_price_truck, result_correction_list_tab2_truck = L0_is_in_correction_list(from_city, to_city, correction_list_data, price_square_tab2_truck, UNIT_DISTANCE)
 
     if result_correction_list_tab2_truck == False:
-
         tab2_price_truck, tab2_distance_truck = get_calculation_price_distance(coordinates, price_square_tab2_truck, UNIT_DISTANCE)
 
     # TAB 2 - Train
     tab2_distance_train, tab2_price_train, result_correction_list_tab2_train = L0_is_in_correction_list(from_city, to_city, correction_list_data, price_square_tab2_train, UNIT_DISTANCE)
 
     if result_correction_list_tab2_train == False:
-
         tab2_price_train, tab2_distance_train = get_calculation_price_distance(coordinates, price_square_tab2_train, UNIT_DISTANCE)
 
 
@@ -1107,19 +915,19 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
 
             ''
             st.write(f"""
-                - **Door-to-Door**:
-                    - Additional: **{from_city_extra_doortdoor + to_city_extra_doortdoor} km** to the distance for which **Truck is needed**
-                        - {from_city}: {from_city_extra_doortdoor} km
-                        - {to_city}: {to_city_extra_doortdoor} km
-                    - Time to cover the Door-to-Door: **{time_dtd:.2f} hours(s)**
-                        - Transfer {selected_transport} <-> Truck: {transfer_time_from + transfer_time_to} hour(s)
-                        - Time for Truck ride: {truck_time_dtd_air_train_from + truck_time_dtd_air_train_to} hour(s)
+            - **Door-to-Door**:
+                - Additional: **{from_city_extra_doortdoor + to_city_extra_doortdoor} km** to the distance for which **Truck is needed**
+                    - {from_city}: {from_city_extra_doortdoor} km
+                    - {to_city}: {to_city_extra_doortdoor} km
+                - Time to cover the Door-to-Door: **{time_dtd:.2f} hours(s)**
+                    - Transfer {selected_transport} <-> Truck: {transfer_time_from + transfer_time_to} hour(s)
+                    - Time for Truck ride: {truck_time_dtd_air_train_from + truck_time_dtd_air_train_to} hour(s)
             """)
 
             ''
             st.write(f"""
-                - **{selected_transport}**:
-                    - Selected service **{urgency}** requires **{extra_time:.2f} hours** for administration, load, etc. - **the SLA**  
+            - **{selected_transport}**:
+                - Selected service **{urgency}** requires **{extra_time:.2f} hours** for administration, load, etc. - **the SLA**  
             """)
 
             ''
@@ -1143,10 +951,10 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
 
 
                 tab_info_ta_1.write(f"""
-                    - Calculated based on:
-                        - Current time and date: **{europe_date_part} - {europe_time_part} - {cet_cest_now}**
-                        - Overall end-to-end delivery: **{overall_time_train_air:.2f} {ui_determin_singular_plural(overall_time_train_air)}**
-                        - Time till the customer needs to approve the offer: **{agreed_till} hours** ({agreed_till_str})
+                - Calculated based on:
+                    - Current time and date: **{europe_date_part} - {europe_time_part} - {cet_cest_now}**
+                    - Overall end-to-end delivery: **{overall_time_train_air:.2f} {ui_determin_singular_plural(overall_time_train_air)}**
+                    - Time till the customer needs to approve the offer: **{agreed_till} hours** ({agreed_till_str})
                 """)    
 
                 tab_info_ta_1.write("- **If the result does not fit to DTF (Delivery Time Frame) -> it is asjusted accordingly the DTF rules**")
@@ -1157,7 +965,7 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
                     - Monday: **10:00 - 22:00**
                     - Tuesday - Friday : **07:00 - 22:00**
                     - Saturday & Sunday: No delivery ->  **Monday: 10:00**
-                """)   
+                    """)   
                 
                 tab_info_ta_2.write("- In case that calculated delivery time is **not** in these time frames -> **the delivery time is adjsuted to fit into these**")
 
@@ -1526,12 +1334,10 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
 
             with st.expander("Chart - Time", icon= ":material/bar_chart:"):
 
-
                 tab_exp_cht_1, tab_exp_cht_2 = st.tabs([
                     "Overall",
                     "Transport without administration"
                 ])
-
 
                 config_chart_tab2 = {
                     "template": "streamlit"
@@ -1557,13 +1363,10 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
             with st.expander("Chart - Price", icon= ":material/bar_chart:"):
                 st.plotly_chart(fig_tab2_price_o, config=config_chart_tab2) # Changed deprication
 
-
-
                 st.write("- Note (!): Danger goods is **not allowed in Airplane** -> not counted")
                 col_exp_pr_1, col_exp_pr_2 = st.columns(2)
 
                 col_exp_pr_1.dataframe(df_tab2_extra_s, hide_index=True)
-
 
 
         with st.container(border=True):
@@ -1673,7 +1476,6 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
 
 
 
-
             with st.expander("Chart - Time - Distance & DTD", icon= ":material/bar_chart:"):
                 st.plotly_chart(fig_tab2_time, config=config_chart_tab2) # Changed deprication
 
@@ -1681,14 +1483,11 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
             with st.expander("Chart - Price - Distance & DTD", icon= ":material/bar_chart:"):
                 st.plotly_chart(fig_overall_2, config=config_chart_tab2) # Changed deprication
 
-
-
             ''
             st.write(f"- Selected service - **{urgency}**")
 
             col_urg_1, col_urg_2 = st.columns(2)
             col_urg_1.dataframe(df_tab2_service, width='stretch', hide_index=True)   # Changed deprication   
-
 
 
     with tab_final_3:
@@ -1705,7 +1504,6 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
         st.dataframe(df_go_green_main_df_styled, hide_index=True)
 
         with st.expander("Emissions", icon=":material/co2:"):
-            
             st.write("- **Note:** DTD is served by **Truck** -> emissions for Truck")
             st.dataframe(df_emissions_values_db_styled, hide_index=True)
             
@@ -1849,8 +1647,6 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
             "dtd_truck_if_not_truck_main" : (truck_time_dtd_air_train_from + truck_time_dtd_air_train_to)
         }
 
-        # PDF creation
-        data_pdf = create_pdf(data_for_pdf, selected_transport)
 
     # Final button moved at the end of the code
     # Reason: the button calls save to DB function -> I need Go Green data to be saved as well
@@ -1868,7 +1664,7 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
             "Generate PDF file & Save the offer into DB",
             width="stretch",
             icon=":material/sports_score:",
-            data = data_pdf,
+            data = create_pdf(data_for_pdf, selected_transport),
             file_name=f"Offer_{offer_number_generated}.pdf",
             mime="application/pdf",
             on_click=lambda: save_to_db_main_stream(offer_number_generated, variables_offer_dict, variables_delivery_dict, variables_costs_dict, variables_extra_steps_time_dict, variables_extra_go_green_dict, state_change_log_dict, offer_rating_dict),
