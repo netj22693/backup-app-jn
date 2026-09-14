@@ -42,10 +42,10 @@ def insert_rating_into_db(data: dict):
                 session.add(new_offer)
                 session.commit()
 
-        logging.info(f"VA - DB insert complete")
+        logging.info(f"VA - DB insert - SUCCESS")
         return True
 
 
     except Exception as e:
-        logging.error(f"VA - DB insert failed: {e}")
+        logging.error(f"VA - DB insert - FAIL - {e}")
         return False
