@@ -1,10 +1,14 @@
-import streamlit as st
+import logging
+from app_logging import inicialization_logging
 from app_db_connection import db_connection
 from sqlalchemy import Column, Integer, String, Float, DateTime, Engine
 from sqlalchemy.orm import declarative_base, Session
 from Subpages.Dialog.F7_dialog import insert_db_not_complete,process_done
 
+# ===== Inicialization for logging ===== 
+inicialization_logging()
 
+# ===== DB functions ===== 
 def insert_variables_offer(engine: Engine, data: dict):
 
     mapped_data = {
@@ -252,7 +256,6 @@ def insert_variables_offer_rating(engine: Engine, data: dict):
 
 
 
-# def save_to_db_main_stream(variables_extra_steps_time):
 def save_to_db_main_stream(offer_number: dict, variables_offer: dict, variables_delivery: dict, variables_costs: dict, variables_extra_steps_time: dict, variables_go_green_dict: dict, state_change_log_dict: dict, offer_rating_dict: dict):
 
     db_engine = db_connection("F7")
@@ -266,14 +269,15 @@ def save_to_db_main_stream(offer_number: dict, variables_offer: dict, variables_
         insert_variables_state_change_log(db_engine, state_change_log_dict)
         insert_variables_offer_rating(db_engine, offer_rating_dict)
 
+        logging.info(f"F7 - DB insert SUCCESS")
         process_done(offer_number)
 
     except Exception as e:
-        print(f"DB insert failed: {e}")
+        logging.warning(f"F7 - DB insert failed: {e}")
         insert_db_not_complete()
 
 
-# save_to_db_main_stream(variables_extra_steps_time_dict)
+
 
 
 
