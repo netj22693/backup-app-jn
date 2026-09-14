@@ -72,7 +72,7 @@ def remove_diacritic(city: str) -> str:
         return result
 
     except Exception as e:
-        logging.warning(f"F6 - Remove diacritics - FAIL - {e}")
+        logging.warning(f"F6 - Remove diacritics - FAIL - Exception: {e}")
         return city
 
 
@@ -107,7 +107,7 @@ def is_city_in_xref(city: str, country_code: str, data: dict, check_type: str) -
 		return False
 
 	except Exception as e:
-		logging.warning(f"F6 - XREF check: {check_type} - FAIL - {e}")
+		logging.warning(f"F6 - XREF check: {check_type} - FAIL - Exception: {e}")
 		return False
 
 
@@ -138,7 +138,7 @@ def check_city_multiple_names(city: str, country_code: str, data: dict) -> str:
 		return city
 
 	except Exception as e:
-		logging.warning(f"F6 - XREF check: Multiple names - FAIL - {e}")
+		logging.warning(f"F6 - XREF check: Multiple names - FAIL - Exception: {e}")
 		return city
 
 
@@ -181,7 +181,7 @@ def parsing_data_zipcodebase_com(data_json: dict) -> list | str:
 
     # Undefined/Generic except issue
     except Exception as e:
-        logging.warning(f"F6 - Parsing API: zipcodebase.com - FAIL - {e}")
+        logging.warning(f"F6 - Parsing API: zipcodebase.com - FAIL - Exception: {e}")
         return "PARSING_STATE_TECHNICAL_ISSUE"
 
 
@@ -398,7 +398,7 @@ def parsing_data_zipcodestack_com(data_json: dict) -> list | str:
 
     # Undefined issue
     except Exception as e:
-        logging.warning(f"F6 - Parsing API: zipcodestack.com - FAIL - {e}")
+        logging.warning(f"F6 - Parsing API: zipcodestack.com - FAIL - Exception: {e}")
         return "PARSING_STATE_TECHNICAL_ISSUE"
 
 
@@ -422,7 +422,7 @@ def validation_request_vs_response_zipcodes(zipcode_user_input: str, zipcode_res
         return not_in_response_list 
 
     except Exception as e:
-        logging.warning(f"F6 - Validation of missing ZIP codes - FAIL - {e}")
+        logging.warning(f"F6 - Validation of missing ZIP codes - FAIL - Exception: {e}")
         return None
 
     

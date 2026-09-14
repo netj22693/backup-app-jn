@@ -352,7 +352,7 @@ def change_state_in_db(engine: Engine, offer_id: str, was_state: str, new_state:
                     state_change_not_concurrency(offer_id)
 
         except Exception as e:
-            logging.warning(f"F7B - DB update: State change APPROVED/REJECTED - FAIL - {e}")
+            logging.warning(f"F7B - DB update: State change APPROVED/REJECTED - FAIL - Exception: {e}")
 
             state_change_not_complete()
 
@@ -375,7 +375,7 @@ def change_state_in_db(engine: Engine, offer_id: str, was_state: str, new_state:
                 session.commit()
       
         except Exception as e:
-            logging.warning(f"F7B - DB update: State change - FAIL: {e}")
+            logging.warning(f"F7B - DB update: State change - FAIL - Exception: {e}")
 
 
 # ===== State change function ===== 
@@ -392,7 +392,7 @@ def operational_update_of_states(df: pd.DataFrame, db_engine: Engine):
             row.offer_state == "CREATED"
             and utc_now < row.approve_till_utc
             ):
-            logging.info(f"F7B - C1 - CREATED - State is okay - no action - offer: {row.offer_id}")
+            logging.info(f"F7B - C1: CREATED - State is okay - no action - offer: {row.offer_id}")
 
         elif (
             row.offer_state == "CREATED"

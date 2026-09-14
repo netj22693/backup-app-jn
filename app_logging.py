@@ -38,7 +38,7 @@ Use logging for:
 • Unhappy path
     F3 - DB insert - FAIL: {e}
     F2 - XML validation XSD - FAIL - XML does not match XSD
-    F2 - XML validation XSD - FAIL - {e}
+    F2 - XML validation XSD - FAIL - Exception: {e}
 
 
 • API operations   API: <api_name>
@@ -46,12 +46,12 @@ Use logging for:
 
 
 • Else blocks / unexpected conditions
-    F3 - Operational function: get_utc_time_custom_string() - Invalid input
-    F7 - Operational function: get_calculation_price_distance() - Undefined condition
+    F3 - Operational function: get_utc_time_custom_string() - FAIL - Invalid input
+    F7 - Operational function: get_calculation_price_distance() - FAIL - Undefined condition
 
 
 • Operations that may affect Function behavior
-    F6 - Remove diacritics - FAIL - {e}
+    F6 - Remove diacritics - FAIL - Exception: {e}
     F6 - Validation of missing ZIP codes - SUCCESS
 '''
 

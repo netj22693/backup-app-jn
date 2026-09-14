@@ -80,7 +80,7 @@ def validate_xml_against_xsd(xml_path: str, xsd_path: str):
                 xsd_not_passed()
 
         except Exception as e:
-            logging.warning(f"F2 - XML validation XSD - FAIL - {e}")
+            logging.warning(f"F2 - XML validation XSD - FAIL - Exception: {e}")
             xsd_not_passed()
 
 

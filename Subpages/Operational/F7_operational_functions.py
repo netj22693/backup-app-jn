@@ -521,7 +521,7 @@ def get_calculation_price_distance(coordinates: dict, price_square: float, unit_
             return price, distance
 
         else:
-            logging.warning("F7 - operational function: get_calculation_price_distance() - Undefined condition")
+            logging.warning("F7 - Operational function: get_calculation_price_distance() - FAIL - Undefined condition")
 
 
 

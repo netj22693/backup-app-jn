@@ -37,7 +37,7 @@ def get_utc_time_custom_string(purpose: str) -> str:
         return time.strftime("%Y-%m-%d %H:%M:%S", now)
     
     else:
-        logging.warning("F3 - operational function: get_utc_time_custom_string() - FAIL - Invalid input")
+        logging.warning("F3 - Operational function: get_utc_time_custom_string() - FAIL - Invalid input")
 
 
 # ===== Mapping =====
@@ -339,7 +339,7 @@ def on_download_click(db_engine: Engine, file_format: str, data: dict, order_num
         process_done(order_number)
 
     except Exception as e:
-        logging.warning(f"F3 - DB insert - FAIL - {e}")
+        logging.warning(f"F3 - DB insert - FAIL - Exception: {e}")
         insert_db_not_complete()
 
 
