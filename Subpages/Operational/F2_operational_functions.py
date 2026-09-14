@@ -72,15 +72,15 @@ def validate_xml_against_xsd(xml_path: str, xsd_path: str):
 
             # If validation passes -> F2 logic can continue 
             if result == True:
-                logging.info("F2 - XML validation XSD - PASSED")
+                logging.info("F2 - XML validation XSD - SUCCESS")
                 pass
 
             else:
-                logging.warning("F2 - XML validation XSD - NOT PASSED - XML does not match XSD")
+                logging.warning("F2 - XML validation XSD - FAIL - XML does not match XSD")
                 xsd_not_passed()
 
         except Exception as e:
-            logging.warning(f"F2 - XML validation XSD - NOT PASSED - Exception: {e}")
+            logging.warning(f"F2 - XML validation XSD - FAIL - {e}")
             xsd_not_passed()
 
 
@@ -100,11 +100,13 @@ def data_validation(total_sum: float, sum_price: float, currency: str) -> str:
         - **Total sum** in the XML invoice is: **{total_sum:.2f}** {currency}
         - But **summary of prices** in detail lines is: **{sum_price:.2f}** {currency}""")
 
+        # This string is NOT app state but str/text to appear in the .txt doc
         return "Sum total - Not passed"
 
 
     else:
         st.success("Passed")
+        # This string is NOT app state but str/text to appear in the .txt doc
         return "Sum total - Passed"
 
 
@@ -125,10 +127,12 @@ def data_validation_services(value_total_sum_services_fl: float, sum_price_warra
         - **Total sum of SERVICES** in the XML invoice is: **{value_total_sum_services_fl:.2f}** {currency}
         - But **summary of prices** in detail lines is **{sum_warranty_insurance:.2f}** {currency}.""")
 
+        # This string is NOT app state but str/text to appear in the .txt doc
         return ("Services - Not passed")
 
     else:
         st.success("Passed")
+        # This string is NOT app state but str/text to appear in the .txt doc
         return "Services - Passed"
 
 

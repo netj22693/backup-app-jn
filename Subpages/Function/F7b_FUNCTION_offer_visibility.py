@@ -142,7 +142,7 @@ with tab2:
 
                     # Rating functionality - validation
                     rating_end = make_rating_validation(df_table_offer_rating)
-                    logging.info(f"F7B - Rating function: {rating_end}")
+                    logging.info(f"F7B - Rating function - SUCCESS - {rating_end}")
 
                 
                     # Get UI image for the particular offer          

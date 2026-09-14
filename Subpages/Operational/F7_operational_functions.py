@@ -40,7 +40,7 @@ def data_parsing_api(data_json: dict) -> tuple[float, float]:
 
 
     except Exception as e:
-        logging.error(f"F7 - Parsing API: freecurrencyapi.com - FAIL: {e}")
+        logging.error(f"F7 - Parsing API: freecurrencyapi.com - FAIL - {e}")
         
         st.warning("""
         - Technical issue with API. Temporary values will be used.

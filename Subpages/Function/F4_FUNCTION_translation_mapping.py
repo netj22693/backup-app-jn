@@ -45,7 +45,7 @@ if object_upl_xml is not None:
             )
 
     except Exception as e:
-        logging.warning(f"F4 - Parsing XML -> JSON - FAIL: {e}")
+        logging.warning(f"F4 - Parsing XML -> JSON - FAIL - {e}")
         col1.error("The uploaded file is not supported by this application")
         json_object_returned = None
     
@@ -81,7 +81,7 @@ if object_upl_json is not None:
             )
 
     except Exception as e:
-        logging.warning(f"F4 - Parsing JSON -> XML - FAIL: {e}")
+        logging.warning(f"F4 - Parsing JSON -> XML - FAIL - {e}")
         col2.error("The uploaded file is not supported by this application")
 
 

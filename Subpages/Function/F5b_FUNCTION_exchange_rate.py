@@ -124,7 +124,7 @@ def get_values_for_metrics(df:pd.DataFrame) -> tuple[float, float, str]:
 
     else:
         # 0 rows: DF is empty -> this case is supposed to be stoped in main if/else logic and this else should not happen at all
-        logging.error(f"F5B - operational function: get_values_for_metrics() - this condition should not happen")
+        logging.error(f"F5B - operational function: get_values_for_metrics() - FAIL - unexpected condition")
 
 
     return previous, last, last_date_str

@@ -68,11 +68,11 @@ def remove_diacritic(city: str) -> str:
             if not unicodedata.combining(character):
                 result += character
 
-        logging.info(f"F6 - Remove diacritics - SUCCESS: from: {city} -> to: {result}")
+        logging.info(f"F6 - Remove diacritics - SUCCESS - from: {city} -> to: {result}")
         return result
 
     except Exception as e:
-        logging.warning(f"F6 - Remove diacritics - FAIL: {e}")
+        logging.warning(f"F6 - Remove diacritics - FAIL - {e}")
         return city
 
 
@@ -93,21 +93,21 @@ def is_city_in_xref(city: str, country_code: str, data: dict, check_type: str) -
 
 			if normalized == city: 
 
-				logging.info(f"F6 - XREF check: {check_type} - MATCH - {city} | {normalized} | {xref_name} - SUCCESS")
+				logging.info(f"F6 - XREF check: {check_type} - SUCCESS - MATCH: {city} | {normalized} | {xref_name}")
 
 				return True
 
 		else:
-			logging.info(f"F6 - XREF check: {check_type} - NO MATCH - SUCCESS")
+			logging.info(f"F6 - XREF check: {check_type} - SUCCESS - NO MATCH")
 			return False
 
 
 	except KeyError:
-		logging.warning(f"F6 - XREF check: {check_type} - KEY ERROR - FAIL")
+		logging.warning(f"F6 - XREF check: {check_type} - FAIL - KeyError")
 		return False
 
 	except Exception as e:
-		logging.warning(f"F6 - XREF check: {check_type} - FAIL: {e}")
+		logging.warning(f"F6 - XREF check: {check_type} - FAIL - {e}")
 		return False
 
 
@@ -124,21 +124,21 @@ def check_city_multiple_names(city: str, country_code: str, data: dict) -> str:
 
 			if normalized == city: 
 
-				logging.info(f"F6 - XREF check: MULTIPLE OFFICIAL NAMES - MATCH - {city} | {normalized} -> {api_name} - SUCCESS")
+				logging.info(f"F6 - XREF check: Multiple names - SUCCESS - MATCH - {city} | {normalized} -> {api_name}")
 
 				return api_name
 
 		else:
-			logging.info(f"F6 - XREF check: MULTIPLE NAMES - NO MATCH - SUCCESS")
+			logging.info(f"F6 - XREF check: Multiple names - SUCCESS - NO MATCH")
 			return city
 
 
 	except KeyError:
-		logging.warning(f"F6 - XREF check: MULTIPLE NAMES - KEY ERROR - FAIL")
+		logging.warning(f"F6 - XREF check: Multiple names - FAIL - KeyError")
 		return city
 
 	except Exception as e:
-		logging.warning(f"F6 - XREF check: MULTIPLE NAMES - FAIL: {e}")
+		logging.warning(f"F6 - XREF check: Multiple names - FAIL - {e}")
 		return city
 
 
@@ -170,18 +170,18 @@ def parsing_data_zipcodebase_com(data_json: dict) -> list | str:
         if "message" in data_json:
             info_message = data_json["message"]
 
-            logging.info(f"F6 - Parsing API: zipcodebase.com - MESSAGE RECEIVED: {info_message}")
+            logging.info(f"F6 - Parsing API: zipcodebase.com - FAIL - Response MESSAGE: {info_message}")
             return "PARSING_STATE_INFO_MESSAGE"
 
         # In case that JSON structure will be changed by external system
         else:
-            logging.info(f"F6 - Parsing API: zipcodebase.com - FAIL KeyError ELSE")
+            logging.info(f"F6 - Parsing API: zipcodebase.com - FAIL - KeyError")
             return "PARSING_STATE_TECHNICAL_ISSUE"
 
 
     # Undefined/Generic except issue
     except Exception as e:
-        logging.warning(f"F6 - API: zipcodebase.com - Parsing - FAIL Exceptio: {e}")
+        logging.warning(f"F6 - Parsing API: zipcodebase.com - FAIL - {e}")
         return "PARSING_STATE_TECHNICAL_ISSUE"
 
 
@@ -383,7 +383,7 @@ def parsing_data_zipcodestack_com(data_json: dict) -> list | str:
 
         # Happy path - but external system has no data releated to user input
         if len(result_list) == 0:
-            logging.info(f"F6 - Parsing API: zipcodestack.com - PARSING_STATE_NO_DATA")
+            logging.info(f"F6 - Parsing API: zipcodestack.com - SUCCESS - PARSING_STATE_NO_DATA")
             return "PARSING_STATE_NO_DATA"
 
         # Happy end
@@ -393,12 +393,12 @@ def parsing_data_zipcodestack_com(data_json: dict) -> list | str:
 
     # If JSON Response structure is changed
     except KeyError:
-        logging.warning(f"F6 - Parsing API: zipcodestack.com - FAIL: KeyError")
+        logging.warning(f"F6 - Parsing API: zipcodestack.com - FAIL - KeyError")
         return "PARSING_STATE_TECHNICAL_ISSUE"
 
     # Undefined issue
     except Exception as e:
-        logging.warning(f"F6 - Parsing API: zipcodestack.com - FAIL: {e}")
+        logging.warning(f"F6 - Parsing API: zipcodestack.com - FAIL - {e}")
         return "PARSING_STATE_TECHNICAL_ISSUE"
 
 
@@ -422,7 +422,7 @@ def validation_request_vs_response_zipcodes(zipcode_user_input: str, zipcode_res
         return not_in_response_list 
 
     except Exception as e:
-        logging.warning(f"F6 - Validation of missing ZIP codes - FAIL: {e}")
+        logging.warning(f"F6 - Validation of missing ZIP codes - FAIL - {e}")
         return None
 
     

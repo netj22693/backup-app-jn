@@ -336,7 +336,7 @@ def change_state_in_db(engine: Engine, offer_id: str, was_state: str, new_state:
 
                     session.commit()
 
-                    logging.info("F7B - State change APPROVED/REJECTED - DB update - SUCCESS")
+                    logging.info("F7B - DB update: State change APPROVED/REJECTED - SUCCESS")
 
                     state_change_complete(offer_id, new_state)
 
@@ -347,12 +347,12 @@ def change_state_in_db(engine: Engine, offer_id: str, was_state: str, new_state:
                 else:
                     session.rollback()
 
-                    logging.warning(f"F7B - State change APPROVED/REJECTED - DB update - CONCURRENCY - offer {offer_id}")
+                    logging.warning(f"F7B - DB update: State change APPROVED/REJECTED - FAIL - CONCURRENCY: offer {offer_id}")
 
                     state_change_not_concurrency(offer_id)
 
         except Exception as e:
-            logging.warning(f"F7B - State change APPROVED/REJECTED - DB update FAIL: {e}")
+            logging.warning(f"F7B - DB update: State change APPROVED/REJECTED - FAIL - {e}")
 
             state_change_not_complete()
 
@@ -375,7 +375,7 @@ def change_state_in_db(engine: Engine, offer_id: str, was_state: str, new_state:
                 session.commit()
       
         except Exception as e:
-            logging.warning(f"F7B - State change - DB update - FAIL: {e}")
+            logging.warning(f"F7B - DB update: State change - FAIL: {e}")
 
 
 # ===== State change function ===== 

@@ -72,7 +72,7 @@ def write_log_into_db(data: dict):
         process_done()
 
     except Exception as e:
-        logging.warning(f"F4 - DB Insert - FAIL: {e}")
+        logging.warning(f"F4 - DB Insert - FAIL - {e}")
         insert_db_not_complete()
 
 

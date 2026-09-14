@@ -14,12 +14,12 @@ def parsing_data_api_kurzy_cz(data_input: str) -> Optional[float | None]:
         eur_rate= round(data_input['kurzy']['EUR']['dev_stred'], 3)
         usd_rate = round(data_input['kurzy']['USD']['dev_stred'], 3)
 
-        logging.info(f"F5 - Parsing API - kurzy.cz - SUCCESS")
+        logging.info(f"F5 - Parsing API: kurzy.cz - SUCCESS")
 
         return eur_rate, usd_rate
 
     except Exception as e:
-        logging.error(f"F5 - Parsing API: kurzy.cz - FAIL: {e}")
+        logging.error(f"F5 - Parsing API: kurzy.cz - FAIL - {e}")
         return None, None
 
 
@@ -28,12 +28,12 @@ def parsing_data_api_freecurrencyapi_com(data_input: str) -> Optional[float | No
     try:
         eur_to_usd = round(data_input['data']['USD'], 3)
 
-        logging.info(f"F5 - Parsing API - freecurrencyapi.com - SUCCESS")
+        logging.info(f"F5 - Parsing API: freecurrencyapi.com - SUCCESS")
 
         return eur_to_usd
 
     except Exception as e:
-        logging.error(f"F5 - Parsing API: freecurrencyapi.com - FAIL: {e}")
+        logging.error(f"F5 - Parsing API: freecurrencyapi.com - FAIL - {e}")
         return None
 
 

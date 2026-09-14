@@ -35,11 +35,11 @@ def create_api_GET(ttl_time: int):
             # Note: In case of fail, there will be also HTTP code in the Exception seen
             request.raise_for_status()
 
-            logging.info(f"{function_id} - API: {api_name} - GET - SUCCESS")
+            logging.info(f"{function_id} - API GET: {api_name} - SUCCESS")
             return request.json()
 
         except Exception as e:
-            logging.error(f"{function_id} - API: {api_name} - GET - FAIL: {e}")
+            logging.error(f"{function_id} - API GET: {api_name} - FAIL - {e}")
             return None
 
     return api_GET_request

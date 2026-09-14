@@ -38,7 +38,7 @@ def db_connection(function_id: str) -> Engine:
 
 
     except Exception as e:
-        logging.error(f"{function_id} - DB connection - FAIL: {e}")
+        logging.error(f"{function_id} - DB connection - FAIL - {e}")
 
         # Functions which require dialog/info to be displayed to the user
         if function_id in ("F3", "F3B", "F5B", "F7", "F7B", "F8"):
