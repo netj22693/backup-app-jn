@@ -37,7 +37,7 @@ def get_utc_time_custom_string(purpose: str) -> str:
         return time.strftime("%Y-%m-%d %H:%M:%S", now)
     
     else:
-        logging.warning("Function: get utc time: Invalid input")
+        logging.warning("F3 - operational function: get_utc_time_custom_string() - Invalid input")
 
 
 # ===== Mapping =====

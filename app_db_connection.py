@@ -33,12 +33,12 @@ def db_connection(function_id: str) -> Engine:
         conn_string = f"postgresql+psycopg2://{user}:{password}@{endpoint}.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
         engine = create_engine(conn_string)
-        logging.info(f"{function_id} - DB connection established")
+        logging.info(f"{function_id} - DB connection - SUCCESS")
         return engine
 
 
     except Exception as e:
-        logging.error(f"{function_id} - DB connection failed: {e}")
+        logging.error(f"{function_id} - DB connection - FAIL: {e}")
 
         # Functions which require dialog/info to be displayed to the user
         if function_id in ("F3", "F3B", "F5B", "F7", "F7B", "F8"):

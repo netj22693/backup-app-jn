@@ -123,8 +123,8 @@ def get_values_for_metrics(df:pd.DataFrame) -> tuple[float, float, str]:
         last_date_str = last_date.strftime("%d-%b-%Y")
 
     else:
-        # 0 rows: DF is empty -> this case is supposed to be stoped in main if/else logic and this function should not be called at all
-        logging.error(f"Get_values_for_metrics - this condition cannot happen")
+        # 0 rows: DF is empty -> this case is supposed to be stoped in main if/else logic and this else should not happen at all
+        logging.error(f"F5B - operational function: get_values_for_metrics() - this condition should not happen")
 
 
     return previous, last, last_date_str

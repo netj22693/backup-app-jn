@@ -68,11 +68,11 @@ def remove_diacritic(city: str) -> str:
             if not unicodedata.combining(character):
                 result += character
 
-        logging.info(f"F6 - Remove diacritics - COMPLETE: from: {city} -> to: {result}")
+        logging.info(f"F6 - Remove diacritics - SUCCESS: from: {city} -> to: {result}")
         return result
 
     except Exception as e:
-        logging.warning(f"F6 - Remove diacritics - FAILED: {e}")
+        logging.warning(f"F6 - Remove diacritics - FAIL: {e}")
         return city
 
 
@@ -156,12 +156,12 @@ def parsing_data_zipcodebase_com(data_json: dict) -> list | str:
 
         # Happy path - no result based on the user input "results":[] empty ARRAY
         if len(ds) == 0:
-            logging.info("F6 - API: zipcodebase.com - Parsing - SUCCESS - PARSING_STATE_NO_DATA")
+            logging.info("F6 - Parsing API: zipcodebase.com - SUCCESS - PARSING_STATE_NO_DATA")
             return "PARSING_STATE_NO_DATA"
 
 
         # Happy path - data returned based on user input
-        logging.info("F6 - API: zipcodebase.com - Parsing - SUCCESS")
+        logging.info("F6 - Parsing API: zipcodebase.com - SUCCESS")
         return ds
 
     # External system sends JSON structure {"message":" something "}
@@ -170,14 +170,12 @@ def parsing_data_zipcodebase_com(data_json: dict) -> list | str:
         if "message" in data_json:
             info_message = data_json["message"]
 
-            logging.info(f"F6 - API: zipcodebase.com - Parsing - MESSAGE RECEIVED: {info_message}")
-
+            logging.info(f"F6 - Parsing API: zipcodebase.com - MESSAGE RECEIVED: {info_message}")
             return "PARSING_STATE_INFO_MESSAGE"
 
         # In case that JSON structure will be changed by external system
         else:
-            logging.info(f"F6 - API: zipcodebase.com - Parsing - FAIL KeyError ELSE")
-
+            logging.info(f"F6 - Parsing API: zipcodebase.com - FAIL KeyError ELSE")
             return "PARSING_STATE_TECHNICAL_ISSUE"
 
 
@@ -385,22 +383,22 @@ def parsing_data_zipcodestack_com(data_json: dict) -> list | str:
 
         # Happy path - but external system has no data releated to user input
         if len(result_list) == 0:
-            logging.info(f"F6 - API: zipcodestack.com - Parsing - PARSING_STATE_NO_DATA")
+            logging.info(f"F6 - Parsing API: zipcodestack.com - PARSING_STATE_NO_DATA")
             return "PARSING_STATE_NO_DATA"
 
         # Happy end
         else:
-            logging.info(f"F6 - API: zipcodestack.com - Parsing - SUCCESS")
+            logging.info(f"F6 - Parsing API: zipcodestack.com - SUCCESS")
             return result_list
 
     # If JSON Response structure is changed
     except KeyError:
-        logging.warning(f"F6 - API: zipcodestack.com - Parsing - FAIL: KeyError")
+        logging.warning(f"F6 - Parsing API: zipcodestack.com - FAIL: KeyError")
         return "PARSING_STATE_TECHNICAL_ISSUE"
 
     # Undefined issue
     except Exception as e:
-        logging.warning(f"F6 - API: zipcodestack.com - Parsing - FAIL: {e}")
+        logging.warning(f"F6 - Parsing API: zipcodestack.com - FAIL: {e}")
         return "PARSING_STATE_TECHNICAL_ISSUE"
 
 

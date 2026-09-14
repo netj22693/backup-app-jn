@@ -19,7 +19,7 @@ def parsing_data_api_kurzy_cz(data_input: str) -> Optional[float | None]:
         return eur_rate, usd_rate
 
     except Exception as e:
-        logging.error(f"F5 - Error data parsing API - kurzy.cz: {e}")
+        logging.error(f"F5 - Parsing API: kurzy.cz - FAIL: {e}")
         return None, None
 
 
@@ -33,7 +33,7 @@ def parsing_data_api_freecurrencyapi_com(data_input: str) -> Optional[float | No
         return eur_to_usd
 
     except Exception as e:
-        logging.error(f"F5 - Error data parsing API - freecurrencyapi.com: {e}")
+        logging.error(f"F5 - Parsing API: freecurrencyapi.com - FAIL: {e}")
         return None
 
 

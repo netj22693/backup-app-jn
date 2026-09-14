@@ -336,7 +336,7 @@ def change_state_in_db(engine: Engine, offer_id: str, was_state: str, new_state:
 
                     session.commit()
 
-                    logging.info("F7B State change APPROVED/REJECTED - DB save - complete")
+                    logging.info("F7B - State change APPROVED/REJECTED - DB update - SUCCESS")
 
                     state_change_complete(offer_id, new_state)
 
@@ -347,12 +347,12 @@ def change_state_in_db(engine: Engine, offer_id: str, was_state: str, new_state:
                 else:
                     session.rollback()
 
-                    logging.warning(f"F7B State change APPROVED/REJECTED - DB save - not complete - CONCURRENCY - offer {offer_id}")
+                    logging.warning(f"F7B - State change APPROVED/REJECTED - DB update - CONCURRENCY - offer {offer_id}")
 
                     state_change_not_concurrency(offer_id)
 
         except Exception as e:
-            logging.warning(f"F7B State change - DB Update fail: {e}")
+            logging.warning(f"F7B - State change APPROVED/REJECTED - DB update FAIL: {e}")
 
             state_change_not_complete()
 
@@ -375,7 +375,7 @@ def change_state_in_db(engine: Engine, offer_id: str, was_state: str, new_state:
                 session.commit()
       
         except Exception as e:
-            logging.warning(f"F7B State change - DB Update fail: {e}")
+            logging.warning(f"F7B - State change - DB update - FAIL: {e}")
 
 
 # ===== State change function ===== 
@@ -392,42 +392,42 @@ def operational_update_of_states(df: pd.DataFrame, db_engine: Engine):
             row.offer_state == "CREATED"
             and utc_now < row.approve_till_utc
             ):
-            logging.info(f"C1 - CREATED - State is okay - no action - offer: {row.offer_id}")
+            logging.info(f"F7B - C1 - CREATED - State is okay - no action - offer: {row.offer_id}")
 
         elif (
             row.offer_state == "CREATED"
             and row.approve_till_utc < utc_now
             ):
             updates.append((row.offer_id, row.offer_state, "EXPIRED"))
-            logging.info(f"C1 - CREATED -> EXPIRED - offer: {row.offer_id}")
+            logging.info(f"F7B - C1 - CREATED -> EXPIRED - offer: {row.offer_id}")
 
         # C2
         elif (
             row.offer_state == "APPROVED"
             and utc_now < row.approve_till_utc
             ):
-            logging.info(f"C2 - APPROVED - State is okay - no action - offer: {row.offer_id}")
+            logging.info(f"F7B - C2 - APPROVED - State is okay - no action - offer: {row.offer_id}")
 
         elif (
             row.offer_state == "APPROVED"
             and row.approve_till_utc < utc_now < row.transport_start_utc
             ):
             updates.append((row.offer_id, row.offer_state,"TRANSPORT_PREPARATION"))
-            logging.info(f"C2 - APPROVED -> TRANSPORT_PREPARATION - offer: {row.offer_id}")
+            logging.info(f"F7B - C2 - APPROVED -> TRANSPORT_PREPARATION - offer: {row.offer_id}")
 
         # C3
         elif (
             row.offer_state == "TRANSPORT_PREPARATION"
             and utc_now < row.transport_start_utc 
             ):
-            logging.info(f"C3 - TRANSPORT_PREPARATION - State is okay - no action - offer: {row.offer_id}")
+            logging.info(f"F7B - C3 - TRANSPORT_PREPARATION - State is okay - no action - offer: {row.offer_id}")
 
         elif (
             row.offer_state == "TRANSPORT_PREPARATION"
             and row.transport_start_utc < utc_now < row.delivery_at_utc
             ):
             updates.append((row.offer_id, row.offer_state,"TRANSPORT_ON_THE_WAY"))
-            logging.info(f"C3 - TRANSPORT_PREPARATION -> TRANSPORT_ON_THE_WAY - offer: {row.offer_id}")
+            logging.info(f"F7B - C3 - TRANSPORT_PREPARATION -> TRANSPORT_ON_THE_WAY - offer: {row.offer_id}")
 
         # Fallback
         elif (
@@ -435,21 +435,21 @@ def operational_update_of_states(df: pd.DataFrame, db_engine: Engine):
             and row.transport_start_utc < utc_now < row.delivery_at_utc
             ):
             updates.append((row.offer_id, row.offer_state,"TRANSPORT_ON_THE_WAY"))
-            logging.info(f"C3 - Fallback - APPROVED -> TRANSPORT_ON_THE_WAY - offer: {row.offer_id}")
+            logging.info(f"F7B - C3 - Fallback - APPROVED -> TRANSPORT_ON_THE_WAY - offer: {row.offer_id}")
 
         # C4
         elif (
             row.offer_state == "TRANSPORT_ON_THE_WAY"
             and utc_now < row.delivery_at_utc
             ):
-            logging.info(f"C4 - TRANSPORT_ON_THE_WAY - State is okay - no action - offer: {row.offer_id}")
+            logging.info(f"F7B - C4 - TRANSPORT_ON_THE_WAY - State is okay - no action - offer: {row.offer_id}")
 
         elif (
             row.offer_state == "TRANSPORT_ON_THE_WAY"
             and row.delivery_at_utc < utc_now
             ):
             updates.append((row.offer_id, row.offer_state, "DELIVERED"))
-            logging.info(f"C4 - TRANSPORT_ON_THE_WAY -> DELIVERED - offer: {row.offer_id}")
+            logging.info(f"F7B - C4 - TRANSPORT_ON_THE_WAY -> DELIVERED - offer: {row.offer_id}")
 
 
         # Fallback logic for case where there will longer period of scheduler run than distance time  
@@ -458,11 +458,11 @@ def operational_update_of_states(df: pd.DataFrame, db_engine: Engine):
             and row.delivery_at_utc < utc_now
             ):
             updates.append((row.offer_id, row.offer_state, "DELIVERED"))
-            logging.info(f"Fallback - changed to DELIVERED - offer: {row.offer_id}")      
+            logging.info(f"F7B - Fallback - changed to DELIVERED - offer: {row.offer_id}")      
 
         # Falback to catch if any/condition is missed -> troubleshooting
         else:
-            logging.warning(f"Undefined condition and state - offer: {row.offer_id}")
+            logging.warning(f"F7B - Undefined condition and state - offer: {row.offer_id}")
 
 
     for offer_id, was_state, new_state in updates:

@@ -1,6 +1,8 @@
 import streamlit as st
 import xml.etree.ElementTree as ET
 import json
+import logging
+from app_logging import inicialization_logging
 from app_db_connection import db_connection
 from typing import TextIO
 from sqlalchemy import Column, Integer, String
@@ -8,6 +10,8 @@ from sqlalchemy.orm import declarative_base, Session
 from Subpages.Dialog.F4_dialog import process_done, insert_db_not_complete
 from Subpages.Operational.F3_operational_functions import get_utc_time_custom_string, create_json_file, create_xml_file
 
+# ===== Inicialization for logging =====
+inicialization_logging()
 
 # ===== Mapping for DB purpose =====
 def mapping_format_db_code(input_from: str, input_to: str) -> int:
@@ -63,10 +67,12 @@ def write_log_into_db(data: dict):
             new_invoice = Change_log(**data)
             session.add(new_invoice)
             session.commit()
+
+        logging.info(f"F4 - DB Insert - SUCCESS")
         process_done()
 
     except Exception as e:
-        print(f"Insert into DB failed: {e}")
+        logging.warning(f"F4 - DB Insert - FAIL: {e}")
         insert_db_not_complete()
 
 

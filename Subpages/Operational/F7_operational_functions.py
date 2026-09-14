@@ -34,13 +34,13 @@ def data_parsing_api(data_json: dict) -> tuple[float, float]:
         usd_to_czk_rate = round(data_json['data']['CZK'], 2)
         usd_to_eur_rate = round(data_json['data']['EUR'], 2)
 
-        logging.info(f"F7 - Parsing API - freecurrencyapi.com - SUCCESS")
+        logging.info(f"F7 - Parsing API: freecurrencyapi.com - SUCCESS")
 
         return  usd_to_czk_rate, usd_to_eur_rate
 
 
     except Exception as e:
-        logging.error(f"F7 - Error data parsing API - freecurrencyapi.com: {e}")
+        logging.error(f"F7 - Parsing API: freecurrencyapi.com - FAIL: {e}")
         
         st.warning("""
         - Technical issue with API. Temporary values will be used.
@@ -401,8 +401,7 @@ def L0_is_in_correction_list(from_city: str, to_city: str, correction_list_data:
             price = ((price_square/unit_distance) * distance)
             result = True
 
-            logging.info("F7 - Distance: L0 - Correction list -> value taken")
-
+            logging.info("F7 - Distance: L0 - Correction list -> distance used")
             return distance, price, result
     
     return 0, 0, False
@@ -522,7 +521,7 @@ def get_calculation_price_distance(coordinates: dict, price_square: float, unit_
             return price, distance
 
         else:
-            logging.warning("F7 - Distance: ERROR in: get_calculation_price_distance - if/elif/else condition not set")
+            logging.warning("F7 - operational function: get_calculation_price_distance() - Undefined condition")
 
 
 
