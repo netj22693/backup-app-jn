@@ -33,25 +33,31 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 ])
 
 with tab1:
+  ''
   st.image("Pictures/Architecture/Code_architecture_v2.svg")
   ''
   ''
 
 with tab2:
+  ''
   st.image("Pictures/Architecture/Functions_building_blocks_v2.svg")
   ''
 
 with tab3:
+  ''
   st.image("Pictures/Architecture/Operational_vs_service_v2.svg")
   ''
 with tab4:
+  ''
   st.image("Pictures/Architecture/API_layer_v2.svg", width=430)
 
 with tab5:
+  ''
   st.image("Pictures/Architecture/DB_layer_v2.svg")
   ''
 
 with tab6:
+  ''
   st.image("Pictures/Architecture/Virtual_assistant_v2.svg", width=620)
   ''
 
