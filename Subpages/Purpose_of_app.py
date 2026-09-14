@@ -197,6 +197,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 7:
+		- **v69.8** - F7 - DB insert service optimized to commit data insert only in case that all database operations succeed - 14-Sep-2026
 		- **v69.7** - F7 - Adjusted to use the same UI offer visualization as F7B (now it is unified cross-function ) - 13-Sep-2026
 		- **v69.1** - F7 - Centralized API handling - 04-Sep-2026
 		- **v68.7** - F7 & F7B - Centralized DB connection handling & F7 adjustment of fallback logic if DB not connected - 02-Sep-2026

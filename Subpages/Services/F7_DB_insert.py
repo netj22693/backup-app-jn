@@ -1,15 +1,114 @@
 import logging
 from app_logging import inicialization_logging
 from app_db_connection import db_connection
-from sqlalchemy import Column, Integer, String, Float, DateTime, Engine
+from sqlalchemy import Column, Integer, String, Float, DateTime
 from sqlalchemy.orm import declarative_base, Session
 from Subpages.Dialog.F7_dialog import insert_db_not_complete,process_done
 
 # ===== Inicialization for logging ===== 
 inicialization_logging()
 
-# ===== DB functions ===== 
-def insert_variables_offer(engine: Engine, data: dict):
+
+# ===== Base creation and ORM Classes definition ===== 
+Base = declarative_base()
+
+class Offer(Base):
+    __tablename__ = "offer"
+    __table_args__ = {"schema": "function7"}
+
+    record_id = Column(Integer, primary_key=True)
+    offer_id = Column(String)
+    created_date = Column(String)
+    created_time = Column(String)
+    need_approve_date = Column(String)
+    need_approve_time = Column(String)
+    need_approve_days = Column(String)
+    transport = Column(Integer)
+    service = Column(Integer)
+    time_zone = Column(Integer)
+    time_overall = Column(Float)
+    expected_delivery = Column(String)
+    final_price = Column(Float)
+    currency = Column(Integer)
+    created_utc = Column(DateTime(timezone=True))
+    approve_till_utc = Column(DateTime(timezone=True))
+    delivery_at_utc = Column(DateTime(timezone=True))
+    offer_state = Column(String)
+    transport_start_utc = Column(DateTime(timezone=True))
+
+class Delivery(Base):
+    __tablename__ = "delivery"
+    __table_args__ = {"schema": "function7"}
+
+    offer_id = Column(String, primary_key=True)
+    from_country = Column(String)
+    from_city = Column(String)
+    from_dtd = Column(Integer)
+    to_country = Column(String)
+    to_city = Column(String)
+    to_dtd = Column(Integer)
+    distance_length = Column(Float)
+    distance_time = Column(Float)
+    dtd_time = Column(Float)
+
+class Costs(Base):
+    __tablename__ = "costs"
+    __table_args__ = {"schema": "function7"}
+
+    offer_id = Column(String, primary_key=True)
+    currency = Column(Integer)
+    distance_cost = Column(Float)
+    dtd_from = Column(Float)
+    dtd_to = Column(Float)
+    shipment_value = Column(Float)
+    insurance = Column(Float)
+    fragile = Column(Float)
+    danger = Column(Float)
+
+class ExtraStepsTime(Base):
+    __tablename__ = "extra_steps_time"
+    __table_args__ = {"schema": "function7"}
+
+    offer_id = Column(String, primary_key=True)
+    truck_breaks = Column(Float)
+    shipment_transfer_dtd_from = Column(Float)
+    shipment_transfer_dtd_to = Column(Float)
+    dtd_truck_if_not_truck_main = Column(Float)
+
+class GoGreen(Base):
+    __tablename__ = "go_green"
+    __table_args__ = {"schema": "function7"}
+
+    offer_id = Column(String, primary_key=True)
+    main_route = Column(Float)
+    from_dtd = Column(Float)
+    to_dtd = Column(Float)
+    transfer = Column(Float)
+    total = Column(Float)
+
+class StateChangeLog(Base):
+    __tablename__ = "state_change_log"
+    __table_args__ = {"schema": "function7"}
+
+    id = Column(Integer, primary_key=True)
+    offer_id = Column(String)
+    state_from = Column(String)
+    state_to = Column(String)
+    change_note = Column(String)
+    timestamp_utc = Column(DateTime(timezone=True))
+
+class OfferRating(Base):
+    __tablename__ = "offer_rating"
+    __table_args__ = {"schema": "function7"}
+
+    id = Column(Integer, primary_key=True)
+    offer_id = Column(String)
+    rating_given = Column(Float)
+    delivery_at_utc = Column(DateTime(timezone=True))
+    rating_possible_till_utc = Column(DateTime(timezone=True))
+
+# ===== DB INSERT functions ===== 
+def insert_variables_offer(session: Session, data: dict):
 
     mapped_data = {
     "offer_id": data["offer_id"],
@@ -32,38 +131,11 @@ def insert_variables_offer(engine: Engine, data: dict):
     "offer_state": data["offer_state"]
     }
 
-    Base = declarative_base()
+    new_offer = Offer(**mapped_data)
+    session.add(new_offer)
 
-    class Offer(Base):
-        __tablename__ = "offer"
-        __table_args__ = {"schema": "function7"}
 
-        record_id = Column(Integer, primary_key=True)
-        offer_id = Column(String)
-        created_date = Column(String)
-        created_time = Column(String)
-        need_approve_date = Column(String)
-        need_approve_time = Column(String)
-        need_approve_days = Column(String)
-        transport = Column(Integer)
-        service = Column(Integer)
-        time_zone = Column(Integer)
-        time_overall = Column(Float)
-        expected_delivery = Column(String)
-        final_price = Column(Float)
-        currency = Column(Integer)
-        created_utc = Column(DateTime(timezone=True))
-        approve_till_utc = Column(DateTime(timezone=True))
-        delivery_at_utc = Column(DateTime(timezone=True))
-        offer_state = Column(String)
-        transport_start_utc = Column(DateTime(timezone=True))
-        
-    with Session(engine) as session:
-        new_offer = Offer(**mapped_data)
-        session.add(new_offer)
-        session.commit()
-
-def insert_variables_delivery(engine: Engine, data: dict):
+def insert_variables_delivery(session: Session, data: dict):
 
     mapped_data = {
     "offer_id": data["offer_id"],
@@ -78,31 +150,11 @@ def insert_variables_delivery(engine: Engine, data: dict):
     "dtd_time" : data["dtd_time"],
     }
 
-    Base = declarative_base()
-
-    class Delivery(Base):
-        __tablename__ = "delivery"
-        __table_args__ = {"schema": "function7"}
-
-        offer_id = Column(String, primary_key=True)
-        from_country = Column(String)
-        from_city = Column(String)
-        from_dtd = Column(Integer)
-        to_country = Column(String)
-        to_city = Column(String)
-        to_dtd = Column(Integer)
-        distance_length = Column(Float)
-        distance_time = Column(Float)
-        dtd_time = Column(Float)
+    new_offer = Delivery(**mapped_data)
+    session.add(new_offer)
 
 
-    with Session(engine) as session:
-        new_offer = Delivery(**mapped_data)
-        session.add(new_offer)
-        session.commit()
-
-
-def insert_variables_costs(engine: Engine, data: dict):
+def insert_variables_costs(session: Session, data: dict):
 
     mapped_data = {
     "offer_id": data["offer_id"],
@@ -116,30 +168,11 @@ def insert_variables_costs(engine: Engine, data: dict):
     "danger" : data["danger"],
     }
 
-    Base = declarative_base()
-
-    class Costs(Base):
-        __tablename__ = "costs"
-        __table_args__ = {"schema": "function7"}
-
-        offer_id = Column(String, primary_key=True)
-        currency = Column(Integer)
-        distance_cost = Column(Float)
-        dtd_from = Column(Float)
-        dtd_to = Column(Float)
-        shipment_value = Column(Float)
-        insurance = Column(Float)
-        fragile = Column(Float)
-        danger = Column(Float)
+    new_offer = Costs(**mapped_data)
+    session.add(new_offer)
 
 
-    with Session(engine) as session:
-        new_offer = Costs(**mapped_data)
-        session.add(new_offer)
-        session.commit()
-
-
-def insert_variables_extra_steps_time(engine: Engine, data: dict):
+def insert_variables_extra_steps_time(session: Session, data: dict):
 
     mapped_data = {
     "offer_id": data["offer_id"],
@@ -149,25 +182,11 @@ def insert_variables_extra_steps_time(engine: Engine, data: dict):
     "dtd_truck_if_not_truck_main" : data["dtd_truck_if_not_truck_main"],
     }
 
-    Base = declarative_base()
-
-    class Extra_steps_time(Base):
-        __tablename__ = "extra_steps_time"
-        __table_args__ = {"schema": "function7"}
-
-        offer_id = Column(String, primary_key=True)
-        truck_breaks = Column(Float)
-        shipment_transfer_dtd_from = Column(Float)
-        shipment_transfer_dtd_to = Column(Float)
-        dtd_truck_if_not_truck_main = Column(Float)
+    new_offer = ExtraStepsTime(**mapped_data)
+    session.add(new_offer)
 
 
-    with Session(engine) as session:
-        new_offer = Extra_steps_time(**mapped_data)
-        session.add(new_offer)
-        session.commit()
-
-def insert_variables_go_green(engine: Engine, data: dict):
+def insert_variables_go_green(session: Session, data: dict):
 
     mapped_data = {
         "offer_id": data["offer_id"],
@@ -178,25 +197,11 @@ def insert_variables_go_green(engine: Engine, data: dict):
         "total": data["total"]
     }
 
-    Base = declarative_base()
+    new_offer = GoGreen(**mapped_data)
+    session.add(new_offer)
 
-    class Costs(Base):
-        __tablename__ = "go_green"
-        __table_args__ = {"schema": "function7"}
 
-        offer_id = Column(String, primary_key=True)
-        main_route = Column(Float)
-        from_dtd = Column(Float)
-        to_dtd = Column(Float)
-        transfer = Column(Float)
-        total = Column(Float)
-
-    with Session(engine) as session:
-        new_offer = Costs(**mapped_data)
-        session.add(new_offer)
-        session.commit()
-
-def insert_variables_state_change_log(engine: Engine, data: dict):
+def insert_variables_state_change_log(session: Session, data: dict):
 
     mapped_data = {
         "offer_id": data["offer_id"],
@@ -206,28 +211,11 @@ def insert_variables_state_change_log(engine: Engine, data: dict):
         "timestamp_utc": data["timestamp_utc"]
     }
 
+    new_offer = StateChangeLog(**mapped_data)
+    session.add(new_offer)
 
 
-    Base = declarative_base()
-
-    class State_change_log(Base):
-        __tablename__ = "state_change_log"
-        __table_args__ = {"schema": "function7"}
-
-        id = Column(Integer, primary_key=True)
-        offer_id = Column(String)
-        state_from = Column(String)
-        state_to = Column(String)
-        change_note = Column(String)
-        timestamp_utc = Column(DateTime(timezone=True))
-
-    with Session(engine) as session:
-        new_offer = State_change_log(**mapped_data)
-        session.add(new_offer)
-        session.commit()
-
-
-def insert_variables_offer_rating(engine: Engine, data: dict):
+def insert_variables_offer_rating(session: Session, data: dict):
         
     mapped_data = {
         "offer_id": data["offer_id"],
@@ -236,23 +224,8 @@ def insert_variables_offer_rating(engine: Engine, data: dict):
         "rating_possible_till_utc": data["rating_possible_till_utc"]
     }
 
-
-    Base = declarative_base()
-
-    class State_change_log(Base):
-        __tablename__ = "offer_rating"
-        __table_args__ = {"schema": "function7"}
-
-        id = Column(Integer, primary_key=True)
-        offer_id = Column(String)
-        rating_given = Column(Float)
-        delivery_at_utc = Column(DateTime(timezone=True))
-        rating_possible_till_utc = Column(DateTime(timezone=True))
-
-    with Session(engine) as session:
-        new_offer = State_change_log(**mapped_data)
-        session.add(new_offer)
-        session.commit()
+    new_offer = OfferRating(**mapped_data)
+    session.add(new_offer)
 
 
 
@@ -261,13 +234,20 @@ def save_to_db_main_stream(offer_number: dict, variables_offer: dict, variables_
     db_engine = db_connection("F7")
 
     try:
-        insert_variables_offer(db_engine, variables_offer)
-        insert_variables_delivery(db_engine, variables_delivery)
-        insert_variables_costs(db_engine, variables_costs)
-        insert_variables_extra_steps_time(db_engine, variables_extra_steps_time)
-        insert_variables_go_green(db_engine, variables_go_green_dict)
-        insert_variables_state_change_log(db_engine, state_change_log_dict)
-        insert_variables_offer_rating(db_engine, offer_rating_dict)
+        with Session(db_engine) as session:
+
+            # Note: # session.begin() automatically commits when the context exits successfully
+            # If an exception occurs inside the transaction, SQLAlchemy automatically rolls the transaction back before the Exception
+            # All or nothing saved into DB
+            # Note2: no need to use commit() or rollback() - teh begin() covers both
+            with session.begin(): 
+                insert_variables_offer(session, variables_offer)
+                insert_variables_delivery(session, variables_delivery)
+                insert_variables_costs(session, variables_costs)
+                insert_variables_extra_steps_time(session, variables_extra_steps_time)
+                insert_variables_go_green(session, variables_go_green_dict)
+                insert_variables_state_change_log(session, state_change_log_dict)
+                insert_variables_offer_rating(session, offer_rating_dict)
 
         logging.info(f"F7 - DB insert SUCCESS")
         process_done(offer_number)
@@ -275,10 +255,3 @@ def save_to_db_main_stream(offer_number: dict, variables_offer: dict, variables_
     except Exception as e:
         logging.warning(f"F7 - DB insert failed: {e}")
         insert_db_not_complete()
-
-
-
-
-
-
-
