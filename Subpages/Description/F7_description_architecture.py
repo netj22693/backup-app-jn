@@ -6,11 +6,15 @@ st.write("# Function Architecture")
 ''
 ''
 st.write("""
-        - **Architecture** of the **Functions 7 and 7B** code
-        - **Simplified overview** to help to understand the **dependencies/relationships in the code** -> which can be beneficial for new development and testing/troubleshooting
-        - **Paradigm:** Procedural & Functional programming
-        """)
+    - **Architecture** of the **Functions 7 and 7B** code
+    - **Simplified overview** to help to understand the **dependencies/relationships in the code** -> which can be beneficial for new development and testing/troubleshooting
+    - **Paradigm:** Procedural & Functional programming
+    """)
 
+''
+st.image(Assets.Images.architecture_detail_f7_f7b)
+
+''
 ''
 tab1, tab2, tab3, tab4 = st.tabs([
     "Function 7",

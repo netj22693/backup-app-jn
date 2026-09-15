@@ -20,6 +20,11 @@ with st.expander("Video guide", icon= ":material/youtube_activity:"):
 
 ''
 ''
+st.image("Pictures/Architecture/Detail/F3_F3B_F4_architecture_detail_for_function_v2.svg", width=500)
+
+
+''
+''
 st.write("##### Business scenario:") 
 st.write(
 "Creation of invoice based on user input, either XML or JSON. In case that user wants a different file format than was produced, there is an option of mapping/automatic file translation. The whole process is supported by DB -> invoices, history and analytics can be seen as well. "

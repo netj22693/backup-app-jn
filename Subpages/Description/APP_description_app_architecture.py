@@ -15,6 +15,38 @@ st.write("""
 """)
 
 ''
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+  "VA",
+  "F1 & F2",
+  "F3, F3B & F4",
+  "F5 & F5B",
+  "F6",
+  "F7 & F7B",
+  "F8"
+])
+
+with tab1:
+  st.image(Assets.Images.architecture_detail_va)
+
+with tab2:
+  st.image(Assets.Images.architecture_detail_f1_f2)
+
+with tab3:
+  st.image(Assets.Images.architecture_detail_f3_f3b_f4)
+
+with tab4:
+  st.image(Assets.Images.architecture_detail_f5_f5b)
+
+with tab5:
+  st.image(Assets.Images.architecture_detail_f6)
+
+with tab6:
+  st.image(Assets.Images.architecture_detail_f7_f7b)
+
+with tab7:
+  st.image(Assets.Images.architecture_detail_f8)
+
+
 ''
 ''
 st.write("##### Code architecture:")
@@ -88,3 +120,25 @@ st.write("""
 ''
 ''
 st.image("Pictures/Architecture/Root_structure_v1.svg", width=280)
+
+
+# ===== Page navigation at the bottom ======
+''
+''
+st.write("-------")
+
+st.page_link(
+  label = "Description about F1 and F2",
+  page= Assets.Paths.Description.f1_f2,
+  help="The button will redirect to the relevant page within this app.",
+  width="stretch",
+  icon=":material/code:",
+  ) 
+
+st.page_link(
+  label = "Home page",
+  page= Assets.Paths.App.main_page,
+  help="The button will redirect to the relevant page within this app.",
+  width="stretch",
+  icon=":material/home:",
+  )

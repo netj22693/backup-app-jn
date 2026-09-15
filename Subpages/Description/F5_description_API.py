@@ -17,6 +17,10 @@ st.write("""
 
 ''
 ''
+st.image(Assets.Images.architecture_detail_f5_f5b)
+
+''
+''
 st.write("##### Business scenario:") 
 
 st.write("""

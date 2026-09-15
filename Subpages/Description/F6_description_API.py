@@ -13,7 +13,12 @@ st.write("""
 - **Function 6:** ZIP code - :orange[⬤] Get ZIP code(s) based on City, :green[⬤] Get City based on ZIP code - **API based**
 """
 )
+
 ''
+''
+st.image("Pictures/Architecture/Detail/F6_architecture_detail_for_function_v2.svg", width=500)
+
+
 ''
 st.write("##### Business scenario:")
 

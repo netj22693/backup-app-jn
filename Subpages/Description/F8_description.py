@@ -17,10 +17,12 @@ with st.expander("Video guide", icon= ":material/youtube_activity:"):
         st.info("This video is not up to date with the actual F8 features -> will be updated")
     except:
         st.warning("Apologies, the video was not loaded.")
+
 ''
 ''
+st.image("Pictures/Architecture/Detail/F8_architecture_detail_for_function_v2.svg", width=490)
 
-
+''
 st.write("##### Application environment:")
 ''
 st.write("""
