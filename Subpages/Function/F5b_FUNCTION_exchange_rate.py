@@ -1,12 +1,10 @@
 import streamlit as st
 import pandas as pd
-import logging
-from app_logging import inicialization_logging
 from app_db_connection import db_connection
-from datetime import datetime, timezone, timedelta
 from sqlalchemy import text
 from Subpages.SQL.F5b_SQL_queries import sql_query_exchange_rate_data
 from Subpages.Services.F5b_charts import create_chart
+from Subpages.Operational.F5b_operational_functions import get_date_range, df_split_data_clean_up, df_clean_up_for_ui, extract_variables_from_df
 
 # =================== App UI  ===================
 st.write("# Exchange Rate - Trend:")
@@ -21,193 +19,6 @@ tab1, tab2, tab3 = st.tabs([
     "USD to CZK",
     "EUR to USD"
 ])
-# -----------------------------------------------
-
-
-# GLOBAL variable - Value for rounding
-round_value = 3
-# ------------------------------------
-
-# Inicialization for logging
-inicialization_logging()
-# ------------------------------------
-
-def get_date_range(radio_input: str) -> dict:
-    '''
-    - To detrmin date from/to based radio button selection from user
-    '''
-
-    now = datetime.now(timezone.utc)
-
-    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
-    month_range_past =  today_start - timedelta(days=30)
-
-    start_of_month = datetime(now.year, now.month, 1, tzinfo=timezone.utc)
-
-    mapping = {
-        "Last 30 days": {
-            "start": month_range_past,
-            "end": now
-        },
-        "Current month": {
-            "start": start_of_month,
-            "end": now
-        }
-    }
-
-    return mapping[radio_input]
-
-
-def get_avg(df:pd.DataFrame) -> float:
-
-    return round(df.iloc[:,1].mean(), round_value)
-
-
-def get_min_max(df:pd.DataFrame) -> tuple[float, str]:
-
-    min_value = round(df.iloc[:,1].min(), round_value)
-    date_min = df.loc[df.iloc[:,1].idxmin(), df.columns[0]]
-    date_min = pd.to_datetime(date_min).strftime("%d-%b-%Y")
-
-    max_value = round(df.iloc[:,1].max(), round_value)
-    date_max= df.loc[df.iloc[:,1].idxmax(), df.columns[0]]
-    date_max = pd.to_datetime(date_max).strftime("%d-%b-%Y")
-    
-    return min_value, date_min, max_value, date_max
-
-
-
-def get_delta(previous: float, last: float) -> float:
-
-    delta = round(last - previous, 3) 
-
-    if delta > 0:
-        delta_color = "green"
-        delta_arrow = "up"
-
-    elif delta < 0: 
-        delta_color = "red"
-        delta_arrow = "down"
-
-    else:
-        delta_color = "grey"
-        delta_arrow = "up"
-    
-    
-    return delta, delta_color, delta_arrow
-
-
-def get_values_for_metrics(df:pd.DataFrame) -> tuple[float, float, str]:
-    '''
-    - If there is less than 2 records (can happen on 1st of month) -> elif condition
-    - Tail - Takes 2 latest records from DF -> 'last' and 'previous'
-    - .iloc - Takes valus from DF -> float 
-    - produces date in string format of the last record
-    Purpose: 
-        - floats for metrics/comparison purposes
-        - date_str -> to visualize from which date the last record in DB is
-    '''
-    number_rows = len(df.index)
-
-    if number_rows >= 2:
-        df = df.tail(2)
-        previous = round(df.iloc[0,1],round_value)
-        last = round(df.iloc[1,1], round_value)
-        last_date = df.iloc[1,0]
-        last_date_str = last_date.strftime("%d-%b-%Y")
-    
-    elif number_rows == 1:
-        last = round(df.iloc[0,1],round_value)
-        previous = last
-        last_date = df.iloc[0,0]
-        last_date_str = last_date.strftime("%d-%b-%Y")
-
-    else:
-        # 0 rows: DF is empty -> this case is supposed to be stoped in main if/else logic and this else should not happen at all
-        logging.error(f"F5B - operational function: get_values_for_metrics() - FAIL - unexpected condition")
-
-
-    return previous, last, last_date_str
-
-
-def df_split_data_clean_up(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
-    '''
-    Split of full DF pulled from DB into small DFs accordingly to column name -> values for particular currency
-    '''
-
-    # Small DF from 3 columns
-    column_state = column_name + "_state"
-    df = df[["created_at", column_name, column_state]]
-
-    # Drop of "FAILED" values
-    df = df[df[column_state]  == "SUCCESS"]
-
-    # Sorting based on data/time TIMESTAMPZ format form DB still 2026-05-14 07:01:18.101787+00
-    df = df.sort_values("created_at")
-
-    # Drop of TIME and Z -> 2026-05-14
-    df["created_at"] = pd.to_datetime(df["created_at"]).dt.date
-
-    # Grouping of values based on date 2026-05-14 -> taking just the latest value
-    # Note: the scheduler runs multiple time per day, there can be avg 4-5 records of rate per date -> That's why to take the last 
-    df = df.groupby("created_at").tail(1)
-
-    return df
-
-def extract_variables_from_df(df: pd.DataFrame):
-    # Sorting based on data/time TIMESTAMPZ format form DB still 2026-05-14 07:01:18.101787+00
-    df = df.sort_values("created_at")
-
-    # Drop of TIME and Z -> 2026-05-14
-    df["created_at"] = pd.to_datetime(df["created_at"]).dt.date
-
-    # Grouping of values based on date 2026-05-14 -> taking just the latest value
-    # Note: the scheduler runs multiple time per day, there can be avg 4-5 records of rate per date -> That's why to take the last 
-    df = df.groupby("created_at").tail(1)
-
-    # Get values for metrics
-    previous, last, last_date_str = get_values_for_metrics(df)
-
-    # Get delta values for metrics
-    delta_last_previous, delta_color, delta_arrow = get_delta(previous, last)
-
-    # Get avg
-    avg = get_avg(df)
-
-    # Get min and max
-    min_value, date_min, max_value, date_max = get_min_max(df)
-
-    return last, delta_last_previous, avg, min_value, date_min, max_value, date_max, last_date_str, delta_color, delta_arrow
-
-def df_clean_up_for_ui(df: pd.DataFrame, column: str, column_new: str) -> pd.DataFrame:
-    '''
-    - DF cleaned and adjusted for UI purposes
-    - BE "layout" replaced 
-    - (!) returns STYLED DF
-    '''
-
-    # Keep 2 columns
-    df = df[["created_at", column]]
-
-    # Sorting DESC
-    df = df.sort_values(by="created_at", ascending=False)
-
-    # Change TIMESTAMP -> str DD-Mon-YYYY
-    df["created_at"] = pd.to_datetime(df["created_at"]).dt.strftime("%d-%b-%Y")
-
-    # Index reset
-    df = df.reset_index(drop=True)
-    df.index += 1
-
-    # Replace name of columns
-    df = df.rename(columns={column: column_new})
-    df = df.rename(columns={"created_at": "Date"})
-
-    # Show # decimals always
-    df_styled = df.style.format({column_new: "{:.3f}"})
-    
-    return df_styled
-
 
 # Determin date rage for DB query -> parameters
 dict_range_date = get_date_range(radio_selected)
@@ -224,6 +35,7 @@ with db_engine.connect() as conn:
     "end": end
     })
 
+
 # Fallback - case: 1st day in month -> user selects 'Current month' (radio button) but no record in DB yet because scheduler has not run yet. 
 if df_table_full.empty:
     st.info("""
@@ -233,7 +45,6 @@ if df_table_full.empty:
     """) 
 
 else:
-    
     df_eur_to_czk = df_split_data_clean_up(df_table_full, "eur_to_czk")
     df_usd_to_czk = df_split_data_clean_up(df_table_full, "usd_to_czk")
     df_eur_to_usd = df_split_data_clean_up(df_table_full, "eur_to_usd")
@@ -242,14 +53,14 @@ else:
     df_usd_to_czk_ui = df_clean_up_for_ui(df_usd_to_czk, "usd_to_czk", "USD to CZK")
     df_eur_to_usd_ui = df_clean_up_for_ui(df_eur_to_usd, "eur_to_usd", "EUR to USD")
 
-    # =================== App UI - content -> result ===================
 
+    # =================== App UI - content -> result ===================
+    
     with tab1:
         if df_eur_to_czk.empty:
             st.info("There is no data for EUR to CZK yet")
 
         else:
-
             #------ metrics & chart ------
             value_eur_to_czk_last, delta_eur_to_czk, avg_eur_to_czk, min_eur_to_czk, min_date_eur_to_czk, max_eur_to_czk, max_date_eur_to_czk, last_date_str_eur_to_czk, delta_color_eur_to_czk, delta_arrow_eur_to_czk = extract_variables_from_df(df_eur_to_czk)    
 
