@@ -120,17 +120,70 @@ st.write("""
 st.image("Pictures/Architecture/Root_structure_v1.svg", width=280)
 
 
-# ===== Page navigation at the bottom ======
 ''
 ''
-st.write("-------")
-
+''
+st.write("##### More details about the Functions and their architecture:")
+''
 st.page_link(
   label = "Description about F1 and F2",
   page= Assets.Paths.Description.f1_f2,
   help="The button will redirect to the relevant page within this app.",
   width="stretch",
   icon=":material/code:",
+  ) 
+
+st.page_link(
+  label = "Description about F3, F3B and F4",
+  page= Assets.Paths.Description.f3_f4,
+  help="The button will redirect to the relevant page within this app.",
+  width="stretch",
+  icon=":material/code:",
+  ) 
+
+st.page_link(
+  label = "Description about F5 and F5B",
+  page= Assets.Paths.Description.f5,
+  help="The button will redirect to the relevant page within this app.",
+  width="stretch",
+  icon=":material/code:",
+  )
+
+st.page_link(
+  label = "Description about F6",
+  page= Assets.Paths.Description.f6,
+  help="The button will redirect to the relevant page within this app.",
+  width="stretch",
+  icon=":material/code:",
+  )
+
+st.page_link(
+  label = "Description about F7 and F7B",
+  page= Assets.Paths.Description.f7,
+  help="The button will redirect to the relevant page within this app.",
+  width="stretch",
+  icon=":material/code:",
+  )
+
+st.page_link(
+  label = "Description about F8",
+  page= Assets.Paths.Description.f8,
+  help="The button will redirect to the relevant page within this app.",
+  width="stretch",
+  icon=":material/code:",
+  )
+
+# ===== Page navigation at the bottom ======
+''
+''
+st.write("-------")
+
+st.page_link(
+  label = "Virtual Assistant (Chatbot)",
+  page= Assets.Paths.VirtualAssistant.va,
+  help="The button will redirect to the relevant page within this app.",
+  width="stretch",
+  icon=":material/smart_toy:",
   ) 
 
 st.page_link(
