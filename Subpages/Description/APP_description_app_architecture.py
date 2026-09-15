@@ -47,8 +47,6 @@ with tab7:
   st.image(Assets.Images.architecture_detail_f8)
 
 
-''
-''
 st.write("##### Code architecture:")
 
 ''
