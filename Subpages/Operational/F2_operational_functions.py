@@ -1,18 +1,11 @@
 import streamlit as st
 import time
-import logging
 import pandas as pd
 from pandas.io.formats.style import Styler
 import plotly.express as px
 from xml.etree.ElementTree import Element
-from lxml import etree
 from plotly.graph_objects import Figure
 from Subpages.Resources import Assets
-from app_logging import inicialization_logging
-
-
-# ===== Inicialization for logging =====
-inicialization_logging()
 
 # ==== XSD not passed ====
 def xsd_not_passed():
@@ -56,32 +49,6 @@ def xsd_not_passed():
             )
 
     st.stop()
-
-
-# ======= Function for validation uploaded XML against XSD =========
-
-def validate_xml_against_xsd(xml_path: str, xsd_path: str):
-
-        #try-except - for case when uploaded file is RECOGNIZED as XML (has suffix .xml) but the content is NOT XML.
-        try:
-            xmlschema_doc = etree.parse(xsd_path)
-            xmlschema = etree.XMLSchema(xmlschema_doc)
-
-            xml_doc = etree.parse(xml_path)
-            result = xmlschema.validate(xml_doc)
-
-            # If validation passes -> F2 logic can continue 
-            if result == True:
-                logging.info("F2 - XML validation XSD - SUCCESS")
-                pass
-
-            else:
-                logging.warning("F2 - XML validation XSD - FAIL - XML does not match XSD")
-                xsd_not_passed()
-
-        except Exception as e:
-            logging.warning(f"F2 - XML validation XSD - FAIL - Exception: {e}")
-            xsd_not_passed()
 
 
 # ======= Data validation -> displays on UI ======

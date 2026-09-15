@@ -4,8 +4,9 @@ import pandas as pd
 import math
 import pandasql as ps
 from Subpages.Dialog.F2_dialog import close_function
+from Subpages.Universal.Validation_XML_against_XML_Schema import validate_xml_against_xsd
 from Subpages.Expander.F2_expanders import show_expander_help, show_expander_help_validation_process
-from Subpages.Operational.F2_operational_functions import validate_xml_against_xsd, data_parsing_find, data_parsing_get, data_parsing_find_conditional, data_parsing_including_additional_services, create_pie_chart, df_styling, create_bar_chart, data_validation, data_validation_services, data_parsing_find_conditional_with_none_condition, get_utc_time_custom_string, get_filtered_df_including_ui_filters
+from Subpages.Operational.F2_operational_functions import data_parsing_find, data_parsing_get, data_parsing_find_conditional, data_parsing_including_additional_services, create_pie_chart, df_styling, create_bar_chart, data_validation, data_validation_services, data_parsing_find_conditional_with_none_condition, get_utc_time_custom_string, get_filtered_df_including_ui_filters, xsd_not_passed
 from Subpages.SQL.F2_SQL_queries import get_sql_query_item_inc_add_service, get_sql_query_percentage_product_prices_category, get_sql_query_percentage_product_prices_category_inc_add_serv, get_sql_query_percentage_add_services, sql_query_no_items_product_category, sql_query_no_items_with_additional_service, sql_query_no_items_without_additional_service, sql_query_expensive_item, sql_query_cheapest_item, sql_query_avg_price, sql_query_avg_price_with_add_serv, sql_query_avg_price_of_add_serv
 
 
@@ -30,7 +31,14 @@ if object_from_upload is None:
 if object_from_upload is not None:
 
     # Validation XML against XSD
-    validate_xml_against_xsd(xml_path = object_from_upload, xsd_path ="F2_XSD_validation/XML_Schema_for_functions_1_and_2.xsd")
+    validation_result = validate_xml_against_xsd(
+        "F2",
+        object_from_upload,
+        "Subpages/Data/F2_XML_Schema_v1.xsd"
+        )
+
+    if validation_result == False:
+        xsd_not_passed()
     
     tree_element_data = ET.parse(object_from_upload)
 

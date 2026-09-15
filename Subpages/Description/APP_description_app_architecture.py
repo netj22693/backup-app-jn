@@ -101,6 +101,7 @@ st.write("""
   - **Logging** - logging used across the application
   - **API Layer** - API service/function used across the application
   - **DB Layer** - DB connection service/function used across the application
+  - **Universal functions** - generic function/operation which can be used across Functions (DRY concept)
 """)
 
 st.write("""
