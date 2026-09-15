@@ -224,16 +224,16 @@ with tab1:
 	''
 	st.write("""
 	- Frequency of data updates from **Zipcodebase.com** :orange[⬤]
-	- **They say**: We constantly update and verify our data from multiple sources to ensure the accuracy of our data.
-	- **They say**: An uptime of 99.9%, calculated on the past 12 months.
+    - **They say**: We constantly update and verify our data from multiple sources to ensure the accuracy of our data.
+    - **They say**: An uptime of 99.9%, calculated on the past 12 months.
 	""")
 
 	''
 	''
 	st.write("""
 	- Data quality **Zipcodestack.com** :green[⬤]
-	- **They say**: Our postal code database is updated regularly to ensure high accuracy. We source our data from official postal services and government databases, making it reliable for business use, address validation, and shipping calculations.
-	- **They say**: We update our postal code database monthly for most countries. For regions with frequent postal code changes, we provide more frequent updates to ensure you always have access to the most current data.
+    - **They say**: Our postal code database is updated regularly to ensure high accuracy. We source our data from official postal services and government databases, making it reliable for business use, address validation, and shipping calculations.
+    - **They say**: We update our postal code database monthly for most countries. For regions with frequent postal code changes, we provide more frequent updates to ensure you always have access to the most current data.
 	""")
 
 
