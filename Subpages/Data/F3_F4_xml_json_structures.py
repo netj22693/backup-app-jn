@@ -177,7 +177,7 @@ xml_message_example ='''<?xml version="1.0" encoding="utf-8"?>
 json_message_example = '''
 {
     "header": {
-        "order_number": "215",
+        "order_number": 215,
         "customer": "Martina Nov\u00e1kov\u00e1",
         "invoice_number": "INV-215",
         "date": "2026-08-15",
@@ -213,7 +213,7 @@ json_schema = '''{
 			"type": "object",
 			"properties": {
 				"order_number": {
-					"type": "string"
+					"type": "number"
 				},
 				"customer": {
 					"type": "string"

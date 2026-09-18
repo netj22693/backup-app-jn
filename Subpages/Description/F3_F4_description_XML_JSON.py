@@ -68,7 +68,7 @@ with tab1:
             st.write(DESC_HEADER)
 
             '' 
-            st.image("Pictures/Function_3/F3_F4_JSON_header_v1.svg")
+            st.image("Pictures/Function_3/F3_F4_JSON_header_v2.svg")
             ''
             ''
             with st.expander("JSON Schema structure rules - **header**", icon= ":material/code:"):
