@@ -8,7 +8,7 @@ xsd_as_string ='''<?xml version="1.0" encoding="UTF-8"?>
 				<xs:element name="header">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="order_number" type="xs:string"/>
+							<xs:element name="order_number" type="xs:integer"/>
 							<xs:element name="customer" type="xs:string"/>
 							<xs:element name="invoice_number">
 								<xs:simpleType>
