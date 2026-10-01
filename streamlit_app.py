@@ -91,7 +91,7 @@ F3_F4_description_erd = st.Page(
 
 F3_function = st.Page(
     Assets.Paths.Function.f3,
-    title="3. Invoice - Creation - XML/JSON",
+    title="3. Invoice - Creation",
     icon = ":material/play_circle:"
     )
 
@@ -103,7 +103,7 @@ F3B_function = st.Page(
 
 F4_function = st.Page(
     Assets.Paths.Function.f4,
-    title="4. Invoice - Mapping - XML/JSON",
+    title="4. Invoice - Data Transfer",
     icon = ":material/play_circle:"
 )
 

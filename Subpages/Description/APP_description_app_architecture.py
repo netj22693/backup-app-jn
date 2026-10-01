@@ -70,7 +70,7 @@ with tab1:
 
 with tab2:
   ''
-  st.image("Pictures/Architecture/Functions_building_blocks_v2.svg")
+  st.image("Pictures/Architecture/Functions_building_blocks_v3.svg")
   ''
 
 with tab3:

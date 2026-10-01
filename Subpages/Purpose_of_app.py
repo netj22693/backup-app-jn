@@ -17,9 +17,9 @@ with st.expander("Overview of functions", icon= ":material/list:"):
 		""")
 	''
 	st.write("""
-		- **Function 3:** Creation of XML (slightly different one than used in F1 and F2) or JSON, through the application screen (manual inputs) - **DB on cloud**
+		- **Function 3**: Creation of invoice based on user inputs (CSV, JSON or XML) - **DB on cloud**
 		- **Function 3B:** Invoice Visibility - Visibility & Analytics based on invoices created in F3
-		- **Function 4:** Mapping/change of file format XML -> JSON or JSON -> XML 
+		- **Function 4**: Data Transfer of the invoice ; to CSV, JSON or XML 
 		""")
 	''
 	st.write("""

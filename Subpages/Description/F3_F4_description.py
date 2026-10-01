@@ -5,9 +5,9 @@ st.write("# Description - Functions 3 & 4")
 ''
 ''
 st.write("""
-- **Function 3**: Creation of invoice based on user inputs (either XML or JSON)
+- **Function 3**: Creation of invoice based on user inputs (CSV, JSON or XML)
 - **Function 3B**: Visibility of already created invoices 
-- **Function 4**: Mapping of the same invoice ; XML -> JSON or JSON -> XML
+- **Function 4**: Data Transfer of the invoice ; to CSV, JSON or XML
 """
 )
 
