@@ -32,9 +32,9 @@ SELECT
     a.extra_service_price as "Extra service price",
     d.name as "Country",
     e.name as "Transport Company",
-    a.tr_price as "Transport price",
+    a.transport_price as "Transport price",
     f.name as "Parcel size",
-    a.total_price as "Total price", 
+    a.total_sum as "Total price", 
     g.name as "Currency",
     h.name as "File format"                                            
 
@@ -42,7 +42,7 @@ FROM billing.invoice a
     INNER JOIN billing.category_list b ON (a.category = b.category_id)
     INNER JOIN billing.extra_service_list c ON (a.extra_service_type = c.service_id) 
     INNER JOIN billing.country_list d ON (a.country = d.country_id) 
-    INNER JOIN shared.transport_company e ON (a.tr_company = e.comp_id) 
+    INNER JOIN shared.transport_company e ON (a.transport_company = e.comp_id) 
     INNER JOIN shared.parcel_size f ON (a.parcel_size = f.size_id) 
     INNER JOIN billing.currency_list g ON (a.currency = g.currency_id) 
     INNER JOIN billing.format_list h ON (a.file_format = h.format_id)
@@ -69,14 +69,14 @@ SELECT
     a.order_number as "Order no.",
     a.date as "Date",
     a.customer as "Customer",
-    a.total_price as "Total price",
+    a.total_sum as "Total price",
     g.name as "Currency"                                            
 
 FROM billing.invoice a
     INNER JOIN billing.category_list b ON (a.category = b.category_id)
     INNER JOIN billing.extra_service_list c ON (a.extra_service_type = c.service_id) 
     INNER JOIN billing.country_list d ON (a.country = d.country_id) 
-    INNER JOIN shared.transport_company e ON (a.tr_company = e.comp_id) 
+    INNER JOIN shared.transport_company e ON (a.transport_company = e.comp_id) 
     INNER JOIN shared.parcel_size f ON (a.parcel_size = f.size_id) 
     INNER JOIN billing.currency_list g ON (a.currency = g.currency_id) 
 
@@ -106,7 +106,7 @@ FROM billing.invoice a
     INNER JOIN billing.category_list b ON (a.category = b.category_id)
     INNER JOIN billing.extra_service_list c ON (a.extra_service_type = c.service_id) 
     INNER JOIN billing.country_list d ON (a.country = d.country_id) 
-    INNER JOIN shared.transport_company e ON (a.tr_company = e.comp_id) 
+    INNER JOIN shared.transport_company e ON (a.transport_company = e.comp_id) 
     INNER JOIN shared.parcel_size f ON (a.parcel_size = f.size_id) 
     INNER JOIN billing.currency_list g ON (a.currency = g.currency_id) 
 
@@ -124,7 +124,7 @@ FROM billing.invoice a
     INNER JOIN billing.category_list b ON (a.category = b.category_id)
     INNER JOIN billing.extra_service_list c ON (a.extra_service_type = c.service_id) 
     INNER JOIN billing.country_list d ON (a.country = d.country_id) 
-    INNER JOIN shared.transport_company e ON (a.tr_company = e.comp_id) 
+    INNER JOIN shared.transport_company e ON (a.transport_company = e.comp_id) 
     INNER JOIN shared.parcel_size f ON (a.parcel_size = f.size_id) 
     INNER JOIN billing.currency_list g ON (a.currency = g.currency_id) 
 
@@ -137,14 +137,14 @@ SELECT
     e.name as "Transport Company",
     d.name as "Country",
     f.name as "Parcel size",
-    a.tr_price as "Transport price",
+    a.transport_price as "Transport price",
     g.name as "Currency"                         
 
 FROM billing.invoice a
     INNER JOIN billing.category_list b ON (a.category = b.category_id)
     INNER JOIN billing.extra_service_list c ON (a.extra_service_type = c.service_id) 
     INNER JOIN billing.country_list d ON (a.country = d.country_id) 
-    INNER JOIN shared.transport_company e ON (a.tr_company = e.comp_id) 
+    INNER JOIN shared.transport_company e ON (a.transport_company = e.comp_id) 
     INNER JOIN shared.parcel_size f ON (a.parcel_size = f.size_id) 
     INNER JOIN billing.currency_list g ON (a.currency = g.currency_id) 
 
@@ -158,7 +158,7 @@ SELECT
     e.name                   
 
 FROM billing.invoice a
-    INNER JOIN shared.transport_company e ON (a.tr_company = e.comp_id) 
+    INNER JOIN shared.transport_company e ON (a.transport_company = e.comp_id) 
 
 WHERE 
     a.order_number = :order
@@ -217,17 +217,17 @@ def get_sql_query_category(date_filter: bool, where_condition: str | None) -> st
 
 def get_sql_query_company(date_filter: bool, where_condition: str | None) -> str:
     query = """
-    SELECT e.name, count(a.tr_company)
+    SELECT e.name, count(a.transport_company)
     FROM billing.invoice a
-    INNER JOIN shared.transport_company e ON (a.tr_company = e.comp_id)"""
+    INNER JOIN shared.transport_company e ON (a.transport_company = e.comp_id)"""
 
     # User filtering based on date
     if date_filter == True:
         query += where_condition
     
     query +="""
-    GROUP BY e.name, a.tr_company
-    ORDER BY count(a.tr_company) DESC;"""
+    GROUP BY e.name, a.transport_company
+    ORDER BY count(a.transport_company) DESC;"""
 
     return query
 

@@ -56,3 +56,10 @@ def insert_db_not_complete():
         """)
     ''
     final_dialogs_goto()
+
+
+@st.dialog("Technical issue") 
+def dialog_not_possible_to_pull_data():
+    st.write("""
+    - Not possible to pull data from DB. The F3 function is currently not available
+    """)

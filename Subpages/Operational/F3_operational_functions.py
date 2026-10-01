@@ -1,13 +1,12 @@
 import time
-import json
-import xml.etree.ElementTree as ET
 import streamlit as st
 import pandas as pd
-from sqlalchemy import Column, Integer, String, Boolean, Float, Engine, text
+from sqlalchemy import Column, Integer, String, Boolean, Float, Engine, text, Connection
 from sqlalchemy.orm import declarative_base, Session
 import logging
 from app_logging import inicialization_logging
 from Subpages.Dialog.F3_dialog import process_done, insert_db_not_complete
+from Subpages.Services.F3_DB_mapping import F3MappingFunctions
 
 # ===== Inicialization for logging =====
 inicialization_logging()
@@ -40,133 +39,22 @@ def get_utc_time_custom_string(purpose: str) -> str:
         logging.warning("F3 - Operational function: get_utc_time_custom_string() - FAIL - Invalid input")
 
 
-# ===== Mapping =====
+def pull_data_and_transfer_to_list(query: str, conn: Connection):
+
+    df = pd.read_sql_query(sql=text(query), con=conn)
+    return df["name"].tolist()
 
 
-def mapping_additional_service(service_name: str, price_input: float) -> tuple[str, float]:
-    
-    mapping = {
-        'No additional service': ('None', 0.00),
-        'Insurance': ('insurance', 0.15),
-        'Extended warranty': ('extended warranty', 0.1)
-    }
-    
-    service, rate = mapping[service_name]
-    return service, price_input * rate
+def extract_data_additional_services(service: str, df: pd.DataFrame)->str:
+
+    df = df[df["name"] == service]
+
+    label = df["mapping_label"].iloc[0]
+    percentage = df["cost"].iloc[0]
+
+    return label, percentage
 
 
-# def() for transfering user input into field in XML/JSON
-def mapping_additional_service_into_field(service_name: str) -> str:
-    
-    if service_name == 'No additional service':
-        return 'N'
-
-    else:
-        return 'Y'
-
-
-# Mapping
-def mapping_currency_for_query(currency: str) -> str:
-
-    mapping = {
-        "euro": "euro",
-        "US dollar": "us_dollar",
-        "Kč": "koruna"
-    }
-
-    return mapping.get(currency)      
-
-
-# Mapping
-def mapping_country_to_table(country: str) -> str:
-
-    mapping = {
-        "Czech Republic": "country_cz",
-        "Slovakia": "country_sk",
-    }
-
-    return mapping.get(country) 
-
-
-def mapping_category(category: str) -> int:
-
-    mapping = {
-        "PC" : 1,
-        "TV" : 2,
-        "Gaming" : 3,
-        "Mobile phones" : 4,
-        "Tablets" : 5,
-        "Major Appliances" : 6,
-        "Households" : 7
-    }
-    return mapping.get(category) 
-
-
-def mapping_extra_service(service: str) -> int:
-
-    mapping = {
-        "No additional service" : 1,
-        "Insurance" : 2,
-        "Extended warranty" : 3
-    }
-
-    result = mapping.get(service)
-
-    if result != 1:
-        result_bool = True
-    else:
-        result_bool = False
-
-    return result, result_bool
-
-
-def mapping_country(country: str) -> int:
-
-    mapping = {
-        "Czech Republic" : 1,
-        "Slovakia" : 2
-    }
-    return mapping.get(country) 
-
-
-def mapping_transport_company(company: str) -> int:
-
-    mapping = {
-        "DHL" : 1,
-        "Fedex" : 2
-    }
-    return mapping.get(company) 
-
-
-def mapping_size(size: str) -> str:
-
-    mapping = {
-        "small" : "s",
-        "medium" : "m",
-        "large" : "l",
-    }
-    return mapping.get(size) 
-
-def mapping_currency(currency: str) -> int:
-
-    mapping = {
-        "euro" : 1,
-        "US dollar" : 2,
-        "Kč" : 3,
-    }
-    return mapping.get(currency) 
-
-
-def mapping_file_format(format: str) -> int:
-
-    mapping = {
-        "XML" : 1,
-        "JSON" : 2,
-    }
-    return mapping.get(format) 
-
-
-# ===== DEF SQL Query =====
 def get_transport_price(engine: Engine, currency: str, table: str, size:str, company: str) -> float:
 
     '''
@@ -193,8 +81,8 @@ def get_transport_price(engine: Engine, currency: str, table: str, size:str, com
 
     return query_result
 
-# ===== DEF SQL Query =====
-def create_order_num(engine) -> tuple[int, str]:
+
+def create_order_num(engine) -> int:
 
     # Using sequence principle
     query = f"""
@@ -206,92 +94,8 @@ def create_order_num(engine) -> tuple[int, str]:
     # 'nextval' is the name of column
     query_result = df_query_result['nextval'].iloc[0]
     
-    # INT for DB - i simportant to explicitly change the type to int() due to pandas it is np.int64() which ORM when save to DB has an issue with 
-    return int(query_result), str(query_result)
-
-
-# ===== JSON Builder =====
-def create_json_file(data: dict) -> str:
-
-    '''
-    - JSON Builder
-    - Returns: JSON as str/text
-    '''
-
-    data_json = {
-        "header" : {
-            "order_number" : data["order_number"],
-            "customer":  data["customer"],
-            "invoice_number": data["invoice_number"],
-            "date": data["date"],
-            "price": {
-                "total_sum": data["total_sum"],
-                "currency": data["currency"]
-            }
-        },
-        "detail": {
-            "category": data["category"],
-            "product_name": data["product_name"],
-            "price_amount": data["price_amount"],
-            "additional_service": {
-                "service": data["service"],
-                "service_type": data["service_type"],
-                "service_price": data["service_price"]
-            }
-        },
-        "transportation": {
-            "transporter": data["transporter"],
-            "country": data["country"],
-            "size": data["size"],
-            "transport_price": data["transport_price"]
-        }
-    }
-
-    return json.dumps(data_json, indent=4) 
-
-
-# ==== XML Builder =====
-def create_xml_file(data: dict) -> str:
-    
-    '''
-    - XML Builder
-    - Returns: XML as str/text
-    '''
-
-    xml_doc = ET.Element("invoice")
-
-    header = ET.SubElement(xml_doc, "header")
-
-    ET.SubElement(header, "order_number").text = data["order_number"]
-    ET.SubElement(header, "customer").text = data["customer"]
-    ET.SubElement(header, "invoice_number").text = data["invoice_number"]
-    ET.SubElement(header, "date").text = data["date"]
-
-    price = ET.SubElement(header, "price")
-    ET.SubElement(price, "total_sum").text = f'{data["total_sum"]:.2f}'
-    ET.SubElement(price, "currency").text = data["currency"]
-
-
-    detail = ET.SubElement(xml_doc, "detail")
-    ET.SubElement(detail, "category").text = data["category"]
-    ET.SubElement(detail, "product_name").text = data["product_name"]
-    ET.SubElement(detail, "price_amount").text = f'{data["price_amount"]:.2f}'
-
-    add = ET.SubElement(detail, "additional_service")
-    ET.SubElement(add, "service").text = data["service"]
-    ET.SubElement(add, "service_type").text = data["service_type"]
-    ET.SubElement(add, "service_price").text = f'{data["service_price"]:.2f}'
-
-    transport = ET.SubElement(xml_doc, "transportation")
-    ET.SubElement(transport, "transporter").text = data["transporter"]
-    ET.SubElement(transport, "country").text = data["country"]
-    ET.SubElement(transport, "size").text = data["size"]
-    ET.SubElement(transport, "transport_price").text = f'{data["transport_price"]:.2f}'
-
-    # Pretty print
-    ET.indent(xml_doc, space="   ")
-
-    return ET.tostring(xml_doc, encoding="unicode", xml_declaration=True)
+    # INT for DB - is important to explicitly change the type to int() due to pandas it is np.int64() which ORM when save to DB has an issue with 
+    return int(query_result)
 
 
 # ===== DEF insert into DB =====
@@ -314,12 +118,13 @@ def insert_into_db(engine: Engine, data: dict):
         extra_service_type = Column(String)
         extra_service_price = Column(String)
         country = Column(String)
-        tr_company = Column(String)
-        tr_price = Column(Float)
+        transport_company = Column(String)
+        transport_price = Column(Float)
         parcel_size = Column(String)
-        total_price = Column(Float)
+        total_sum = Column(Float)
         currency = Column(String)
         file_format = Column(String)
+        invoice_number = Column(String)
 
     with Session(engine) as session:
         new_invoice = Invoice(**data)
@@ -329,7 +134,7 @@ def insert_into_db(engine: Engine, data: dict):
 
 def on_download_click(db_engine: Engine, file_format: str, data: dict, order_number: str):
 
-    mapped_fileformat = mapping_file_format(file_format)
+    mapped_fileformat = F3MappingFunctions.mapping_file_format(file_format)
 
     data.update({"file_format": mapped_fileformat})
 
@@ -345,12 +150,12 @@ def on_download_click(db_engine: Engine, file_format: str, data: dict, order_num
 
 # ===== Clear of inputs - Reset button =====
 def reset():
-    st.session_state["k_customer"] = None
-    st.session_state["k_product"] = None
-    st.session_state["k_category"] = None
-    st.session_state["k_currency"] = None
-    st.session_state["k_price"] = 0.00
-    st.session_state["k_add_service"] = "No additional service"
-    st.session_state["k_country"] = None
-    st.session_state["k_transp"] = None
-    st.session_state["k_size"] = None
+    st.session_state["key_customer"] = None
+    st.session_state["key_product_name"] = None
+    st.session_state["key_category"] = None
+    st.session_state["key_currency"] = None
+    st.session_state["key_product_price"] = 0.00
+    st.session_state["key_additional_service"] = "No additional service"
+    st.session_state["key_country"] = None
+    st.session_state["key_transport_company"] = None
+    st.session_state["key_parcel_size"] = None
