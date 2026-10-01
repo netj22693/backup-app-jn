@@ -28,7 +28,7 @@ with tab_erd_1:
 
     ''
     ''
-    st.image("Pictures/Function_3/F3_F3B_F4_ERD_landscape_context_v3.svg")
+    st.image("Pictures/Function_3/F3_F3B_F4_ERD_landscape_context_v4.svg")
 
 
 with tab_erd_2:
@@ -82,7 +82,7 @@ with tab_erd_3:
         - As part of the F3 process, there is a need of keeping **order_id** "reserved" in DB → **sequence in PostgreSQL** is set to **allow concurrency of users** without technicall issue
         """)    
     ''
-    st.image("Pictures/Function_3/F3_ERD_invoice_v5.svg")
+    st.image("Pictures/Function_3/F3_ERD_invoice_v6.svg")
 
     query_2 = """
 SELECT 
@@ -96,9 +96,9 @@ SELECT
     a.extra_service_price as "Extra service price",
     d.name as "Country",
     e.name as "Transport Company",
-    a.tr_price as "Transport price",
+    a.transport_price as "Transport price",
     f.name as "Parcel size",
-    a.total_price as "Total price", 
+    a.total_sum as "Total price", 
     g.name as "Currency",
     h.name as "File format"                                            
 
@@ -106,7 +106,7 @@ FROM billing.invoice a
     INNER JOIN billing.category_list b ON (a.category = b.category_id)
     INNER JOIN billing.extra_service_list c ON (a.extra_service_type = c.service_id) 
     INNER JOIN billing.country_list d ON (a.country = d.country_id) 
-    INNER JOIN shared.transport_company e ON (a.tr_company = e.comp_id) 
+    INNER JOIN shared.transport_company e ON (a.transport_company = e.comp_id) 
     INNER JOIN shared.parcel_size f ON (a.parcel_size = f.size_id) 
     INNER JOIN billing.currency_list g ON (a.currency = g.currency_id) 
     INNER JOIN billing.format_list h ON (a.file_format = h.format_id)
