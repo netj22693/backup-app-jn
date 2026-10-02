@@ -17,7 +17,7 @@ def display_dialog_function_not_available(function_id: str):
 
 
 # ===== DB connection ===== 
-def db_connection(function_id: str) -> Engine:
+def db_connection(function_id: str, dialog_to_display: bool) -> Engine:
 
     '''
     function_id: FX -> id of function which call the db_connect() -> for logic of dialog window
@@ -40,6 +40,6 @@ def db_connection(function_id: str) -> Engine:
     except Exception as e:
         logging.error(f"{function_id} - DB connection - FAIL - {e}")
 
-        # Functions which require dialog/info to be displayed to the user
-        if function_id in ("F3", "F3B", "F5B", "F7", "F7B", "F8"):
+        # If dialog/info to be displayed to the user is required 
+        if dialog_to_display == True:
             display_dialog_function_not_available(function_id)

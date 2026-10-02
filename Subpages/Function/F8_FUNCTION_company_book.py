@@ -60,7 +60,7 @@ tab1, tab2, tab3, tab4 = st.tabs([
 ])
 
 # DB engine creation
-db_engine = db_connection(function_id="F8")
+db_engine = db_connection("F8", True)
 
 with tab1:
 

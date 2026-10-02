@@ -32,7 +32,7 @@ tab1, tab2, tab3, tab4 = st.tabs([
 ])
 
 # Connection can be used across tabs
-db_engine = db_connection(function_id="F7B")
+db_engine = db_connection("F7B", True)
 
 
 # ====================== TAB 1 ======================

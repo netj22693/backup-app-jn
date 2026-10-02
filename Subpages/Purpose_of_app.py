@@ -270,6 +270,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 4:
+		- **v70.3** - Function rebuilt to use CDM and validate file data against DB data - 02-Oct-2026
 		- **v68.7** - Centralized DB connection handling - 02-Sep-2026
 		- **v65.0** - Major code refactoring & clean up - 07-July-2026
 		- **v52.3** - Function description extended by Video Guide - 03-Dec-2025

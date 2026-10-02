@@ -20,7 +20,7 @@ st.write("# Delivery details:")
 ''
 
 # DB connection -> Engine
-db_engine = db_connection(function_id="F3")
+db_engine = db_connection("F3", True)
 
 
 # Get options for the user form    
@@ -203,7 +203,7 @@ if  submit_button:
 
     invoice_number = create_invoice_number(order_number)
 
-    date = get_utc_time_custom_string('invoice')
+    date = get_utc_time_custom_string("F3", "invoice")
 
     # Costs calculations
     transport_price = get_transport_price(db_engine, currency_query, country_table, parcel_size, transport_company)

@@ -750,7 +750,7 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
 
 
     # DB connection -> Engine + getting offer number 
-    db_engine = db_connection(function_id="F7")
+    db_engine = db_connection("F7", True)
 
 
     # DB Generate offer number. Next available in DB + DB to block this offer number to prevent from concurrency

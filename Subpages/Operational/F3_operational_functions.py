@@ -11,14 +11,13 @@ from Subpages.Services.F3_DB_mapping import F3MappingFunctions
 # ===== Inicialization for logging =====
 inicialization_logging()
 
-# ===== FUnction to create INV number =====
+# ===== Function to create INV number =====
 def create_invoice_number(order_num: int) -> str:
-
     return 'INV-' + str(order_num)
 
 
 # ===== Generating of date for <date> element =====
-def get_utc_time_custom_string(purpose: str) -> str:
+def get_utc_time_custom_string(function_id: str, purpose: str) -> str:
 
     '''
     - Function to generate UTC time and format based on DB table and function F3 or F4 
@@ -36,7 +35,7 @@ def get_utc_time_custom_string(purpose: str) -> str:
         return time.strftime("%Y-%m-%d %H:%M:%S", now)
     
     else:
-        logging.warning("F3 - Operational function: get_utc_time_custom_string() - FAIL - Invalid input")
+        logging.warning(f"{function_id} - Operational function: get_utc_time_custom_string() - FAIL - Invalid input")
 
 
 def pull_data_and_transfer_to_list(query: str, conn: Connection):

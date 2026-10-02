@@ -29,7 +29,7 @@ with tab1:
     ''
     if st.button("Show last 15 offers", width="stretch", icon=":material/table:"):
 
-        db_engine = db_connection(function_id="F3B")
+        db_engine = db_connection("F3B", True)
 
         df = pd.read_sql(sql_query_overview_invoices, db_engine)
 
@@ -67,7 +67,7 @@ with tab2:
     if submit_button:   
 
 
-        db_engine = db_connection(function_id="F3B")            
+        db_engine = db_connection("F3B", True)            
 
         # Trigger function 2 only in case that valid and safe input (SQL injestion) and Order number found in DB
         if not input_validation(order_input) or not input_safety_validation(order_input) or not input_validation_order_exists(db_engine, order_input) :
@@ -174,7 +174,7 @@ with tab4:
     submit_button_tab4 = st.button("Submit", width= "stretch", icon=":material/apps:", key="key_submit_button_tab4")
 
     if submit_button_tab4:
-        db_engine = db_connection(function_id="F3B")
+        db_engine = db_connection("F3B", True)
 
         with db_engine.connect() as conn:
 

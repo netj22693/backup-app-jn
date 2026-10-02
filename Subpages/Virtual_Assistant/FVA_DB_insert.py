@@ -14,7 +14,7 @@ def insert_rating_into_db(data: dict):
     #engine creation
 
     try:
-        engine = db_connection(function_id="VA")
+        engine = db_connection("VA", False)
 
         mapped_data = {
         "uuid": data["uuid"],

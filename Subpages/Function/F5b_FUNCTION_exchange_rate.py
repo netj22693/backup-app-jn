@@ -26,7 +26,7 @@ start = dict_range_date["start"]
 end = dict_range_date["end"]
 
 # Engine creation
-db_engine = db_connection(function_id="F5B")
+db_engine = db_connection("F5B", True)
 
 # Creation DF from DB
 with db_engine.connect() as conn:

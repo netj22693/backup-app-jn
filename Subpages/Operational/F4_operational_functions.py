@@ -1,51 +1,32 @@
-import streamlit as st
-import xml.etree.ElementTree as ET
-import json
 import logging
 from app_logging import inicialization_logging
 from app_db_connection import db_connection
-from typing import TextIO
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import declarative_base, Session
 from Subpages.Dialog.F4_dialog import process_done, insert_db_not_complete
-from Subpages.Operational.F3_operational_functions import get_utc_time_custom_string, create_json_file, create_xml_file
+from Subpages.Operational.F3_operational_functions import get_utc_time_custom_string
+from Subpages.Services.F3_DB_mapping import F3MappingFunctions
 
 # ===== Inicialization for logging =====
 inicialization_logging()
 
-# ===== Mapping for DB purpose =====
-def mapping_format_db_code(input_from: str, input_to: str) -> int:
-
-	mapping = {
-		"XML" : 1,
-		"JSON" : 2
-
-	}
-
-	result_from = mapping.get(input_from)
-	result_to = mapping.get(input_to)
-
-	return result_from, result_to
-
-
 # ==== Functions related to DB =====
 
 # Data for DB insert
-def create_data_for_log(order_number: str, mapping_from: int, mapping_to: int) -> dict:
+def create_data_for_log(order_number: str, format_from_mapped: int, format_to_mapped: int) -> dict:
 	
     data = {
-        "date": get_utc_time_custom_string('change_log'),   
+        "date": get_utc_time_custom_string("F4","change_log"),   
         "order_number_log": order_number,
         "change": "mapping",
-		"mapping_from": mapping_from,
-		"mapping_to" : mapping_to
+		"mapping_from": format_from_mapped,
+		"mapping_to" : format_to_mapped
 	}
     
     return data
 
-
 # Insert into DB
-def write_log_into_db(data: dict):
+def insert_log_into_db(data: dict):
 	
     Base = declarative_base()
 
@@ -60,7 +41,7 @@ def write_log_into_db(data: dict):
         mapping_from = Column(String)
         mapping_to = Column(String)
 	
-    db_engine = db_connection(function_id="F4")
+    db_engine = db_connection("F4", False)
 
     try:
         with Session(db_engine) as session:
@@ -76,106 +57,11 @@ def write_log_into_db(data: dict):
         insert_db_not_complete()
 
 
-# ==== Functions related to parsing =====
+def insert_log_into_db_orchestration(order_number: int, format_from: str, format_to: str):
 
-#  Parsing XML to JSON
-def parsing_xml_mapping_to_json(object_xml: TextIO) -> tuple[str, str, dict]:
+    format_from_mapped = F3MappingFunctions.mapping_file_format(format_from)
+    format_to_mapped = F3MappingFunctions.mapping_file_format(format_to)
 
-    '''
-    - Parsing of data from XML to dictionary
-    - The dictionary passed to generic JSON Build function
-    - Pasing data to the function creating data inputs into DB
-    - Returns: data for download as STR (JSON), file name, data for insert into DB
-    '''
+    data = create_data_for_log(order_number, format_from_mapped, format_to_mapped)
 
-    # Data import 
-    tree = ET.parse(object_xml)
-
-    root = tree.getroot()
-
-    parsed_data_to_dict = {
-        "order_number": root.find("header/order_number").text,
-        "customer": root.find("header/customer").text,
-        "invoice_number": root.find("header/invoice_number").text,
-        "date": root.find("header/date").text,
-        "total_sum": float(root.find("header/price/total_sum").text),
-        "currency": root.find("header/price/currency").text,
-
-        "category": root.find("detail/category").text,
-        "product_name": root.find("detail/product_name").text,
-        "price_amount": float(root.find("detail/price_amount").text),
-
-        "service": root.find("detail/additional_service/service").text,
-        "service_type": root.find("detail/additional_service/service_type").text,
-        "service_price": float(root.find("detail/additional_service/service_price").text),
-
-        "transporter": root.find("transportation/transporter").text,
-        "country": root.find("transportation/country").text,
-        "size": root.find("transportation/size").text,
-        "transport_price": float(root.find("transportation/transport_price").text),
-    }
-
-    # Using generic function - JSON builder for F3 and F4
-    json_object = create_json_file(parsed_data_to_dict)
-
-    file_name = f"{parsed_data_to_dict['invoice_number']}.json"
-
-    mapping_from, mapping_to = mapping_format_db_code("XML","JSON")
-
-    data_for_log_db = create_data_for_log(parsed_data_to_dict['order_number'], mapping_from, mapping_to)
-
-    return json_object, file_name, data_for_log_db
-
-
-
-#  Parsing XML to JSON
-def parsing_json_mapping_to_xml(object_json: TextIO) -> tuple[str, str, dict]:
-
-    '''
-    - Parsing of data from JSON to dictionary
-    - The dictionary passed to generic XML Build function
-    - Pasing data to the function creating data inputs into DB
-    - Returns: data for download as STR (XML), file name, data for insert into DB
-    '''
-
-    # load the json to a string
-    resp = json.load(object_json)
-
-    parsed_data_to_dict = {
-        # header
-        "order_number": resp["header"]["order_number"],
-        "customer": resp["header"]["customer"],
-        "invoice_number": resp["header"]["invoice_number"],
-        "date": resp["header"]["date"],
-
-        # price
-        "total_sum": float(resp["header"]["price"]["total_sum"]),
-        "currency": resp["header"]["price"]["currency"],
-
-        # detail
-        "category": resp["detail"]["category"],
-        "product_name": resp["detail"]["product_name"],
-        "price_amount": float(resp["detail"]["price_amount"]),
-
-        # additional service
-        "service": resp["detail"]["additional_service"]["service"],
-        "service_type": resp["detail"]["additional_service"]["service_type"],
-        "service_price": float(resp["detail"]["additional_service"]["service_price"]),
-
-        # transportation
-        "transporter": resp["transportation"]["transporter"],
-        "country": resp["transportation"]["country"],
-        "size": resp["transportation"]["size"],
-        "transport_price": float(resp["transportation"]["transport_price"])
-    }
-
-    # Using generic function - XML builder for F3 and F4
-    xml_object = create_xml_file(parsed_data_to_dict)
-
-    file_name_xml_fstring = f"{parsed_data_to_dict['invoice_number']}.xml"
-
-    mapping_from, mapping_to = mapping_format_db_code("JSON","XML")
-
-    data_for_log_db = create_data_for_log(parsed_data_to_dict['order_number'], mapping_from, mapping_to)
-
-    return xml_object, file_name_xml_fstring, data_for_log_db
+    insert_log_into_db(data)

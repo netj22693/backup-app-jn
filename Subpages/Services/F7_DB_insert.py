@@ -231,7 +231,7 @@ def insert_variables_offer_rating(session: Session, data: dict):
 
 def save_to_db_main_stream(offer_number: dict, variables_offer: dict, variables_delivery: dict, variables_costs: dict, variables_extra_steps_time: dict, variables_go_green_dict: dict, state_change_log_dict: dict, offer_rating_dict: dict):
 
-    db_engine = db_connection("F7")
+    db_engine = db_connection("F7", False)
 
     try:
         with Session(db_engine) as session:

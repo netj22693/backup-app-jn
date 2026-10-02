@@ -198,7 +198,7 @@ def calculate_rating_and_save_into_db(
 
     rating_result = adjust_rating_for_ui(rating_dict_final["overall_rating"]["calculated_rating"])
 
-    db_engine = db_connection("F7B Rating")
+    db_engine = db_connection("F7B Rating", False)
 
     insert_rating_data_to_db(db_engine, rating_dict_final, rating_result)
 
