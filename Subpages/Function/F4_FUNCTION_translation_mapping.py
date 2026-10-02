@@ -10,6 +10,7 @@ from io import StringIO
 from pathlib import Path
 from app_db_connection import db_connection
 from app_logging import inicialization_logging
+from Subpages.Dialog.F4_dialog import display_transformation_not_complete_toast, display_transformation_complete_toast
 from Subpages.Data.F4_validation_process import STATE_TEXT
 from Subpages.SQL.F4_SQL_queries import sql_query_data_integrity
 from Subpages.Operational.F4_operational_functions import insert_log_into_db_orchestration
@@ -72,6 +73,7 @@ elif uploaded_file is not None:
     
         if validation_result == False:
             st.warning(STATE_TEXT["schema_validation"]["fail"])
+            display_transformation_not_complete_toast()
             st.stop()
 
         st.success(STATE_TEXT["schema_validation"]["success"])
@@ -89,6 +91,7 @@ elif uploaded_file is not None:
 
         if cdm_format == False:
             st.warning(STATE_TEXT["canonical_transformation"]["fail"])
+            display_transformation_not_complete_toast()
             st.stop()
 
         st.success(STATE_TEXT["canonical_transformation"]["success"])
@@ -109,6 +112,7 @@ elif uploaded_file is not None:
 
         if validation_result == False:
             st.warning(STATE_TEXT["schema_validation"]["fail"])
+            display_transformation_not_complete_toast()
             st.stop()
 
         st.success(STATE_TEXT["schema_validation"]["success"])
@@ -124,6 +128,7 @@ elif uploaded_file is not None:
 
         if cdm_format == False:
             st.warning(STATE_TEXT["canonical_transformation"]["fail"])
+            display_transformation_not_complete_toast()
             st.stop()
 
         st.success(STATE_TEXT["canonical_transformation"]["success"])
@@ -146,10 +151,12 @@ elif uploaded_file is not None:
 
         if len(parsed_list) != len(CDM_FIELDS):
             st.warning("**[X]** - Canonical Transformation - different number of fields")
+            display_transformation_not_complete_toast()
             st.stop()
 
         if cdm_format == False:
             st.warning("**[X]** - Canonical Transformation - data fields doesn't correspond with predefined format")
+            display_transformation_not_complete_toast()
             st.stop()
 
         st.success(STATE_TEXT["canonical_transformation"]["success"])
@@ -169,6 +176,7 @@ elif uploaded_file is not None:
 
     if data_db.empty:
         st.warning(STATE_TEXT["db_order_number"]["fail"] + f": {cdm_format['order_number']}")
+        display_transformation_not_complete_toast()
         st.stop()
        
     cdm_format_db: dict = transform_data_to_CDM(
@@ -179,6 +187,7 @@ elif uploaded_file is not None:
 
     if cdm_format != cdm_format_db:
         st.warning(STATE_TEXT["db_integrity_check"]["fail"])
+        display_transformation_not_complete_toast()
         st.stop()
 
     st.success(STATE_TEXT["db_integrity_check"]["success"])
@@ -191,6 +200,10 @@ elif uploaded_file is not None:
             time.sleep(STATE_TEXT["button"]["time_sleep"])
 
         matrix = MAPPING_MATRIX.get(suffix)
+
+        list_count = len(matrix)
+
+        count = 0
 
         for item in matrix:
             config = LOGIC_CONFIG[item]
@@ -220,8 +233,15 @@ elif uploaded_file is not None:
                 )
             )
 
+            count += 1
+
         logging.info("F4 - Creation download buttons - SUCCESS")
 
     except Exception as e:
         logging.warning(f"F4 - Creation download buttons - FAIL - Exception: {e}")
         st.warning(STATE_TEXT["button"]["fail"])
+
+    
+    # To display only if all buttons successfully created
+    if count == list_count:
+        display_transformation_complete_toast()

@@ -1,5 +1,30 @@
 import streamlit as st
+import time
 from Subpages.Resources import Assets
+
+
+# ===== Toast =====
+def display_transformation_not_complete_toast():
+
+    time.sleep(1)
+
+    st.toast(
+        "Transformation process **not complete** due to **ivalid uploaded file**.",
+        duration= 10,
+        icon=":material/warning:"
+    )
+
+
+def display_transformation_complete_toast():
+
+    time.sleep(1)
+
+    st.toast(
+        "Transformation process **complete**. You can **download** the file in different format.",
+        duration= 10,
+        icon=":material/check:"
+    )
+
 
 # ===== Dialogs =====
 def final_dialogs_goto():
