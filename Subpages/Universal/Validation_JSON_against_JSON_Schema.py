@@ -1,7 +1,5 @@
 import logging
-from pathlib import Path
 import json
-from pathlib import Path
 from decimal import Decimal
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
@@ -26,10 +24,7 @@ def validate_json_against_schema(function_id: str, data_json: dict, schema_path:
             2026-10-02 12:56:09,146 WARNING: F4 - JSON validation JSON Schema - FAIL - ValidationError: 160.95 is not a multiple of 0.01   
     '''
 
-    JSON_SCHEMA_PATH = Path(__file__).resolve().parent / schema_path
-
-
-    with open(JSON_SCHEMA_PATH, "r", encoding="utf-8") as file:
+    with open(schema_path, "r", encoding="utf-8") as file:
         
         # 1) json.load() schema - HERE in this FUNCTION -> parse_float=Decimal
         schema = json.load(file, parse_float=Decimal)

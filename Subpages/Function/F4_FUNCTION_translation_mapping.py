@@ -64,7 +64,7 @@ elif uploaded_file is not None:
         validation_result = validate_xml_against_xsd(
             "F4",
             uploaded_file,
-            Path(__file__).resolve().parent / "/workspaces/backup-app-jn/Subpages/Data/F3_F4_XML_Schema_v1.xsd"
+            "Subpages/Data/F3_F4_XML_Schema_v1.xsd"
             )
 
         with st.spinner(STATE_TEXT["schema_validation"]["spinner"]):
@@ -104,7 +104,7 @@ elif uploaded_file is not None:
         validation_result = validate_json_against_schema(
             "F4",
             data_json,
-            "/workspaces/backup-app-jn/Subpages/Data/F3_F4_JSON_Schema_v1.json"
+            "Subpages/Data/F3_F4_JSON_Schema_v1.json"
         )
 
         if validation_result == False:
