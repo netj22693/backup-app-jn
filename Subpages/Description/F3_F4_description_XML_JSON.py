@@ -297,7 +297,7 @@ st.page_link(
 
 st.page_link(
 	label = "Previous page",
-	page= Assets.Paths.Description.f3_f4,
+	page= Assets.Paths.Description.f3_f4_cdm,
 	help="The button will redirect to the relevant page within this app.",
 	width="stretch",
 	icon=":material/west:"

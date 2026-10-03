@@ -89,6 +89,7 @@ class Assets:
             f1_f2 = "Subpages/Description/F1_F2_description_function.py"
             f1_f2_xml_xsd = "Subpages/Description/F1_F2_description_XML_XSD.py"
             f3_f4 = "Subpages/Description/F3_F4_description.py"
+            f3_f4_cdm = "Subpages/Description/F3_F4_description_cdm.py"
             f3_f4_xml_json = "Subpages/Description/F3_F4_description_XML_JSON.py"
             f3_f4_erd = "Subpages/Description/F3_F4_description_ERD.py"
             f5 = "Subpages/Description/F5_description_API.py"

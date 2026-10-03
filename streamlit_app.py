@@ -77,6 +77,12 @@ F3_F4_description = st.Page(
     icon= ":material/code:"
 )
 
+F3_F4_description_cdm = st.Page(
+    Assets.Paths.Description.f3_f4_cdm,
+    title="Description - CDM",
+    icon= ":material/code:"
+)
+
 F3_F4_description_xml_json = st.Page(
     Assets.Paths.Description.f3_f4_xml_json,
     title="Description - JSON & XML Schemas",
@@ -227,6 +233,7 @@ pg = st.navigation(
             ],
         "Functions 3 and 4": [
             F3_F4_description,
+            F3_F4_description_cdm,
             F3_F4_description_xml_json,
             F3_F4_description_erd,
             F3_function,
