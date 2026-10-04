@@ -91,7 +91,7 @@ with tab3:
 ''
 ''
 #secrets
-email_address = st.secrets["address"]["email"]
+access_key = st.secrets["web3Forms"]["access_key"]
 
 with st.expander("Have you seen a bug? Report it here.",icon= ":material/pest_control:"):
 
@@ -99,12 +99,12 @@ with st.expander("Have you seen a bug? Report it here.",icon= ":material/pest_co
     st.write("Please provide details:")
 	
     contact_form =f"""
-        <form action="https://formsubmit.co/{email_address}" method="POST">
-            <input type="hidden" name="_captcha" value="false">
-            <input type="text" name="subject" placeholder= "Subject" required>
-            <textarea name="message" placeholder="Description..."></textarea>
-            <button type="submit">Send</button>
-        </form>
+	<form action="https://api.web3forms.com/submit" method="POST">
+		<input type="hidden" name="access_key" value={access_key}>
+		<input type="text" name="name" required placeholder="Subject "maxlength="100">
+		<textarea name="message" required required placeholder="Bug description"> maxlength="500"</textarea>
+		<button type="submit">Submit</button>
+	</form>
     """
 
     st.markdown(contact_form, unsafe_allow_html = True)
@@ -117,8 +117,8 @@ with st.expander("Have you seen a bug? Report it here.",icon= ":material/pest_co
 
     ''
     ''
-    st.caption("Powered by FormSubmit")
-    st.image("Pictures/formsubmitlogo.png", width=150)
+    st.caption("Powered by Web3Forms")
+    st.image("Pictures/Logo/Logo_Web3Forms.svg", width=150)
 
 # LinkedIn - expander
 
