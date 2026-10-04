@@ -43,8 +43,9 @@ st.write("##### Validations:")
 st.write("""
 - Multiple data validations **preventing** from data transformation -> if the file produced by user using F3 is somehow invalid e.g.: **manually changed either data structure or values**
 - **Level 1**: JSON and XML use **Schema validations**, CSV uses **number of fields** separated by comma, before transformed to CDM
-- **Level 2**: Check if there is **existing record in DB** based on **Order number** parsed form the uploaded file 
-- **Level 3**: If record in DB exists, the data are pulled from DB and translated to CDM format. CDM data (file and DB) are compared, if they match
+- **Level 2**: During transformation to CDM, the fields type is set accordigly to definition in CDM config (int, float, str). If not possible to make such data type, the process is stopped
+- **Level 3**: Check if there is **existing record in DB** based on **Order number** parsed form the uploaded file 
+- **Level 4**: If record in DB exists, the data are pulled from DB and translated to CDM format. CDM data (file and DB) are compared, if they match
 """)
 
 ''
