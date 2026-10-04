@@ -15,14 +15,15 @@ st.write("""
 """)
 
 ''
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
   "VA",
   "F1 & F2",
   "F3, F3B & F4",
   "F5 & F5B",
   "F6",
   "F7 & F7B",
-  "F8"
+  "F8",
+  "Bug Form"
 ])
 
 with tab1:
@@ -46,7 +47,11 @@ with tab6:
 with tab7:
   st.image(Assets.Images.architecture_detail_f8)
 
+with tab8:
+  st.image(Assets.Images.architecture_detail_bug_form)
 
+
+''
 st.write("##### Code architecture:")
 
 ''
