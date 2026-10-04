@@ -1,5 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Submit_form.Report_bug_form import display_report_bug_form
 
 
 st.write("# Welcome!")
@@ -90,38 +91,13 @@ with tab3:
 ''
 ''
 ''
-#secrets
-access_key = st.secrets["web3Forms"]["access_key"]
-
 with st.expander("Have you seen a bug? Report it here.",icon= ":material/pest_control:"):
 
     ''
-    st.write("Please provide details:")
-	
-    contact_form =f"""
-	<form action="https://api.web3forms.com/submit" method="POST">
-		<input type="hidden" name="access_key" value={access_key}>
-		<input type="text" name="name" required placeholder="Subject "maxlength="100">
-		<textarea name="message" required required placeholder="Bug description"> maxlength="500"</textarea>
-		<button type="submit">Submit</button>
-	</form>
-    """
+    display_report_bug_form()
 
-    st.markdown(contact_form, unsafe_allow_html = True)
-
-    def local_css(file_name):
-        with open(file_name) as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
-    local_css("Subpages/CSS/style.css")
-
-    ''
-    ''
-    st.caption("Powered by Web3Forms")
-    st.image("Pictures/Logo/Logo_Web3Forms.svg", width=150)
 
 # LinkedIn - expander
-
 with st.expander(
 	"Contact - LinkedIn",
 	icon=":material/id_card:"
@@ -133,7 +109,6 @@ with st.expander(
 
 
 # GitHub - expander
-
 with st.expander(
 	"Repository - GitHub",
 	icon=":material/deployed_code_history:"
@@ -144,7 +119,6 @@ with st.expander(
 	st.image("Pictures/Github_archimate_2.svg")
 
 # Web app - expander
-
 with st.expander(
 	"Web app - Recommendation",
 	icon=":material/computer:"
@@ -158,7 +132,6 @@ with st.expander(
 	''
 
 # Release notes - expander
-
 with st.expander(
 	"Release notes",
 	icon=":material/event_note:"
