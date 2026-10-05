@@ -1,7 +1,7 @@
 import streamlit as st
 import logging
 from app_logging import inicialization_logging
-from sqlalchemy import create_engine, Engine
+from sqlalchemy import create_engine, Engine, text
 
 
 # ===== Inicialization for logging ===== 
@@ -33,6 +33,12 @@ def db_connection(function_id: str, dialog_to_display: bool) -> Engine:
         conn_string = f"postgresql+psycopg2://{user}:{password}@{endpoint}.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
         engine = create_engine(conn_string)
+
+        # Immediate test of the connection by query into DB
+        # Note: To prevent fail of insert into DB in case that there is any credential issue. To find out now when Engine is created and not later. This will immediatelly trigger DB FALLBACK LOGIC
+        with engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+
         logging.info(f"{function_id} - DB connection - SUCCESS")
         return engine
 
