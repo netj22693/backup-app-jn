@@ -7,6 +7,7 @@ from Subpages.Virtual_Assistant.FVA_answers import ANSWERS
 from Subpages.Virtual_Assistant.FVA_questions import FAQ
 from Subpages.Resources import HELLO_STATEMENT
 from Subpages.Virtual_Assistant.FVA_DB_insert import insert_rating_into_db
+from Subpages.Virtual_Assistant.FVA_dialog import display_feedback_saved_toast, display_feedback_not_saved_toast
 
 
 
@@ -65,7 +66,6 @@ def extract_function_id(text):
 
     return None
 
-
 # Score - taken from sklearn documentation 
 def get_score(user_input, item, tfidf_score):
     user_input_lower = user_input.lower()
@@ -97,7 +97,7 @@ def get_score(user_input, item, tfidf_score):
     )
 
 
-# The main logic - taken from sklearn documentation 
+# The main logic
 def get_answer(user_input):
     user_vec = vectorizer.transform([user_input])
     sims = cosine_similarity(user_vec, X)[0]
@@ -182,9 +182,9 @@ for msg in st.session_state.messages:
                     insert_result: bool = insert_rating_into_db(entry)
 
                     if insert_result == True:
-                        st.info("Your feedback was recorded - thank you for rating!")
+                        display_feedback_saved_toast()
                     else:
-                        st.warning("Your feedback was **not** saved due to **technical issue**.")
+                        display_feedback_not_saved_toast()
 
 # User input 
 user_input = st.chat_input("Ask your question...")
