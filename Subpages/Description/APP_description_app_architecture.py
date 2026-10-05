@@ -69,13 +69,13 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 
 with tab1:
   ''
-  st.image("Pictures/Architecture/Code_architecture_v2.svg")
+  st.image("Pictures/Architecture/Code_architecture_v3.svg")
   ''
   ''
 
 with tab2:
   ''
-  st.image("Pictures/Architecture/Functions_building_blocks_v3.svg")
+  st.image("Pictures/Architecture/Functions_building_blocks_v4.svg")
   ''
 
 with tab3:
@@ -104,6 +104,7 @@ st.write("""
 - **Application generic**
   - **Resources** - assets like images, links, paths
   - **Logging** - logging used across the application
+  - **Universal dialog** - UI text dialog/information, used across the application (DRY concept)
   - **API Layer** - API service/function used across the application
   - **DB Layer** - DB connection service/function used across the application
   - **Universal functions** - generic, reusable operations with no Function-specific business logic. They may be used by multiple independent Functions (DRY concept)

@@ -1,5 +1,5 @@
 import streamlit as st
-# import of xsd structure from different file
+from Subpages.Dialog.APP_universal_dialog import display_download_complete_toast
 from Subpages.Data.F1_F2_xml_structures import xsd_structure, xsd_structure_rules_detail, xsd_structure_rules_header
 from Subpages.Resources import Assets
 
@@ -193,24 +193,22 @@ st.write("##### Download of the XML Schema:")
 
 st.write("- Format .xsd")
 if st.download_button(
-            "Download",
-            data = xsd_structure,
-            file_name="XML_Schema_for_functions_1_and_2.xsd",
-            icon = ":material/download:"
-            ):
-
-            st.info("Download will happen in few seconds")
+    "Download",
+    data = xsd_structure,
+    file_name="XML_Schema_for_functions_1_and_2.xsd",
+    icon = ":material/download:"
+    ):
+        display_download_complete_toast()
 
 ''
 ''
 st.write("- Format .txt")  
 if st.download_button("Download",
-            data = xsd_structure,
-            file_name="XML_Schema_for_functions_1_and_2.txt",
-            icon = ":material/download:"
-            ):
-        
-            st.info("Download will happen in few seconds")
+    data = xsd_structure,
+    file_name="XML_Schema_for_functions_1_and_2.txt",
+    icon = ":material/download:"
+    ):
+        display_download_complete_toast()
 
 
 # How to pair XSD with XML
@@ -258,11 +256,6 @@ with st.expander(
         st.write("7) Once no error detected in your XML -> you can upload it in the app in Function 2 section")
         ''
         st.image("Pictures/V2_pictures/no error.png")
-
-
-
-
-
 
 
 

@@ -1,5 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Dialog.APP_universal_dialog import display_download_complete_toast
 from Subpages.Expander.F1_expanders import display_expander_pair_xml_xsd
 from Subpages.Data.F1_F2_xml_structures import xml_data_euro, xml_data_koruna, xml_data_usdollar, xml_empty_template
 
@@ -60,7 +61,7 @@ with tab1:
         st.code(xml_data_euro, language= 'xml', line_numbers=True, height=700)
 
     if st.download_button("Download",data = xml_data_euro  , file_name="XML_euro_sum_matching.xml", icon = ":material/download:"):
-        st.info("Download will happen in few seconds")
+        display_download_complete_toast()
 
 
 
@@ -88,7 +89,7 @@ with tab2:
         st.code(xml_data_koruna, language= 'xml', line_numbers=True, height=700)
         
     if st.download_button("Download",data = xml_data_koruna  , file_name="XML_koruna_sum_matching.xml", icon = ":material/download:"):
-        st.info("Download will happen in few seconds")
+        display_download_complete_toast()
 
 
 # Option 3
@@ -115,7 +116,7 @@ with tab3:
         st.code(xml_data_usdollar, language= 'xml', line_numbers=True, height=700)
         
     if st.download_button("Download",data = xml_data_usdollar , file_name="XML_usdollar_sum_not matching.xml", icon = ":material/download:"):
-        st.info("Download will happen in few seconds")
+        display_download_complete_toast()
 
 
 
@@ -149,7 +150,7 @@ with tab4:
         st.code(xml_empty_template, language= 'xml', line_numbers=True, height=700)
         
     if st.download_button("Download",data = xml_empty_template , file_name="XML_empty_template.xml", icon = ":material/download:"):
-        st.info("Download will happen in few seconds")
+        display_download_complete_toast()
 
 
 

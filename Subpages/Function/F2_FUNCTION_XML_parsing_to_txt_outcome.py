@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 import math
 import pandasql as ps
+from Subpages.Dialog.APP_universal_dialog import display_download_complete_toast
 from Subpages.Dialog.F2_dialog import close_function
 from Subpages.Universal.Validation_XML_against_XML_Schema import validate_xml_against_xsd
 from Subpages.Expander.F2_expanders import show_expander_help, show_expander_help_validation_process
@@ -617,7 +618,7 @@ if object_from_upload is not None:
         icon = ":material/download:",
         width="stretch"):
             
-        st.info("Download complete")
+        display_download_complete_toast()
     
     st.write("-------")
 
