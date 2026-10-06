@@ -23,7 +23,11 @@ with st.expander("Video guide", icon= ":material/youtube_activity:"):
   display_video("Video/F1_videoguide_v1.mp4")
 
   ''
-  st.write("**Function 2**")
+  st.write("**Function 2 - Happy path**")
+  display_video("Video/F2_videoguide_happy_path_v1.mp4")
+  ''
+  st.write("**Function 2 - Unhappy path**")
+  display_video("Video/F2_videoguide_unhappy_path_v1.mp4")
 
 
 ''
@@ -93,11 +97,11 @@ with tab2:
     st.write("More details about the XML and data parsing:")
 
     st.link_button(
-        label = "Go to XSD, XML description page",
-        url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
-        help="The button will redirect to the relevant page within this app for download.",
-        width="stretch",
-        icon=":material/launch:"
+      label = "Go to XSD, XML description page",
+      url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
+      help="The button will redirect to the relevant page within this app for download.",
+      width="stretch",
+      icon=":material/launch:"
     )
 
 
