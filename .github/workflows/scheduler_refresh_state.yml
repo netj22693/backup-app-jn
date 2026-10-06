@@ -44,6 +44,7 @@ jobs:
 
       - name: Run scheduler script
         env:
+          NEON_DB_USER: ${{ secrets.NEON_DB_USER }}
           NEON_DB_PASSWORD: ${{ secrets.NEON_DB_PASSWORD }}
           NEON_DB_ENDPOINT: ${{ secrets.NEON_DB_ENDPOINT }}
         run: |
