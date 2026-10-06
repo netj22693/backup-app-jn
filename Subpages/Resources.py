@@ -14,7 +14,7 @@ class Assets:
     class Images:
         va_variables = "Pictures/Virtual_asistant/VA_principle_variables_v2.svg"
         architecture_landscape = "Pictures/Architecture/App_landscape_architecture_v13.svg"
-        archimate_main = "Pictures/Archimate_functions_overview_v15.svg"
+        archimate_main = "Pictures/Archimate_functions_overview_v16.svg"
 
         # Architecture detail 
         architecture_detail_va = "Pictures/Architecture/Detail/VA_architecture_detail_v3.svg"
@@ -27,8 +27,8 @@ class Assets:
         architecture_detail_bug_form = "Pictures/Architecture/Detail/BugForm_architecture_detail_v1.svg"
 
         # UML
-        uml_f1_f2 = "Pictures/Overall_UML_F1 and F2_v2.svg"
-        uml_f3_f3b_f4 = "Pictures/Overall_UML_F3 and F4_v3.svg"
+        uml_f1_f2 = "Pictures/Overall_UML_F1_and_F2_v2.svg"
+        uml_f3_f3b_f4 = "Pictures/Overall_UML_F3_and_F4_v4.svg"
         uml_f5 = "Pictures/Overall_UML_F5_v2.svg"
         uml_f6 = "Pictures/Overall_UML_F6.svg"
         uml_f7_f7b = "Pictures/Overall_UML_F7_v4.svg"
