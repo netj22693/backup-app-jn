@@ -1,5 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Universal.Display_video import display_video
 
 # ==================== Application screen ==============
 st.write("# Description - Function 8")
@@ -12,11 +13,7 @@ st.write("""
 
 ''
 with st.expander("Video guide", icon= ":material/youtube_activity:"):
-    try:
-        st.video("Video/F8_videoguide_v1.mp4")
-        st.info("This video is not up to date with the actual F8 features -> will be updated")
-    except:
-        st.warning("Apologies, the video was not loaded.")
+    display_video("Video/F8_videoguide_v1.mp4")
 
 ''
 ''
