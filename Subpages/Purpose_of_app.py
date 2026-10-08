@@ -252,6 +252,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 3:
+		- **v70.6** - F3 - Info price table and extra services are pulled from DB -> more interactive UI - 08-Oct-2026
 		- **v70.2** - F3 - CDM as a core of the function developed, Code refactored, CSV as new file format added - 01-Oct-2026
 		- **v68.7** - F3 & F3B - Centralized DB connection handling - 02-Sep-2026
 		- **v67.9** - F3 - Sequence in DB set -> allows concurrent users - 16-Aug-2026

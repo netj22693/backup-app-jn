@@ -38,3 +38,37 @@ class F3InputDataQueries:
     SELECT *
     FROM billing.extra_service_list
     """ 
+
+
+sql_query_parcel_size = """
+SELECT 
+  f.name as "Parcel size",
+  f.description as "Description"
+  
+FROM shared.parcel_size f
+  
+ORDER BY 
+  CASE 
+    WHEN f.name = 'small' THEN 1
+    WHEN f.name = 'medium' THEN 2
+    WHEN f.name = 'large' THEN 3
+  END 
+"""
+
+query_additional_service_price_info = """
+SELECT
+    name as "Service", 
+    description as "Costs",
+    service_description,
+    icon
+
+FROM billing.extra_service_list
+
+WHERE
+    -- option "No additional service" excluded
+    service_id != 1
+
+ORDER BY
+    name ASC
+"""
+

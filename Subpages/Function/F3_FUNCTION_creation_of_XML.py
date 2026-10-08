@@ -4,12 +4,12 @@ from sqlalchemy import text
 import logging
 from app_logging import inicialization_logging
 from app_db_connection import db_connection
-from Subpages.SQL.F3_SQL_queries import F3InputDataQueries
+from Subpages.SQL.F3_SQL_queries import F3InputDataQueries, sql_query_parcel_size, query_additional_service_price_info
 from Subpages.Dialog.F3_dialog import dialog_not_possible_to_pull_data
 from Subpages.Data.F3_F4_CDM_config_data import CDM_FIELDS
 from Subpages.Services.F3_DB_mapping import MAPPING_FUNCTIONS, F3MappingFunctions
 from Subpages.Services.F3_F4_CDM import transform_data_CDM_to_JSON, transform_data_CDM_to_XML, transform_data_CDM_to_CSV, transform_data_CDM_to_DB
-from Subpages.Operational.F3_operational_functions import create_invoice_number, get_utc_time_custom_string, reset, get_transport_price, create_order_num, on_download_click, extract_data_additional_services, pull_data_and_transfer_to_list
+from Subpages.Operational.F3_operational_functions import create_invoice_number, get_utc_time_custom_string, reset, get_transport_price, create_order_num, on_download_click, extract_data_additional_services, pull_data_and_transfer_to_list, get_transport_price_table, display_company_logo
 
 
 # ===== Inicialization for logging ===== 
@@ -22,10 +22,11 @@ st.write("# Delivery details:")
 # DB connection -> Engine
 db_engine = db_connection("F3", True)
 
-
-# Get options for the user form    
+  
 try:      
     with db_engine.connect() as conn:
+
+        # Get options for the user form 
         category_options = pull_data_and_transfer_to_list(F3InputDataQueries.sql_query_category_options, conn)
         transport_company_options = pull_data_and_transfer_to_list(F3InputDataQueries.sql_query_transport_company_options, conn)
         currency_options = pull_data_and_transfer_to_list(F3InputDataQueries.sql_query_currency_options, conn)
@@ -33,7 +34,19 @@ try:
         country_options = pull_data_and_transfer_to_list(F3InputDataQueries.sql_query_country_options, conn)
         parcel_size_options = pull_data_and_transfer_to_list(F3InputDataQueries.sql_query_parcel_size_options, conn)
 
+        # Get Price and Parcel size info tables 
+        df_cz_dhl = get_transport_price_table(conn, "CZ", "DHL")
+        df_cz_fedex = get_transport_price_table(conn, "CZ", "Fedex")
+        df_sk_dhl = get_transport_price_table(conn, "SK", "DHL")
+        df_sk_fedex = get_transport_price_table(conn, "SK", "Fedex")
+
+        df_parcel_size = pd.read_sql_query(sql=text(sql_query_parcel_size), con=conn)
+
+        # Get service df
         df_additional_service = pd.read_sql_query(sql=text(F3InputDataQueries.sql_query_additional_service_table), con=conn)
+        df_additional_service_info = pd.read_sql_query(sql=text(query_additional_service_price_info), con=conn)
+
+
 
     logging.info(f"F3 - Pull data from DB - SUCCESS")
 
@@ -44,6 +57,11 @@ except Exception as e:
 
 
 # ===== User form UI =====
+
+placeholder_text = "Type..."
+placeholder_select = "Select..."
+
+
 with st.form(key="key_form"):
 
     st.write("Please provide details about order...")
@@ -52,6 +70,7 @@ with st.form(key="key_form"):
         
         customer = st.text_input(
             ":material/tag_faces: Customer/Company name:",
+            placeholder=placeholder_text,
             help= "Type a customer or company name",
             key= "key_customer"
             )
@@ -63,7 +82,7 @@ with st.form(key="key_form"):
         category = st.selectbox(
             f"{icon} Category:" ,
             index = None,
-            placeholder= "Select...",
+            placeholder= placeholder_select,
             options= category_options,
             help= "Select one from the options",
             key= "key_category"
@@ -71,6 +90,7 @@ with st.form(key="key_form"):
 
         product_name = st.text_input(
             f"{icon} Product name:",
+            placeholder=placeholder_text,
             help = "Type a product name",
             key= "key_product_name"
             )
@@ -81,7 +101,7 @@ with st.form(key="key_form"):
         currency = st.selectbox(
             f"{icon} Currency:" ,
             index = None,
-            placeholder= "Select...",
+            placeholder= placeholder_select,
             options= currency_options,
             help = "Select one from the options",
             key= "key_currency"
@@ -106,6 +126,34 @@ with st.form(key="key_form"):
             key= "key_additional_service"
             )
 
+        with st.expander("Service description", icon=":material/help:"):
+
+            ''
+            st.dataframe(
+                df_additional_service_info,
+                hide_index=True,
+                column_config={
+                    "service_description": None,
+                    "icon": None
+                },
+            )
+
+            # Note: "records" is one of the specific dict type the 'to_dict()' function can do 
+            # orient: Literal['records']
+            services = df_additional_service_info.to_dict("records")
+
+            tab_names = []
+
+            for s in services:
+                tab_names.append(f'{s["icon"]} {s["Service"]}')
+
+            
+            tabs = st.tabs(tab_names)
+
+            for tab, service in zip(tabs, services):
+                with tab:
+                    st.write(f'- {service["service_description"]}')
+
     with st.container(border=True, width="stretch"):
 
         icon_transport = ":material/directions_bus:"
@@ -116,7 +164,7 @@ with st.form(key="key_form"):
             f"{icon_pin} Country:" ,
             options= country_options,
             index = None,
-            placeholder="Select...",
+            placeholder= placeholder_select,
             help = "Select one of the options - there is different price for service for each country -> see the pricing table below.",
             key= "key_country"
             )
@@ -125,7 +173,7 @@ with st.form(key="key_form"):
             f"{icon_transport} Transport company:" ,
             options= transport_company_options,
             index = None,
-            placeholder="Select...",
+            placeholder= placeholder_select,
             help = "Select one of the options - there is different price for each company -> see the pricing table below.",
             key= "key_transport_company"
             )
@@ -134,18 +182,51 @@ with st.form(key="key_form"):
             f"{icon_parcel} Parcel size:" ,
             options=parcel_size_options,
             index = None,
-            placeholder="Select...",
-            help = "Select one of the options - there is different price for each size. Sum of the lengths of all three sides of the parcel max: Small - 50 cm (e.g. 20 cm x 20 cm x 10 cm). Medium 100 cm. Large 200 cm.",
+            placeholder= placeholder_select,
+            help = "Select one of the options",
             key= "key_parcel_size"        
             )
         ''
         ''
 
-        with st.expander("Parcel size & Price list", icon=":material/help:"):
-            st.image("Pictures/Function_3/F3_Parcel_sizes.svg")
+        with st.expander("Parcel size", icon=icon_parcel):
+
             ''
+            st.image("Pictures/Function_3/F3_Parcel_sizes_v2.svg")
+
             ''
-            st.image("Pictures/Function_3/F3_Price_list.svg")
+            st.dataframe(df_parcel_size, hide_index= True)
+
+
+
+        with st.expander("Price list", icon=":material/help:"):
+
+            tab1, tab2 = st.tabs([
+                "CZ",
+                "SK"
+            ])
+
+            FLAG_IMAGE_WIDTH = 40
+
+            with tab1:
+                st.image("Pictures/Function_3/Country_flags/Flag_of_the_Czech_Republic_v3.svg", width=FLAG_IMAGE_WIDTH)
+
+                ''
+                display_company_logo("DHL")
+                st.dataframe(df_cz_dhl, hide_index=True)
+
+                display_company_logo("Fedex")
+                st.dataframe(df_cz_fedex, hide_index=True)
+
+            with tab2:
+                st.image("Pictures/Function_3/Country_flags/Flag_of_Slovakia_v3.svg", width=FLAG_IMAGE_WIDTH) 
+
+                ''
+                display_company_logo("DHL")
+                st.dataframe(df_sk_dhl, hide_index=True)
+
+                display_company_logo("Fedex")
+                st.dataframe(df_sk_fedex, hide_index=True)
 
 
     ''
@@ -248,10 +329,13 @@ if  submit_button:
     ''
     st.write(f" - Price for the extra service: **{additional_service_price:,.2f} {currency}** - Extra service: **{additional_service}** ")
     ''
+    display_company_logo(transport_company)
     st.write(f" - Price for transport: **{transport_price:,.2f} {currency}** - Transport company: **{transport_company}** - Country: **{country}**")
     st.write(f" - Parcel size: **{parcel_size}**")
     ''
-    st.write(f" - Total price to pay: **{final_price:,.2f} {currency}**")
+    st.write(f" - Total price to pay:")
+    with st.container(border=True):
+        st.write(f"**{final_price:,.2f} {currency}**")
 
 
     ''

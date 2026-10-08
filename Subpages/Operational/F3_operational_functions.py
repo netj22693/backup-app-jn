@@ -1,6 +1,7 @@
 import time
 import streamlit as st
 import pandas as pd
+from pandas.io.formats.style import Styler
 from sqlalchemy import Column, Integer, String, Boolean, Float, Engine, text, Connection
 from sqlalchemy.orm import declarative_base, Session
 import logging
@@ -81,6 +82,49 @@ def get_transport_price(engine: Engine, currency: str, table: str, size:str, com
     return query_result
 
 
+def get_transport_price_table(conn: Connection, country_code: str, company: str) -> Styler:
+
+    mapping = {
+        "CZ" : "country_cz",
+        "SK" : "country_sk"
+    }
+
+    table = mapping.get(country_code)
+
+
+    query  = f"""
+    SELECT 
+    f.name as "Parcel size",
+    tc.euro as "€ euro", 
+    tc.us_dollar as "$ US dollar",
+    tc.koruna as "Kč koruna"
+    
+    FROM transport.{table} tc
+        INNER JOIN shared.parcel_size f ON (tc.size = f.size_id)
+        INNER JOIN shared.transport_company e ON (tc.c_comp_id = e.comp_id)
+    
+    WHERE e.name = :company
+    
+    ORDER BY 
+        CASE 
+            WHEN f.name = 'small' THEN 1
+            WHEN f.name = 'medium' THEN 2
+            WHEN f.name = 'large' THEN 3
+        END 
+    """
+
+
+    df =  pd.read_sql(text(query), con=conn, params={"company": company})
+
+    df_styled = df.style.format({
+    "€ euro": "{:,.2f}",
+    "$ US dollar": "{:,.2f}",
+    "Kč koruna": "{:,.2f}"
+    })
+
+    return df_styled
+
+
 def create_order_num(engine) -> int:
 
     # Using sequence principle
@@ -96,6 +140,26 @@ def create_order_num(engine) -> int:
     # INT for DB - is important to explicitly change the type to int() due to pandas it is np.int64() which ORM when save to DB has an issue with 
     return int(query_result)
 
+
+def display_company_logo(company: str):
+
+    image = {
+        "DHL": {
+            "path": "Pictures/Function_3/Logo_DHL_v3.svg",
+            "width": 100
+        },
+        "Fedex": {
+            "path": "Pictures/Function_3/Logo_Fedex_v3.svg",
+            "width": 75
+        }
+    }
+
+    config = image.get(company)
+
+    st.image(
+        config["path"],
+        width= config["width"]
+    )
 
 # ===== DEF insert into DB =====
 def insert_into_db(engine: Engine, data: dict):
