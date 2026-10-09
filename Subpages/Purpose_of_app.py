@@ -60,6 +60,16 @@ tab1,tab2, tab3 = st.tabs([
 
 #Tab 1
 with tab1:
+	st.page_link(
+		label = "Application Architecture :material/chevron_right:",
+		page= Assets.Paths.App.app_architecture,
+		help="The button will redirect to the relevant page within this app.",
+		width="stretch",
+		icon=":material/architecture:",
+	)
+
+	''
+	''
 	st.image(Assets.Images.architecture_landscape)
 
 with tab2:
