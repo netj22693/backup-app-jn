@@ -262,7 +262,7 @@ with st.expander(
 	''
 	st.write("""
 	- Function 3:
-		- **v70.8** - F3 - Chaching of data loaded from DB -> increased speed of processing - 09-Oct-2026
+		- **v70.8** - F3 - Caching of data loaded from DB -> increased speed of processing - 09-Oct-2026
 		- **v70.7** - F3 - Logic of warning of unusual user inputs in context of selected category added & Extension of user input validations - 09-Oct-2026
 		- **v70.6** - F3 - Info price table and extra services are pulled from DB -> more interactive UI - 08-Oct-2026
 		- **v70.2** - F3 - CDM as a core of the function developed, Code refactored, CSV as new file format added - 01-Oct-2026
