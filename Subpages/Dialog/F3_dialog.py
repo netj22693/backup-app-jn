@@ -1,7 +1,33 @@
 import streamlit as st
+import time
 from Subpages.Resources import Assets
 
-# ================ DIALOGS - process complete or not complete  =================
+
+# ===== Toasts inserted values validations =====
+
+class F3ToastsValidations:
+    
+    def display_parcel_size_attention_toast(text: str):
+
+        time.sleep(1)
+
+        st.toast(
+            f"**Parcel size** is **{text}** for this category. Please double-check but **you may continue, if you like**.",
+            duration= 25,
+            icon=":material/warning:"
+        )
+
+    def display_product_price_attention_toast(text: str):
+
+        time.sleep(1)
+
+        st.toast(
+            f"**Product price** is **{text}** for this category. Please double-check but **you may continue, if you like**.",
+            duration= 25,
+            icon=":material/warning:"
+        )
+
+# ===== DIALOGS - process complete or not complete  =====
 def final_dialogs_goto():    
     ''
     st.write("**Go to:**")

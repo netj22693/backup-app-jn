@@ -4,12 +4,12 @@ from sqlalchemy import text
 import logging
 from app_logging import inicialization_logging
 from app_db_connection import db_connection
-from Subpages.SQL.F3_SQL_queries import F3InputDataQueries, sql_query_parcel_size, query_additional_service_price_info
-from Subpages.Dialog.F3_dialog import dialog_not_possible_to_pull_data
+from Subpages.SQL.F3_SQL_queries import F3InputDataQueries, sql_query_parcel_size, query_additional_service_price_info, query_currency_max_values
+from Subpages.Dialog.F3_dialog import dialog_not_possible_to_pull_data, F3ToastsValidations
 from Subpages.Data.F3_F4_CDM_config_data import CDM_FIELDS
 from Subpages.Services.F3_DB_mapping import MAPPING_FUNCTIONS, F3MappingFunctions
 from Subpages.Services.F3_F4_CDM import transform_data_CDM_to_JSON, transform_data_CDM_to_XML, transform_data_CDM_to_CSV, transform_data_CDM_to_DB
-from Subpages.Operational.F3_operational_functions import create_invoice_number, get_utc_time_custom_string, reset, get_transport_price, create_order_num, on_download_click, extract_data_additional_services, pull_data_and_transfer_to_list, get_transport_price_table, display_company_logo
+from Subpages.Operational.F3_operational_functions import create_invoice_number, get_utc_time_custom_string, display_reset_button, get_transport_price, create_order_num, on_download_click, extract_data_additional_services, pull_data_and_transfer_to_list, get_transport_price_table, display_company_logo, F3ValueValidation
 
 
 # ===== Inicialization for logging ===== 
@@ -46,6 +46,8 @@ try:
         df_additional_service = pd.read_sql_query(sql=text(F3InputDataQueries.sql_query_additional_service_table), con=conn)
         df_additional_service_info = pd.read_sql_query(sql=text(query_additional_service_price_info), con=conn)
 
+        # Get data for validation
+        currency_max_values = (pd.read_sql_query(sql=text(query_currency_max_values), con=conn)).set_index("name")["max_value"].to_dict()
 
 
     logging.info(f"F3 - Pull data from DB - SUCCESS")
@@ -58,8 +60,9 @@ except Exception as e:
 
 # ===== User form UI =====
 
-placeholder_text = "Type..."
-placeholder_select = "Select..."
+PLACEHOLDER_TEXT = "Type..."
+PLACEHOLDER_SELECT = "Select..."
+LIMIT_TEXT = 35
 
 
 with st.form(key="key_form"):
@@ -70,7 +73,8 @@ with st.form(key="key_form"):
         
         customer = st.text_input(
             ":material/tag_faces: Customer/Company name:",
-            placeholder=placeholder_text,
+            placeholder=PLACEHOLDER_TEXT,
+            max_chars= LIMIT_TEXT,
             help= "Type a customer or company name",
             key= "key_customer"
             )
@@ -82,7 +86,7 @@ with st.form(key="key_form"):
         category = st.selectbox(
             f"{icon} Category:" ,
             index = None,
-            placeholder= placeholder_select,
+            placeholder= PLACEHOLDER_SELECT,
             options= category_options,
             help= "Select one from the options",
             key= "key_category"
@@ -90,7 +94,8 @@ with st.form(key="key_form"):
 
         product_name = st.text_input(
             f"{icon} Product name:",
-            placeholder=placeholder_text,
+            placeholder=PLACEHOLDER_TEXT,
+            max_chars= LIMIT_TEXT,
             help = "Type a product name",
             key= "key_product_name"
             )
@@ -101,7 +106,7 @@ with st.form(key="key_form"):
         currency = st.selectbox(
             f"{icon} Currency:" ,
             index = None,
-            placeholder= placeholder_select,
+            placeholder= PLACEHOLDER_SELECT,
             options= currency_options,
             help = "Select one from the options",
             key= "key_currency"
@@ -164,7 +169,7 @@ with st.form(key="key_form"):
             f"{icon_pin} Country:" ,
             options= country_options,
             index = None,
-            placeholder= placeholder_select,
+            placeholder= PLACEHOLDER_SELECT,
             help = "Select one of the options - there is different price for service for each country -> see the pricing table below.",
             key= "key_country"
             )
@@ -173,7 +178,7 @@ with st.form(key="key_form"):
             f"{icon_transport} Transport company:" ,
             options= transport_company_options,
             index = None,
-            placeholder= placeholder_select,
+            placeholder= PLACEHOLDER_SELECT,
             help = "Select one of the options - there is different price for each company -> see the pricing table below.",
             key= "key_transport_company"
             )
@@ -182,7 +187,7 @@ with st.form(key="key_form"):
             f"{icon_parcel} Parcel size:" ,
             options=parcel_size_options,
             index = None,
-            placeholder= placeholder_select,
+            placeholder= PLACEHOLDER_SELECT,
             help = "Select one of the options",
             key= "key_parcel_size"        
             )
@@ -237,16 +242,25 @@ with st.form(key="key_form"):
         use_container_width=True,
         icon = ":material/apps:",
         )
-''
-''
+
+
 if  submit_button:
 
-    # Normalization
-    customer = customer.strip()
-    product_name = product_name.strip()
+    # Normalizations
+
+    # try/except - in case that input is missed -> code will fall into except and continue
+    # The missing onputs will be catch as part of validations
+    # The strip() step happens prior due to " " -> "" -> catch by validation
+    try:
+        customer = customer.strip()
+        product_name = product_name.strip()
+    except Exception as e:
+        logging.warning(f"F3 - Normalization str strip - FAIL - Exception: {e}")
+
     product_price = round(product_price, 2)
 
-    # Validation
+
+    # Validations
     empty_strings = [
     customer,
     product_name,
@@ -266,14 +280,22 @@ if  submit_button:
         or any(value is None for value in none_values)
         ):
             st.warning("Missing inputs -> please provide.")
+            display_reset_button()
             st.stop()
 
     if product_price == 0.00:
         st.warning("Missing Product price -> please provide.")
+        display_reset_button()
+        st.stop()
+
+    max_value_allowed = currency_max_values.get(currency)
+    if product_price > max_value_allowed:
+        st.warning(f"The Product price is **limited to** {max_value_allowed:,.2f} {currency} -> you are over the limit.")
+        display_reset_button()
         st.stop()
 
 
-
+    # ===== Core logic execution =====
     additional_service_label, additional_service_cost_percentage  = extract_data_additional_services(additional_service, df_additional_service)
 
     currency_query = F3MappingFunctions.mapping_currency_for_query(currency)
@@ -314,28 +336,57 @@ if  submit_button:
     }
         # + "file_format": mapped_file_format - by which this is extended bellow, once one of download buttons pushed
 
-               
 
-    # ================= UI - DOWNLOAD + FINALIZTION OF THE PROCESS ===========
-    st.write("#### Summary of your order:")
+    # ===== Validations of user input (in predefined range or not) =====
+    validation_product_price = F3ValueValidation.validate_price(db_engine, product_price, category, currency)      
 
-    st.write(f" - Customer name: **{customer}**")
-    st.write(f" - Order number: **{order_number}**")
-    st.write(f" - Invoice number: **{invoice_number}**")
+    validation_parcel_size = F3ValueValidation.validate_parcel_size(db_engine, category, parcel_size)    
+
+
+    if validation_product_price is not None and validation_product_price["level"] != "N":
+
+        F3ToastsValidations.display_product_price_attention_toast(validation_product_price['label'])
+
+        attention_product = f":{validation_product_price['color']}-badge[:material/warning: {validation_product_price['label']}]"
+
+    else:
+        attention_product = ""
+
+
+    if validation_parcel_size is not None:
+
+        F3ToastsValidations.display_parcel_size_attention_toast(validation_parcel_size['label'])
+
+        attention_parcel_size = f":{validation_parcel_size['color']}-badge[:material/warning: {validation_parcel_size['label']}]"
+
+    else:
+        attention_parcel_size = ""
+
+    # ================= UI - DOWNLOAD + FINALIZATION OF THE PROCESS ===========
     ''
-    st.write(f" - Product name: **{product_name}**")
-    st.write(f" - Category: **{category}**")
-    st.write(f" - Price: **{product_price:,.2f} {currency}**")
     ''
-    st.write(f" - Price for the extra service: **{additional_service_price:,.2f} {currency}** - Extra service: **{additional_service}** ")
+    st.write("#### Summary:")
+
     ''
-    display_company_logo(transport_company)
-    st.write(f" - Price for transport: **{transport_price:,.2f} {currency}** - Transport company: **{transport_company}** - Country: **{country}**")
-    st.write(f" - Parcel size: **{parcel_size}**")
-    ''
-    st.write(f" - Total price to pay:")
     with st.container(border=True):
-        st.write(f"**{final_price:,.2f} {currency}**")
+        st.write(f" - Customer name: **{customer}**")
+        st.write(f" - Order number: **{order_number}**")
+        st.write(f" - Invoice number: **{invoice_number}**")
+    ''
+    with st.container(border=True):
+        st.write(f" - Product name: **{product_name}**")
+        st.write(f" - Category: **{category}**")
+        st.markdown(f" - Price: **{product_price:,.2f} {currency}**  {attention_product}")
+        st.write(f" - Price for the extra service: **{additional_service_price:,.2f} {currency}** - Extra service: **{additional_service}** ")
+    ''
+    with st.container(border=True):
+        display_company_logo(transport_company)
+        st.write(f" - Price for transport: **{transport_price:,.2f} {currency}** - Transport company: **{transport_company}** - Country: **{country}**")
+        st.markdown(f" - Parcel size: **{parcel_size}**  {attention_parcel_size}")
+    
+    ''
+    with st.container(border=True):
+        st.write(f"- Total price to pay: **{final_price:,.2f} {currency}**")
 
 
     ''
@@ -401,11 +452,4 @@ if  submit_button:
     )
 
                 
-("---------")
-st.button(
-    "Reset",
-    use_container_width= True,
-    on_click = reset,
-    help = "It will clear the form",
-    icon= ":material/delete:"
-    )
+display_reset_button()

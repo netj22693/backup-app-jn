@@ -31,7 +31,13 @@ class F3InputDataQueries:
 
     sql_query_parcel_size_options = """
     SELECT name
-    FROM shared.parcel_size
+    FROM shared.parcel_size f
+    ORDER BY 
+      CASE 
+        WHEN f.name = 'small' THEN 1
+        WHEN f.name = 'medium' THEN 2
+        WHEN f.name = 'large' THEN 3
+      END 
     """ 
 
     sql_query_additional_service_table = """
@@ -39,6 +45,13 @@ class F3InputDataQueries:
     FROM billing.extra_service_list
     """ 
 
+
+query_currency_max_values = """
+SELECT 
+    name, 
+    max_value
+FROM billing.currency_list
+"""
 
 sql_query_parcel_size = """
 SELECT 

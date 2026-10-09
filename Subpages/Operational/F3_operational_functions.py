@@ -211,6 +211,99 @@ def on_download_click(db_engine: Engine, file_format: str, data: dict, order_num
         insert_db_not_complete()
 
 
+# ===== User value validations =====
+
+class F3ValueValidation:
+    def validate_parcel_size(engine: Engine, category: str, parcel_size: str) -> dict | None:
+
+        params = {
+            "category" : category,
+            "parcel_size": parcel_size
+        }
+
+        query = """
+        SELECT 
+            m.label,
+            m.color
+
+        FROM function3.validation_parcel_size l
+            INNER JOIN function3.validation_notation m ON(l.level = m.level)
+            INNER JOIN billing.category_list b ON (b.category_id = l.category_id)
+            INNER JOIN shared.parcel_size f ON (l.size_id = f.size_id)
+
+        WHERE 
+            b.name = :category 
+            AND 
+            f.name = :parcel_size
+        """
+
+        df = pd.read_sql(sql=text(query), con=engine, params=params)
+
+        if df.empty:
+            logging.info(f"F3 - Validation parcess size - SUCCESS - DF empty: no match found")
+            return None
+
+
+        row = df.iloc[0]
+
+        result = {
+            "label": row["label"],
+            "color": row["color"]
+        }
+
+        logging.info(f"F3 - Validation parcess size - SUCCESS - Found: {result['label']}")
+        return result
+
+
+
+
+    def validate_price(engine: Engine, product_price: float, category: str, currency: str) -> dict | None:
+
+        params = {
+            "price" : product_price,
+            "category": category,
+            "currency": currency,
+        }
+
+        query = """
+        SELECT 
+            m.label,
+            m.color,
+            m.level
+
+        FROM function3.validation_price n 
+            INNER JOIN billing.currency_list g ON (n.currency_id = g.currency_id)
+            INNER JOIN billing.category_list b ON (n.category_id = b.category_id)
+            INNER JOIN function3.validation_notation m ON (n.level = m.level)
+
+        WHERE
+            b.name = :category
+            AND g.name = :currency
+            AND :price >= n.amount_from
+            AND (
+                :price < n.amount_to
+                OR n.amount_to IS NULL
+            )
+        """
+
+        df = pd.read_sql(sql=text(query), con=engine, params=params)
+
+        if df.empty:
+            logging.info(f"F3 - Validation price - FAIL - DF empty: no match found")
+            return None
+
+
+        row = df.iloc[0]
+
+        result = {
+            "label": row["label"],
+            "color": row["color"],
+            "level": row["level"]
+        }
+
+        logging.info(f"F3 - Validation price - SUCCESS - Found: {result['label']}")
+        return result
+
 # ===== Clear of inputs - Reset button =====
 def reset():
     st.session_state["key_customer"] = None
@@ -222,3 +315,13 @@ def reset():
     st.session_state["key_country"] = None
     st.session_state["key_transport_company"] = None
     st.session_state["key_parcel_size"] = None
+
+def display_reset_button():
+    st.divider()
+    st.button(
+        "Reset",
+        use_container_width= True,
+        on_click = reset,
+        help = "It will clear the form",
+        icon= ":material/delete:"
+        )
