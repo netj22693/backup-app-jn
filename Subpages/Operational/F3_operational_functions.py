@@ -116,11 +116,16 @@ def get_transport_price_table(conn: Connection, country_code: str, company: str)
 
     df =  pd.read_sql(text(query), con=conn, params={"company": company})
 
+    return df
+
+
+def style_price_table(df: pd.DataFrame) -> Styler:
+
     df_styled = df.style.format({
-    "€ euro": "{:,.2f}",
-    "$ US dollar": "{:,.2f}",
-    "Kč koruna": "{:,.2f}"
-    })
+        "€ euro": "{:,.2f}",
+        "$ US dollar": "{:,.2f}",
+        "Kč koruna": "{:,.2f}"
+        })
 
     return df_styled
 

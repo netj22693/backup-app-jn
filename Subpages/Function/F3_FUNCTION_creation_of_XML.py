@@ -1,15 +1,13 @@
 import streamlit as st
-import pandas as pd
-from sqlalchemy import text
 import logging
 from app_logging import inicialization_logging
 from app_db_connection import db_connection
-from Subpages.SQL.F3_SQL_queries import F3InputDataQueries, sql_query_parcel_size, query_additional_service_price_info, query_currency_max_values
-from Subpages.Dialog.F3_dialog import dialog_not_possible_to_pull_data, F3ToastsValidations
+from Subpages.Services.F3_load_data_from_DB import load_f3_data
+from Subpages.Dialog.F3_dialog import F3ToastsValidations
 from Subpages.Data.F3_F4_CDM_config_data import CDM_FIELDS
 from Subpages.Services.F3_DB_mapping import MAPPING_FUNCTIONS, F3MappingFunctions
 from Subpages.Services.F3_F4_CDM import transform_data_CDM_to_JSON, transform_data_CDM_to_XML, transform_data_CDM_to_CSV, transform_data_CDM_to_DB
-from Subpages.Operational.F3_operational_functions import create_invoice_number, get_utc_time_custom_string, display_reset_button, get_transport_price, create_order_num, on_download_click, extract_data_additional_services, pull_data_and_transfer_to_list, get_transport_price_table, display_company_logo, F3ValueValidation
+from Subpages.Operational.F3_operational_functions import create_invoice_number, get_utc_time_custom_string, display_reset_button, get_transport_price, create_order_num, on_download_click, extract_data_additional_services, display_company_logo, style_price_table, F3ValueValidation
 
 
 # ===== Inicialization for logging ===== 
@@ -22,40 +20,23 @@ st.write("# Delivery details:")
 # DB connection -> Engine
 db_engine = db_connection("F3", True)
 
-  
-try:      
-    with db_engine.connect() as conn:
-
-        # Get options for the user form 
-        category_options = pull_data_and_transfer_to_list(F3InputDataQueries.sql_query_category_options, conn)
-        transport_company_options = pull_data_and_transfer_to_list(F3InputDataQueries.sql_query_transport_company_options, conn)
-        currency_options = pull_data_and_transfer_to_list(F3InputDataQueries.sql_query_currency_options, conn)
-        additional_service_options = pull_data_and_transfer_to_list(F3InputDataQueries.sql_query_additional_service_options, conn)
-        country_options = pull_data_and_transfer_to_list(F3InputDataQueries.sql_query_country_options, conn)
-        parcel_size_options = pull_data_and_transfer_to_list(F3InputDataQueries.sql_query_parcel_size_options, conn)
-
-        # Get Price and Parcel size info tables 
-        df_cz_dhl = get_transport_price_table(conn, "CZ", "DHL")
-        df_cz_fedex = get_transport_price_table(conn, "CZ", "Fedex")
-        df_sk_dhl = get_transport_price_table(conn, "SK", "DHL")
-        df_sk_fedex = get_transport_price_table(conn, "SK", "Fedex")
-
-        df_parcel_size = pd.read_sql_query(sql=text(sql_query_parcel_size), con=conn)
-
-        # Get service df
-        df_additional_service = pd.read_sql_query(sql=text(F3InputDataQueries.sql_query_additional_service_table), con=conn)
-        df_additional_service_info = pd.read_sql_query(sql=text(query_additional_service_price_info), con=conn)
-
-        # Get data for validation
-        currency_max_values = (pd.read_sql_query(sql=text(query_currency_max_values), con=conn)).set_index("name")["max_value"].to_dict()
-
-
-    logging.info(f"F3 - Pull data from DB - SUCCESS")
-
-except Exception as e:
-    logging.warning(f"F3 - Pull data from DB - FAIL - Exception: {e}")
-    dialog_not_possible_to_pull_data()
-    st.stop()
+# Data load (from DB or cache)
+(
+    category_options,
+    transport_company_options,
+    currency_options,
+    additional_service_options,
+    country_options,
+    parcel_size_options,
+    df_cz_dhl,
+    df_cz_fedex,
+    df_sk_dhl,
+    df_sk_fedex,
+    df_parcel_size,
+    df_additional_service,
+    df_additional_service_info,
+    currency_max_values
+) = load_f3_data(db_engine)
 
 
 # ===== User form UI =====
@@ -218,20 +199,20 @@ with st.form(key="key_form"):
 
                 ''
                 display_company_logo("DHL")
-                st.dataframe(df_cz_dhl, hide_index=True)
+                st.dataframe(style_price_table(df_cz_dhl), hide_index=True)
 
                 display_company_logo("Fedex")
-                st.dataframe(df_cz_fedex, hide_index=True)
+                st.dataframe(style_price_table(df_cz_fedex), hide_index=True)
 
             with tab2:
                 st.image("Pictures/Function_3/Country_flags/Flag_of_Slovakia_v3.svg", width=FLAG_IMAGE_WIDTH) 
 
                 ''
                 display_company_logo("DHL")
-                st.dataframe(df_sk_dhl, hide_index=True)
+                st.dataframe(style_price_table(df_sk_dhl), hide_index=True)
 
                 display_company_logo("Fedex")
-                st.dataframe(df_sk_fedex, hide_index=True)
+                st.dataframe(style_price_table(df_sk_fedex), hide_index=True)
 
 
     ''
