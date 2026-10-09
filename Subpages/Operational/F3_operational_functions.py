@@ -245,7 +245,7 @@ class F3ValueValidation:
         df = pd.read_sql(sql=text(query), con=engine, params=params)
 
         if df.empty:
-            logging.info(f"F3 - Validation parcess size - SUCCESS - DF empty: no match found")
+            logging.info(f"F3 - Validation parcel size - SUCCESS - DF empty: no match found")
             return None
 
 
@@ -256,7 +256,7 @@ class F3ValueValidation:
             "color": row["color"]
         }
 
-        logging.info(f"F3 - Validation parcess size - SUCCESS - Found: {result['label']}")
+        logging.info(f"F3 - Validation parcel size - SUCCESS - Found: {result['label']}")
         return result
 
 
