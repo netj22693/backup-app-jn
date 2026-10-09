@@ -55,7 +55,12 @@ with tab8:
 st.write("##### Code architecture:")
 
 ''
-st.write(f"- Link to [GitHub]({Assets.Links.External.git_hub}) repository")
+st.write(f"""
+- Link to [GitHub]({Assets.Links.External.git_hub}) repository
+- Modular monolith 
+- Specific Functions are built to share data as contracts
+"""
+)
 ''
 
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
