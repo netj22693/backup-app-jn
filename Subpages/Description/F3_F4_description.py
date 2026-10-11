@@ -69,12 +69,6 @@ with tab1:
     - Transport - depending on **Country, Transporting Company, Size of package**
     """)
 
-    ''
-    ''
-    st.image("Pictures/Function_3/F3_Price_list.svg")
-    ''
-    ''
-
 with tab2:
     ''
     st.write("""

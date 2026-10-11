@@ -5,40 +5,34 @@ from Subpages.Resources import Assets
 st.write("# DB & ERD:")
 
 ''
-tab_erd_1, tab_erd_2, tab_erd_3 = st.tabs([
-    "DB ERD - DB landscape",
-    "DB ERD - Transport price",
-    "DB ERD - Invoice"
+tab1, tab2, tab3, tab4 = st.tabs([
+    "DB layout",
+    "Transport price",
+    "Invoice",
+    "Validation"
     ])  
 
 
 
-with tab_erd_1:
+with tab1:
     ''
     st.write("""
-        - **DB landscape** which is used by **F3, F3B, F4** functions
-        """) 
-
-    st.write("""
-        - F3 - Transport price segment - READ
-        - F3 - Invoice segment - WRITE
-        - F3B - Invoice segment - READ & Data visualization
-        - F4 - Invoice segment - WRITE
-        """) 
+    - **DB landscape** which is used by **F3, F3B, F4** functions
+    - Split into business logic segments
+    """) 
 
     ''
     ''
-    st.image("Pictures/Function_3/F3_F3B_F4_ERD_landscape_context_v4.svg")
+    st.image("Pictures/Function_3/ERD/F3_F3B_F4_ERD_landscape_context_v5.svg")
 
 
-with tab_erd_2:
+with tab2:
     ''
     st.write("""
-    - **DB structure** used by **Function 3** - READ
-    - To get **transport price** value **based on user inputs**
+    - Used by **F3** to get **transport price** value **based on user inputs**
     """)
     ''
-    st.image("Pictures/Function_3/F3_ERD_transport_price_v2.svg")
+    st.image("Pictures/Function_3/ERD/F3_ERD_transport_price_v3.svg", width=600)
     ''
 
     currency = 'euro'
@@ -59,30 +53,25 @@ WHERE
     st.write("- Dynamic SQL query:")
     st.code(query, language="sql")
 
-with tab_erd_3:
+with tab3:
     ''
     st.write("""
-        - **DB structure** for **invoice/data** created based on **user input**
-        """) 
+    - **DB structure** for **invoice/data** created based on **user input**
+    """) 
     
     st.write("""
-        - **Functional intent:**
-            - **Function 3** - Inserts data (invoice) - WRITE
-            - **Function 3B** - Visualizes data (invoices) - READ
-            - **Function 4** - Insert logs if mapping made - WRITE
-        """) 
+    - **Functional intent:**
+        - **F3** - Insert data (invoice) - WRITE
+        - **F3B** - Visualize data (invoices) - READ
+        - **F4** - Data validation & Insert log, if data transformation complete - WRITE
+    """) 
 
     st.write("""
-        - **Process**:
-            - User provides inputs about purchase (F3 screen) -> file invoice created - XML or JSON (F3) -> **data inserted into DB** (F3) -> data visualized based on the DB (F3B)
-            - User takes the invoice (from F3) -> uploaded for file format change (F4) -> this **change is logged** and **inserted into DB** (F4) -> this change can be visualized based on the DB (F3B)
-        """)     
-
-    st.write("""
-        - As part of the F3 process, there is a need of keeping **order_id** "reserved" in DB → **sequence in PostgreSQL** is set to **allow concurrency of users** without technicall issue
-        """)    
+    - **F3** requires keeping of **order_id** reserved in DB until the process is finished → **sequence in PostgreSQL** set to **allow concurrency of users**.
+    """)   
+     
     ''
-    st.image("Pictures/Function_3/F3_ERD_invoice_v6.svg")
+    st.image("Pictures/Function_3/ERD/F3_ERD_invoice_v7.svg")
 
     query_2 = """
 SELECT 
@@ -122,6 +111,29 @@ FROM billing.invoice a
     st.code(query_2, language="sql")
 
 
+with tab4:
+    ''
+    st.write("""
+    - **Data-driven** logic used by **F3**
+    - Identifying **unusual** user inputs -> the app displays **warnings** 
+    """)
+
+    ''
+    st.image("Pictures/Function_3/ERD/F3_ERD_validations_v1.svg")
+
+
+    ''
+    ''
+    tab1, tab2 = st.tabs([
+        "Validation - Parcel size",
+        "Validation - Product price"
+    ])
+
+    with tab1:
+        st.image("Pictures/Function_3/ERD/F3_ERD_validation_detail_parcel_size_v1.svg")
+
+    with tab2:
+        st.image("Pictures/Function_3/ERD/F3_ERD_validation_detail_product_price_v1.svg")
 
 
 # ===== Page navigation at the bottom ======
