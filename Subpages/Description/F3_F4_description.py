@@ -86,6 +86,22 @@ with tab2:
     ''
 
 
+''
+''
+''
+st.write("##### Process flow:") 
+
+tab1, tab2 = st.tabs([
+    "Function 3",
+    "Function 4"
+])
+
+with tab1:
+    st.image("Pictures/Function_3/F3_process_flow_v1.svg")
+
+with tab2:
+    st.image("Pictures/Function_4/F4_process_flow_v1.svg")
+
 
 # ===== Page navigation at the bottom ======
 ''
