@@ -32,6 +32,13 @@ VA_function = st.Page(
     icon= ":material/smart_toy:"
 )
 
+# ----- Bug form -----
+BF_function = st.Page(
+    Assets.Paths.BugForm.bf,
+    title="Have you seen a bug?",
+    icon= ":material/pest_control:"
+)
+
 # ----- Test pages -----
 test_1 = st.Page(
     "Subpages/Testing/TEST_1.py",
@@ -220,6 +227,7 @@ pg = st.navigation(
         "About this application": [
             landing_page,
             VA_function,
+            BF_function,
             app_description_architecture
             ],
             

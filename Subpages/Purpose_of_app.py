@@ -90,18 +90,11 @@ with tab3:
 	st.image(Assets.Images.uml_f8)
 
 
-
-# Bug - expander
-''
-''
-''
-with st.expander("Have you seen a bug? Report it here.",icon= ":material/pest_control:"):
-
-    ''
-    display_report_bug_form()
-
-
 # LinkedIn - expander
+''
+''
+''
+
 with st.expander(
 	"Contact - LinkedIn",
 	icon=":material/id_card:"
