@@ -78,7 +78,6 @@ class Assets:
             git_hub = "https://github.com/netj22693/backup-app-jn/blob/main/streamlit_app.py"
 
     class Paths:
-
         class App:
             main_page = "Subpages/Purpose_of_app.py"
             app_architecture = "Subpages/Description/APP_description_app_architecture.py"
@@ -119,3 +118,23 @@ class Assets:
             f7 = "Subpages/Function/F7_FUNCTION_transport.py"
             f7b = "Subpages/Function/F7b_FUNCTION_offer_visibility.py"
             f8 = "Subpages/Function/F8_FUNCTION_company_book.py"
+
+    class Videos:
+        class LogicalDictionaries:
+            f1_f2 = {
+                "Function 1": "Video/F1_videoguide_v1.mp4",
+                "Function 2 - Happy path": "Video/F2_videoguide_happy_path_v1.mp4",
+                "Function 2 - Unhappy path": "Video/F2_videoguide_unhappy_path_v1.mp4"
+            }
+
+            f3_f4 = {
+                "Function 3": "Video/F3_videoguide_v1.mp4"
+            }
+
+            f7 = {
+                "Function 7": "Video/F7_videoguide_v1.mp4"
+            }
+
+            f8 = {
+                "Function 8": "Video/F8_videoguide_v1.mp4"
+            }

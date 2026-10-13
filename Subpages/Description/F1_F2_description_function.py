@@ -1,6 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
-from Subpages.Universal.Display_video import display_video
+from Subpages.Universal.Display_video import display_video_expander
 
 st.write("# Description - Functions 1 & 2")
 ''
@@ -17,17 +17,7 @@ st.write("""
 )
 
 ''
-with st.expander("Video guide", icon= ":material/youtube_activity:"):
-
-  st.write("**Function 1**")
-  display_video("Video/F1_videoguide_v1.mp4")
-
-  ''
-  st.write("**Function 2 - Happy path**")
-  display_video("Video/F2_videoguide_happy_path_v1.mp4")
-  ''
-  st.write("**Function 2 - Unhappy path**")
-  display_video("Video/F2_videoguide_unhappy_path_v1.mp4")
+display_video_expander(Assets.Videos.LogicalDictionaries.f1_f2)
 
 
 ''

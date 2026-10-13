@@ -1,5 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Universal.Display_video import display_video_expander
 
 
 
@@ -89,13 +90,8 @@ st.write("""
     )
 
 ''
-with st.expander("Video guide", icon= ":material/youtube_activity:"):
+display_video_expander(Assets.Videos.LogicalDictionaries.f7)
 
-    st.info("The video will be updated - currently the function offers **also generating of PDF file & inserting values into DB** and there is also **Function 7B visualizing the data saved in DB** - NOT in the video yet.")
-    try:
-        st.video("Video/F7_videoguide_v1.mp4")
-    except:
-        st.warning("Apologies, the video was not loaded.")
 ''
 ''
 st.write("##### Business scenario:") 

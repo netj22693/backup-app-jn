@@ -1,6 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
-from Subpages.Universal.Display_video import display_video
+from Subpages.Universal.Display_video import display_video_expander
 
 # ==================== Application screen ==============
 st.write("# Description - Function 8")
@@ -12,8 +12,7 @@ st.write("""
     )
 
 ''
-with st.expander("Video guide", icon= ":material/youtube_activity:"):
-    display_video("Video/F8_videoguide_v1.mp4")
+display_video_expander(Assets.Videos.LogicalDictionaries.f8)
 
 ''
 ''

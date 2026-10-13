@@ -1,5 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Universal.Display_video import display_video_expander
 
 st.write("# Description - Functions 3 & 4")
 ''
@@ -12,11 +13,7 @@ st.write("""
 )
 
 ''
-with st.expander("Video guide", icon= ":material/youtube_activity:"):
-    try:
-        st.video("Video/F3_videoguide_v1.mp4")
-    except:
-        st.warning("Apologies, the video was not loaded.")
+display_video_expander(Assets.Videos.LogicalDictionaries.f3_f4)
 
 ''
 ''
