@@ -138,6 +138,12 @@ with st.expander(
 	st.write("Key highlights (* **vX.X** -> version of application):")
 	''
 	st.write("""
+	- Application specific changes:
+		- **v70.9** - Created a modular function with extended logic for video selection, rendering and display - 13-Oct-2026
+	""")
+
+	''
+	st.write("""
 	- Virtual Assistant (Chatbot):
 		- **v68.7** - Centralized DB connection handling & Adjustment of fallback logic if DB not connected - 02-Sep-2026
 		- **v61.2** - Thumbs up/down rating added + connected to DB to store the rating - 11-May-2026
