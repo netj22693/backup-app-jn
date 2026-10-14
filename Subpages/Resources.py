@@ -124,18 +124,18 @@ class Assets:
             f1_f2 = {
                 "Function 1": {
                     "path":"Video/F1_videoguide_v1.mp4",
-                    "released": "06-Oct-2026",
+                    "released": "06-10-2026",
                     "outdated": False
                 },
 
                 "Function 2 - Happy path": {
                     "path":"Video/F2_videoguide_happy_path_v1.mp4",
-                    "released": "06-Oct-2026",
+                    "released": "06-10-2026",
                     "outdated": False
                 },
                 "Function 2 - Unhappy path": {
                     "path":"Video/F2_videoguide_unhappy_path_v1.mp4",
-                    "released": "06-Oct-2026",
+                    "released": "06-10-2026",
                     "outdated": False
                 }
             }
@@ -143,7 +143,7 @@ class Assets:
             f3_f4 = {
                 "Function 3": {
                     "path":"Video/F3_videoguide_v1.mp4",
-                    "released": "03-Dec-2025",
+                    "released": "03-12-2025",
                     "outdated": True
                 }
             }
@@ -151,7 +151,7 @@ class Assets:
             f7 = {
                 "Function 7": {
                     "path":"Video/F7_videoguide_v1.mp4",
-                    "released": "04-Dec-2025",
+                    "released": "04-12-2025",
                     "outdated": True
                 }
             }
@@ -159,7 +159,7 @@ class Assets:
             f8 = {
                 "Function 8": {
                     "path":"Video/F8_videoguide_v1.mp4",
-                    "released": "06-Oct-2026",
+                    "released": "06-12-2026",
                     "outdated": False
                 }
             }
