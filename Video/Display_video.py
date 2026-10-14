@@ -10,26 +10,27 @@ inicialization_logging()
 
 EXPANDER_CONFIG = {
     "name": "Video guide",
-    "icon": ":material/youtube_activity:"
+    "icon": ":material/youtube_activity:",
+    "warning": "Unable to display the video.",
+    "caption_outdated": ":material/warning: This video may be outdated. Some features may have changed or may not be shown."
     }
 
 
-def display_video(path: str | None):
-
-    WARNING = "Not able to display the video."
+def display_video(path: str | None, outdated: bool | None):
 
     if path is None:
         logging.warning(f"DESC - display_video() - FAIL - Not existing key")
-        st.warning(WARNING)
+        st.warning(EXPANDER_CONFIG["warning"])
         return
 
     try:
+        if outdated:
+            st.caption(EXPANDER_CONFIG["caption_outdated"])
         st.video(path)
 
     except Exception as e:
         logging.warning(f"DESC - display_video(): {path} - FAIL - Exception: {e}")
-        st.warning(WARNING)
-
+        st.warning(EXPANDER_CONFIG["warning"])
 
 
 def display_video_expander(config: dict, list_video_include: list[str] | None = None, list_video_exclude: list[str] | None = None):
@@ -88,7 +89,6 @@ def display_video_expander(config: dict, list_video_include: list[str] | None = 
         videos = list(config.items())
 
 
-
     if len(videos) == 0:
         logging.warning(f"DESC - display_video_expander() - FAIL - Empty list []")
         return
@@ -98,9 +98,21 @@ def display_video_expander(config: dict, list_video_include: list[str] | None = 
         plural = "s"
     else:
         plural = ""
-    
+
+
     with st.expander(f"{EXPANDER_CONFIG['name']}{plural}", icon= EXPANDER_CONFIG["icon"]):
-        for title, path in videos:
-            st.write(f"**{title}**")
-            display_video(path)
-            st.write("") 
+       
+        for title, video_config in videos:
+            try:
+                path = video_config["path"]
+                outdated = video_config["outdated"]
+
+                st.write(f"**{title}**")
+                display_video(path, outdated)
+                st.write("")
+
+            except KeyError:
+                logging.warning(f"DESC - display_video_expander() - FAIL - KeyError for title: {title}")
+
+            except Exception as e:
+                logging.warning(f"DESC - display_video_expander() - FAIL - Exception: {e} for title {title}")

@@ -1,6 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
-from Subpages.Universal.Display_video import display_video_expander
+from Video.Display_video import display_video_expander
 
 st.write("# Description - Functions 1 & 2")
 ''

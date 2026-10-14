@@ -122,19 +122,44 @@ class Assets:
     class Videos:
         class LogicalDictionaries:
             f1_f2 = {
-                "Function 1": "Video/F1_videoguide_v1.mp4",
-                "Function 2 - Happy path": "Video/F2_videoguide_happy_path_v1.mp4",
-                "Function 2 - Unhappy path": "Video/F2_videoguide_unhappy_path_v1.mp4"
+                "Function 1": {
+                    "path":"Video/F1_videoguide_v1.mp4",
+                    "released": "06-Oct-2026",
+                    "outdated": False
+                },
+
+                "Function 2 - Happy path": {
+                    "path":"Video/F2_videoguide_happy_path_v1.mp4",
+                    "released": "06-Oct-2026",
+                    "outdated": False
+                },
+                "Function 2 - Unhappy path": {
+                    "path":"Video/F2_videoguide_unhappy_path_v1.mp4",
+                    "released": "06-Oct-2026",
+                    "outdated": False
+                }
             }
 
             f3_f4 = {
-                "Function 3": "Video/F3_videoguide_v1.mp4"
+                "Function 3": {
+                    "path":"Video/F3_videoguide_v1.mp4",
+                    "released": "03-Dec-2025",
+                    "outdated": True
+                }
             }
 
             f7 = {
-                "Function 7": "Video/F7_videoguide_v1.mp4"
+                "Function 7": {
+                    "path":"Video/F7_videoguide_v1.mp4",
+                    "released": "04-Dec-2025",
+                    "outdated": True
+                }
             }
-
+            
             f8 = {
-                "Function 8": "Video/F8_videoguide_v1.mp4"
+                "Function 8": {
+                    "path":"Video/F8_videoguide_v1.mp4",
+                    "released": "06-Oct-2026",
+                    "outdated": False
+                }
             }
