@@ -2,10 +2,10 @@ import streamlit as st
 from Subpages.Resources import Assets
 
 
- # ============= LOGO - SHARED ON ALL PAGES ==========
+# ============= LOGO - SHARED ON ALL PAGES ==========
 st.set_page_config(initial_sidebar_state="auto") 
 
- # ============= LOGO - SHARED ON ALL PAGES ==========
+# ============= LOGO - SHARED ON ALL PAGES ==========
 st.logo("Pictures/V2_pictures/Logo_7.png", size='large')
 
 
