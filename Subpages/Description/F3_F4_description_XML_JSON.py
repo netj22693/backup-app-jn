@@ -1,5 +1,7 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_next_page, render_previous_page
 from Subpages.Dialog.APP_universal_dialog import display_download_complete_toast
 from Subpages.Data.F3_F4_xml_json_structures import xml_message_example, xsd_as_string, json_message_example, json_schema, json_structure_rules_header, json_structure_rules_detail, json_structure_rules_transportation, xsd_structure_rules_header, xsd_structure_rules_detail, xsd_structure_rules_transportation
 
@@ -72,7 +74,7 @@ with tab1:
         st.image("Pictures/Function_3/F3_F4_JSON_header_v2.svg")
         ''
         ''
-        with st.expander("JSON Schema structure rules - **header**", icon= ":material/code:"):
+        with st.expander("JSON Schema structure rules - **header**", icon= UiConfigAndIcons.Expanders.code_structure):
             st.code(
                 json_structure_rules_header,
                 language= 'json',
@@ -89,7 +91,7 @@ with tab1:
         st.image("Pictures/Function_3/F3_F4_JSON_detail_v1.svg")
         ''
         ''
-        with st.expander("JSON Schema structure rules - **detail**", icon= ":material/code:"):
+        with st.expander("JSON Schema structure rules - **detail**", icon= UiConfigAndIcons.Expanders.code_structure):
             st.code(
                 json_structure_rules_detail,
                 language= 'json',
@@ -105,14 +107,14 @@ with tab1:
         st.image("Pictures/Function_3/F3_F4_JSON_transportation_v1.svg", width=500)
         ''
         ''
-        with st.expander("JSON Schema structure rules - **transportation**", icon= ":material/code:"):
+        with st.expander("JSON Schema structure rules - **transportation**", icon= UiConfigAndIcons.Expanders.code_structure):
             st.code(json_structure_rules_transportation,
             language= 'json',
             line_numbers=True,
             height=CODE_HEIGHT
             )
 
-    with st.expander("JSON Schema - **full**", icon=":material/code:"):
+    with st.expander("JSON Schema - **full**", icon= UiConfigAndIcons.Expanders.code_structure):
         st.code(
             json_schema,
             language="json",
@@ -120,7 +122,7 @@ with tab1:
             height=CODE_HEIGHT,
         )
 
-    with st.expander("JSON message - **example**", icon=":material/code:"):
+    with st.expander("JSON message - **example**", icon= UiConfigAndIcons.Expanders.code_structure):
         st.code(
             json_message_example,
             language="json",
@@ -153,7 +155,7 @@ with tab2:
         st.image("Pictures/Function_3/F3_F4_XML_header_v1.svg", width=650)
         ''
         ''
-        with st.expander("XML Schema structure rules - **header**", icon= ":material/code:"):
+        with st.expander("XML Schema structure rules - **header**", icon= UiConfigAndIcons.Expanders.code_structure):
             st.code(
                 xsd_structure_rules_header,
                 language= 'xml',
@@ -170,7 +172,7 @@ with tab2:
         st.image("Pictures/Function_3/F3_F4_XML_detail_v1.svg")
         ''
         ''
-        with st.expander("XML Schema structure rules - **detail**", icon= ":material/code:"):
+        with st.expander("XML Schema structure rules - **detail**", icon= UiConfigAndIcons.Expanders.code_structure):
             st.code(
                 xsd_structure_rules_detail,
                 language= 'xml',
@@ -186,7 +188,7 @@ with tab2:
         st.image("Pictures/Function_3/F3_F4_XML_transportation_v1.svg", width=540)
         ''
         ''
-        with st.expander("XML Schema structure rules - **transportation**", icon= ":material/code:"):
+        with st.expander("XML Schema structure rules - **transportation**", icon= UiConfigAndIcons.Expanders.code_structure):
             st.code(
                 xsd_structure_rules_transportation,
                 language= 'xml',
@@ -207,7 +209,7 @@ with tab2:
         ''
         ''
 
-    with st.expander("XML Schema - **full**", icon= ":material/code:"):
+    with st.expander("XML Schema - **full**", icon= UiConfigAndIcons.Expanders.code_structure):
         st.code(
             xsd_as_string,
             language= 'xml',
@@ -215,7 +217,7 @@ with tab2:
             height=CODE_HEIGHT
         )
 
-    with st.expander("XML message - **example**", icon=":material/code:"):
+    with st.expander("XML message - **example**", icon= UiConfigAndIcons.Expanders.code_structure):
         st.code(
             xml_message_example,
             language="xml",
@@ -242,7 +244,7 @@ with tab1:
         "Download",
         data = json_schema,
         file_name="JSON_Schema_for_functions_3_and_4.json",
-        icon = ":material/download:"
+        icon= UiConfigAndIcons.Buttons.download
     ):
         display_download_complete_toast()
 
@@ -253,7 +255,7 @@ with tab1:
         "Download",
         data = json_schema,
         file_name="JSON_Schema_for_functions_3 and_4.txt",
-        icon = ":material/download:"
+        icon= UiConfigAndIcons.Buttons.download
     ):
         display_download_complete_toast()
 
@@ -265,7 +267,7 @@ with tab2:
         "Download",
         data = xsd_as_string,
         file_name="XML_Schema_for_functions_3_and_4.xsd",
-        icon = ":material/download:"
+        icon= UiConfigAndIcons.Buttons.download
     ):
         display_download_complete_toast()
 
@@ -275,7 +277,7 @@ with tab2:
     if st.download_button("Download",
         data = xsd_as_string,
         file_name="XML_Schema_for_functions_3_and_4.txt",
-        icon = ":material/download:"
+        icon= UiConfigAndIcons.Buttons.download
     ):
         display_download_complete_toast()
 
@@ -286,18 +288,10 @@ with tab2:
 ''
 st.write("-------")
 
-st.page_link(
-    label = "Next page",
-	page= Assets.Paths.Description.f3_f4_erd,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-    icon=":material/east:",
-	) 
+render_next_page(
+    page= Assets.Paths.Description.f3_f4_erd
+)
 
-st.page_link(
-	label = "Previous page",
-	page= Assets.Paths.Description.f3_f4_cdm,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/west:"
-	) 
+render_previous_page(
+    page= Assets.Paths.Description.f3_f4_cdm
+)

@@ -2,6 +2,8 @@ import streamlit as st
 from Subpages.Dialog.APP_universal_dialog import display_download_complete_toast
 from Subpages.Data.F1_F2_xml_structures import xsd_structure, xsd_structure_rules_detail, xsd_structure_rules_header
 from Subpages.Resources import Assets
+from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_previous_page, render_function_page
 
 
 # ========================== Screen ============================
@@ -51,8 +53,11 @@ with tab1:
         ''
         ''
         ''
-        with st.expander("XML Schema structure rules - **header**", icon= ":material/code:"):
-            st.code(xsd_structure_rules_header, language= 'xml', line_numbers=True, height=400)
+        with st.expander(
+            "XML Schema structure rules - **header**",
+            icon= UiConfigAndIcons.Expanders.code_structure
+            ):
+                st.code(xsd_structure_rules_header, language= 'xml', line_numbers=True, height=400)
 
 
 #tab2 
@@ -61,8 +66,11 @@ with tab2:
         st.image("Pictures/Function_2/F1_F2_XML_detail_v3.svg")
         ''
         ''
-        with st.expander("XML Schema structure rules - **detail**", icon= ":material/code:"):
-            st.code(xsd_structure_rules_detail, language= 'xml', line_numbers=True, height=400)
+        with st.expander(
+            "XML Schema structure rules - **detail**",
+            icon= UiConfigAndIcons.Expanders.code_structure
+            ):
+                st.code(xsd_structure_rules_detail, language= 'xml', line_numbers=True, height=400)
 
 #tab3
 with tab3:
@@ -72,8 +80,11 @@ with tab3:
         ''
 
 
-with st.expander("XML Schema - **full**", icon= ":material/code:"):
-	st.code(xsd_structure, language= 'xml', line_numbers=True, height=400)
+with st.expander(
+    "XML Schema - **full**",
+    icon= UiConfigAndIcons.Expanders.code_structure
+    ):
+	    st.code(xsd_structure, language= 'xml', line_numbers=True, height=400)
 
 
 st.write("------")
@@ -137,7 +148,7 @@ Validation:
 ''
 with st.expander(
     "Validation",
-    icon= ":material/help_outline:"
+    icon= UiConfigAndIcons.Expanders.help_additional_info
 	):
     
 	st.write("Example of validation in the Function 2:")
@@ -154,7 +165,7 @@ Additional rules:
 ''
 with st.expander(
     "Example of data parsing - insurance and extended warranty",
-    icon= ":material/help_outline:"
+    icon= UiConfigAndIcons.Expanders.help_additional_info
 	):
     
 	st.write("Data parsing based on service type:")
@@ -196,17 +207,18 @@ if st.download_button(
     "Download",
     data = xsd_structure,
     file_name="XML_Schema_for_functions_1_and_2.xsd",
-    icon = ":material/download:"
+    icon= UiConfigAndIcons.Buttons.download
     ):
         display_download_complete_toast()
 
 ''
 ''
 st.write("- Format .txt")  
-if st.download_button("Download",
+if st.download_button(
+    "Download",
     data = xsd_structure,
     file_name="XML_Schema_for_functions_1_and_2.txt",
-    icon = ":material/download:"
+    icon=  UiConfigAndIcons.Buttons.download
     ):
         display_download_complete_toast()
 
@@ -217,24 +229,18 @@ if st.download_button("Download",
 ''
 ''
 ''
-st.write("*In case you want to troubleshoot your XML message:")
 with st.expander(
-	"How to pair XML with XML Schema .xsd",
-	icon= ":material/help_outline:"
+	"Pair XML with XML Schema",
+	icon=  UiConfigAndIcons.Expanders.help_additional_info
 	):
 
-        ''
-        ''
         st.write("1) Download XML Schema **.xsd**")
         ''
-        st.write("2) Find location where the XSD is located on your device (probably in Downloads folder)")
-        ''
-        st.write("3) Open the XML file, you want to check, in your data editor (Notepad++ is for free)")
+        st.write("2) Open XML file in your data editor")
         ''
         st.image("Pictures/V2_pictures/Altova notepad.png")
         ''
-        ''
-        st.write("4) Extend the XML root element <invoice> by the following:")
+        st.write("3) Extend the XML root element <invoice> by the following:")
         ''
         st.image("Pictures/V2_pictures/root extended.png")
         ''
@@ -243,41 +249,29 @@ with st.expander(
             xsi:noNamespaceSchemaLocation="*location of your XSD file*">
             '''
         )
+
         ''
+        st.write("4) **The XML is paired with the XML Schema**")
         ''
-        st.write("5) **XML should be paired with XML Schema now**")
-        ''
-        ''
-        st.write("6) Depending on data editor tool you use - you can work with the validation and control that you follow predefined rules in the XML Schema")
+        st.write("5) You can do the validation and control you follow predefined rules in the XML Schema")
         ''
         st.image("Pictures/V2_pictures/validation xsd final_2.png")
         ''
-        ''
-        st.write("7) Once no error detected in your XML -> you can upload it in the app in Function 2 section")
+        st.write("6) Once no error detected, you can upload it")
         ''
         st.image("Pictures/V2_pictures/no error.png")
 
 
-
-''
-''
 # ===== Page navigation at the bottom ======
+''
+''
 st.write("-------")
 
-st.page_link(
-    label = "Go to: Function 1",
-	page= Assets.Paths.Function.f1,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-    icon=":material/play_circle:",
-	) 
+render_function_page(
+    label= "Go to: Function 1",
+	page= Assets.Paths.Function.f1        
+)
 
-st.page_link(
-	label = "Previous page",
-	page= Assets.Paths.Description.f1_f2,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/west:"
-	) 
+render_previous_page(page= Assets.Paths.Description.f1_f2)
 
 

@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import date, timedelta
 from sqlalchemy import text
 from app_db_connection import db_connection
+from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Operational.F3b_operational_functions import input_validation, input_safety_validation, get_order_details, get_company_logo_screen_details, input_validation_order_exists, df_styling, create_pie_chart, data_empty_fallback_info
 from Subpages.SQL.F3b_SQL_queries import sql_query_overview_invoices, sql_query_file_format, get_sql_part_where_date, get_sql_query_category, get_sql_query_company, get_sql_query_parcel_size, get_sql_query_currency, get_sql_query_country, get_sql_query_extra_service_type, get_sql_query_extra_service_count, get_mapping_extra_services, get_sql_query_file_format
 
@@ -27,7 +28,7 @@ tab1, tab2, tab3, tab4 = st.tabs([
 with tab1:
 
     ''
-    if st.button("Show last 15 offers", width="stretch", icon=":material/table:"):
+    if st.button("Show last 15 offers", width="stretch", icon=UiConfigAndIcons.Buttons.show_table):
 
         db_engine = db_connection("F3B", True)
 
@@ -61,7 +62,7 @@ with tab2:
 
         order_input=order_input.strip()
         
-        submit_button = st.form_submit_button(label= "Submit", width="stretch")
+        submit_button = st.form_submit_button(label= "Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit)
     
 
     if submit_button:   
@@ -171,7 +172,7 @@ with tab4:
 
     ''
     ''
-    submit_button_tab4 = st.button("Submit", width= "stretch", icon=":material/apps:", key="key_submit_button_tab4")
+    submit_button_tab4 = st.button("Submit", width= "stretch", icon=UiConfigAndIcons.Buttons.submit, key="key_submit_button_tab4")
 
     if submit_button_tab4:
         db_engine = db_connection("F3B", True)

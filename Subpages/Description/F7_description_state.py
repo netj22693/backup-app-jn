@@ -1,5 +1,6 @@
 import streamlit as st 
 from Subpages.Resources import Assets
+from Subpages.Resources_ui_objects import render_next_page, render_previous_page
 
 
 st.write("# State flow")
@@ -118,18 +119,10 @@ st.image("Pictures/Function_7/F7B_state_flow/F7B_state_diagrams_ERD_detail_v1.sv
 ''
 st.write("-------")
 
-st.page_link(
-	label = "Next page",
-	page= Assets.Paths.Description.f7_rating,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/east:"
-	) 
+render_next_page(
+   page= Assets.Paths.Description.f7_rating 
+)
 
-st.page_link(
-    label = "Previous page",
-	page= Assets.Paths.Description.f7_db,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-    icon=":material/west:",
-	) 
+render_previous_page(
+   page= Assets.Paths.Description.f7_db 
+)

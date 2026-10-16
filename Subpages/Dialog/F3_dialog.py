@@ -1,6 +1,8 @@
 import streamlit as st
 import time
 from Subpages.Resources import Assets
+from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_function_page, render_description_page, render_specific_page
 
 
 # ===== Toasts inserted values validations =====
@@ -13,8 +15,8 @@ class F3ToastsValidations:
 
         st.toast(
             f"**Parcel size** is **{text}** for this category. Please double-check but **you may continue, if you like**.",
-            duration= 25,
-            icon=":material/warning:"
+            duration= UiConfigAndIcons.Toasts.duration["important_notification"],
+            icon= UiConfigAndIcons.Toasts.warning
         )
 
     def display_product_price_attention_toast(text: str):
@@ -23,8 +25,8 @@ class F3ToastsValidations:
 
         st.toast(
             f"**Product price** is **{text}** for this category. Please double-check but **you may continue, if you like**.",
-            duration= 25,
-            icon=":material/warning:"
+            duration= UiConfigAndIcons.Toasts.duration["important_notification"],
+            icon= UiConfigAndIcons.Toasts.warning
         )
 
 # ===== DIALOGS - process complete or not complete  =====
@@ -32,37 +34,24 @@ def final_dialogs_goto():
     ''
     st.write("**Go to:**")
 
-    st.page_link(
+    render_function_page(
         label = "Function 3B - Invoice visibility",
-        page= Assets.Paths.Function.f3b,
-        help="The button will redirect to the relevant page within this app.",
-        use_container_width=True,
-        icon=":material/play_circle:",
-        )
-    
-    st.page_link(
-        label = "Function 4 - Mapping",
-        page= Assets.Paths.Function.f4,
-        help="The button will redirect to the relevant page within this app.",
-        use_container_width=True,
-        icon=":material/play_circle:",
-        )
+        page= Assets.Paths.Function.f3b        
+    )
 
-    st.page_link(
-        label = "Function 5 - Description - API",
-        page= Assets.Paths.Description.f5,
-        help="The button will redirect to the relevant page within this app.",
-        use_container_width=True,
-        icon=":material/code:",
-        )
+    render_function_page(
+        label = "Function 4 - Mapping",
+        page= Assets.Paths.Function.f4       
+    )
     
-    st.page_link(
-        label = "Home page",
-        page= Assets.Paths.App.main_page,
-        help="The button will redirect to the relevant page within this app.",
-        use_container_width=True,
-        icon=":material/home:",
-        )
+    render_description_page(
+        label = "Function 5 - Description - API",
+        page= Assets.Paths.Description.f5       
+    )
+
+    render_specific_page("home_page")
+    
+
 
 @st.dialog("Complete!")
 def process_done(order_number):

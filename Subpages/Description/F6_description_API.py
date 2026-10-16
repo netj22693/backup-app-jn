@@ -1,5 +1,7 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_function_page
 from app_api import api_GET_cache_10min, get_url_string_for_GET_api
 from Subpages.Services.F5_F6_statistics_api_visualization import display_statistics
 from Subpages.Data.F6_json_structures import json_api_structure_zipcodebase, json_api_structure_zipcodestack, json_scenario_1_zipcodestack, json_scenario_2_zipcodebase, json_scenario_2_zipcodestack
@@ -48,7 +50,7 @@ Zipcodebase.com is a website that provides a free ZIP code API for accessing wor
 # Expander API 1 JSON
 ''
 ''
-with st.expander("API JSON structure - Zipcodebase.com", icon=":material/help:"):
+with st.expander("API JSON structure - Zipcodebase.com", icon= UiConfigAndIcons.Expanders.help_additional_info):
 
   ''
   st.write("""
@@ -97,7 +99,7 @@ Zip Code API - Free Postal Code Search & Validation. A completely free Zip Code 
 # Expander API 2 JSON
 ''
 ''
-with st.expander("API JSON structure - Zipcodestack.com", icon=":material/help:"):
+with st.expander("API JSON structure - Zipcodestack.com", icon= UiConfigAndIcons.Expanders.help_additional_info):
 
   ''
   st.write("""
@@ -145,8 +147,8 @@ with st.expander("API JSON structure - Zipcodestack.com", icon=":material/help:"
 
   if st.button(
     "API Usage",
-    use_container_width=True,
-    icon=":material/clock_loader_40:"
+    width= UiConfigAndIcons.Pages.width,
+    icon= UiConfigAndIcons.Buttons.show_pie_chart
   ):
 
 
@@ -272,10 +274,7 @@ with tab2:
 ''
 st.write("-------")
 
-st.page_link(
-  label="Function 6",
-  page= Assets.Paths.Function.f6,
-  help="The button will redirect to the relevant page within this app.",
-  width="stretch",
-  icon=":material/play_circle:"
-  )
+render_function_page(
+  label= "Function 6",
+  page= Assets.Paths.Function.f6    
+)

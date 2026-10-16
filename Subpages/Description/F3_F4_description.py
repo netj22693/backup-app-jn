@@ -1,5 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Resources_ui_objects import render_next_page
 from Video.Display_video import display_video_expander
 
 st.write("# Description - Functions 3 & 4")
@@ -107,10 +108,6 @@ with tab2:
 ''
 st.write("-------")
 
-st.page_link(
-    label = "Next page",
-	page= Assets.Paths.Description.f3_f4_cdm,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-    icon=":material/east:",
-	) 
+render_next_page(
+    page= Assets.Paths.Description.f3_f4_cdm   
+)

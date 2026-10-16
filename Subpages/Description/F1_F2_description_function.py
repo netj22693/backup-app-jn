@@ -1,5 +1,7 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_next_page, render_link_button
 from Video.Display_video import display_video_expander
 
 st.write("# Description - Functions 1 & 2")
@@ -78,21 +80,18 @@ with tab2:
   ''
   with st.expander(
     "XML message structure",
-    icon= ":material/help_outline:"
+    icon= UiConfigAndIcons.Expanders.help_additional_info
     ):
     
     ''
     st.image("Pictures/Function_1/F1_F2_XML_simple_screen.PNG")
     ''
-    st.write("More details about the XML and data parsing:")
+    st.write("- More details about the XML and data parsing:")
 
-    st.link_button(
-      label = "Go to XSD, XML description page",
-      url="https://dataparsing.streamlit.app/F1_F2_description_XML_XSD",
-      help="The button will redirect to the relevant page within this app for download.",
-      width="stretch",
-      icon=":material/launch:"
-    )
+    render_link_button(
+      label = "XML Schema",
+      url= Assets.Links.App.f2_xml_main
+    ) 
 
 
 with tab3:
@@ -228,10 +227,4 @@ with tab4:
 ''
 st.write("-------")
 
-st.page_link(
-  label ="Next page",
-  page= Assets.Paths.Description.f1_f2_xml_xsd,
-  help="The button will redirect to the relevant page within this app.",
-  width="stretch",
-  icon=":material/east:",
-  ) 
+render_next_page(page= Assets.Paths.Description.f1_f2_xml_xsd)

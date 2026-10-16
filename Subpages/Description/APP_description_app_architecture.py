@@ -1,5 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Resources_ui_objects import render_description_page, render_specific_page
 
 st.write("# Application Architecture")
 ''
@@ -74,7 +75,7 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 
 with tab1:
   ''
-  st.image("Pictures/Architecture/Code_architecture_v3.svg")
+  st.image("Pictures/Architecture/Code_architecture_v4.svg")
   ''
   ''
 
@@ -108,6 +109,7 @@ with tab6:
 st.write("""
 - **Application generic**
   - **Resources** - assets like images, links, paths
+  - **Resources UI & Components** - UI config logic, icons and UI wrappers (contralized approach)
   - **Logging** - logging used across the application
   - **Universal dialog** - UI text dialog/information, used across the application (DRY concept)
   - **API Layer** - API service/function used across the application
@@ -137,71 +139,40 @@ st.image("Pictures/Architecture/Root_structure_v1.svg", width=280)
 ''
 st.write("##### More details about the Functions and their architecture:")
 ''
-st.page_link(
-  label = "Description about F1 and F2",
-  page= Assets.Paths.Description.f1_f2,
-  help="The button will redirect to the relevant page within this app.",
-  width="stretch",
-  icon=":material/code:",
-  ) 
+render_description_page(
+  label= "Description about F1 and F2",
+  page= Assets.Paths.Description.f1_f2
+)
 
-st.page_link(
-  label = "Description about F3, F3B and F4",
-  page= Assets.Paths.Description.f3_f4,
-  help="The button will redirect to the relevant page within this app.",
-  width="stretch",
-  icon=":material/code:",
-  ) 
+render_description_page(
+  label= "Description about F3, F3B and F4",
+  page= Assets.Paths.Description.f3_f4
+)
 
-st.page_link(
-  label = "Description about F5 and F5B",
-  page= Assets.Paths.Description.f5,
-  help="The button will redirect to the relevant page within this app.",
-  width="stretch",
-  icon=":material/code:",
-  )
+render_description_page(
+  label= "Description about F5 and F5B",
+  page= Assets.Paths.Description.f5
+)
 
-st.page_link(
-  label = "Description about F6",
-  page= Assets.Paths.Description.f6,
-  help="The button will redirect to the relevant page within this app.",
-  width="stretch",
-  icon=":material/code:",
-  )
+render_description_page(
+  label= "Description about F6",
+  page= Assets.Paths.Description.f6
+)
 
-st.page_link(
-  label = "Description about F7 and F7B",
-  page= Assets.Paths.Description.f7,
-  help="The button will redirect to the relevant page within this app.",
-  width="stretch",
-  icon=":material/code:",
-  )
+render_description_page(
+  label= "Description about F7 and F7B",
+  page= Assets.Paths.Description.f7
+)
 
-st.page_link(
-  label = "Description about F8",
-  page= Assets.Paths.Description.f8,
-  help="The button will redirect to the relevant page within this app.",
-  width="stretch",
-  icon=":material/code:",
-  )
+render_description_page(
+  label= "Description about F8",
+  page= Assets.Paths.Description.f8
+)
 
 # ===== Page navigation at the bottom ======
 ''
 ''
 st.write("-------")
 
-st.page_link(
-  label = "Virtual Assistant (Chatbot)",
-  page= Assets.Paths.VirtualAssistant.va,
-  help="The button will redirect to the relevant page within this app.",
-  width="stretch",
-  icon=":material/smart_toy:",
-  ) 
-
-st.page_link(
-  label = "Home page",
-  page= Assets.Paths.App.main_page,
-  help="The button will redirect to the relevant page within this app.",
-  width="stretch",
-  icon=":material/home:",
-  )
+render_specific_page("virtual_assistant")
+render_specific_page("home_page")

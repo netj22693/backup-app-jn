@@ -3,11 +3,12 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 import math
 import pandasql as ps
+from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Dialog.APP_universal_dialog import display_download_complete_toast
 from Subpages.Dialog.F2_dialog import close_function
 from Subpages.Universal.Validation_XML_against_XML_Schema import validate_xml_against_xsd
-from Subpages.Expander.F2_expanders import show_expander_help, show_expander_help_validation_process
-from Subpages.Operational.F2_operational_functions import data_parsing_find, data_parsing_get, data_parsing_find_conditional, data_parsing_including_additional_services, create_pie_chart, df_styling, create_bar_chart, data_validation, data_validation_services, data_parsing_find_conditional_with_none_condition, get_utc_time_custom_string, get_filtered_df_including_ui_filters, xsd_not_passed
+from Subpages.Expander.F2_expanders import show_expander_help, xsd_not_passed,show_expander_help_validation_process
+from Subpages.Operational.F2_operational_functions import data_parsing_find, data_parsing_get, data_parsing_find_conditional, data_parsing_including_additional_services, create_pie_chart, df_styling, create_bar_chart, data_validation, data_validation_services, data_parsing_find_conditional_with_none_condition, get_utc_time_custom_string, get_filtered_df_including_ui_filters
 from Subpages.SQL.F2_SQL_queries import get_sql_query_item_inc_add_service, get_sql_query_percentage_product_prices_category, get_sql_query_percentage_product_prices_category_inc_add_serv, get_sql_query_percentage_add_services, sql_query_no_items_product_category, sql_query_no_items_with_additional_service, sql_query_no_items_without_additional_service, sql_query_expensive_item, sql_query_cheapest_item, sql_query_avg_price, sql_query_avg_price_with_add_serv, sql_query_avg_price_of_add_serv
 
 
@@ -204,14 +205,14 @@ if object_from_upload is not None:
     # ==== UI ====
     ''
     ''
-    with st.expander("Help",icon= ":material/help_outline:"):
+    with st.expander("Help",icon=UiConfigAndIcons.Expanders.help_additional_info):
         show_expander_help_validation_process()
 
     st.write("------")
     st.write("#### Data Visualization:")
     ''
     ''
-    with st.expander("Summary overview - Invoice", icon = ":material/apps:"):
+    with st.expander("Summary overview - Invoice", icon=UiConfigAndIcons.Expanders.list):
         ''
         '' 
         st.write(f"**Sumary:**")
@@ -257,7 +258,7 @@ if object_from_upload is not None:
 
 
     # SQL 1
-    with st.expander("SQL Queries 1 - Overview", icon = ":material/view_list:"):
+    with st.expander("SQL Queries 1 - Overview", icon=UiConfigAndIcons.Expanders.table):
         ''
         '' 
         st.write(f"- Number of items in **each product Category** (No. of items - {max_value_attribut}):")
@@ -274,7 +275,7 @@ if object_from_upload is not None:
         st.dataframe(ps.sqldf(sql_query_no_items_without_additional_service, locals()), hide_index=True, width="stretch")
 
     # SQL 2
-    with st.expander("SQL Queries 2 - Prices/Costs", icon = ":material/view_list:"):
+    with st.expander("SQL Queries 2 - Prices/Costs", icon=UiConfigAndIcons.Expanders.table):
 
         # Get SQL queries
         sql_query_warranty_expensive_inc_add_serv = get_sql_query_item_inc_add_service('Extended warranty', 'DESC')
@@ -325,7 +326,7 @@ if object_from_upload is not None:
 
 
     # SQL 3 
-    with st.expander("SQL Queries 3 & Pie Charts - % Ratio", icon = ":material/clock_loader_40:"):
+    with st.expander("SQL Queries 3 & Pie Charts - % Ratio", icon=UiConfigAndIcons.Expanders.pie_chart):
 
         sql_query_percentage_category = get_sql_query_percentage_product_prices_category(value_total_sum)
 
@@ -453,7 +454,7 @@ if object_from_upload is not None:
 
 
     # SQL 4
-    with st.expander("SQL Queries 4 - Average", icon = ":material/view_list:"):
+    with st.expander("SQL Queries 4 - Average", icon=UiConfigAndIcons.Expanders.table):
 
 
         df_q4 = ps.sqldf(sql_query_avg_price, locals())
@@ -615,7 +616,7 @@ if object_from_upload is not None:
         "Download",
         data= final_outcome,
         file_name= file_name_fstring,
-        icon = ":material/download:",
+        icon= UiConfigAndIcons.Buttons.download,
         width="stretch"):
             
         display_download_complete_toast()
@@ -623,7 +624,7 @@ if object_from_upload is not None:
     st.write("-------")
 
     #Closing button   
-    if st.button("Close Function 2", width="stretch", icon=":material/close:"):
+    if st.button("Close Function 2", width="stretch", icon=UiConfigAndIcons.Buttons.close):
         close_function()
 
 

@@ -7,6 +7,7 @@ from app_logging import inicialization_logging
 from sqlalchemy import Column, Integer, String, Boolean, Float,DateTime, Engine, update
 from sqlalchemy.orm import declarative_base, Session
 from Subpages.Dialog.F7b_dialog import rating_already_submitted, rating_complete, rating_not_saved
+from Subpages.Resources_ui import UiConfigAndIcons
 
 
 
@@ -355,7 +356,7 @@ def offer_rating_display_form(offer_id: str):
         st.form_submit_button(
             label= "Submit",
             width="stretch",
-            icon = ":material/apps:",
+            icon =UiConfigAndIcons.Buttons.submit,
             on_click=lambda: calculate_rating_and_save_into_db(
                 offer_id,
                 normalize_rating(st.session_state.customer_service),

@@ -1,6 +1,8 @@
 import streamlit as st
 import time
 from Subpages.Resources import Assets
+from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_function_page, render_description_page, render_specific_page
 
 
 # ===== Toast =====
@@ -10,8 +12,8 @@ def display_transformation_not_complete_toast():
 
     st.toast(
         "Transformation process **not complete** due to **ivalid uploaded file**.",
-        duration= 10,
-        icon=":material/warning:"
+        duration= UiConfigAndIcons.Toasts.duration["standard_notification"],
+        icon= UiConfigAndIcons.Toasts.warning
     )
 
 
@@ -21,8 +23,8 @@ def display_transformation_complete_toast():
 
     st.toast(
         "Transformation process **complete**. You can **download** the file in different format.",
-        duration= 10,
-        icon=":material/check:"
+        duration= UiConfigAndIcons.Toasts.duration["standard_notification"],
+        icon= UiConfigAndIcons.Toasts.success
     )
 
 
@@ -31,37 +33,23 @@ def final_dialogs_goto():
     ''
     st.write("**Go to:**")
 
-    st.page_link(
-    label = "Function F3B - Invoice visibility",
-    page= Assets.Paths.Function.f3b,
-    help="The button will redirect to the relevant page within this app.",
-    use_container_width=True,
-    icon=":material/play_circle:",
+    render_function_page(
+        label = "Function F3B - Invoice visibility",
+        page= Assets.Paths.Function.f3b        
     )
 
-    st.page_link(
-    label = "Function F5 - Description",
-    page= Assets.Paths.Description.f5,
-    help="The button will redirect to the relevant page within this app.",
-    use_container_width=True,
-    icon=":material/code:",
+    render_description_page(
+        label = "Function F5 - Description",
+        page= Assets.Paths.Description.f5        
     )
 
-    st.page_link(
-    label = "Function F5 - Exchange Rate",
-    page= Assets.Paths.Function.f5,
-    help="The button will redirect to the relevant page within this app.",
-    use_container_width=True,
-    icon=":material/play_circle:",
+    render_function_page(
+        label = "Function F5 - Exchange Rate",
+        page= Assets.Paths.Function.f5    
     )
 
-    st.page_link(
-    label = "Home page",
-    page= Assets.Paths.App.main_page,
-    help="The button will redirect to the relevant page within this app.",
-    use_container_width=True,
-    icon=":material/home:",
-    )
+    render_specific_page("home_page")
+
 
 
 # Final Dialog boxes
@@ -83,33 +71,3 @@ def process_done():
 		""")
 	
 	final_dialogs_goto()
-
-
-# Go to dialog
-@st.dialog("Go to:")
-def display_goto_links():
-
-    ''
-    st.page_link(
-        label = "Function 5 - Description",
-        page= Assets.Paths.Description.f5,
-        help="The button will redirect to the relevant page within this app.",
-        use_container_width=True,
-        icon=":material/code:",
-        )
-
-    st.page_link(
-        label = "Function 5",
-        page= Assets.Paths.Function.f5,
-        help="The button will redirect to the relevant page within this app.",
-        use_container_width=True,
-        icon=":material/play_circle:",
-        )
-    
-    st.page_link(
-        label = "Home page",
-        page= Assets.Paths.App.main_page,
-        help="The button will redirect to the relevant page within this app.",
-        use_container_width=True,
-        icon=":material/home:",
-        )

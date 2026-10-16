@@ -67,6 +67,7 @@ class Assets:
             f8_descriptin_erd = "https://dataparsing.streamlit.app/F8_description#db-structure-erd"
 
             # XML, XSD, JSON, JSON Schema
+            f2_xml_main = "https://dataparsing.streamlit.app/F1_F2_description_XML_XSD"
             f2_xml_xsd = "https://dataparsing.streamlit.app/~/+/F1_F2_description_XML_XSD#xsd-xml-schema"
             f2_xml_xsd_validation = "https://dataparsing.streamlit.app/~/+/F1_F2_description_XML_XSD#validation-xml-against-xml-schema"
             f3_f4_xml_json = "https://dataparsing.streamlit.app/~/+/F3_F4_description_XML_JSON#json-and-xml-schemas"

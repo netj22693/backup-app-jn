@@ -2,6 +2,7 @@ import streamlit as st
 import logging
 from app_logging import inicialization_logging
 from app_db_connection import db_connection
+from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Services.F3_load_data_from_DB import load_f3_data
 from Subpages.Dialog.F3_dialog import F3ToastsValidations
 from Subpages.Data.F3_F4_CDM_config_data import CDM_FIELDS
@@ -185,7 +186,7 @@ with st.form(key="key_form"):
 
 
 
-        with st.expander("Price list", icon=":material/help:"):
+        with st.expander("Price list", icon=UiConfigAndIcons.Expanders.help_additional_info):
 
             tab1, tab2 = st.tabs([
                 "CZ",
@@ -220,8 +221,8 @@ with st.form(key="key_form"):
     ''
     submit_button = st.form_submit_button(
         "Submit",
-        use_container_width=True,
-        icon = ":material/apps:",
+        width="stretch",
+        icon=UiConfigAndIcons.Buttons.submit,
         )
 
 
@@ -392,8 +393,8 @@ if  submit_button:
         'Download - XML',
         transform_data_CDM_to_XML("F3", cdm, CDM_FIELDS),
         file_name=f"{invoice_number}.xml",
-        use_container_width=True,
-        icon=":material/download:",
+        width="stretch",
+        icon=UiConfigAndIcons.Buttons.download,
         on_click=lambda: on_download_click(
             db_engine,
             "XML",
@@ -407,8 +408,8 @@ if  submit_button:
         'Download - JSON',
         transform_data_CDM_to_JSON("F3", cdm, CDM_FIELDS), 
         file_name = f"{invoice_number}.json",
-        use_container_width=True,
-        icon = ":material/download:",
+        width="stretch",
+        icon=UiConfigAndIcons.Buttons.download,
         on_click=lambda: on_download_click(
             db_engine,
             "JSON",
@@ -422,8 +423,8 @@ if  submit_button:
         'Download - CSV',
         transform_data_CDM_to_CSV("F3", cdm), 
         file_name = f"{invoice_number}.csv",
-        use_container_width=True,
-        icon = ":material/download:",
+        width="stretch",
+        icon=UiConfigAndIcons.Buttons.download,
         on_click=lambda: on_download_click(
             db_engine,
             "CSV",

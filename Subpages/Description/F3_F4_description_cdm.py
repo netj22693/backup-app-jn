@@ -1,5 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Resources_ui_objects import render_next_page, render_previous_page
 
 
 st.write("# CDM:")
@@ -73,18 +74,5 @@ st.image("Pictures/Function_3/CDM/F3_F4_CDM_code_context_v1.svg")
 ''
 st.write("-------")
 
-st.page_link(
-    label = "Next page",
-	page= Assets.Paths.Description.f3_f4_xml_json,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-    icon=":material/east:",
-	) 
-
-st.page_link(
-	label = "Previous page",
-	page= Assets.Paths.Description.f3_f4,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/west:"
-	) 
+render_next_page(page= Assets.Paths.Description.f3_f4_xml_json)
+render_previous_page(page= Assets.Paths.Description.f3_f4)

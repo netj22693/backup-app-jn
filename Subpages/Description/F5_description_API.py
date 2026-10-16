@@ -3,6 +3,8 @@ from app_api import api_GET_cache_10min, get_url_string_for_GET_api
 from Subpages.Services.F5_F6_statistics_api_visualization import display_statistics
 from Subpages.Data.F5_json_structures import json_api_structure_1, json_api_structure_2
 from Subpages.Resources import Assets
+from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_function_page
 
 
 # ==================== Application screen + backend functions ==============
@@ -54,7 +56,7 @@ Kurzy.cz is a Czech portal specializing in the field of finance - investments, b
 ''
 ''
 # Expander API 1 JSON 
-with st.expander("API JSON structure - Kurzy.cz", icon= ":material/help:"):
+with st.expander("API JSON structure - Kurzy.cz", icon= UiConfigAndIcons.Expanders.help_additional_info):
 
 	''
 	st.write("""
@@ -99,7 +101,7 @@ The 100% free solution for handling exchange rate conversions. Our currency API 
 ''
 ''
 # Expander API 2 JSON 
-with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/help:"):
+with st.expander("API JSON structure - Freecurrencyapi.com", icon= UiConfigAndIcons.Expanders.help_additional_info):
 
 	''
 	st.write("""
@@ -138,8 +140,8 @@ with st.expander("API JSON structure - Freecurrencyapi.com", icon= ":material/he
 	st.write("- API is **limited to 1k requests per month**")
 	if st.button(
 		"API Usage",
-		use_container_width=True,
-		icon=":material/clock_loader_40:"
+		width= UiConfigAndIcons.Pages.width,
+		icon= UiConfigAndIcons.Buttons.show_pie_chart
 	):
 		# API 
 		data_json = api_GET_cache_10min(
@@ -247,18 +249,12 @@ st.image("Pictures/Function_5/F5B_ERD_v1.svg")
 ''
 st.write("-------")
 
-st.page_link(
-	label = "Function 5",
-	page= Assets.Paths.Function.f5,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/play_circle:"
-	) 
+render_function_page(
+	label= "Function 5",
+	page= Assets.Paths.Function.f5	
+)
 
-st.page_link(
-	label = "Function 5B",
-	page= Assets.Paths.Function.f5b,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/play_circle:"
-	) 
+render_function_page(
+	label= "Function 5B",
+	page= Assets.Paths.Function.f5b	
+)

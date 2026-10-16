@@ -1,6 +1,7 @@
 import streamlit as st
 from Subpages.Resources import Assets
-
+from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_next_page, render_previous_page
 
 
 st.write("# Door-to-Door")
@@ -24,7 +25,7 @@ st.write("""
     """)
 
 ''
-with st.expander("Additional context", icon= ":material/info:"):
+with st.expander("Additional context", icon= UiConfigAndIcons.Expanders.help_additional_info):
     st.write("""
         - Note to 1. point:
             - It is pretty common that industries, hubs, companies are around cities/close to cities
@@ -221,18 +222,10 @@ st.write("""
 ''
 st.write("-------")
 
-st.page_link(
-	label = "Next page",
-	page= Assets.Paths.Description.f7_metrics,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/east:"
-	) 
+render_next_page(
+    page= Assets.Paths.Description.f7_metrics
+)
 
-st.page_link(
-    label = "Previous page",
-	page= Assets.Paths.Description.f7_rating,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-    icon=":material/west:",
-	) 
+render_previous_page(
+    page= Assets.Paths.Description.f7_rating
+)

@@ -1,5 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Resources_ui import UiConfigAndIcons
 
 
 # ============= LOGO - SHARED ON ALL PAGES ==========
@@ -14,29 +15,29 @@ st.logo("Pictures/V2_pictures/Logo_7.png", size='large')
 # ----- Landing page -----
 landing_page = st.Page(
     Assets.Paths.App.main_page,
-    title="Purpose of this application",
-    icon= ":material/home:"
+    title= UiConfigAndIcons.Pages.landing_page["label"],
+    icon= UiConfigAndIcons.Pages.landing_page["icon"]
     )
 
 # ----- Application architecture page -----
 app_description_architecture = st.Page(
     Assets.Paths.App.app_architecture,
-    title="Application Architecture",
-    icon= ":material/architecture:"
+    title= UiConfigAndIcons.Pages.architecture["label"],
+    icon= UiConfigAndIcons.Pages.architecture["icon"]
     )
 
 # ----- VA -----
 VA_function = st.Page(
     Assets.Paths.VirtualAssistant.va,
-    title="Virtual Assistant (Chatbot)",
-    icon= ":material/smart_toy:"
+    title= UiConfigAndIcons.Pages.virtual_assistant["label"],
+    icon= UiConfigAndIcons.Pages.virtual_assistant["icon"]
 )
 
 # ----- Bug form -----
 BF_function = st.Page(
     Assets.Paths.BugForm.bf,
-    title="Have you seen a bug?",
-    icon= ":material/pest_control:"
+    title= UiConfigAndIcons.Pages.bug_form["label"],
+    icon= UiConfigAndIcons.Pages.bug_form["icon"]
 )
 
 # ----- Test pages -----
@@ -55,25 +56,25 @@ test_2 = st.Page(
 F1_F2_description = st.Page(
     Assets.Paths.Description.f1_f2,
     title="Description - Functions",
-    icon= ":material/code:"
+    icon= UiConfigAndIcons.Pages.description["icon"]
 )
 
 F1_F2_descritpion_xml_xsd = st.Page(
     Assets.Paths.Description.f1_f2_xml_xsd,
     title="Description - XML Schema",
-    icon= ":material/code:"
+    icon= UiConfigAndIcons.Pages.description["icon"]
     )
 
 F1_function = st.Page(
     Assets.Paths.Function.f1,
     title="1. XML - Download",
-    icon = ":material/play_circle:"
+    icon = UiConfigAndIcons.Pages.function["icon"]
     )
 
 F2_function = st.Page(
     Assets.Paths.Function.f2,
     title="2. XML - Parsing, Validation, Vizualization",
-    icon = ":material/play_circle:"
+    icon = UiConfigAndIcons.Pages.function["icon"]
     )
 
 
@@ -81,143 +82,143 @@ F2_function = st.Page(
 F3_F4_description = st.Page(
     Assets.Paths.Description.f3_f4,
     title="Description - Functions",
-    icon= ":material/code:"
+    icon= UiConfigAndIcons.Pages.description["icon"]
 )
 
 F3_F4_description_cdm = st.Page(
     Assets.Paths.Description.f3_f4_cdm,
     title="Description - CDM",
-    icon= ":material/code:"
+    icon= UiConfigAndIcons.Pages.description["icon"]
 )
 
 F3_F4_description_xml_json = st.Page(
     Assets.Paths.Description.f3_f4_xml_json,
     title="Description - JSON & XML Schemas",
-    icon= ":material/code:"
+    icon= UiConfigAndIcons.Pages.description["icon"]
 )
 
 F3_F4_description_erd = st.Page(
     Assets.Paths.Description.f3_f4_erd,
     title="Description - DB & ERD",
-    icon= ":material/code:"
+    icon= UiConfigAndIcons.Pages.description["icon"]
     )
 
 F3_function = st.Page(
     Assets.Paths.Function.f3,
     title="3. Invoice - Creation",
-    icon = ":material/play_circle:"
+    icon = UiConfigAndIcons.Pages.function["icon"]
     )
 
 F3B_function = st.Page(
     Assets.Paths.Function.f3b,
     title="3B. Invoice - Visibility",
-    icon = ":material/play_circle:"
+    icon = UiConfigAndIcons.Pages.function["icon"]
     )
 
 F4_function = st.Page(
     Assets.Paths.Function.f4,
     title="4. Invoice - Data Transformation",
-    icon = ":material/play_circle:"
+    icon = UiConfigAndIcons.Pages.function["icon"]
 )
 
 # ----- F5 -----
 F5_description = st.Page(
     Assets.Paths.Description.f5,
     title="Description - API & DB",
-    icon= ":material/code:"
+    icon= UiConfigAndIcons.Pages.description["icon"]
 )
 
 F5_function = st.Page(
     Assets.Paths.Function.f5,
     title="5. Exchange Rate",
-    icon= ":material/play_circle:"
+    icon= UiConfigAndIcons.Pages.function["icon"]
 )
 
 F5B_function = st.Page(
     Assets.Paths.Function.f5b,
     title="5B. Exchange Rate Trend",
-    icon= ":material/play_circle:"
+    icon= UiConfigAndIcons.Pages.function["icon"]
 )
 
 # ----- F6 -----
 F6_descritpion = st.Page(
     Assets.Paths.Description.f6,
     title="Description - API",
-    icon= ":material/code:"
+    icon= UiConfigAndIcons.Pages.description["icon"]
 )
 
 F6_function = st.Page(
     Assets.Paths.Function.f6,
     title="6. ZIP code",
-    icon= ":material/play_circle:"
+    icon= UiConfigAndIcons.Pages.function["icon"]
 )
 
 # ----- F7 -----
 F7_descritpion = st.Page(
     Assets.Paths.Description.f7,
     title="Description - Function",
-    icon= ":material/code:"
+    icon= UiConfigAndIcons.Pages.description["icon"]
 )
 
 F7_description_architecture = st.Page(
     Assets.Paths.Description.f7_architecture,
     title="Description - Architecture",
-    icon= ":material/code:"
+    icon= UiConfigAndIcons.Pages.description["icon"]
 )
 
 F7_description_db = st.Page(
     Assets.Paths.Description.f7_db,
     title="Description - DB & ERD",
-    icon= ":material/code:"
+    icon= UiConfigAndIcons.Pages.description["icon"]
 )
 
 F7_description_state = st.Page(
     Assets.Paths.Description.f7_state,
     title="Description - State flow",
-    icon= ":material/code:"
+    icon= UiConfigAndIcons.Pages.description["icon"]
 )
 
 F7_description_rating = st.Page(
     Assets.Paths.Description.f7_rating,
     title="Description - Rating",
-    icon= ":material/code:"
+    icon= UiConfigAndIcons.Pages.description["icon"]
 )
 
 F7_description_dtd = st.Page(
     Assets.Paths.Description.f7_dtd,
     title="Description - Door-to-Door",
-    icon= ":material/code:"
+    icon= UiConfigAndIcons.Pages.description["icon"]
 )
 
 F7_description_metrics = st.Page(
     Assets.Paths.Description.f7_metrics,
     title="Description - Use Cases & Metrics",
-    icon= ":material/code:"
+    icon= UiConfigAndIcons.Pages.description["icon"]
 )
 
 F7_function = st.Page(
     Assets.Paths.Function.f7,
     title="7. Transportation",
-    icon= ":material/play_circle:"
+    icon= UiConfigAndIcons.Pages.function["icon"]
 )
 
 F7B_function = st.Page(
     Assets.Paths.Function.f7b,
     title="7B. Offer - Visibility",
-    icon= ":material/play_circle:"
+    icon= UiConfigAndIcons.Pages.function["icon"]
 )
 
 # ----- F8 -----
 F8_description = st.Page(
     Assets.Paths.Description.f8,
     title="Description - DB & Function",
-    icon= ":material/code:"
+    icon= UiConfigAndIcons.Pages.description["icon"]
 )
 
 F8_function = st.Page(
     Assets.Paths.Function.f8,
     title="8. Company Book",
-    icon= ":material/play_circle:"
+    icon= UiConfigAndIcons.Pages.function["icon"]
 )
 
 

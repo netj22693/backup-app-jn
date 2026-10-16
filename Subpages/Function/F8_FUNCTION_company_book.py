@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 from app_db_connection import db_connection
 from sqlalchemy import text
+from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Services.F8_map import get_map, df_styling_colors_per_map
 from Subpages.Operational.F8_operational_functions import boolean_to_string_for_ui, count_rows, select_country_flag_path
 from Subpages.SQL.F8_SQL_queries import sql_query_number_companies, sql_query_number_branches, sql_query_company_overview, sql_query_branch_info_df, sql_query_branch_df,sql_query_branch_for_map, sql_query_branch_size, sql_query_company_table, get_sql_query_international_domestic, determin_transport_for_db_query, mapping_country, mapping_transport_type, create_df_branches_country, create_pin_column
@@ -105,7 +106,7 @@ with tab1:
             help="Select preferred transport type."
             )
         
-        submit_button = st.form_submit_button(label= "Submit", width="stretch", icon = ":material/apps:")
+        submit_button = st.form_submit_button(label= "Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit)
 
 
     # Submit button -> main logic TAB 1
@@ -150,10 +151,10 @@ with tab1:
 
         # ==== UI data visualization ====
         ''
-        with st.expander("Branch type info",width= "stretch", icon=":material/help_outline:"):
+        with st.expander("Branch type info",width= "stretch", icon=UiConfigAndIcons.Expanders.help_additional_info):
             st.dataframe(branch_type_info_df, hide_index=True, column_config = HIDDEN_COLUMNS_BRANCH_INFO)
 
-        with st.expander("Map - Locations", icon=":material/location_on:"):
+        with st.expander("Map - Locations", icon=UiConfigAndIcons.Expanders.map):
 
             # Concat of the 2 DF for MAP purposes + drop of duplicates (this can happen if it is domestic transport and the same country)
             df_raw_from_to = pd.concat([df_raw_from, df_raw_to], ignore_index=True).drop_duplicates()
@@ -201,7 +202,7 @@ with tab2:
             help="Select or type a company name you are interested in."
             )
 
-        submit_button = st.form_submit_button(label= "Submit", width="stretch", icon = ":material/apps:")
+        submit_button = st.form_submit_button(label= "Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit)
 
     if submit_button:
 
@@ -268,7 +269,7 @@ with tab2:
             pass
 
         ''
-        with st.expander(f"Company info - **{company_name}**",width= "stretch", icon=":material/list:"):
+        with st.expander(f"Company info - **{company_name}**",width= "stretch", icon=UiConfigAndIcons.Expanders.list):
             
             st.write(f"""
             - Company: **{company_name}**
@@ -289,10 +290,10 @@ with tab2:
             - Airplane: **{company_airplane_str}**
             """)
         
-        with st.expander("Branch type",width= "stretch", icon=":material/help_outline:"):
+        with st.expander("Branch type",width= "stretch", icon=UiConfigAndIcons.Expanders.help_additional_info):
             st.dataframe(branch_type_info_df, hide_index=True, column_config = HIDDEN_COLUMNS_BRANCH_INFO)
 
-        with st.expander("Map - Locations", icon=":material/location_on:"):
+        with st.expander("Map - Locations", icon=UiConfigAndIcons.Expanders.map):
             
             # 02-July-2026 - Note: some DFs can be emppty due to no data (expacted behavior). FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation. -> For loop is filtering out the empty ones -> pd.concat() works
             dfs = [df_at_raw, df_cz_raw, df_de_raw, df_pl_raw, df_sk_raw]
@@ -359,7 +360,7 @@ with tab3:
     with st.form(key="user_form_branch"):
         branch_id_input = st.text_input(label="Branch ID:", help="The **Branch ID** is available in TAB 1 or TAB 2. When results are displayed, you can find the **Branch ID** either in the **tables** or in the **maps**")
         
-        submit_button = st.form_submit_button(label= "Submit", width="stretch", icon = ":material/apps:")
+        submit_button = st.form_submit_button(label= "Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit)
 
     if submit_button:
 
@@ -447,7 +448,7 @@ with tab4:
         - Provides **overall summary/visibility** of companies in DB and number of their branches 
         """)
         ''
-        submit_button_tab3 = st.button("Companies", width= "stretch", icon=":material/table:", key="key_submit_button_tab3")
+        submit_button_tab3 = st.button("Companies", width= "stretch", icon=UiConfigAndIcons.Buttons.show_table, key="key_submit_button_tab3")
 
         if submit_button_tab3:
 

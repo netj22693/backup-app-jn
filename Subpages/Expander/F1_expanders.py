@@ -1,24 +1,23 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_link_button
 
 
 def display_expander_pair_xml_xsd():
 
     with st.expander(
         "How to pair XML with XSD",
-        icon= ":material/help_outline:"
+        icon= UiConfigAndIcons.Expanders.help_additional_info
         ):
         
         st.write("1) Download XSD Schema from this application:")
         st.write("")
-        st.link_button(
-            label = "Go to XSD page",
-            url= Assets.Links.App.f2_xml_xsd,
-            help="The button will redirect to the relevant page within this app for download.",
-            width="stretch",
-            icon=":material/launch:"
 
-            ) 
+        render_link_button(
+            label = "XML Schema page",
+            url= Assets.Links.App.f2_xml_xsd            
+        ) 
         
         st.write("")
         st.write("")
@@ -60,13 +59,4 @@ def display_expander_pair_xml_xsd():
         st.write("")
         st.image("Pictures/V2_pictures/no error.png")
         st.write("")
-        st.write("")
-        st.page_link(
-            label = "Go to Function 2",
-            page= Assets.Paths.Function.f2,
-            help="The button will redirect to the relevant page within this app.",
-            width="stretch",
-            icon=":material/play_circle:"
-            ) 
-        st.write("")
-        st.write("")
+

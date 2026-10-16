@@ -1,5 +1,6 @@
 import streamlit as st
 from app_api import api_GET_cache_1h, get_url_string_for_GET_api
+from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Operational.F5_operational_functions import get_result_division, get_result_multiply, get_value_formated, parsing_data_api_freecurrencyapi_com, parsing_data_api_kurzy_cz
 
 
@@ -121,8 +122,8 @@ with st.form(key="calculation form"):
     ''
     sub_butt_all = st.form_submit_button(
     label="To show all conversions",
-    use_container_width=True,
-    icon = ":material/apps:")
+    width="stretch",
+    icon = UiConfigAndIcons.Buttons.submit)
 
     if sub_butt_all:
         st.write(f"{czk_obj_formatted} CZK = {r1_czk_to_eur_formatted} EUR")

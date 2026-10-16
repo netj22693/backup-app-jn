@@ -1,4 +1,5 @@
 import streamlit as st
+from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Operational.F6_operational_functions import orchestration_city_based_on_zipcode_search, orchestration_zipcode_based_on_city_search
 
 # ================== UI  ==========================
@@ -20,8 +21,9 @@ st.write("""
 st.write("#### :orange[⬤] Get ZIP code(s) based on City:")
 
 ''
-with st.expander("How to use this form",
-    icon=":material/help:"
+with st.expander(
+    "How to use this form",
+    icon=UiConfigAndIcons.Expanders.help_additional_info
     ):
 
     st.write("- Provides **ZIP code number(s) for particular city**")
@@ -80,8 +82,8 @@ with st.form("List of ZIP codes"):
 
     submit_button_1 = st.form_submit_button(
         label="Submit",
-        use_container_width=True,
-        icon = ":material/apps:",
+        width="stretch",
+        icon=UiConfigAndIcons.Buttons.submit,
         )
     
     # The 'if' is nested -> to keep results in the form box
@@ -99,8 +101,9 @@ with st.form("List of ZIP codes"):
 st.write("#### :green[⬤] Get city based on ZIP code:")
 
 ''
-with st.expander("How to use this form",
-    icon=":material/help:"
+with st.expander(
+    "How to use this form",
+    icon=UiConfigAndIcons.Expanders.help_additional_info
     ):
 
     st.write("""- Provides **city, state/region** based on ZIP code(s)""")
@@ -167,8 +170,8 @@ with st.form("Get city based on ZIP code(s)"):
     
     submit_button_api_2 = st.form_submit_button(
         label="Submit",
-        use_container_width=True,
-        icon = ":material/apps:",
+        width="stretch",
+        icon=UiConfigAndIcons.Buttons.submit,
         )
 
     # The 'if' is nested -> to keep results in the form box

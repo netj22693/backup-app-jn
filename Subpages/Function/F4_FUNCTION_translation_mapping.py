@@ -10,6 +10,7 @@ from io import StringIO
 from pathlib import Path
 from app_db_connection import db_connection
 from app_logging import inicialization_logging
+from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Dialog.F4_dialog import display_transformation_not_complete_toast, display_transformation_complete_toast
 from Subpages.Data.F4_validation_process import STATE_TEXT
 from Subpages.SQL.F4_SQL_queries import sql_query_data_integrity, sql_query_transformation_overview
@@ -226,8 +227,8 @@ with tab1:
                     item,
                     data,
                     file_name=f"{cdm_format['invoice_number']}{config['mapping_to_suffix']}",
-                    use_container_width=True,
-                    icon=":material/download:",
+                    width="stretch",
+                    icon=UiConfigAndIcons.Buttons.download,
                     on_click=lambda item=item: (
                         insert_log_into_db_orchestration(
                             cdm_format["order_number"],

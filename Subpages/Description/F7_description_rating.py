@@ -1,5 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Resources_ui_objects import render_next_page, render_previous_page
 
 st.write("# Rating")
 ''
@@ -56,18 +57,10 @@ st.image("Pictures/Function_7/F7_rating/F7_rating_principle_v2.svg")
 ''
 st.write("-------")
 
-st.page_link(
-	label = "Next page",
-	page= Assets.Paths.Description.f7_dtd,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/east:"
-	) 
+render_next_page(
+   page= Assets.Paths.Description.f7_dtd 
+)
 
-st.page_link(
-    label = "Previous page",
-	page= Assets.Paths.Description.f7_state,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-    icon=":material/west:",
-	) 
+render_previous_page(
+   page= Assets.Paths.Description.f7_state 
+)

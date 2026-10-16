@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Data.F7_input_data import TRANSPORT_SPEED, UNIT_DISTANCE
 from Subpages.Resources import Assets
 
@@ -11,7 +12,7 @@ def display_expander_city_overview(
   sk: pd.DataFrame,
   pl: pd.DataFrame     
 ):
-    with st.expander("City overview", icon = ":material/pin_drop:"):
+    with st.expander("City overview", icon=UiConfigAndIcons.Expanders.map):
 
         st.write("")
 
@@ -59,7 +60,7 @@ def display_expander_city_overview(
             st.dataframe(pl)
 
 def display_expander_transport_type_comparison():
-    with st.expander("Transport type comparison", icon=":material/info:"):
+    with st.expander("Transport type comparison", icon=UiConfigAndIcons.Expanders.help_additional_info):
 
         st.write("")
         st.write("""
@@ -75,7 +76,7 @@ def display_expander_transport_type_comparison():
 
 
 def display_expander_truck():
-    with st.expander("Truck / Road", icon=":material/local_shipping:"):
+    with st.expander("Truck / Road", icon=UiConfigAndIcons.BusinessIcons.truck):
 
         st.write("")
         st.write(f"""- Average speed: **{TRANSPORT_SPEED['truck']} km/h**""")
@@ -119,7 +120,7 @@ def display_expander_train(
   sk: pd.DataFrame,
   pl: pd.DataFrame,       
 ):
-  with st.expander("Train / Rails", icon=":material/train:"):
+  with st.expander("Train / Rails", icon=UiConfigAndIcons.BusinessIcons.train):
 
       st.write("")
       st.write(f"""- Average speed: **{TRANSPORT_SPEED['train']} km/h**""")
@@ -179,7 +180,7 @@ def display_expander_air(
   pl: pd.DataFrame,       
 ):
 
-  with st.expander("Airplane", icon=":material/travel:"):
+  with st.expander("Airplane", icon=UiConfigAndIcons.BusinessIcons.airplane):
       st.write("")
       st.write(f"""- Average speed: **{TRANSPORT_SPEED['airplane']} km/h**""")
       st.write("""- Very expensive but fast -> Beneficial for time critical goods/transports""")
@@ -231,7 +232,7 @@ def display_expander_sla(df: pd.DataFrame):
         st.dataframe(df, hide_index=True)
 
 def display_expander_unit_price():
-    with st.expander("Unit price", icon= ":material/info:"):
+    with st.expander("Unit price", icon=UiConfigAndIcons.Expanders.help_additional_info):
 
         st.write("")
         st.write("- Is a price per specific distance")
@@ -243,7 +244,7 @@ def display_expander_unit_price():
 
 
 def display_expander_extra_services(extra_service_dict: dict):
-    with st.expander("Extra services - Overview", icon= ":material/info:"):
+    with st.expander("Extra services - Overview", icon=UiConfigAndIcons.Expanders.help_additional_info):
 
         st.write("")
         st.write("""
@@ -285,7 +286,7 @@ def display_expander_danger_goods():
 
 
 def display_expander_door_to_door():
-    with st.expander("Door-to-Door", icon= ":material/info:"):
+    with st.expander("Door-to-Door", icon=UiConfigAndIcons.Expanders.help_additional_info):
 
         st.write("")
         st.write("""

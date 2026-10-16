@@ -1,5 +1,7 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_next_page
 from Video.Display_video import display_video_expander
 
 
@@ -200,7 +202,7 @@ st.write("""
 ''
 st.image("Pictures/Function_7/F7_desc_bpmn_calculation_2.svg")
 ''
-with st.expander("Correction list", icon=":material/help:"):
+with st.expander("Correction list", icon= UiConfigAndIcons.Expanders.help_additional_info):
 
     st.image("Pictures/Function_7/F7_desc_bpmn_correction_list_L0.svg")
     st.write("""
@@ -283,7 +285,7 @@ with tab_tc1:
         ''
 
     ''
-    with st.expander("Use Cases/Examples", icon= ":material/help:"):
+    with st.expander("Use Cases/Examples", icon= UiConfigAndIcons.Expanders.help_additional_info):
 
 
         st.write("""
@@ -417,7 +419,7 @@ with tab_tc2:
              - **If not**, the calculated date & time **is adjusted** to fit to the DTF
              """)
     
-    with st.expander("DTF - Delivery Time Frame", icon=":material/info:"):
+    with st.expander("DTF - Delivery Time Frame", icon= UiConfigAndIcons.Expanders.help_additional_info):
         st.write(f"""
                     - Monday: **10:00 - 22:00**
                     - Tuesday - Friday : **07:00 - 22:00**
@@ -449,7 +451,7 @@ with tab_tc3:
     st.image("Pictures/Function_7/F7_desc_time_dtf.svg")
 
     ''
-    with st.expander("DTF - Examples", icon= ":material/info:"):
+    with st.expander("DTF - Examples", icon= UiConfigAndIcons.Expanders.help_additional_info):
 
         st.write("""
                  - Example 1:
@@ -471,7 +473,7 @@ with tab_tc3:
                     - **Reason**: no delivery Saturday and Sunday
                  """)
 
-    with st.expander("Python code", icon=":material/code:"):
+    with st.expander("Python code", icon= UiConfigAndIcons.Expanders.code_structure):
         st.code(python_time_if, language="python")
 
 with tab_tc4:
@@ -521,7 +523,7 @@ with tab_p_1:
     st.image("Pictures/Function_7/F7_desc_uml_inputs.svg")  
 
     ''
-    with st.expander("UML diagram - more details", icon= ":material/help:"):
+    with st.expander("UML diagram - more details", icon= UiConfigAndIcons.Expanders.help_additional_info):
 
         st.write("""
         - What user selects **influences** what the **application offers** in the other levels - types of **business scenarios & real case logic**
@@ -550,7 +552,7 @@ st.write("""
 )
 
 ''
-with st.expander("API info", icon= ":material/help:"):
+with st.expander("API info", icon= UiConfigAndIcons.Expanders.help_additional_info):
 
 	st.write("""
 	- API - **HTTP GET** request to retrieve data from a server
@@ -600,10 +602,6 @@ st.image("Pictures/Function_7/F7_desc_bpmn_currency.svg")
 ''
 st.write("-------")
 
-st.page_link(
-    label = "Next page",
-	page= Assets.Paths.Description.f7_architecture,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-    icon=":material/east:",
-	) 
+render_next_page(
+    page= Assets.Paths.Description.f7_architecture
+)

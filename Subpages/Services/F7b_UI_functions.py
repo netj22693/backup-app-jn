@@ -2,8 +2,11 @@ import streamlit as st
 import pandas as pd
 import logging
 from app_logging import inicialization_logging
-from Subpages.Operational.F7b_operational_functions import singular_or_plural
 from Subpages.Resources import Assets
+from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_link_button
+from Subpages.Operational.F7b_operational_functions import singular_or_plural
+
 
 # ===== Inicialization for logging ===== 
 inicialization_logging()
@@ -16,7 +19,7 @@ def display_state_flow():
 
 def display_state_flow_expander():
 
-    with st.expander("State flow", icon=":material/info:"):
+    with st.expander("State flow", icon=UiConfigAndIcons.Expanders.state_flow):
         st.image(Assets.Images.f7_state_flow, width = 750)
         st.write("") # Workaround for space on UI
         st.write(" - For manual **Approve/Reject** - Go to **Search for specific offer** tab and search for the offer.")
@@ -51,7 +54,7 @@ def display_offer_visualization_ui(
         st.warning("Failed to load image")
     
     # Expander UI transport image notation
-    with st.expander("Transfer process", icon= ":material/help:"):
+    with st.expander("Transfer process", icon=UiConfigAndIcons.Expanders.help_additional_info):
         try:
             st.image(ui_color_coding_image_path)
 
@@ -66,13 +69,10 @@ def display_offer_visualization_ui(
 
                 st.write("- More info about DTD:")
                 
-                st.link_button(
-                    label = "Go to Door-to-Door page",
-                    url= Assets.Links.App.f7_description_dtd,
-                    help="The button will redirect to the relevant page within this app for download.",
-                    width="stretch",
-                    icon=":material/launch:"
-                )                       
+                render_link_button(
+                    label = "Door-to-Door",
+                    url= Assets.Links.App.f7_description_dtd 
+                )                    
 
 
 
@@ -142,7 +142,7 @@ def display_offer_visualization_ui(
 
     # To be displayed only for F7
     if function_id == 'F7':
-        with st.expander("Info", icon=":material/help:"):
+        with st.expander("Info", icon=UiConfigAndIcons.Expanders.help_additional_info):
 
             tab_info_1, tab_info_2 = st.tabs([
                 "How",

@@ -1,5 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Resources_ui_objects import render_function_page
 from Video.Display_video import display_video_expander
 
 # ==================== Application screen ==============
@@ -76,10 +77,7 @@ st.image("Pictures/Function_8/F8_BPMN_query_company_info.svg")
 ''
 st.write("-------")
 
-st.page_link(
+render_function_page(
 	label = "Function 8",
-	page= Assets.Paths.Function.f8,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/play_circle:"
-	) 
+	page= Assets.Paths.Function.f8   
+)

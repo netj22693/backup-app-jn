@@ -1,5 +1,7 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_function_page, render_previous_page
 
 
 st.write("# Use Cases & Metrics")
@@ -31,7 +33,7 @@ with tab_1.container(border=True):
    col_m_3.metric(label="20+ km", value="3.3 %", delta="Acceptable", delta_color="off")
 
 
-   with st.expander("Measurement", icon= ":material/architecture:"):
+   with st.expander("Measurement", icon=UiConfigAndIcons.Expanders.measurment):
       
 
     st.image("Pictures/Function_7/F7_Metrics/Logo_Google_maps.svg", width=120)
@@ -42,7 +44,7 @@ with tab_1.container(border=True):
     st.image("Pictures/Function_7/F7_Metrics/F7_metrics_air_prague_wroclav_2.png")
 
 
-   with st.expander("Detail", icon= ":material/info:"):
+   with st.expander("Detail", icon=UiConfigAndIcons.Expanders.help_additional_info):
       st.write("- **30** combinations tested")
 
       st.image("Pictures/Function_7/F7_Metrics/F7_metrics_legend_air_5.svg")
@@ -98,7 +100,7 @@ with tab_1.container(border=True):
 
 
 
-   with st.expander("Measurement", icon= ":material/architecture:"):
+   with st.expander("Measurement", icon=UiConfigAndIcons.Expanders.measurment):
       
       st.image("Pictures/Function_7/F7_Metrics/Logo_Google_maps.svg", width=120)
 
@@ -112,7 +114,7 @@ with tab_1.container(border=True):
       st.image("Pictures/Function_7/F7_Metrics/F7_metrics_graz_pardubice.png")
 
 
-   with st.expander("Important note(!) - **Train**", icon= ":material/train:"):
+   with st.expander("Important note(!) - **Train**", icon=UiConfigAndIcons.Expanders.help_additional_info):
         
         st.write("""
         - Train has **the same distance** as Truck
@@ -120,7 +122,7 @@ with tab_1.container(border=True):
          """)
       
    
-   with st.expander("Detail - Distance **till** 450 km", icon= ":material/info:"):
+   with st.expander("Detail - Distance **till** 450 km", icon=UiConfigAndIcons.Expanders.help_additional_info):
       st.write("- **73** combinations tested")
 
       st.image("Pictures/Function_7/F7_Metrics/F7_metrics_legend_lessthan450_3.svg")
@@ -129,7 +131,7 @@ with tab_1.container(border=True):
       st.image("Pictures/Function_7/F7_Metrics/F7_metrics_table_lessthan450_dr.svg")
 
 
-   with st.expander("Detail - Distance **above** 450 km", icon= ":material/info:"):
+   with st.expander("Detail - Distance **above** 450 km", icon=UiConfigAndIcons.Expanders.help_additional_info):
       st.write("- **50** combinations tested")
 
       st.image("Pictures/Function_7/F7_Metrics/F7_metrics_legend_morethan450_3.svg")
@@ -359,18 +361,11 @@ with tab_2_1_4.container(border= True):
 ''
 st.write("-------")
 
-st.page_link(
+render_function_page(
 	label = "Function 7",
-	page= Assets.Paths.Function.f7,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/play_circle:"
-	) 
+	page= Assets.Paths.Function.f7   
+)
 
-st.page_link(
-   label = "Previous page",
-   page= Assets.Paths.Description.f7_dtd,
-   help="The button will redirect to the relevant page within this app.",
-   width="stretch",
-   icon=":material/west:",
-   ) 
+render_previous_page(
+   page= Assets.Paths.Description.f7_dtd     
+)

@@ -1,5 +1,6 @@
 import streamlit as st
 import time
+from Subpages.Resources_ui import UiConfigAndIcons
 
 # ===== Toast =====
 def display_download_complete_toast():
@@ -8,6 +9,6 @@ def display_download_complete_toast():
 
     st.toast(
         "File download complete.",
-        duration= 10,
-        icon=":material/check:"
+        duration= UiConfigAndIcons.Toasts.duration["standard_notification"],
+        icon= UiConfigAndIcons.Toasts.success
     )

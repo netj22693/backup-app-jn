@@ -4,6 +4,7 @@ import plotly.graph_objects as go
 from datetime import timedelta
 from app_api import api_GET_cache_1h, get_url_string_for_GET_api
 from app_db_connection import db_connection
+from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Services.F7b_UI_functions import display_offer_visualization_ui
 from Subpages.Services.F7_DB_insert import save_to_db_main_stream
 from Subpages.Services.F7_DB_mapping import mapping_transport_type, mapping_service, mapping_time_zone, mapping_currency, mapping_agreed_till
@@ -150,7 +151,7 @@ st.write("# Transport calculation")
 st.image("Pictures/Function_7/F7_map_V2_v4.svg")
 ''
 ''
-with st.expander("Delivery area - Central Europe", icon = ":material/pin_drop:"):
+with st.expander("Delivery area - Central Europe", icon=UiConfigAndIcons.Expanders.map):
     st.image("Pictures/Function_7/F7_map_central_europe.svg")
 
 
@@ -591,7 +592,7 @@ st.caption("2 days set as default. Can be changed accordingly to customer's need
 
 ''
 st.write("------")
-if st.button("Submit", width="stretch", icon=":material/apps:"):
+if st.button("Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit):
 
     # Validation of user inputs
     input_validation(from_city,to_city)
@@ -872,7 +873,7 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
         if len(transport_options_list) == 1:
             st.warning(f"For {from_city} ({country_code_from}) - {to_city} ({country_code_to}) there is **only {transport_options_list_str}** available -> **no other transport option**")
 
-        with st.expander("Color-coding charts", icon= ":material/help:"):
+        with st.expander("Color-coding charts", icon=UiConfigAndIcons.Expanders.help_additional_info):
             st.image("Pictures/Function_7/F7_tab2_colorcoding.svg")
             pass
 
@@ -1198,7 +1199,7 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
             
             st.dataframe(df_tab2_overall_time, hide_index=True)
 
-            with st.expander("Chart - Time", icon= ":material/bar_chart:"):
+            with st.expander("Chart - Time", icon=UiConfigAndIcons.Expanders.bar_chart):
 
                 tab_exp_cht_1, tab_exp_cht_2 = st.tabs([
                     "Overall",
@@ -1226,7 +1227,7 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
                     - **Airplane:** Distance + DTD + Transfer
                     """)
 
-            with st.expander("Chart - Price", icon= ":material/bar_chart:"):
+            with st.expander("Chart - Price", icon=UiConfigAndIcons.Expanders.bar_chart):
                 st.plotly_chart(fig_tab2_price_o, config=config_chart_tab2) # Changed deprication
 
                 st.write("- Note (!): Danger goods is **not allowed in Airplane** -> not counted")
@@ -1342,11 +1343,11 @@ if st.button("Submit", width="stretch", icon=":material/apps:"):
 
 
 
-            with st.expander("Chart - Time - Distance & DTD", icon= ":material/bar_chart:"):
+            with st.expander("Chart - Time - Distance & DTD", icon=UiConfigAndIcons.Expanders.bar_chart):
                 st.plotly_chart(fig_tab2_time, config=config_chart_tab2) # Changed deprication
 
 
-            with st.expander("Chart - Price - Distance & DTD", icon= ":material/bar_chart:"):
+            with st.expander("Chart - Price - Distance & DTD", icon=UiConfigAndIcons.Expanders.bar_chart):
                 st.plotly_chart(fig_overall_2, config=config_chart_tab2) # Changed deprication
 
             ''

@@ -5,51 +5,6 @@ from pandas.io.formats.style import Styler
 import plotly.express as px
 from xml.etree.ElementTree import Element
 from plotly.graph_objects import Figure
-from Subpages.Resources import Assets
-
-# ==== XSD not passed ====
-def xsd_not_passed():
-
-    ''
-    ''
-    st.error("The uploaded XML doesn't follow XSD rules -> the XML is not valid for this application")
-
-    with st.expander(
-        "Help - XML is not valid",
-        icon= ":material/help_outline:"
-        ):
-
-        ''
-        st.write("- Please check the uploaded file")
-        ''
-        st.write("- Data issue/structure issue not following XSD/XML definition for this Function 2")
-        ''
-        ''
-        st.write("**How to fix this?**")
-        st.write("- **Either** you can use any of the **predefined files**:")
-        ''
-        st.link_button(
-            label = "Go to: Function 1",
-            url= Assets.Links.App.f1_function,
-            help="The button will redirect to the relevant page within this app.",
-            width="stretch",
-            icon=":material/launch:",
-        ) 
-
-        ''
-        st.write("- **Or** you can see more about the XSD/XML definition for this Function 2 -> which should help to fix. **XSD** is at the bottom of the page")
-        ''
-
-        st.link_button(
-            label = "XML principles for this Function 2",
-            url= Assets.Links.App.f2_xml_xsd,
-            help="The button will redirect to the relevant page within this app.",
-            width="stretch",
-            icon=":material/launch:",
-            )
-
-    st.stop()
-
 
 # ======= Data validation -> displays on UI ======
 def data_validation(total_sum: float, sum_price: float, currency: str) -> str:

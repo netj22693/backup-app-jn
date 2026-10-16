@@ -1,5 +1,7 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_previous_page, render_function_page
 from Subpages.Dialog.APP_universal_dialog import display_download_complete_toast
 from Subpages.Expander.F1_expanders import display_expander_pair_xml_xsd
 from Subpages.Data.F1_F2_xml_structures import xml_data_euro, xml_data_koruna, xml_data_usdollar, xml_empty_template
@@ -57,10 +59,17 @@ with tab1:
     st.image("Pictures/V2_pictures/XML download - scenario 1_3.png")
     ''
     ''
-    with st.expander("Show XML structure - code", icon= ":material/code:"):
+    with st.expander(
+        "Show XML structure - code",
+        icon=UiConfigAndIcons.Expanders.code_structure
+        ):
         st.code(xml_data_euro, language= 'xml', line_numbers=True, height=700)
 
-    if st.download_button("Download",data = xml_data_euro  , file_name="XML_euro_sum_matching.xml", icon = ":material/download:"):
+    if st.download_button(
+        "Download",data = xml_data_euro,
+        file_name="XML_euro_sum_matching.xml",
+        icon=UiConfigAndIcons.Buttons.download
+        ):
         display_download_complete_toast()
 
 
@@ -85,10 +94,18 @@ with tab2:
     st.image("Pictures/V2_pictures/XML download - scenario 2_2.png")
     ''
     ''
-    with st.expander("Show XML structure - code", icon= ":material/code:"):
+    with st.expander(
+        "Show XML structure - code",
+        icon=UiConfigAndIcons.Expanders.code_structure
+        ):
         st.code(xml_data_koruna, language= 'xml', line_numbers=True, height=700)
         
-    if st.download_button("Download",data = xml_data_koruna  , file_name="XML_koruna_sum_matching.xml", icon = ":material/download:"):
+    if st.download_button(
+        "Download",
+        data = xml_data_koruna,
+        file_name="XML_koruna_sum_matching.xml",
+        icon=UiConfigAndIcons.Buttons.download
+        ):
         display_download_complete_toast()
 
 
@@ -112,10 +129,18 @@ with tab3:
     st.image("Pictures/V2_pictures/XML download - scenario 3_2.png")
     ''
     ''
-    with st.expander("Show XML structure - code", icon= ":material/code:"):
+    with st.expander(
+        "Show XML structure - code",
+        icon=UiConfigAndIcons.Expanders.code_structure
+        ):
         st.code(xml_data_usdollar, language= 'xml', line_numbers=True, height=700)
         
-    if st.download_button("Download",data = xml_data_usdollar , file_name="XML_usdollar_sum_not matching.xml", icon = ":material/download:"):
+    if st.download_button(
+        "Download",
+        data=xml_data_usdollar,
+        file_name="XML_usdollar_sum_not matching.xml",
+        icon=UiConfigAndIcons.Buttons.download
+        ):
         display_download_complete_toast()
 
 
@@ -137,19 +162,24 @@ with tab4:
     '''
     ''
     display_expander_pair_xml_xsd()
-
-        
-
     ''
     ''
     ''
     st.image("Pictures/V2_pictures/XML download - scenario 4.png")
     ''
     ''
-    with st.expander("Show XML structure - code", icon= ":material/code:"):
+    with st.expander(
+        "Show XML structure - code",
+        icon=UiConfigAndIcons.Expanders.code_structure
+        ):
         st.code(xml_empty_template, language= 'xml', line_numbers=True, height=700)
         
-    if st.download_button("Download",data = xml_empty_template , file_name="XML_empty_template.xml", icon = ":material/download:"):
+    if st.download_button(
+        "Download",
+        data = xml_empty_template,
+        file_name="XML_empty_template.xml",
+        icon=UiConfigAndIcons.Buttons.download
+        ):
         display_download_complete_toast()
 
 
@@ -161,19 +191,11 @@ with tab4:
 ''
 st.write("-------")
 
-st.page_link(
+render_function_page(
     label = "Go to: Function 2",
-	page= Assets.Paths.Function.f2,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-    icon=":material/play_circle:",
-	) 
+	page= Assets.Paths.Function.f2    
+)
 
-st.page_link(
-	label = "Previous page",
-	page= Assets.Paths.Description.f1_f2_xml_xsd,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/west:"
-	) 
-
+render_previous_page(
+    page= Assets.Paths.Description.f1_f2_xml_xsd
+)

@@ -1,5 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
+from Subpages.Resources_ui_objects import render_function_page, render_previous_page
 
 
 st.write("# DB & ERD:")
@@ -143,18 +144,11 @@ with tab4:
 ''
 st.write("-------")
 
-st.page_link(
-	label = "Go to: Function 3",
-	page= Assets.Paths.Function.f3,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/play_circle:",
-	) 
+render_function_page(
+	label= "Go to: Function 3",
+	page= Assets.Paths.Function.f3,    
+)
 
-st.page_link(
-	label = "Previous page",
-	page= Assets.Paths.Description.f3_f4_xml_json,
-	help="The button will redirect to the relevant page within this app.",
-	width="stretch",
-	icon=":material/west:"
-	) 
+render_previous_page(
+	page= Assets.Paths.Description.f3_f4_xml_json
+)

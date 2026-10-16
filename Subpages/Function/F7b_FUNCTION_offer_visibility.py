@@ -5,6 +5,7 @@ from datetime import date, timedelta
 import logging
 from app_logging import inicialization_logging
 from app_db_connection import db_connection
+from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Services.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
 from Subpages.SQL.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, sql_query_offer_status_validation_df, sql_query_offer_status_validation_single, sql_query_logs, sql_query_offer_rating, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes
 from Subpages.Data.F7_input_data import tranport_types_list, dataset_cities, states_dict
@@ -39,7 +40,7 @@ db_engine = db_connection("F7B", True)
 with tab1:
 
     ''
-    if st.button("Show last 30 offers", width="stretch", icon=":material/table:"):
+    if st.button("Show last 30 offers", width="stretch", icon=UiConfigAndIcons.Expanders.table):
 
         # Pulling of data from DB - status check
         df_status_check = pd.read_sql(sql_query_offer_status_validation_df, db_engine)
@@ -75,7 +76,7 @@ with tab2:
     with st.form(key="user_form"):
         offer_input_user = st.text_input(label="Offer number:", help="Insert **Offer number** you would like to see. It is based on offers created in **Function 7**.")
         
-        submit_button = st.form_submit_button(label= "Submit", width="stretch", icon = ":material/apps:",)
+        submit_button = st.form_submit_button(label= "Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit,)
 
 
     if submit_button:
@@ -347,10 +348,10 @@ with tab3:
         selected_transport,
         selected_currency
     ]):
-        submit_button_tab3 = st.button("Submit", width= "stretch", icon=":material/apps:", disabled=True)
+        submit_button_tab3 = st.button("Submit", width= "stretch", icon=UiConfigAndIcons.Buttons.submit, disabled=True)
 
     else:   
-        submit_button_tab3 = st.button("Submit", width= "stretch", icon=":material/apps:")
+        submit_button_tab3 = st.button("Submit", width= "stretch", icon=UiConfigAndIcons.Buttons.submit)
 
     # ===== Reset button =====
     st.write("-" *10)
@@ -359,7 +360,7 @@ with tab3:
         on_click=reset_filters,
         args=(list_countries_upper, tranport_types_list, currency_list),
         width="stretch",
-        icon= ":material/delete:"
+        icon=UiConfigAndIcons.Buttons.reset
         )
 
 
@@ -459,7 +460,7 @@ with tab4:
 
     ''
     ''
-    submit_button_tab4 = st.button("Submit", width= "stretch", icon=":material/apps:", key="key_submit_button_tab4")
+    submit_button_tab4 = st.button("Submit", width= "stretch", icon=UiConfigAndIcons.Buttons.submit, key="key_submit_button_tab4")
 
     if submit_button_tab4:
 

@@ -7,6 +7,7 @@ from sqlalchemy.orm import declarative_base, Session
 import logging
 from app_logging import inicialization_logging
 from Subpages.Dialog.F3_dialog import process_done, insert_db_not_complete
+from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Services.F3_DB_mapping import F3MappingFunctions
 
 # ===== Inicialization for logging =====
@@ -325,8 +326,8 @@ def display_reset_button():
     st.divider()
     st.button(
         "Reset",
-        use_container_width= True,
+        width="stretch",
         on_click = reset,
         help = "It will clear the form",
-        icon= ":material/delete:"
+        icon=UiConfigAndIcons.Buttons.reset
         )

@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from app_db_connection import db_connection
+from Subpages.Resources_ui import UiConfigAndIcons
 from sqlalchemy import text
 from Subpages.SQL.F5b_SQL_queries import sql_query_exchange_rate_data
 from Subpages.Services.F5b_charts import create_chart
@@ -85,7 +86,7 @@ else:
             st.plotly_chart(chart_eur_to_czk, width="stretch")
 
             ''
-            with st.expander("List of records", icon=":material/table:"):
+            with st.expander("List of records", icon=UiConfigAndIcons.Expanders.table):
                 st.dataframe(df_eur_to_czk_ui)
 
     with tab2:
@@ -117,7 +118,7 @@ else:
             st.plotly_chart(chart_usd_to_czk, width="stretch")
 
             ''
-            with st.expander("List of records", icon=":material/table:"):
+            with st.expander("List of records", icon=UiConfigAndIcons.Expanders.table):
                 st.dataframe(df_usd_to_czk_ui)
 
     with tab3:
@@ -149,5 +150,5 @@ else:
             st.plotly_chart(chart_eur_to_usd, width="stretch")
 
             ''
-            with st.expander("List of records", icon=":material/table:"):
+            with st.expander("List of records", icon=UiConfigAndIcons.Expanders.table):
                 st.dataframe(df_eur_to_usd_ui)
