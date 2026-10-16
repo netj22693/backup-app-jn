@@ -64,13 +64,14 @@ st.write(f"""
 )
 ''
 
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6,tab7 = st.tabs([
   "Overview",
   "Functions - building blocks",
   "Operation functions X Services", 
   "API Layer",
   "DB Layer",
-  "Virtual Assistant"
+  "Virtual Assistant",
+  "Centralized UI"
 ])
 
 with tab1:
@@ -102,6 +103,9 @@ with tab6:
   st.image("Pictures/Architecture/Virtual_assistant_v2.svg", width=620)
   ''
 
+with tab7:
+  st.image("Pictures/Architecture/Resources_ui_v1.svg")
+  ''
 
 
 ''
