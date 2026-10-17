@@ -5,7 +5,7 @@ from pandas.io.formats.style import Styler
 import plotly.express as px
 from xml.etree.ElementTree import Element
 from plotly.graph_objects import Figure
-from Subpages.Resources_ui_objects import render_success_info, render_warnig_info
+from Subpages.Resources_ui_objects import render_success_info, render_warning_info
 
 # ======= Data validation -> displays on UI ======
 def data_validation(total_sum: float, sum_price: float, currency: str) -> str:
@@ -20,7 +20,7 @@ def data_validation(total_sum: float, sum_price: float, currency: str) -> str:
         - But **summary of prices** in detail lines is: **{sum_price:.2f}** {currency}
         """
 
-        render_warnig_info(TEXT)
+        render_warning_info(TEXT)
 
         # This string is NOT app state but str/text to appear in the .txt doc
         return "Sum total - Not passed"
@@ -45,7 +45,7 @@ def data_validation_services(value_total_sum_services_fl: float, sum_price_warra
         - **Total sum SERVICES** in the XML invoice is: **{value_total_sum_services_fl:.2f}** {currency}
         - But **summary of prices** in detail lines is **{sum_warranty_insurance:.2f}** {currency}."""
 
-        render_warnig_info(TEXT)
+        render_warning_info(TEXT)
  
         # This string is NOT app state but str/text to appear in the .txt doc
         return ("Services - Not passed")

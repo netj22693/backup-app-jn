@@ -116,7 +116,7 @@ def render_success_info(text:str):
         icon=UiConfigAndIcons.InfoText.success,
     )
 
-def render_warnig_info(text:str):
+def render_warning_info(text:str):
     st.warning(
         textwrap.dedent(text).strip(),
         icon=UiConfigAndIcons.InfoText.warning,
