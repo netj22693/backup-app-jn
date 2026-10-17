@@ -1,5 +1,6 @@
 import streamlit as st
 import logging
+import textwrap
 from app_logging import inicialization_logging
 from Subpages.Resources import Assets
 from Subpages.Resources_ui import UiConfigAndIcons
@@ -105,3 +106,25 @@ def render_link_button(label: str, url: str):
         width=UiConfigAndIcons.Pages.width,
         icon=UiConfigAndIcons.Buttons.open_new_tab["icon"]
         )
+
+# =====  st. info message wrappers ===== 
+# textwrap is used to have bulletpoints formatted
+
+def render_success_info(text:str):
+    st.success(
+        textwrap.dedent(text).strip(),
+        icon=UiConfigAndIcons.InfoText.success,
+    )
+
+def render_warnig_info(text:str):
+    st.warning(
+        textwrap.dedent(text).strip(),
+        icon=UiConfigAndIcons.InfoText.warning,
+    )
+
+def render_error_info(text:str):
+    st.error(
+        textwrap.dedent(text).strip(),
+        icon=UiConfigAndIcons.InfoText.warning,
+    )
+

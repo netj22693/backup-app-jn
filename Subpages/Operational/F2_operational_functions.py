@@ -5,6 +5,7 @@ from pandas.io.formats.style import Styler
 import plotly.express as px
 from xml.etree.ElementTree import Element
 from plotly.graph_objects import Figure
+from Subpages.Resources_ui_objects import render_success_info, render_warnig_info
 
 # ======= Data validation -> displays on UI ======
 def data_validation(total_sum: float, sum_price: float, currency: str) -> str:
@@ -13,21 +14,20 @@ def data_validation(total_sum: float, sum_price: float, currency: str) -> str:
     
     if result != 0:
 
-        st.warning(f"""
-        Not passed
-        - **Invoice summary** does **not** equal to **line values**
-        - You can either continue with existing file or adjust the input file and upload it again.""")
-
-        st.warning(f"""
+        TEXT = f"""
+        Not Passed
         - **Total sum** in the XML invoice is: **{total_sum:.2f}** {currency}
-        - But **summary of prices** in detail lines is: **{sum_price:.2f}** {currency}""")
+        - But **summary of prices** in detail lines is: **{sum_price:.2f}** {currency}
+        """
+
+        render_warnig_info(TEXT)
 
         # This string is NOT app state but str/text to appear in the .txt doc
         return "Sum total - Not passed"
 
 
     else:
-        st.success("Passed")
+        render_success_info("Passed")
         # This string is NOT app state but str/text to appear in the .txt doc
         return "Sum total - Passed"
 
@@ -39,21 +39,19 @@ def data_validation_services(value_total_sum_services_fl: float, sum_price_warra
 
     
     if result != 0:
-        st.warning("""
-        Not passed
-        - **Summary** does **not** equal to **line values**
-        - You can either continue with existing file or adjust the input file and upload it again.""")
 
+        TEXT = f"""
+        Not Passed
+        - **Total sum SERVICES** in the XML invoice is: **{value_total_sum_services_fl:.2f}** {currency}
+        - But **summary of prices** in detail lines is **{sum_warranty_insurance:.2f}** {currency}."""
 
-        st.warning(f"""
-        - **Total sum of SERVICES** in the XML invoice is: **{value_total_sum_services_fl:.2f}** {currency}
-        - But **summary of prices** in detail lines is **{sum_warranty_insurance:.2f}** {currency}.""")
-
+        render_warnig_info(TEXT)
+ 
         # This string is NOT app state but str/text to appear in the .txt doc
         return ("Services - Not passed")
 
     else:
-        st.success("Passed")
+        render_success_info("Passed")
         # This string is NOT app state but str/text to appear in the .txt doc
         return "Services - Passed"
 

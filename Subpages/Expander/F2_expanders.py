@@ -1,6 +1,7 @@
 import streamlit as st
 from Subpages.Resources import Assets
 from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_error_info
 from Subpages.Resources_ui_objects import render_link_button
 
 def show_expander_help():
@@ -70,7 +71,7 @@ def show_expander_help_validation_process():
 # ==== XSD not passed ====
 def xsd_not_passed():
 
-    st.error("XML is not valid")
+    render_error_info("XML is not valid")
 
     with st.expander(
         "Help - XML is not valid",

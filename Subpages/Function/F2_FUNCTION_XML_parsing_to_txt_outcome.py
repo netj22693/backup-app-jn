@@ -4,6 +4,7 @@ import pandas as pd
 import math
 import pandasql as ps
 from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_success_info
 from Subpages.Dialog.APP_universal_dialog import display_download_complete_toast
 from Subpages.Dialog.F2_dialog import close_function
 from Subpages.Universal.Validation_XML_against_XML_Schema import validate_xml_against_xsd
@@ -18,13 +19,12 @@ from Subpages.SQL.F2_SQL_queries import get_sql_query_item_inc_add_service, get_
 st.write("# Upload XML:")
 ''
 ''
+''
 
 # type = ".xml" - allows to upload only xml files
 object_from_upload = st.file_uploader("Upload your XML file", type=".xml", label_visibility="collapsed", accept_multiple_files=False)
 
 if object_from_upload is None:
-    st.info("When a file uploaded, the application will start")
-
     show_expander_help()
 
 
@@ -180,7 +180,7 @@ if object_from_upload is not None:
     # ==== UI ====
 
     # Notification to appear on the screen when all parsing steps successfully done
-    st.success("Upload complete")
+    render_success_info("Upload complete")
 
     # Validation if DETAIL line sum matches HEADER value 
     # <total_sum>
