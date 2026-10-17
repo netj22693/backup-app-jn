@@ -1,3 +1,22 @@
+
+'''
+class BaseIcons
+- This is just a higher leve of abstraction to re-use icons across widgets in class UiConfigAndIcons
+- (!) Do NOT import from this class directly to the code
+'''
+class BaseIcons:
+    pie_chart = ":material/clock_loader_40:"
+    code = ":material/code:"
+    table = ":material/table:"
+
+    success = ":material/check:"
+    warning = ":material/warning:"
+
+
+'''
+class UiConfigAndIcons
+- For direct import into the code
+'''
 class UiConfigAndIcons:
     class BusinessIcons:
         # --- These icons are used also in diagrams ---
@@ -6,14 +25,21 @@ class UiConfigAndIcons:
         train = ":material/train:"
         airplane = ":material/travel:"
         # ---------------------------------------------
+    
+    class InfoText:
+        #st.success()
+        success = BaseIcons.success
+        #st.warning(), st.error()
+        warning = BaseIcons.warning
 
+        
     class Buttons:
         download = ":material/download:"
         close = ":material/close:"
         submit = ":material/apps:"
         reset = ":material/delete:"
-        show_table = ":material/table:"
-        show_pie_chart = ":material/clock_loader_40:"
+        show_table = BaseIcons.table
+        show_pie_chart = BaseIcons.pie_chart
 
         open_new_tab = {
             "icon": ":material/launch:",
@@ -22,8 +48,8 @@ class UiConfigAndIcons:
         }
 
     class Toasts:
-        success = ":material/check:"
-        warning = ":material/warning:"
+        success = BaseIcons.success
+        warning = BaseIcons.warning
 
         # Time to keep the toast visible - duration in seconds
         duration = {
@@ -33,9 +59,9 @@ class UiConfigAndIcons:
 
     class Expanders:
         help_additional_info = ":material/help_outline:"
-        code_structure = ":material/code:"
-        table = ":material/table:"
-        pie_chart = ":material/clock_loader_40:"
+        code_structure = BaseIcons.code
+        table = BaseIcons.table
+        pie_chart = BaseIcons.pie_chart
         bar_chart = ":material/bar_chart:"
         limitation = ":material/sync_problem:"
         map = ":material/pin_drop:"
@@ -47,10 +73,10 @@ class UiConfigAndIcons:
 
     class Pages:
 
-        # Navigation throught the app 
+        # Navigation through the app 
         help_text = "Go to the relevant page."
 
-        # Config for buttonts
+        # CButtons config
         width = "stretch"
 
 
@@ -75,7 +101,7 @@ class UiConfigAndIcons:
         }
 
         description = {
-            "icon": ":material/code:",
+            "icon": BaseIcons.code,
             # label - not possible to make generic -> Description X
         }
         function = {
