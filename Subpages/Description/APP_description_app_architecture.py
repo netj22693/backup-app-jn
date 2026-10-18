@@ -114,7 +114,7 @@ with tab7:
 st.write("""
 - **Application generic**
   - **Resources** - assets like images, links, paths
-  - **Resources UI & Components** - UI config logic, icons and UI wrappers (contralized approach)
+  - **Resources UI & Components** - UI config logic, icons and UI wrappers (centralized approach)
   - **Logging** - logging used across the application
   - **Universal dialog** - UI text dialog/information, used across the application (DRY concept)
   - **API Layer** - API service/function used across the application
