@@ -4,6 +4,7 @@ from datetime import date, timedelta
 from sqlalchemy import text
 from app_db_connection import db_connection
 from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_warning_info, render_info_info
 from Subpages.Operational.F3b_operational_functions import input_validation, input_safety_validation, get_order_details, get_company_logo_screen_details, input_validation_order_exists, df_styling, create_pie_chart, data_empty_fallback_info
 from Subpages.SQL.F3b_SQL_queries import sql_query_overview_invoices, sql_query_file_format, get_sql_part_where_date, get_sql_query_category, get_sql_query_company, get_sql_query_parcel_size, get_sql_query_currency, get_sql_query_country, get_sql_query_extra_service_type, get_sql_query_extra_service_count, get_mapping_extra_services, get_sql_query_file_format
 
@@ -115,11 +116,15 @@ with tab2:
 
 # To be built up
 with tab3:
-    st.info("This part is currently under build - to be released soon")
+    render_info_info("This part has not been released yet.")
 
 # =================  Tab 4  ======================
 
 with tab4:
+
+    # Default state condition
+    submit_disabled = False
+
     # Date picker
     ''
     radio_state_tb4 = st.radio("Filter",options=["All invoices - no specific date","Date range"])
@@ -167,12 +172,13 @@ with tab4:
 
         # Fallback info 
         if picked_date_from_tab4 > picked_date_to_tab4:
-            st.warning("Date **To** is farther in the past than **From** -> search will not work. Please change it.")
+            render_warning_info("**Date issue** - date **To** is farther in the past than **From**.")
+            submit_disabled = True
   
 
     ''
     ''
-    submit_button_tab4 = st.button("Submit", width= "stretch", icon=UiConfigAndIcons.Buttons.submit, key="key_submit_button_tab4")
+    submit_button_tab4 = st.button("Submit", width= "stretch", icon=UiConfigAndIcons.Buttons.submit, key="key_submit_button_tab4", disabled=submit_disabled)
 
     if submit_button_tab4:
         db_engine = db_connection("F3B", True)

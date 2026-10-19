@@ -1,9 +1,9 @@
-import streamlit as st
 import plotly.express as px
 import pandas as pd
 from pandas.io.formats.style import Styler
 from typing import NamedTuple
 from sqlalchemy import text, Engine
+from Subpages.Resources_ui_objects import render_warning_info, render_info_info
 from Subpages.SQL.F3b_SQL_queries import sql_query_extra_service, sql_query_file_format, sql_query_mapping_log, sql_query_overview, sql_query_product, sql_query_transport, sql_query_transport_company, sql_query_order_exist
 
 
@@ -15,7 +15,7 @@ def input_validation(order_input: str) -> bool:
     '''
 
     if order_input == '':
-        st.warning("**Missing input** - Please provide **Order number**")
+        render_warning_info("**Missing input** - please provide Order number.")
         return False
     
     return True
@@ -33,7 +33,7 @@ def input_safety_validation(order_input: str) -> bool:
         return True
 
     except:
-        st.warning("**Format issue** - The provide Order number is not in correct format")
+        render_warning_info("**Format issue** - provided order number is not in correct format.")
         return False
     
 # 
@@ -44,7 +44,7 @@ def input_validation_order_exists(db_engine: Engine, order_input: str) -> bool:
         df_overview = pd.read_sql_query(sql=text(sql_query_order_exist), con=conn, params=params)
 
     if df_overview.empty:
-        st.info(f"**No invoice** found with this **Order number: {order_input}**")
+        render_info_info(f"**No result** - order number **{order_input}** does not exist.")
         return False
     
     return True
@@ -200,7 +200,7 @@ def create_pie_chart(df_input, x_data, y_data):
 def data_empty_fallback_info(input_df: pd.DataFrame) -> bool:
 
     if input_df.empty:
-        st.warning("No data in DB related to the selected date range")
+        render_info_info("**No result** - no data in DB related to the selected date range.")
         fallback = True
 
     else:
