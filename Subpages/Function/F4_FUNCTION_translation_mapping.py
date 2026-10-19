@@ -11,6 +11,7 @@ from pathlib import Path
 from app_db_connection import db_connection
 from app_logging import inicialization_logging
 from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_warning_info, render_success_info
 from Subpages.Dialog.F4_dialog import display_transformation_not_complete_toast, display_transformation_complete_toast
 from Subpages.Data.F4_validation_process import STATE_TEXT
 from Subpages.SQL.F4_SQL_queries import sql_query_data_integrity, sql_query_transformation_overview
@@ -81,11 +82,11 @@ with tab1:
                 time.sleep(STATE_TEXT["time_sleep"])
         
             if validation_result == False:
-                st.warning(STATE_TEXT["schema_validation"]["fail"])
+                render_warning_info(STATE_TEXT["schema_validation"]["fail"])
                 display_transformation_not_complete_toast()
                 st.stop()
 
-            st.success(STATE_TEXT["schema_validation"]["success"])
+            render_success_info((STATE_TEXT["schema_validation"]["success"]))
 
 
             cdm_format: dict = transform_data_to_CDM(
@@ -99,11 +100,11 @@ with tab1:
                 time.sleep(STATE_TEXT["time_sleep"])
 
             if cdm_format == False:
-                st.warning(STATE_TEXT["canonical_transformation"]["fail"])
+                render_warning_info(STATE_TEXT["canonical_transformation"]["fail"])
                 display_transformation_not_complete_toast()
                 st.stop()
 
-            st.success(STATE_TEXT["canonical_transformation"]["success"])
+            render_success_info(STATE_TEXT["canonical_transformation"]["success"])
 
 
         elif suffix == "JSON":
@@ -120,11 +121,11 @@ with tab1:
             )
 
             if validation_result == False:
-                st.warning(STATE_TEXT["schema_validation"]["fail"])
+                render_warning_info(STATE_TEXT["schema_validation"]["fail"])
                 display_transformation_not_complete_toast()
                 st.stop()
 
-            st.success(STATE_TEXT["schema_validation"]["success"])
+            render_success_info(STATE_TEXT["schema_validation"]["success"])
 
             cdm_format: dict = transform_data_to_CDM(
                 data_json,
@@ -136,11 +137,11 @@ with tab1:
                 time.sleep(STATE_TEXT["time_sleep"])
 
             if cdm_format == False:
-                st.warning(STATE_TEXT["canonical_transformation"]["fail"])
+                render_warning_info(STATE_TEXT["canonical_transformation"]["fail"])
                 display_transformation_not_complete_toast()
                 st.stop()
 
-            st.success(STATE_TEXT["canonical_transformation"]["success"])
+            render_success_info(STATE_TEXT["canonical_transformation"]["success"])
 
 
         elif suffix == "CSV":
@@ -159,16 +160,16 @@ with tab1:
                 time.sleep(STATE_TEXT["time_sleep"])
 
             if len(parsed_list) != len(CDM_FIELDS):
-                st.warning("**[X]** - Canonical Transformation - different number of fields")
+                render_warning_info(STATE_TEXT["canonical_transformation"]["fail_csv_len"])
                 display_transformation_not_complete_toast()
                 st.stop()
 
             if cdm_format == False:
-                st.warning("**[X]** - Canonical Transformation - data fields doesn't correspond with predefined format")
+                render_warning_info(STATE_TEXT["canonical_transformation"]["fail_csv_data"])
                 display_transformation_not_complete_toast()
                 st.stop()
 
-            st.success(STATE_TEXT["canonical_transformation"]["success"])
+            render_success_info(STATE_TEXT["canonical_transformation"]["success"])
 
 
 
@@ -184,7 +185,7 @@ with tab1:
             time.sleep(STATE_TEXT["time_sleep"])
 
         if data_db.empty:
-            st.warning(STATE_TEXT["db_order_number"]["fail"] + f": {cdm_format['order_number']}")
+            render_warning_info(STATE_TEXT["db_order_number"]["fail"] + f": **{cdm_format['order_number']}**.")
             display_transformation_not_complete_toast()
             st.stop()
         
@@ -195,11 +196,11 @@ with tab1:
             )
 
         if cdm_format != cdm_format_db:
-            st.warning(STATE_TEXT["db_integrity_check"]["fail"])
+            render_warning_info(STATE_TEXT["db_integrity_check"]["fail"])
             display_transformation_not_complete_toast()
             st.stop()
 
-        st.success(STATE_TEXT["db_integrity_check"]["success"])
+        render_success_info(STATE_TEXT["db_integrity_check"]["success"])
 
         # Try/except statement in case that data preparation for download fails -> to catch this fallback on UI and create logs
         try:
@@ -248,7 +249,7 @@ with tab1:
 
         except Exception as e:
             logging.warning(f"F4 - Creation download buttons - FAIL - Exception: {e}")
-            st.warning(STATE_TEXT["button"]["fail"])
+            render_warning_info(STATE_TEXT["button"]["fail"])
 
         
         # To display only if all buttons successfully created
