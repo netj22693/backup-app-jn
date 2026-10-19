@@ -95,6 +95,7 @@ def render_specific_page(page_key: str, label_customized: str | None = None):
         icon=icon,
     ) 
 
+
 # =====  Objects using st.link_button ===== 
 
 def render_link_button(label: str, url: str):
@@ -107,8 +108,44 @@ def render_link_button(label: str, url: str):
         icon=UiConfigAndIcons.Buttons.open_new_tab["icon"]
         )
 
+
+
 # =====  st. info message wrappers ===== 
-# textwrap is used to have bulletpoints formatted
+
+'''
+Convention
+-----------
+
+Single line info messages:
+--------------------------
+
+**<Issue name>** - <Issue description / follow up for user>.
+
+• <Issue name> - Starts with CAPITAL e.g. 'Missing input' text in BOLT
+• <Issue description / follow up> - small letters e.g. 'no data in DB'
+• (!) The info note should end using dot '.'
+• (!) Do not use isn't, doesn't, etc. -> use formal English: is not, does not, etc.
+
+
+Examples:
+1) "**No result** - no data in DB related to the selected date range."
+2) "**Missing input** - please provide order number."
+3) f"**No result** - order number **{order_input}** does not exist."
+
+Exceptions allowed:
+--------------------------
+• Keep similar priciple
+• Can be adjusted. Key rule is to always have nice and clear user experience.
+
+Fallback display image/video/map:
+-----------------------------
+• Unable to display the image.
+• Unable to display the video.
+• Unable to display the map.
+'''
+
+
+# textwrap. is used to have bulletpoints formatted. Simple formatting.
 
 def render_success_info(text:str):
     st.success(
@@ -128,3 +165,8 @@ def render_error_info(text:str):
         icon=UiConfigAndIcons.InfoText.warning,
     )
 
+def render_info_info(text:str):
+    st.info(
+        textwrap.dedent(text).strip(),
+        icon=UiConfigAndIcons.InfoText.info,
+    )

@@ -3,6 +3,7 @@ import logging
 from app_logging import inicialization_logging
 from app_db_connection import db_connection
 from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_warning_info, render_info_info
 from Subpages.Services.F3_load_data_from_DB import load_f3_data
 from Subpages.Dialog.F3_dialog import F3ToastsValidations
 from Subpages.Data.F3_F4_CDM_config_data import CDM_FIELDS
@@ -261,18 +262,18 @@ if  submit_button:
         any(value == "" for value in empty_strings)
         or any(value is None for value in none_values)
         ):
-            st.warning("Missing inputs -> please provide.")
+            render_warning_info("**Missing inputs** - please provide.")
             display_reset_button()
             st.stop()
 
     if product_price == 0.00:
-        st.warning("Missing Product price -> please provide.")
+        render_warning_info("**Missing product price** - please provide.")
         display_reset_button()
         st.stop()
 
     max_value_allowed = currency_max_values.get(currency)
     if product_price > max_value_allowed:
-        st.warning(f"The Product price is **limited to** {max_value_allowed:,.2f} {currency} -> you are over the limit.")
+        render_warning_info(f"**Limit product price** - value over the limit {max_value_allowed:,.2f} {currency}.")
         display_reset_button()
         st.stop()
 
@@ -373,16 +374,19 @@ if  submit_button:
 
     ''
     ''
-    st.info(f"""
-    - **Download button**:
-        - **CSV, JSON or XML** file will be created
-        - Data will be stored into **DB** - Order number: **{order_number}**      
+    TEXT = (f"""
+    **Download button**:
+    - File will be created
+    - Data will be stored into **DB** - order number: **{order_number}**      
     """)
 
-    st.info(f"""
-    - **Change of inputs**:
-        - Go up > Change data > Push **Submit button again** > Recalculation will happen
-    """)
+    render_info_info(TEXT)
+
+    TEXT = """
+    **Change of inputs**:
+    - Go up > Change data > **Submit button again** > Recalculation
+    """
+    render_info_info(TEXT)
     
     
     ''

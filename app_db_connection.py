@@ -1,6 +1,7 @@
 import streamlit as st
 import logging
 from app_logging import inicialization_logging
+from Subpages.Resources_ui_objects import render_warning_info
 from sqlalchemy import create_engine, Engine, text
 
 
@@ -12,7 +13,7 @@ inicialization_logging()
 @st.dialog("Error: DB not connected")
 def display_dialog_function_not_available(function_id: str):
 
-    st.warning(f"Application is not able to establish connection with DB server -> **This {function_id} is currently not available**")
+    render_warning_info(f"**DB connection issue** - the **{function_id}** is currently not available.")
     st.stop()
 
 

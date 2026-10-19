@@ -1,4 +1,3 @@
-
 '''
 class BaseIcons
 - This is just a higher leve of abstraction to re-use icons across widgets in class UiConfigAndIcons
@@ -11,6 +10,7 @@ class BaseIcons:
 
     success = ":material/check:"
     warning = ":material/warning:"
+    info = ":material/info:"
 
 
 '''
@@ -27,11 +27,12 @@ class UiConfigAndIcons:
         # ---------------------------------------------
     
     class InfoText:
-        #st.success()
+        # st.success()
         success = BaseIcons.success
-        #st.warning(), st.error()
+        # st.warning(), st.error()
         warning = BaseIcons.warning
-
+        # st.info()
+        info = BaseIcons.info
         
     class Buttons:
         download = ":material/download:"
@@ -66,6 +67,7 @@ class UiConfigAndIcons:
         limitation = ":material/sync_problem:"
         map = ":material/pin_drop:"
         list = ":material/list:"
+        video = ":material/youtube_activity:"
         # Used in F7 desc Metrics - description of measuring method of distance
         measurment = ":material/square_foot:"
         # Used in F7 transport flow
