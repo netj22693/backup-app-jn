@@ -1,6 +1,7 @@
 import streamlit as st
 from app_api import api_GET_cache_1h, get_url_string_for_GET_api
 from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_warning_info
 from Subpages.Operational.F5_operational_functions import get_result_division, get_result_multiply, get_value_formated, parsing_data_api_freecurrencyapi_com, parsing_data_api_kurzy_cz
 
 
@@ -33,27 +34,30 @@ if api_raw_data_kurzy_cz != None:
     eur_rate, usd_rate = parsing_data_api_kurzy_cz(api_raw_data_kurzy_cz)
 
 else:
-    st.warning("""
-    API Kurzy.cz was not connected - there are temporary values used:
-    - CZK to EUR = 24
-    - CZK to USD = 21
-    """)
-
     eur_rate = 24
     usd_rate = 21
 
+    TEXT = f"""
+    API Kurzy.cz was not connected - temporary values used:
+    - CZK to EUR = {eur_rate:.3f}
+    - CZK to USD = {usd_rate:.3f}
+    """
+
+    render_warning_info(TEXT)
 
 
 if api_raw_data_freecurrencyapi_com != None:
     eur_to_usd_rate = parsing_data_api_freecurrencyapi_com(api_raw_data_freecurrencyapi_com)
 
 else:
-    st.warning("""
-    API Freecurrencyapi.com was not connected - there is temporary value used:
-    - EUR to USD = 1.14
-    """)
-
     eur_to_usd_rate = 1.14
+
+    TEXT = f"""
+    API Freecurrencyapi.com was not connected - temporary value used:
+    - EUR to USD = {eur_to_usd_rate:.3f}
+    """
+
+    render_warning_info(TEXT)
 
 
 # =================== App screen Metrics ===================
