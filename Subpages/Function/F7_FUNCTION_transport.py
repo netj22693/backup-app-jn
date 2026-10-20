@@ -6,6 +6,7 @@ from app_api import api_GET_cache_1h, get_url_string_for_GET_api
 from app_db_connection import db_connection
 from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Services.F7b_UI_functions import display_offer_visualization_ui
+from Subpages.Resources_ui_objects import render_warning_info, render_info_info
 from Subpages.Services.F7_DB_insert import save_to_db_main_stream
 from Subpages.Services.F7_DB_mapping import mapping_transport_type, mapping_service, mapping_time_zone, mapping_currency, mapping_agreed_till
 from Subpages.Services.F7_PDF import create_pdf
@@ -531,7 +532,7 @@ if check_isurance or check_fragile or check_danger is True:
         )
     
     if shipment_value == None:
-        st.warning("Please insert shipment value")
+        render_warning_info("Please provide shipment value.")
 
     else:
         formated_shipment_value_str = ui_input_formatter(shipment_value)
@@ -871,7 +872,7 @@ if st.button("Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit):
             - Available transport options: **{transport_options_list_str}**""")
 
         if len(transport_options_list) == 1:
-            st.warning(f"For {from_city} ({country_code_from}) - {to_city} ({country_code_to}) there is **only {transport_options_list_str}** available -> **no other transport option**")
+            render_info_info(f"For {from_city} ({country_code_from}) -> {to_city} ({country_code_to}) there is **only {transport_options_list_str}** available -> **no other transport option**.")
 
         with st.expander("Color-coding charts", icon=UiConfigAndIcons.Expanders.help_additional_info):
             st.image("Pictures/Function_7/F7_tab2_colorcoding.svg")
@@ -1520,12 +1521,14 @@ if st.button("Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit):
     with tab_final_1:
         ''
         ''
-        st.info("""
-        - Note:
-            - If you want to check the **Analytics** and **Go Green** tabs, do it before this button
-            - This button will **close the results**
-            - **It is final step to confirm the offer -> closing the function**
-            """)
+        TEXT = """
+        **Notice**: 
+        - If you want to check the **Analytics** and **Go Green**, do it before this button
+        - This button will **close the overview**
+        """
+
+        render_info_info(TEXT)
+
         
         st.download_button(
             "Generate PDF file & Save the offer into DB",

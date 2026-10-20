@@ -4,6 +4,7 @@ import plotly.express as px
 import math
 import logging
 from app_logging import inicialization_logging
+from Subpages.Resources_ui_objects import render_warning_info
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 from plotly.graph_objects import Figure
@@ -42,10 +43,7 @@ def data_parsing_api(data_json: dict) -> tuple[float, float]:
     except Exception as e:
         logging.error(f"F7 - Parsing API: freecurrencyapi.com - FAIL - {e}")
         
-        st.warning("""
-        - Technical issue with API. Temporary values will be used.
-        """
-        )
+        render_warning_info("**API connection issue** - not possible to establish connection now -> temporary values will be used.")
 
         # MAIN - Testing rate for my documentation is 
         usd_to_czk_rate = 21.94
@@ -958,7 +956,7 @@ def determin_cet_cest(delivery_dt):
 # ===== Validations =====
 def input_validation(from_city: str, to_city: str):
     if from_city == to_city:
-        st.warning("City From and To is the same -> They need to be different")
+        render_warning_info("**City input issue** - city **From** and **To** is the same.")
         st.stop()
     
     else:
@@ -968,7 +966,7 @@ def input_validation(from_city: str, to_city: str):
 def input_validation_shipment_value(shipment_value: int, check_isurance: bool, check_fragile: bool, check_danger: bool):
     
     if (check_isurance or check_fragile or check_danger is True) and shipment_value == None:
-        st.warning("You didn't provide **Shipment value**. Please go up and provide.")
+        render_warning_info("**Missing shipment value** - please go up and provide.")
         st.stop() 
     
     else:
