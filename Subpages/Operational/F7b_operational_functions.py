@@ -167,17 +167,6 @@ def create_pie_chart(df_input, x_data, y_data):
 
 
 # ===== UI text adjustment =====
-def singular_or_plural(input_value: float) -> str:
-    '''
-    Used for determining if day/days or hour/hours
-    '''
-
-    if input_value < 2:
-        return ""
-    
-    else:
-        return "s"
-
 
 def display_state_and_symbol_mapped(input_state: str, mapping_dict: dict) -> str:
 

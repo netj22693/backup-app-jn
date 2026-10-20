@@ -5,7 +5,7 @@ from app_logging import inicialization_logging
 from Subpages.Resources import Assets
 from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Resources_ui_objects import render_link_button
-from Subpages.Operational.F7b_operational_functions import singular_or_plural
+from Subpages.Universal.Universal_functions import singular_or_plural
 
 
 # ===== Inicialization for logging ===== 
@@ -82,7 +82,7 @@ def display_offer_visualization_ui(
         - Delivery from **{row_delivery["from_city"]} ({row_delivery["from_country"]})** to **{row_delivery["to_city"]} ({row_delivery["to_country"]}):**
             - Costs: **{row_costs["distance_cost"]:,.2f} {row_offer["currency"]}**
             - Distance: **{row_delivery["distance_length"]:,.2f} km**
-            - Time to cover the distance: **{row_delivery["distance_time"]:.2f} hour(s)**
+            - Time to cover the distance: **{row_delivery["distance_time"]:.2f} hour{singular_or_plural(row_delivery["distance_time"])}**
             - Transport type: **{row_offer["transport"]}**
     """)
 
@@ -96,14 +96,14 @@ def display_offer_visualization_ui(
                 - Additional: **{row_delivery["from_dtd"] + row_delivery["to_dtd"]} km** to the distance
                     - {row_delivery["from_city"]}: {row_delivery["from_dtd"]} km
                     - {row_delivery["to_city"]}: {row_delivery["to_dtd"]} km
-                - Time to cover the Door-to-Door: **{row_delivery["dtd_time"]:.2f} hours(s)**
+                - Time to cover the Door-to-Door: **{row_delivery["dtd_time"]:.2f} hour{singular_or_plural(row_delivery["dtd_time"])}**
         """)
 
         st.write("")
         st.write(f"""
         - **{row_offer["transport"]}**:
             - Selected service **{row_offer["service"]}** requires **{row_sla["time_sla"]:.2f} hours** for administration, load, etc. - **the SLA**  
-            - If longer distance (including Door-to-Door time), **mandatory breaks** for driver: **{row_extra_steps_time["truck_breaks"]:.2f} hour(s)**
+            - If longer distance (including Door-to-Door time), **mandatory breaks** for driver: **{row_extra_steps_time["truck_breaks"]:.2f} hour{singular_or_plural(row_extra_steps_time["truck_breaks"])}**
         """)
 
     if row_offer["transport"] in ("Train", "Airplane"):
@@ -114,9 +114,9 @@ def display_offer_visualization_ui(
             - Additional: **{row_delivery["from_dtd"] + row_delivery["to_dtd"]} km** to the distance for which **Truck is needed**
                 - {row_delivery["from_city"]}: {row_delivery["from_dtd"]} km
                 - {row_delivery["to_city"]}: {row_delivery["to_dtd"]} km
-            - Time to cover the Door-to-Door: **{row_delivery["dtd_time"]:.2f} hours(s)**
-                - Transfer {row_offer["transport"]} <-> Truck: {(row_extra_steps_time["shipment_transfer_dtd_from"] + row_extra_steps_time["shipment_transfer_dtd_to"]):.2f} hour(s)
-                - Time for Truck ride: {row_extra_steps_time["dtd_truck_if_not_truck_main"]} hour(s)
+            - Time to cover the Door-to-Door: **{row_delivery["dtd_time"]:.2f} hours{singular_or_plural(row_delivery["dtd_time"])}**
+                - Transfer {row_offer["transport"]} <-> Truck: {(row_extra_steps_time["shipment_transfer_dtd_from"] + row_extra_steps_time["shipment_transfer_dtd_to"]):.2f} hour{singular_or_plural(row_extra_steps_time["shipment_transfer_dtd_to"])}
+                - Time for Truck ride: {row_extra_steps_time["dtd_truck_if_not_truck_main"]} hour{singular_or_plural(row_extra_steps_time["dtd_truck_if_not_truck_main"])}
         """)
 
         st.write("")
