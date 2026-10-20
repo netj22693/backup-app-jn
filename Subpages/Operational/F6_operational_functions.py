@@ -5,6 +5,7 @@ import logging
 import unicodedata
 from app_logging import inicialization_logging
 from app_api import api_GET_cache_1h, get_url_string_for_GET_api, provide_paramaters_zipcodebase_com, provide_paramaters_zipcodestack_com
+from Subpages.Resources_ui_objects import render_warning_info
 from Subpages.Data.F6_input_data import cities_api_aliases, cities_normalized_not_unique, cities_not_unique_name
 
 
@@ -260,22 +261,18 @@ def orchestration_zipcode_based_on_city_search(city: str, country_code: str):
 
     # Input validation
     if not city:
-        st.warning("**Missing input** - Please provide City")
+        render_warning_info("**Missing input** - please provide city.")
         return
 
     # Regex validation
     regex_result, allowed_length = regex_validation_city_input(city, country_code)
 
     if regex_result == "NOT_PASSED_TOO_LONG":
-        st.warning(f"""
-        The city input is too long. Max number of characters for {country_code} is **{allowed_length}**.
-        """)
+        render_warning_info(f"**Too long city input** - max number of characters for {country_code} is **{allowed_length}**.")
         return
 
     elif regex_result == "NOT_PASSED":
-        st.warning(f"""
-        Not allowed characters in the city input.
-        """)
+        render_warning_info("**Character issue** - not allowed character in the city input.")
         return
 
     # Normalization of latin diacritics 
@@ -318,32 +315,29 @@ def orchestration_zipcode_based_on_city_search(city: str, country_code: str):
 
     # Validation of response date
     if not data_json:
-        st.warning("API **connection issue** - not possible to establish connection now.")
+        render_warning_info("**API connection issue** - not possible to establish connection now.")
         return
 
     # Data parsing
     parsed_data = parsing_data_zipcodebase_com(data_json)
 
     if parsed_data == "PARSING_STATE_NO_DATA":
-        st.warning("""
-        There was **no result found** - Possible reasons:
+        TEXT = """
+        **No result** - possible reasons:
         - The city is **not related** to the selected country
-        - The city **doesn't exist**
+        - The city **does not exist**
         - **Typo** in the city name
-        - The **external system has no data** for the city
-        """)
+        - **Missing data** in the **external system**
+        """
+        render_warning_info(TEXT)
         return
 
     elif parsed_data == "PARSING_STATE_INFO_MESSAGE":
-        st.warning("""
-        **API monthy limit** has been reached - this search is **currently not available**.
-        """)
+        render_warning_info("**API monthy limit reached** - this search is **currently not available**.")
         return
 
     elif parsed_data == "PARSING_STATE_TECHNICAL_ISSUE":
-        st.warning("""
-        **Technical issue** -> please report it on the main page **Report bug** section.
-        """)  
+        render_warning_info("**Technical issue** - please report it using **Bug Form**.")  
         return
 
     # Happy path:
@@ -530,12 +524,12 @@ def orchestration_city_based_on_zipcode_search(zipcode_requested: str | None, co
 
     # Input validation
     if not zipcode_requested:
-        st.warning("Missing input - ZIP code")
+        render_warning_info("**Missing input** - please provide ZIP code.")
         return
 
     # Regex validation of input - to not call API having incorrect data input(wasting of API call)
     if regex_validation_zipcodes_input(zipcode_requested) == "NOT_PASSED":
-        st.warning("This is not valid format of ZIP code(s).")
+        render_warning_info("**Invalid format** - ZIP code input is not valid.")
         return
 
     # String into list[str]
@@ -544,7 +538,7 @@ def orchestration_city_based_on_zipcode_search(zipcode_requested: str | None, co
 
     # Input validation - limit 10 ZIP codes
     if len(zipcode_requested_list) > 10:
-        st.warning("Request is limited to 10 ZIP codes -> there was more provided")
+        render_warning_info("**Request limit** - more than 10 ZIP codes were provided.")
         return     
 
     # Removing of duplicities in the list, if any (input: '11000','11000' -> output: '11000' )
@@ -569,25 +563,24 @@ def orchestration_city_based_on_zipcode_search(zipcode_requested: str | None, co
 
     # Validation of response date
     if not data_json:
-        st.warning("API **connection issue** - not possible to establish connection now.")
+        render_warning_info("**API connection issue** - not possible to establish connection now.")
         return
 
     # Data parsing
     parsed_data = parsing_data_zipcodestack_com(data_json)  
 
     if parsed_data == "PARSING_STATE_NO_DATA":
-        st.warning("""
-        There was **no result found** - Possible reasons:
+        TEXT = """
+        **No result** - possible reasons:
         - The ZIP code is **not related** to the selected country
-        - The ZIP code **doesn't exist**
-        - The **external system has no data** for the ZIP code
-        """)
+        - The ZIP code **does not exist**
+        - **Missing data** in the **external system**
+        """
+        render_warning_info(TEXT)
         return
 
     elif parsed_data == "PARSING_STATE_TECHNICAL_ISSUE":
-        st.warning("""
-        **Technical issue** -> please report it on the main page **Report bug** section.
-        """)
+        render_warning_info("**Technical issue** - please report it using **Bug Form**.")
         return
 
     else:
