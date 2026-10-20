@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from app_db_connection import db_connection
 from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_info_info
 from sqlalchemy import text
 from Subpages.SQL.F5b_SQL_queries import sql_query_exchange_rate_data
 from Subpages.Services.F5b_charts import create_chart
@@ -39,11 +40,14 @@ with db_engine.connect() as conn:
 
 # Fallback - case: 1st day in month -> user selects 'Current month' (radio button) but no record in DB yet because scheduler has not run yet. 
 if df_table_full.empty:
-    st.info("""
-    - For current month there is **no record in DB yet**
-    - The automated scheduler has not run yet today
+
+    TEXT = """
+    **No data available yet**
+    - The automated scheduler has not run yet today -> no data for this month
     - **Should be visible within next few hours**
-    """) 
+    """
+
+    render_info_info(TEXT) 
 
 else:
     df_eur_to_czk = df_split_data_clean_up(df_table_full, "eur_to_czk")
@@ -56,10 +60,9 @@ else:
 
 
     # =================== App UI - content -> result ===================
-    
     with tab1:
         if df_eur_to_czk.empty:
-            st.info("There is no data for EUR to CZK yet")
+            render_info_info("There is no data for EUR to CZK yet.")
 
         else:
             #------ metrics & chart ------
@@ -91,7 +94,7 @@ else:
 
     with tab2:
         if df_usd_to_czk.empty:
-            st.info("There is no data for USD to CZK yet")
+            render_info_info("There is no data for USD to CZK yet.")
 
         else:
             #------ metrics & chart ------
@@ -123,7 +126,7 @@ else:
 
     with tab3:
         if df_eur_to_usd.empty:
-            st.info("There is no data for EUR to USD yet")
+            render_info_info("There is no data for EUR to USD yet.")
 
         else:
             #------ metrics & chart ------
