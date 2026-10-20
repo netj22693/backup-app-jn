@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import logging
 from app_logging import inicialization_logging
+from Subpages.Resources_ui_objects import render_warning_info, render_info_info
 from Subpages.Dialog.F7b_dialog import state_change_complete, state_change_not_complete, state_change_not_concurrency
 from pandas.io.formats.style import Styler
 from sqlalchemy import text
@@ -227,10 +228,7 @@ def display_offer_logs(db_engine: Engine, sql_query: str, offer_id: str, mapping
     st.write("") # Woraround to make a space
     if df.empty:
 
-        st.info(f"""
-        - The offer {offer_id} has no log history available
-        - This function was developed later on - starting by offer F7-322
-        """)
+        render_info_info(f"**No log history** - the log functionality is available starting from offer F7-322.")
 
     else:
         st.dataframe(
@@ -254,7 +252,7 @@ def data_empty_fallback_info(input_df: pd.DataFrame):
     '''
 
     if input_df.empty:
-        st.warning("No data in DB related to the selected date range")
+        render_info_info("**No result** - There is no record found in DB related to the selected date range.")
         fallback = True
 
     else:
@@ -494,11 +492,11 @@ def input_validation(input: str) -> Optional[str]:
         return input
     
     if input == "":
-        st.warning("**Missing input** - Please provide **Offer number**")
+        render_warning_info("**Missing input** - please provide **offer number**.")
         return None
 
     else:
-        st.error(f"Invalid Offer format inserted - **{input}** is not valid. Valid format: F7-XXX")
+        render_warning_info(f"**Invalid offer format** - Valid format is **numeric**, either with prefix **F7-XXX** or without **XXX**.")
         return None
 
 # ===== Reset button ===== 

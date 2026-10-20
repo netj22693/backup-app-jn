@@ -6,12 +6,14 @@ import logging
 from app_logging import inicialization_logging
 from app_db_connection import db_connection
 from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_warning_info, render_info_info
 from Subpages.Services.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
 from Subpages.SQL.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, sql_query_offer_status_validation_df, sql_query_offer_status_validation_single, sql_query_logs, sql_query_offer_rating, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes
 from Subpages.Data.F7_input_data import tranport_types_list, dataset_cities, states_dict
 from Subpages.Operational.F7b_operational_functions import change_state_in_db, input_validation, operational_update_of_states, display_state_and_symbol_mapped, display_offer_logs, mapping_states, get_styling_colors, df_styling_index_set_1, data_empty_fallback_info, create_pie_chart, df_change_column_name, get_parameters_countries, create_parameters_for_sql, reset_filters
 from Subpages.Services.F7b_UI_functions import display_state_flow, display_state_flow_expander, display_offer_visualization_ui
 from Subpages.Services.F7b_rating_function import make_rating_validation, display_offer_rating_ui_info, display_offer_rating_ui_tab
+from Subpages.Universal.Universal_functions import singular_or_plural
 
 
 # Inicialization of logging
@@ -94,7 +96,7 @@ with tab2:
                 
                 # Validation if inserted offer_id by user exists in DB to trigger the main logic 
                 if offer_id_exists.empty:
-                    st.warning(f"Offer id **{offer_input_validated}** does not exist.")
+                    render_info_info(f"**No result** - offer **{offer_input_validated}** does not exist.")
 
                 else:
                     offer_id = offer_id_exists["offer_id"].iloc[0]
@@ -223,6 +225,9 @@ with tab2:
 # ====================== TAB 3 ======================
 with tab3: 
 
+    # Default state condition
+    submit_disabled = False
+
     #From the dataset -> parse keys -> create list of countries for multiselect
     list_countries = dataset_cities.keys()
 
@@ -263,25 +268,25 @@ with tab3:
     selected_coutry_from = st.multiselect("Country from", options=list_countries_upper, key="key_mlts_country_from")
 
     if len(selected_coutry_from) == 0:
-        st.warning("At least 1 country needs to be selected")
+        render_warning_info("At least 1 country needs to be selected.")
 
     # Multiselect - Country to
     selected_coutry_to = st.multiselect("Country to", options=list_countries_upper, key="key_mlts_country_to")
 
     if len(selected_coutry_to) == 0:
-        st.warning("At least 1 country needs to be selected")
+        render_warning_info("At least 1 country needs to be selected.")
     
     # Multiselect - Transport type
     selected_transport = st.multiselect("Transport", options=tranport_types_list, key="key_mlts_transport")
 
     if len(selected_transport) == 0:
-        st.warning("At least 1 transport needs to be selected")
+        render_warning_info("At least 1 transport needs to be selected.")
 
     # Multiselect - Currency
     selected_currency = st.multiselect("Currency", options=currency_list, key="key_mlts_currency")
 
     if len(selected_currency) == 0:
-        st.warning("At least 1 currency needs to be selected")
+        render_warning_info("At least 1 currency needs to be selected.")
 
     # Date picker
     ''
@@ -324,7 +329,8 @@ with tab3:
 
         # Fallback info 
         if picked_date_from > picked_date_to:
-            st.warning("Date **To** is farther in the past than **From** -> search will not work. Please change it.")
+            render_warning_info("**Date issue** - date **To** is farther in the past than **From**.")
+            submit_disabled = True
 
     
     if checkbox_state == False:
@@ -348,10 +354,10 @@ with tab3:
         selected_transport,
         selected_currency
     ]):
-        submit_button_tab3 = st.button("Submit", width= "stretch", icon=UiConfigAndIcons.Buttons.submit, disabled=True)
+        submit_disabled = True
 
-    else:   
-        submit_button_tab3 = st.button("Submit", width= "stretch", icon=UiConfigAndIcons.Buttons.submit)
+  
+    submit_button_tab3 = st.button("Submit", width= "stretch", icon=UiConfigAndIcons.Buttons.submit, disabled=submit_disabled)
 
     # ===== Reset button =====
     st.write("-" *10)
@@ -383,7 +389,7 @@ with tab3:
             df_table_tab_3 = pd.read_sql_query(sql=text(sql_query_tab_3), con=conn, params=params_full)
 
         if df_table_tab_3.empty == True:
-            st.info("There was no record found in DB.")
+            render_info_info("**No result** - There is no record found in DB.")
 
         else:
             # Dataframe styling 
@@ -400,13 +406,19 @@ with tab3:
             
             ''
             if rows_from_db != number_rows:
-                st.info(f"There is only **{rows_from_db} records** matching the selected criteria")
+
+                s = singular_or_plural(rows_from_db)
+
+                render_info_info(f"There is only **{rows_from_db} record{s}** matching the selected criteria.")
 
             st.dataframe(df_table_tab_3_styled)
 
 
 # ====================== TAB 4 ======================
 with tab4: 
+
+    # Default state condition
+    submit_disabled = False
    
     # Date picker
     ''
@@ -455,12 +467,13 @@ with tab4:
 
         # Fallback info 
         if picked_date_from_tab4 > picked_date_to_tab4:
-            st.warning("Date **To** is farther in the past than **From** -> search will not work. Please change it.")
+            render_warning_info("**Date issue** - date **To** is farther in the past than **From**.")
+            submit_disabled = True
   
 
     ''
     ''
-    submit_button_tab4 = st.button("Submit", width= "stretch", icon=UiConfigAndIcons.Buttons.submit, key="key_submit_button_tab4")
+    submit_button_tab4 = st.button("Submit", width= "stretch", icon=UiConfigAndIcons.Buttons.submit, key="key_submit_button_tab4", disabled=submit_disabled)
 
     if submit_button_tab4:
 
@@ -641,6 +654,9 @@ with tab4:
                 number_rows_route = df_routes.count().iloc[0]
 
                 if 0 < number_rows_route < 20:
-                    st.info(f"There has been only **{number_rows_route} routes** following the selected date criteria")
+
+                    s = singular_or_plural(number_rows_route)
+
+                    render_info_info(f"There is only **{number_rows_route} route{s}** matching the selected criteria.")
 
                 st.dataframe(df_routes_styled)
