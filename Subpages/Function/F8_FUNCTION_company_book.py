@@ -3,9 +3,10 @@ import streamlit as st
 from app_db_connection import db_connection
 from sqlalchemy import text
 from Subpages.Resources_ui import UiConfigAndIcons
-from Subpages.Resources_ui_objects import render_warning_info
+from Subpages.Resources_ui_objects import render_info_info
+from Subpages.Universal.Universal_functions import adjust_index_in_df
 from Subpages.Services.F8_map import get_map, df_styling_colors_per_map
-from Subpages.Operational.F8_operational_functions import boolean_to_string_for_ui, count_rows, select_country_flag_path
+from Subpages.Operational.F8_operational_functions import boolean_to_string_for_ui, count_rows, input_validation, select_country_flag_path, determin_international
 from Subpages.SQL.F8_SQL_queries import sql_query_number_companies, sql_query_number_branches, sql_query_company_overview, sql_query_branch_info_df, sql_query_branch_df,sql_query_branch_for_map, sql_query_branch_size, sql_query_company_table, get_sql_query_international_domestic, determin_transport_for_db_query, mapping_country, mapping_transport_type, create_df_branches_country, create_pin_column
 
 
@@ -34,17 +35,6 @@ HIDDEN_COLUMNS_BRANCH_INFO = {
 # ==== Predefined UI width variable used across TABs ====
 FLAG_IMAGE_WIDTH = 20
 
-# ==== Generic function - index ==== 
-
-def adjust_index(df: pd.DataFrame) -> pd.DataFrame:
-    '''
-    Index +1 -> First line in DF will have 1 not 0
-    '''
-
-    df.index = df.index + 1
-
-    return df
-
 
 # ==== UI Function 8 ==== 
 st.write("# Company Book")
@@ -65,20 +55,6 @@ tab1, tab2, tab3, tab4 = st.tabs([
 db_engine = db_connection("F8", True)
 
 with tab1:
-
-    # Function for TAB 1
-    def determin_international(c_from: str, c_to: str) -> bool:
-        '''
-        - Function to determin if the transport will be from country to the same country or to the different country (international)
-        - Result BOOLEAN used for SQL query build
-        '''
-
-        if c_from == c_to:
-            return False
-
-        else:
-            return True
-
 
     # ==== UI ====
     ''
@@ -141,8 +117,8 @@ with tab1:
         branch_type_info_df = create_pin_column(branch_type_info_df, 0)
 
         # DF index
-        df_from = adjust_index(df_raw_from)
-        df_to = adjust_index(df_raw_to)
+        df_from = adjust_index_in_df(df_raw_from)
+        df_to = adjust_index_in_df(df_raw_to)
 
         # DF styling - colors
         df_from_styled = df_styling_colors_per_map(df_from)
@@ -335,19 +311,6 @@ with tab2:
         st.dataframe(df_sk, width = "stretch",column_config=HIDDEN_COLUMNS)
 
 
-
-
-# ==== Function TAB 3 ==== 
-def input_validation(value) -> int | None:
-    try:
-        return int(value)
-    
-    except (TypeError, ValueError):
-        render_warning_info("**Invalid format** - branch ID is a number.")
-        return None
-
- 
-
 with tab3:
 
     # ==== UI ==== 
@@ -372,7 +335,7 @@ with tab3:
 
             # Empty DF -> no branch in DB
             if df_branch_and_company.empty == True:
-                st.info(f"No branch with ID: **{input_valid}**")
+                render_info_info(f"**No result** - branch with ID **{input_valid}** does not exist.")
             
             else:
 
@@ -468,7 +431,7 @@ with tab4:
             df = pd.read_sql(sql_query_company_overview, db_engine)
 
             # Index
-            df = adjust_index(df)
+            df = adjust_index_in_df(df)
 
             # ==== UI data visualization ====
             ''

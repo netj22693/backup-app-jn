@@ -1,7 +1,13 @@
 import pandas as pd
 import streamlit as st
 import pydeck as pdk
+import logging
+from app_logging import inicialization_logging
+from Subpages.Resources_ui_objects import render_warning_info
 from pandas.io.formats.style import Styler
+
+# ===== Inicialization for logging ===== 
+inicialization_logging()
 
 
 def get_map(df: pd.DataFrame, map_size: str):
@@ -75,7 +81,12 @@ def get_map(df: pd.DataFrame, map_size: str):
         )
 
     # Note: "height" needs to be set as part of Streamlit component (If set as part of pdk.Deck Streamlit will not apply it)
-    st.pydeck_chart(map_fig, height=figures["height"])
+    try:
+        st.pydeck_chart(map_fig, height=figures["height"])
+
+    except Exception as e:
+        logging.warning(f"F8 - Map: get_map() - FAIL - Exception: {e}")
+        render_warning_info("Unable to display the map.")
 
 
 def df_styling_colors_per_map(df: pd.DataFrame) -> Styler:
