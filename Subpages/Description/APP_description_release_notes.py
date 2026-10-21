@@ -11,6 +11,7 @@ def display_release_notes_expander():
         st.write("")
         st.write("""
         - Application specific changes:
+            - **v71.3** - Unification of info/fallback notifications by wrappers implemented across Functions - 21-Oct-2026
             - **v71.0** - Centralized UI components and introduced reusable rendering wrappers - 16-Oct-2026        
             - **v70.9** - Created a modular function with extended logic for video selection, rendering and display - 13-Oct-2026
         """)

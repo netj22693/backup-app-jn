@@ -1,18 +1,19 @@
 import streamlit as st
 import logging
 from app_logging import inicialization_logging
+from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_warning_info
 
 
 # ===== Inicialization for logging ===== 
 inicialization_logging()
 
-
-
+# ===== Config file ===== 
 EXPANDER_CONFIG = {
     "name": "Video guide",
-    "icon": ":material/youtube_activity:",
+    "icon": UiConfigAndIcons.Expanders.video,
     "warning": "Unable to display the video.",
-    "caption_outdated": ":material/warning: This video may be outdated. Some features may have changed or may not be shown."
+    "caption_outdated": f"{UiConfigAndIcons.InfoText.warning} This video may be outdated. Some features may have changed or may not be shown."
     }
 
 
@@ -20,7 +21,7 @@ def display_video(path: str | None, outdated: bool | None):
 
     if path is None:
         logging.warning(f"DESC - display_video() - FAIL - Not existing key")
-        st.warning(EXPANDER_CONFIG["warning"])
+        render_warning_info(EXPANDER_CONFIG["warning"])
         return
 
     try:
@@ -30,7 +31,7 @@ def display_video(path: str | None, outdated: bool | None):
 
     except Exception as e:
         logging.warning(f"DESC - display_video(): {path} - FAIL - Exception: {e}")
-        st.warning(EXPANDER_CONFIG["warning"])
+        render_warning_info(EXPANDER_CONFIG["warning"])
 
 
 def display_video_expander(config: dict, list_video_include: list[str] | None = None, list_video_exclude: list[str] | None = None):
