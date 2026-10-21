@@ -4,7 +4,7 @@ import logging
 from app_logging import inicialization_logging
 from Subpages.Resources import Assets
 from Subpages.Resources_ui import UiConfigAndIcons
-from Subpages.Resources_ui_objects import render_link_button
+from Subpages.Resources_ui_objects import render_link_button, render_warning_info
 from Subpages.Universal.Universal_functions import singular_or_plural
 
 
@@ -14,14 +14,14 @@ inicialization_logging()
 # ======= UI =======
 def display_state_flow():
 
-    st.write("") # Workaround for space on UI 
+    st.write("")
     st.image(Assets.Images.f7_state_flow, width = 750)
 
 def display_state_flow_expander():
 
     with st.expander("State flow", icon=UiConfigAndIcons.Expanders.state_flow):
         st.image(Assets.Images.f7_state_flow, width = 750)
-        st.write("") # Workaround for space on UI
+        st.write("")
         st.write(" - For manual **Approve/Reject** - Go to **Search for specific offer** tab and search for the offer.")
 
 
@@ -50,8 +50,8 @@ def display_offer_visualization_ui(
         st.image(ui_image_path)
 
     except Exception as e:
-        logging.warning(f"{function_id} - Transport FLOW image NOT loaded. Exception: {e}, Path: {ui_image_path}")
-        st.warning("Failed to load image")
+        logging.warning(f"{function_id} - F7b UI function: display_offer_visualization_ui() image load Transport flow - FAIL - Exception: {e}, Path: {ui_image_path}")
+        render_warning_info("Unable to display the image.")
     
     # Expander UI transport image notation
     with st.expander("Transfer process", icon=UiConfigAndIcons.Expanders.help_additional_info):
@@ -59,8 +59,8 @@ def display_offer_visualization_ui(
             st.image(ui_color_coding_image_path)
 
         except Exception as e:
-            logging.warning(f"{function_id} - Transport NOTATION image NOT loaded. Exception: {e}, Path: {ui_image_path}")
-            st.warning("Failed to load image")
+            logging.warning(f"{function_id} - F7b UI function: display_offer_visualization_ui() image load Transport color coding - FAIL - Exception: {e}, Path: {ui_color_coding_image_path}")
+            render_warning_info("Unable to display the image.")
         
 
         # To show DTD button or not

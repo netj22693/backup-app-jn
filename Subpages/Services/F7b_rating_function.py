@@ -8,6 +8,7 @@ from sqlalchemy import Column, Integer, String, Boolean, Float,DateTime, Engine,
 from sqlalchemy.orm import declarative_base, Session
 from Subpages.Dialog.F7b_dialog import rating_already_submitted, rating_complete, rating_not_saved
 from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_info_info
 
 
 
@@ -385,25 +386,22 @@ def display_offer_rating_ui_tab(offer_id: str, rating_end: str, df: pd.DataFrame
 
 
     if rating_end == "END_RATING_NOT_POSSIBLE":
-        st.info("""
-        - The rating feature **was not yet available** when this offer was processed. 
-        - The feature was released on 27-Aug-2026
-        """)
+        render_info_info("**Rating unavailable** - rating was unavailable when this offer was processed (released on 27-Aug-2026).")
 
     elif rating_end == "END_RATING_ONCE_DELIVERED":
-        st.info("Rating becomes available when the offer is marked as **Delivered**.")
+        render_info_info("Rating becomes available when the offer is marked as **Delivered**.")
 
     elif rating_end == "END_RATING_NOT_POSSIBLE_STATE_EXPIRED":
-        st.info("Rating is unavailable for **Expired** offers.")
+        render_info_info("Rating is unavailable for **Expired** offers.")
 
     elif rating_end == "END_RATING_NOT_POSSIBLE_STATE_REJECTED":
-        st.info("Rating is unavailable for **Rejected** offers.")
+        render_info_info("Rating is unavailable for **Rejected** offers.")
 
     elif rating_end == "END_RATING_DISPLAY":
         offer_rating_display_raiting(df)
 
     elif rating_end == "END_RATING_NOT_POSSIBLE_TIME_EXPIRED":
-        st.info("The rating period has **expired**. Ratings are available for **14 days** after delivery.")
+        render_info_info("The rating period has **expired**. Ratings are available for **14 days** after delivery.")
 
     elif rating_end == "END_RATING_CAN_BE_GIVEN":  
         offer_rating_display_form(offer_id)
