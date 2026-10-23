@@ -12,8 +12,8 @@ def display_release_notes_expander_app_specific():
         - **v71.0** - Centralized UI components and introduced reusable rendering wrappers - 16-Oct-2026        
         - **v70.9** - Created a modular function with extended logic for video selection, rendering and display - 13-Oct-2026
         - **v69.9** - Unified logging - 14-Sep-2026
-        - **v69.0** - Centralized API handling - build as separate module - 03-Sep-2026
-        - **v68.7** - Centralized DB connection handling - build as separate module - 02-Sep-2026
+        - **v69.0** - Centralized API handling - built as separate module - 03-Sep-2026
+        - **v68.7** - Centralized DB connection handling - built as separate module - 02-Sep-2026
         """)
 
 def display_release_notes_expander_va():
