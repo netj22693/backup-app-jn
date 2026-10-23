@@ -1,8 +1,8 @@
 import streamlit as st
-from Subpages.Description.APP_description_release_notes import display_release_notes_expander
 from Subpages.Resources import Assets
 from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Resources_ui_objects import render_specific_page, render_description_page, render_function_page
+from Subpages.Home_page.HP_expanders import display_expander_github, display_expander_linkedin, display_expander_overview_functions, display_expander_web_app
 
 
 
@@ -11,57 +11,24 @@ st.write("# Welcome!")
 ''
 
 st.write(
-    "Purpose of this application is to play with **data structures/objects (XML, JSON, dictionary, dataframes)** and implement them into **smaller versions of real business cases**. The application has **8 functions**."
+    "Purpose of this application is to play with **data structures/objects (XML, JSON, dictionaries, dataframes, etc.)** and implement them into **smaller versions of real business cases**. The application has **8 Functions**."
     )
 ''
-with st.expander("Overview of functions", icon= UiConfigAndIcons.Expanders.list):
-	st.write("""
-		- **Function 1:** Download of few predefined types of XML for Function 2
-		- **Function 2:** Parsing of data from XML -> their visualization -> producing of simple .txt file as summary      
-		""")
-	''
-	st.write("""
-		- **Function 3**: Creation of invoice based on user inputs (CSV, JSON or XML) - **DB on cloud**
-		- **Function 3B:** Invoice Visibility - Visibility & Analytics based on invoices created in F3
-		- **Function 4**: Data Transfer of the invoice ; to CSV, JSON or XML 
-		""")
-	''
-	st.write("""
-		- **Function 5:** Exchange rate/calculation (CZK, EUR, USD) - **API based** with actual exchange rate
-		- **Function 5B:** Exchange rate - Trend - **Background job based**, data continuously collected into DB and visualized via app UI
-		""")
-	''
-	st.write("""
-		- **Function 6:** ZIP code - (1) Get ZIP code(s) based on City, (2) Get City based on ZIP code - **API based**
-		"""
-		)
-	''
-	st.write("""
-		- **Function 7:** Transport calculation - **API** provides input & **DB on cloud** (:green[**my favorit function**])
-		- **Function 7B:** Offer Visibility - Visibility & Analytics based on transport offers created in F7
-		"""
-		)
-	''
-	st.write("""
-		- **Function 8:** Company Book - provides visibility of transport companies - **DB on cloud**
-		"""
-		)
+display_expander_overview_functions()
 ''
 ''
-"More details about the functions can be seen in the subpages - what the functions do, what data structures are used, etc."
+"More details about the Functions can be seen on the subpages - what the Functions do, what data structures are used, etc."
 
 st.write("enjoy... :)") 
 
 ''
 ''
-# split into Tabs 
 tab1,tab2, tab3 = st.tabs([
     "Architecture landscape",
     "ArchiMate - Overview Functions",
 	"UML - Overview Functions"
 ])
 
-#Tab 1
 with tab1:
 	render_specific_page(
 		page_key= "app_architecture",
@@ -90,53 +57,20 @@ with tab3:
 	st.image(Assets.Images.uml_f8)
 
 
-# LinkedIn - expander
 ''
 ''
 ''
+display_expander_linkedin()
 
-with st.expander(
-	"Contact - LinkedIn",
-	icon=":material/id_card:"
-):	
-	''
-	st.image("Pictures/linkedin-logo-2013-1.svg", width=95)
-	st.write(f"- Do you like this app? :) LinkedIn profile [Here]({Assets.Links.External.linked_in})")
-	st.write("- Author: Jan Netolicka")
+display_expander_github()
+
+display_expander_web_app()
 
 
-# GitHub - expander
-with st.expander(
-	"Repository - GitHub",
-	icon=":material/deployed_code_history:"
-):	
-
-	''
-	st.write(f"- GitHub code repository link [Here]({Assets.Links.External.git_hub})")
-	st.image("Pictures/Github_archimate_2.svg")
-
-# Web app - expander
-with st.expander(
-	"Web app - Recommendation",
-	icon=":material/computer:"
-):	
-
-	''
-	st.write("- The Streamlit Framework helps to build web apps")
-	st.write("- The **primary** approach is through **web browser**")
-	st.write('- :green[**The best way is to use the app on your laptop or some "bigger" device to get the full experience**]')
-	st.write("- It is also working on Mobile phones - but some of the features might be slightly impacted. Specifically charts and images due to screen size")
-	''
-
-# Release notes - expander
-display_release_notes_expander()
-
-
-# Buttons for redirectiong to the relevant Functions
 ''
 ''
 st.write("### Go to:")
-st.write("**Recommendation:** To firstly read the description chapters (the application navigation bar) to understand how the functions/application work.")
+st.write("**Recommendation:** To firstly read the description to understand how the Functions/application work. The application navigation bar can help to get oriented.")
 
 ''
 render_specific_page("virtual_assistant") 

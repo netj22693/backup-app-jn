@@ -80,6 +80,11 @@ def render_specific_page(page_key: str, label_customized: str | None = None):
         page = Assets.Paths.App.app_architecture
         icon = UiConfigAndIcons.Pages.architecture["icon"]
 
+    elif page_key == "release_notes":
+        label = UiConfigAndIcons.Pages.release_notes["label"]
+        page = Assets.Paths.ReleaseNotes.rn
+        icon = UiConfigAndIcons.Pages.release_notes["icon"]
+
     else:
         logging.warning(f"Page rendering - FAIL - Not existing page_key: {page_key}")
         return

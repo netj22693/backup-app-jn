@@ -12,7 +12,6 @@ class BaseIcons:
     warning = ":material/warning:"
     info = ":material/info:"
 
-
 '''
 class UiConfigAndIcons
 - For direct import into the code
@@ -100,6 +99,11 @@ class UiConfigAndIcons:
         bug_form = {
             "icon": ":material/pest_control:",
             "label": "Have you seen a bug?"
+        }
+
+        release_notes = {
+            "icon": ":material/event_note:",
+            "label": "Release notes"
         }
 
         description = {

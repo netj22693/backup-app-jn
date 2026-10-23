@@ -89,6 +89,9 @@ class Assets:
         class BugForm:
             bf = "Subpages/Submit_form/Bug_form_main.py"
 
+        class ReleaseNotes:
+            rn = "Subpages/Release_notes/RN_main.py"
+
         class Description:
             f1_f2 = "Subpages/Description/F1_F2_description_function.py"
             f1_f2_xml_xsd = "Subpages/Description/F1_F2_description_XML_XSD.py"

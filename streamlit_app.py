@@ -40,6 +40,13 @@ BF_function = st.Page(
     icon= UiConfigAndIcons.Pages.bug_form["icon"]
 )
 
+# ----- Release notes -----
+app_description_release_notes = st.Page(
+    Assets.Paths.ReleaseNotes.rn,
+    title= UiConfigAndIcons.Pages.release_notes["label"],
+    icon= UiConfigAndIcons.Pages.release_notes["icon"]
+)
+
 # ----- Test pages -----
 test_1 = st.Page(
     "Subpages/Testing/TEST_1.py",
@@ -229,6 +236,7 @@ pg = st.navigation(
             landing_page,
             VA_function,
             BF_function,
+            app_description_release_notes,
             app_description_architecture
             ],
             
