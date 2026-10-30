@@ -7,6 +7,7 @@ from Subpages.Resources_ui_objects import render_warning_info, render_info_info
 from Subpages.Services.F3_load_data_from_DB import load_f3_data
 from Subpages.Dialog.F3_dialog import F3ToastsValidations
 from Subpages.Data.F3_F4_CDM_config_data import CDM_FIELDS
+from Subpages.Data.F3_F3B_UI_config_data import CONFIG_UI_INPUTS
 from Subpages.Services.F3_DB_mapping import MAPPING_FUNCTIONS, F3MappingFunctions
 from Subpages.Services.F3_F4_CDM import transform_data_CDM_to_JSON, transform_data_CDM_to_XML, transform_data_CDM_to_CSV, transform_data_CDM_to_DB
 from Subpages.Operational.F3_operational_functions import create_invoice_number, get_utc_time_custom_string, display_reset_button, get_transport_price, create_order_num, on_download_click, extract_data_additional_services, display_company_logo, style_price_table, F3ValueValidation
@@ -38,16 +39,10 @@ db_engine = db_connection("F3", True)
     df_additional_service,
     df_additional_service_info,
     currency_max_values
-) = load_f3_data(db_engine)
+) = load_f3_data(db_engine, "F3")
 
 
 # ===== User form UI =====
-
-PLACEHOLDER_TEXT = "Type..."
-PLACEHOLDER_SELECT = "Select..."
-LIMIT_TEXT = 35
-
-
 with st.form(key="key_form"):
 
     st.write("Please provide details about order...")
@@ -55,66 +50,61 @@ with st.form(key="key_form"):
     with st.container(border=True, width="stretch"):
         
         customer = st.text_input(
-            ":material/tag_faces: Customer/Company name:",
-            placeholder=PLACEHOLDER_TEXT,
-            max_chars= LIMIT_TEXT,
-            help= "Type a customer or company name",
-            key= "key_customer"
+            f"{CONFIG_UI_INPUTS['customer']['icon']} {CONFIG_UI_INPUTS['customer']['name']}",
+            placeholder = CONFIG_UI_INPUTS['customer']['placeholder'],
+            max_chars = CONFIG_UI_INPUTS['customer']['limit'],
+            help = CONFIG_UI_INPUTS['customer']['help_f3'],
+            key = "key_customer"
             )
 
     with st.container(border=True, width="stretch"):
 
-        icon=":material/devices:"
-
         category = st.selectbox(
-            f"{icon} Category:" ,
+            f"{CONFIG_UI_INPUTS['category']['icon']} {CONFIG_UI_INPUTS['category']['name']}",
             index = None,
-            placeholder= PLACEHOLDER_SELECT,
-            options= category_options,
-            help= "Select one from the options",
-            key= "key_category"
+            placeholder = CONFIG_UI_INPUTS['category']['placeholder'],
+            options = category_options,
+            help = CONFIG_UI_INPUTS['category']['help_f3'],
+            key = "key_category"
             )
 
         product_name = st.text_input(
-            f"{icon} Product name:",
-            placeholder=PLACEHOLDER_TEXT,
-            max_chars= LIMIT_TEXT,
-            help = "Type a product name",
+            f"{CONFIG_UI_INPUTS['product']['icon']} {CONFIG_UI_INPUTS['product']['name']}",
+            placeholder = CONFIG_UI_INPUTS['product']['placeholder'],
+            max_chars = CONFIG_UI_INPUTS['product']['limit'],
+            help = CONFIG_UI_INPUTS['product']['help_f3'],
             key= "key_product_name"
             )
 
     with st.container(border=True, width="stretch"):
 
-        icon = ":material/euro_symbol:"
         currency = st.selectbox(
-            f"{icon} Currency:" ,
+            f"{CONFIG_UI_INPUTS['currency']['icon']} {CONFIG_UI_INPUTS['currency']['name']}",
             index = None,
-            placeholder= PLACEHOLDER_SELECT,
-            options= currency_options,
-            help = "Select one from the options",
+            placeholder = CONFIG_UI_INPUTS['currency']['placeholder'],
+            options = currency_options,
+            help = CONFIG_UI_INPUTS['currency']['help_f3'],
             key= "key_currency"
             )
         
         product_price = st.number_input(
-            f"{icon} Product price:",
-            min_value=0.00,
+            f"{CONFIG_UI_INPUTS['product_price']['icon']} {CONFIG_UI_INPUTS['product_price']['name']}",
+            min_value= 0.00,
             step = 10.00,
-            help = "You can either click on the +- icons or type the input using numbers. *The step is step +- 10.00 -> i case of diferent values in decimals type it.",
+            help = CONFIG_UI_INPUTS['product_price']['help_f3'],
             key= "key_product_price"
             )
 
     with st.container(border=True, width="stretch"):
 
-        icon = ":material/exposure_plus_1:"
-
         additional_service = st.selectbox(
-            f"{icon} Additional service:" ,
-            options= additional_service_options,
-            help = "Select one of the options",
+            f"{CONFIG_UI_INPUTS['additional_service']['icon']} {CONFIG_UI_INPUTS['additional_service']['name']}",
+            options = additional_service_options,
+            help = CONFIG_UI_INPUTS['additional_service']['help_f3'],
             key= "key_additional_service"
             )
 
-        with st.expander("Service description", icon=":material/help:"):
+        with st.expander("Service description", icon=UiConfigAndIcons.Expanders.help_additional_info):
 
             ''
             st.dataframe(
@@ -144,40 +134,36 @@ with st.form(key="key_form"):
 
     with st.container(border=True, width="stretch"):
 
-        icon_transport = ":material/directions_bus:"
-        icon_parcel = ":material/box:"
-        icon_pin = ":material/location_on:"
-
         country = st.selectbox(
-            f"{icon_pin} Country:" ,
+            f"{CONFIG_UI_INPUTS['country']['icon']} {CONFIG_UI_INPUTS['country']['name']}",
             options= country_options,
             index = None,
-            placeholder= PLACEHOLDER_SELECT,
-            help = "Select one of the options - there is different price for service for each country -> see the pricing table below.",
+            placeholder = CONFIG_UI_INPUTS['country']['placeholder'],
+            help = CONFIG_UI_INPUTS['country']['help_f3'],
             key= "key_country"
             )
         
         transport_company = st.selectbox(
-            f"{icon_transport} Transport company:" ,
-            options= transport_company_options,
+            f"{CONFIG_UI_INPUTS['transport_company']['icon']} {CONFIG_UI_INPUTS['transport_company']['name']}",
+            options = transport_company_options,
             index = None,
-            placeholder= PLACEHOLDER_SELECT,
-            help = "Select one of the options - there is different price for each company -> see the pricing table below.",
+            placeholder = CONFIG_UI_INPUTS['transport_company']['placeholder'],
+            help = CONFIG_UI_INPUTS['transport_company']['help_f3'],
             key= "key_transport_company"
             )
         
         parcel_size = st.selectbox(
-            f"{icon_parcel} Parcel size:" ,
-            options=parcel_size_options,
+            f"{CONFIG_UI_INPUTS['parcel_size']['icon']} {CONFIG_UI_INPUTS['parcel_size']['name']}",
+            options = parcel_size_options,
             index = None,
-            placeholder= PLACEHOLDER_SELECT,
-            help = "Select one of the options",
+            placeholder = CONFIG_UI_INPUTS['parcel_size']['placeholder'],
+            help = CONFIG_UI_INPUTS['parcel_size']['help_f3'],
             key= "key_parcel_size"        
             )
         ''
         ''
 
-        with st.expander("Parcel size", icon=icon_parcel):
+        with st.expander("Parcel size", icon=CONFIG_UI_INPUTS['parcel_size']['icon']):
 
             ''
             st.image("Pictures/Function_3/F3_Parcel_sizes_v2.svg")
