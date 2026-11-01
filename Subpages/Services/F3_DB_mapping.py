@@ -34,9 +34,6 @@ class F3MappingFunctions:
 
         id =  CONFIG_MAPPING_ADDITIONAL_SERVICES_DB.get(service)
 
-        print("tady more", id)
-        print(service)
-
         if id != 1:
             return True
         else:

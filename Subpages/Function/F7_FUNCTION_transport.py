@@ -908,7 +908,7 @@ if st.button("Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit):
         })
 
 
-        df_tab2_transport.drop(df_tab2_transport.loc[df_tab2_transport['Time (hours)']== 'n/a'].index, inplace=True)
+        df_tab2_transport = df_tab2_transport.drop(df_tab2_transport.loc[df_tab2_transport['Time (hours)']== 'n/a'].index)
 
         df_tab2_transport_styled = df_tab2_transport.style.format({
             "Distance (km)": "{:,.2f}",
@@ -944,7 +944,7 @@ if st.button("Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit):
             f"Price ({selected_currency})" : [tab2_door_result_truck, tab2_door_result_train, tab2_door_result_air],
         })
 
-        df_tab2_dtd.drop(df_tab2_dtd.loc[df_tab2_dtd['Time (hours)**']== 'n/a'].index, inplace=True)
+        df_tab2_dtd = df_tab2_dtd.drop(df_tab2_dtd.loc[df_tab2_dtd['Time (hours)**']== 'n/a'].index)
 
         df_tab2_dtd = df_tab2_dtd.style.format({
             "Time (hours)**" : "{:.2f}",
@@ -1078,7 +1078,7 @@ if st.button("Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit):
         })
 
 
-        df_tab2_overall_time.drop(df_tab2_overall_time.loc[df_tab2_overall_time['Time (hours)']== 'n/a'].index, inplace=True)
+        df_tab2_overall_time = df_tab2_overall_time.drop(df_tab2_overall_time.loc[df_tab2_overall_time['Time (hours)']== 'n/a'].index)
 
 
         df_tab2_overall_time = df_tab2_overall_time.style.format({
@@ -1096,7 +1096,7 @@ if st.button("Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit):
             "Time (hours)" : [extra_time_tab2_truck, extra_time_tab2_train_adj, extra_time_tab2_air_adj]
         })
 
-        df_tab2_service.drop(df_tab2_service.loc[df_tab2_service['Time (hours)']== 'n/a'].index, inplace=True)
+        df_tab2_service = df_tab2_service.drop(df_tab2_service.loc[df_tab2_service['Time (hours)']== 'n/a'].index)
 
 
         tab2_truck_break_for_df = {
