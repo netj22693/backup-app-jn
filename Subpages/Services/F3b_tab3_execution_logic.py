@@ -105,7 +105,7 @@ def execute_f3b_tab3_logic(
         rows_from_db = df_table_tab_3.index
         rows_from_db = rows_from_db[-1]
         
-        ''
+        st.write("")
         if rows_from_db != selected_data["number_rows"]:
 
             s = singular_or_plural(rows_from_db)

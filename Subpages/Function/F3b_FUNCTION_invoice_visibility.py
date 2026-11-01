@@ -139,7 +139,8 @@ with tab3:
         initiate_session_state_f3b_tab3(execution_data)   
 
         selected_data: dict = display_filter_options_f3b(execution_data)
-        
+
+        ''
         submit_button_tab3 = st.button("Apply filters", width= "stretch", icon=UiConfigAndIcons.Buttons.apply_filters)
 
         if submit_button_tab3:

@@ -79,7 +79,7 @@ def display_filter_options_f3b(data: dict):
 
 
     # Date picker
-    ''
+    st.write("")
     checkbox_date = st.checkbox("Filtering based on date", key="key_checkbox_date_f3b_tab3")
 
     if checkbox_date == True:
@@ -116,7 +116,7 @@ def display_filter_options_f3b(data: dict):
             render_warning_info("**Date issue** - date **To** is farther in the past than **From**.")
 
         # UI space -> in case that Date picker is displayed
-        ''
+        st.write("")
     else: 
         picked_date_from = None
         picked_date_to = None
@@ -142,7 +142,7 @@ def display_filter_options_f3b(data: dict):
         product = None
 
     # Slider - number of rows
-    ''
+    st.write("")
     number_rows = st.slider("Number of records to be shown", min_value=5, max_value=50, step=5, label_visibility="visible", key="key_sld_number_rows_f3b_tab3")
 
 
