@@ -489,15 +489,15 @@ def input_validation(input: str) -> Optional[str]:
         return None
 
 # ===== Reset button ===== 
-def reset_filters(list_countries_upper: list, tranport_types_list: list, currency_list: list):
+def reset_filters_f7b_tab3(list_countries_upper: list, tranport_types_list: list, currency_list: list):
 
     '''
     Reset button to clear all applied filters
     '''
 
-    st.session_state["key_mlts_country_from"] = list_countries_upper
-    st.session_state["key_mlts_country_to"] = list_countries_upper
-    st.session_state["key_mlts_transport"] = tranport_types_list
-    st.session_state["key_mlts_currency"] = currency_list
-    st.session_state["key_checkbox_date"] = False
-    st.session_state["key_sld_number_rows"] = 20
+    st.session_state["key_mlts_country_from_f7b_tab3"] = list_countries_upper
+    st.session_state["key_mlts_country_to_f7b_tab3"] = list_countries_upper
+    st.session_state["key_mlts_transport_f7b_tab3"] = tranport_types_list
+    st.session_state["key_mlts_currency_f7b_tab3"] = currency_list
+    st.session_state["key_checkbox_date_f7b_tab3"] = False
+    st.session_state["key_sld_number_rows_f7b_tab3"] = 20

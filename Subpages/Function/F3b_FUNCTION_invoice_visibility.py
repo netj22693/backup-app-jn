@@ -4,9 +4,12 @@ from datetime import date, timedelta
 from sqlalchemy import text
 from app_db_connection import db_connection
 from Subpages.Resources_ui import UiConfigAndIcons
-from Subpages.Resources_ui_objects import render_warning_info, render_info_info
+from Subpages.Resources_ui_objects import render_warning_info
 from Subpages.Operational.F3b_operational_functions import input_validation, input_safety_validation, get_order_details, get_company_logo_screen_details, input_validation_order_exists, df_styling, create_pie_chart, data_empty_fallback_info
+from Subpages.Services.F3_load_data_from_DB import load_f3_data
 from Subpages.SQL.F3b_SQL_queries import sql_query_overview_invoices, sql_query_file_format, get_sql_part_where_date, get_sql_query_category, get_sql_query_company, get_sql_query_parcel_size, get_sql_query_currency, get_sql_query_country, get_sql_query_extra_service_type, get_sql_query_extra_service_count, get_mapping_extra_services, get_sql_query_file_format
+from Subpages.Services.F3b_tab3_UI_operations import initiate_session_state_f3b_tab3, reset_filters_f3b_tab3, display_filter_options_f3b
+from Subpages.Services.F3b_tab3_execution_logic import execute_f3b_tab3_logic
 
 
 
@@ -68,7 +71,6 @@ with tab2:
 
     if submit_button:   
 
-
         db_engine = db_connection("F3B", True)            
 
         # Trigger function 2 only in case that valid and safe input (SQL injestion) and Order number found in DB
@@ -114,9 +116,47 @@ with tab2:
 
 # =================  Tab 3  ======================
 
-# To be built up
 with tab3:
-    render_info_info("This part has not been released yet.")
+    # DB connection -> Engine
+    db_engine = db_connection("F3", True)
+
+    execution_data: dict = load_f3_data(db_engine, "F3B")
+
+    # Validation
+    if execution_data == {} or any(value is None or value == [] for value in execution_data.values()):
+        render_warning_info("**Technical issue** - this part is not available.")
+        # UI will not render this tab3 and will continue to tab4
+
+    else:
+        # Extend by default state conditions
+        execution_data["submit_disabled"] = False
+        execution_data["checkbox_date"] = False
+        execution_data["checkbox_text"] = False
+        execution_data["customer_applicable"] = False
+        execution_data["product_applicable"] = False
+        execution_data["number_rows"] = 20
+
+        initiate_session_state_f3b_tab3(execution_data)   
+
+        selected_data: dict = display_filter_options_f3b(execution_data)
+        
+        submit_button_tab3 = st.button("Apply filters", width= "stretch", icon=UiConfigAndIcons.Buttons.apply_filters)
+
+        if submit_button_tab3:
+            execute_f3b_tab3_logic(
+                db_engine,
+                selected_data
+            )
+
+        # ===== Reset button =====
+        st.write("-" *10)
+        st.button(
+            "Reset filters",
+            on_click=reset_filters_f3b_tab3,
+            args=(execution_data,),
+            width="stretch",
+            icon=UiConfigAndIcons.Buttons.reset
+            )
 
 # =================  Tab 4  ======================
 

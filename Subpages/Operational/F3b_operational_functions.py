@@ -151,7 +151,8 @@ def get_order_details(db_engine: Engine, order_input: str) -> OrderDetailsResult
         df_mapping_empty_bool
     )
 
-
+# ===== TAB 3 =====
+# No operation functions 
 
 
 # ===== TAB 4 validations =====

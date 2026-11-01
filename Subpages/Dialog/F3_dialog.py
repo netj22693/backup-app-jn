@@ -2,7 +2,7 @@ import streamlit as st
 import time
 from Subpages.Resources import Assets
 from Subpages.Resources_ui import UiConfigAndIcons
-from Subpages.Resources_ui_objects import render_function_page, render_description_page, render_specific_page
+from Subpages.Resources_ui_objects import render_function_page, render_description_page, render_specific_page, render_warning_info
 
 
 # ===== Toasts inserted values validations =====
@@ -75,6 +75,4 @@ def insert_db_not_complete():
 
 @st.dialog("Technical issue") 
 def dialog_not_possible_to_pull_data():
-    st.write("""
-    - Not possible to pull data from DB. The F3 function is currently not available
-    """)
+    render_warning_info(f"**Data load issue** - the **F3** is currently not available.")

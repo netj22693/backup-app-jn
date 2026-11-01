@@ -184,6 +184,87 @@ ORDER BY
 ;"""
 
 
+# ==== TAB 3 ====
+def get_sql_query_f3b_tab_3(
+    category: str,
+    currency: str,
+    additional_service: str,
+    country: str,
+    transport_company: str,
+    parcel_size: str,
+    file_format: str,
+    checkbox_date: bool,
+    customer_applicable: bool,
+    product_applicable: bool
+    ) -> str:
+
+
+    # Additional conditions
+    customer_condition = (
+        "AND a.customer ILIKE :customer"
+        if customer_applicable
+        else ""
+    )
+
+    product_condition = (
+        "AND a.product_name ILIKE :product"
+        if product_applicable
+        else ""
+    )
+
+    date_condition = (
+        "AND a.date BETWEEN DATE :date_from AND DATE :date_to"
+        if checkbox_date
+        else ""
+    )
+
+    # Query builder -> inserting parametrs
+    query = f"""
+    SELECT
+        a.order_number as "Order number", 
+        a.date as "Date", 
+        a.customer as "Customer",
+        b.name as "Category",
+        a.product_name as "Product", 
+        a.product_price as "Product price", 
+        c.name as "Extra service",
+        a.extra_service_price as "Extra service price",
+        d.name as "Country",
+        e.name as "Transport company",
+        a.transport_price as "Transport price",
+        f.name as "Parcel size",
+        a.total_sum as "Total sum",
+        g.name as "Currency",
+        h.name as "File format"
+    
+    FROM billing.invoice a 
+        INNER JOIN billing.category_list b ON (a.category = b.category_id)
+        INNER JOIN billing.extra_service_list c ON (a.extra_service_type = c.service_id)
+        INNER JOIN billing.country_list d ON (a.country = d.country_id)
+        INNER JOIN shared.transport_company e ON (a.transport_company = e.comp_id)
+        INNER JOIN shared.parcel_size f ON (a.parcel_size = f.size_id)
+        INNER JOIN billing.currency_list g ON (a.currency = g.currency_id)
+        INNER JOIN billing.format_list h ON (a.file_format = h.format_id)
+
+    WHERE 
+        b.name IN({category}) AND
+        g.name IN({currency}) AND
+        c.name IN({additional_service}) AND
+        d.name IN({country}) AND
+        e.name IN({transport_company}) AND
+        f.name IN({parcel_size}) AND
+        h.name IN({file_format})
+
+        {customer_condition}
+        {product_condition}
+        {date_condition}
+
+    ORDER BY a.order_number DESC
+    LIMIT :number_rows
+    """
+
+    return query
+
 # ==== TAB 4 ====
 
 # Function returning WHERE statement, if user filtering based on date

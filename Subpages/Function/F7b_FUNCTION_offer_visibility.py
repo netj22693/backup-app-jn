@@ -10,10 +10,11 @@ from Subpages.Resources_ui_objects import render_warning_info, render_info_info
 from Subpages.Services.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
 from Subpages.SQL.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, sql_query_offer_status_validation_df, sql_query_offer_status_validation_single, sql_query_logs, sql_query_offer_rating, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes
 from Subpages.Data.F7_input_data import tranport_types_list, dataset_cities, states_dict
-from Subpages.Operational.F7b_operational_functions import change_state_in_db, input_validation, operational_update_of_states, display_state_and_symbol_mapped, display_offer_logs, mapping_states, get_styling_colors, df_styling_index_set_1, data_empty_fallback_info, create_pie_chart, df_change_column_name, get_parameters_countries, create_parameters_for_sql, reset_filters
+from Subpages.Operational.F7b_operational_functions import change_state_in_db, input_validation, operational_update_of_states, display_state_and_symbol_mapped, display_offer_logs, mapping_states, get_styling_colors, df_styling_index_set_1, data_empty_fallback_info, create_pie_chart, df_change_column_name, get_parameters_countries, reset_filters_f7b_tab3
 from Subpages.Services.F7b_UI_functions import display_state_flow, display_state_flow_expander, display_offer_visualization_ui
 from Subpages.Services.F7b_rating_function import make_rating_validation, display_offer_rating_ui_info, display_offer_rating_ui_tab
 from Subpages.Universal.Universal_functions import singular_or_plural
+from Subpages.Universal.Creation_of_parameters_for_SQL import create_parameters_for_sql
 
 
 # Inicialization of logging
@@ -244,53 +245,53 @@ with tab3:
     currency_list.sort()
 
     # Initiating session states for purpose/possibility of reseting filters
-    if "key_mlts_country_from" not in st.session_state:
-        st.session_state["key_mlts_country_from"] = list_countries_upper
+    if "key_mlts_country_from_f7b_tab3" not in st.session_state:
+        st.session_state["key_mlts_country_from_f7b_tab3"] = list_countries_upper
 
-    if "key_mlts_country_to" not in st.session_state:
-        st.session_state["key_mlts_country_to"] = list_countries_upper
+    if "key_mlts_country_to_f7b_tab3" not in st.session_state:
+        st.session_state["key_mlts_country_to_f7b_tab3"] = list_countries_upper
 
-    if "key_mlts_transport" not in st.session_state:
-        st.session_state["key_mlts_transport"] = tranport_types_list
+    if "key_mlts_transport_f7b_tab3" not in st.session_state:
+        st.session_state["key_mlts_transport_f7b_tab3"] = tranport_types_list
 
-    if "key_mlts_currency" not in st.session_state:
-        st.session_state["key_mlts_currency"] = currency_list
+    if "key_mlts_currency_f7b_tab3" not in st.session_state:
+        st.session_state["key_mlts_currency_f7b_tab3"] = currency_list
 
-    if "key_sld_number_rows" not in st.session_state:
-        st.session_state["key_sld_number_rows"] = 20
+    if "key_sld_number_rows_f7b_tab3" not in st.session_state:
+        st.session_state["key_sld_number_rows_f7b_tab3"] = 20
     
-    if "key_checkbox_date"  not in st.session_state:
-        st.session_state["key_checkbox_date"] = False
+    if "key_checkbox_date_f7b_tab3"  not in st.session_state:
+        st.session_state["key_checkbox_date_f7b_tab3"] = False
 
     # ============ UI filter ============ 
     # Multiselect - Country from
     ''
-    selected_coutry_from = st.multiselect("Country from", options=list_countries_upper, key="key_mlts_country_from")
+    selected_coutry_from = st.multiselect("Country from", options=list_countries_upper, key="key_mlts_country_from_f7b_tab3")
 
     if len(selected_coutry_from) == 0:
         render_warning_info("At least 1 country needs to be selected.")
 
     # Multiselect - Country to
-    selected_coutry_to = st.multiselect("Country to", options=list_countries_upper, key="key_mlts_country_to")
+    selected_coutry_to = st.multiselect("Country to", options=list_countries_upper, key="key_mlts_country_to_f7b_tab3")
 
     if len(selected_coutry_to) == 0:
         render_warning_info("At least 1 country needs to be selected.")
     
     # Multiselect - Transport type
-    selected_transport = st.multiselect("Transport", options=tranport_types_list, key="key_mlts_transport")
+    selected_transport = st.multiselect("Transport", options=tranport_types_list, key="key_mlts_transport_f7b_tab3")
 
     if len(selected_transport) == 0:
         render_warning_info("At least 1 transport needs to be selected.")
 
     # Multiselect - Currency
-    selected_currency = st.multiselect("Currency", options=currency_list, key="key_mlts_currency")
+    selected_currency = st.multiselect("Currency", options=currency_list, key="key_mlts_currency_f7b_tab3")
 
     if len(selected_currency) == 0:
         render_warning_info("At least 1 currency needs to be selected.")
 
     # Date picker
     ''
-    checkbox_state = st.checkbox("Filtering based on date", key="key_checkbox_date")
+    checkbox_state = st.checkbox("Filtering based on date", key="key_checkbox_date_f7b_tab3")
 
     if checkbox_state == True:
         
@@ -341,7 +342,7 @@ with tab3:
 
     # Slider - number of rows
     ''
-    number_rows = st.slider("Number of records to be shown", min_value=5, max_value=50, step=5, label_visibility="visible", key="key_sld_number_rows")
+    number_rows = st.slider("Number of records to be shown", min_value=5, max_value=50, step=5, label_visibility="visible", key="key_sld_number_rows_f7b_tab3")
 
 
     # ===== Submit button -> triggering query into DB =====
@@ -363,7 +364,7 @@ with tab3:
     st.write("-" *10)
     st.button(
         "Reset filters",
-        on_click=reset_filters,
+        on_click=reset_filters_f7b_tab3,
         args=(list_countries_upper, tranport_types_list, currency_list),
         width="stretch",
         icon=UiConfigAndIcons.Buttons.reset

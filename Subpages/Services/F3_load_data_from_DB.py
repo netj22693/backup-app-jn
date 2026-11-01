@@ -52,17 +52,16 @@ def load_f3_data(_db_engine: Engine, function_id: str):
 
                 logging.info(f"{function_id} - Pull data from DB 2/2 - SUCCESS")
 
-
-                return (
-                    category_options,
-                    transport_company_options,
-                    currency_options,
-                    additional_service_options,
-                    country_options,
-                    parcel_size_options,
-                    file_format_options,
-                    min_date
-                )
+                return {
+                    "category_options": category_options,
+                    "transport_company_options": transport_company_options,
+                    "currency_options": currency_options,
+                    "additional_service_options": additional_service_options,
+                    "country_options": country_options,
+                    "parcel_size_options": parcel_size_options,
+                    "file_format_options": file_format_options,
+                    "min_date": min_date
+                }
 
             elif function_id == "F3":
                 # Get Price and Parcel size info tables 
@@ -111,4 +110,4 @@ def load_f3_data(_db_engine: Engine, function_id: str):
             st.stop()
 
         elif function_id == "F3B":
-            return (None,) * 8
+            return {}

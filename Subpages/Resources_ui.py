@@ -34,6 +34,7 @@ class UiConfigAndIcons:
         info = BaseIcons.info
         
     class Buttons:
+        apply_filters = ":material/tune:"
         download = ":material/download:"
         close = ":material/close:"
         submit = ":material/apps:"

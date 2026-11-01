@@ -71,6 +71,7 @@ def display_release_notes_expander_f3_f4():
        
         st.write("""
         - F3 & F3B:
+            - **v71.7** - F3B - TAB3 customized search release - 01-Nov-2026
             - **v71.6** - F3 - DB load function extended by logic for F3B tab3 data load & UI config centralized - 30-Oct-2026
             - **v70.8** - F3 - Caching of data loaded from DB -> increased speed of processing - 09-Oct-2026
             - **v70.7** - F3 - Logic of warning of unusual user inputs in context of selected category added & Extension of user input validations - 09-Oct-2026

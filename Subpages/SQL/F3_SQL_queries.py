@@ -45,6 +45,19 @@ class F3InputDataQueries:
     FROM billing.extra_service_list
     """ 
 
+    sql_query_file_formats = """
+    SELECT name 
+    FROM billing.format_list h
+    ORDER by name
+    """
+
+    sql_query_min_date = """
+    SELECT date 
+    FROM billing.invoice
+    ORDER BY date ASC
+    LIMIT 1
+    """
+
 
 query_currency_max_values = """
 SELECT 
