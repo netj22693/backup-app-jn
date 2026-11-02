@@ -1,0 +1,651 @@
+PURPOSE: Upgrade streamlit from 1.60.0 to 1.65.0
+RESULT: Streamlit upgrade complete + on PROD container this was changed websockets from 16.1.1 to 17.4
+PROD: no issue with the new version. I didn't find any Fuction issue
+FIX: Upgrade of streamlit fixed st.date_input() issue with 'min_date' parameter
+
+
+BEFORE UPGRADE  - WORKING
+
+-------------------------
+requirements.txt
+-------------------------
+streamlit==1.60.0
+st-pages==1.0.1
+lxml==6.0.2
+plotly==6.6.0
+pandasql==0.7.3
+psycopg2-binary==2.9.11
+SQLAlchemy==2.0.48
+reportlab==4.4.10
+pytz==2026.1.post1
+scikit-learn==1.8.0
+python-dotenv==1.2.2
+starlette==1.3.1
+uvicorn==0.49.0
+
+-------------------------
+PROD container
+-------------------------
+Using uv pip install.
+
+Using Python 3.11.18 environment at: /home/adminuser/venv
+
+Resolved 56 packages in 959ms
+
+   Building pandasql==0.7.3
+
+Downloading pillow (6.6MiB)
+
+Downloading pydeck (10.9MiB)
+
+Downloading reportlab (1.9MiB)
+
+Downloading scipy (33.7MiB)
+
+Downloading numpy (16.1MiB)
+
+Downloading pandas (11.8MiB)
+
+Downloading lxml (5.0MiB)
+
+Downloading scikit-learn (8.7MiB)
+
+Downloading [2026-11-02 15:59:07.360953] plotly (9.5MiB)
+
+Downloading pyarrow (46.6MiB)
+
+Downloading sqlalchemy (3.2MiB)
+
+Downloading psycopg2-binary (4.0MiB)[2026-11-02 15:59:07.362360] 
+
+Downloading streamlit (9.9MiB)
+
+ Downloaded reportlab
+
+ Downloaded sqlalchemy
+
+ Downloaded psycopg2-binary
+
+      Built pandasql==0.7.3
+
+ Downloaded lxml
+
+ Downloaded pillow
+
+ Downloaded scikit-learn
+
+ Downloaded plotly
+
+ Downloaded streamlit
+
+ Downloaded pydeck
+
+ Downloaded pandas
+
+ Downloaded numpy
+
+ Downloaded scipy
+
+ Downloaded pyarrow
+
+Prepared 55 packages in 803ms
+
+Installed 55 packages in 74ms
+
+ + altair==6.3.0
+
+ + anyio==4.16.0
+
+ + attrs==26.1.0
+
+ + blinker==1.9.0
+
+ + charset-normalizer==3.5.2
+
+ + click==8.5.0
+
+ + cloudpickle==3.1.2
+
+ + gitdb==4.0.12
+
+ +[2026-11-02 15:59:08.199450]  gitpython==3.2.1
+
+ + greenlet==3.5.6
+
+ + h11==0.16.0
+
+ + httptools==0.9.0
+
+ + idna==3.20
+
+ + itsdangerous==2.2.0
+
+ + jinja2==3.1.6
+
+ + joblib==1.6.0
+
+ [2026-11-02 15:59:08.199587] + jsonschema==4.26.0
+
+ + jsonschema-specifications==2025.9.1
+
+ + lxml==6.0.2
+
+ + markupsafe==3.0.4
+
+ + narwhals==2.28.0
+
+ + numpy==2.4.6
+
+ + packaging==26.3
+
+ + pandas==3.1.0[2026-11-02 15:59:08.199736] 
+
+ + pandasql==0.7.3
+
+ + pillow==12.3.0
+
+ + plotly==6.6.0
+
+ + protobuf==7.36.2
+
+ + psycopg2-binary==2.9.11
+
+ + pyarrow==24.0.0
+
+ + pydeck==0.9[2026-11-02 15:59:08.199863] .3
+
+ + python-dateutil==4.0.0
+
+ + python-dotenv==1.2.2
+
+ + python-multipart==0.0.33
+
+ + pytz==2026.1.post1
+
+ + referencing==0.37.0
+
+ + reportlab==4.4.10
+
+ +[2026-11-02 15:59:08.200038]  requests==2.34.2
+
+ + rpds-py==2026.9.1
+
+ + scikit-learn==1.8.0
+
+ + scipy==1.17.1
+
+ + smmap==5.0.3
+
+ + sqlalchemy==2.0.48
+
+ + st-pages==[2026-11-02 15:59:08.200157] 1.0.1
+
+ + starlette==1.3.1
+
+ + streamlit==1.60.0
+
+ + tenacity==9.2.1
+
+ + threadpoolctl==3.7.0
+
+ + toml==0.10.2[2026-11-02 15:59:08.200342] 
+
+ + typing-extensions==4.16.0
+
+ + tzdata==2026.6
+
+ + urllib3==2.8.0
+
+ + uvicorn==0.49.0[2026-11-02 15:59:08.200558] 
+
+ + watchdog==6.0.0
+
+ + websockets==16.1.1
+
+Collecting certifi>=2026.10.19
+
+  Downloading certifi-2026.10.23-py3-none-any.whl.metadata (2.5 kB)
+
+Downloading certifi-2026.10.23-py3-none-any.whl (135 kB)
+
+Installing collected packages: certifi
+
+  Attempting uninstall: certifi
+
+    Found existing installation: certifi 2026.10.23
+
+    Uninstalling certifi-2026.10.23:
+
+      Successfully uninstalled certifi-2026.10.23
+
+Successfully installed certifi-2026.10.23
+
+Collecting pip>=26.2.2
+
+  Downloading pip-26.2.2-py3-none-any.whl.metadata (4.6 kB)
+
+Downloading pip-26.2.2-py3-none-any.whl (1.8 MB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 75.7 MB/s  0:00:00[2026-11-02 15:59:10.723843] 
+
+Installing collected packages: pip
+
+  Attempting uninstall: pip
+
+    Found existing installation: pip 26.2.2
+
+    Uninstalling pip-26.2.2:
+
+      Successfully uninstalled pip-26.2.2
+
+Successfully installed pip-26.2.2
+
+Checking if Streamlit is installed
+
+Found Streamlit version 1.60.0 in the environment
+
+Installing rich for an improved exception logging
+
+Using uv pip install.
+
+Using Python 3.11.18 environment at: /home/adminuser/venv
+
+Resolved 4 packages in 165ms
+
+Downloading pygments (1.2MiB)
+
+ Downloaded pygments
+
+Prepared 4 packages in 67ms
+
+Installed 4 packages in 10ms
+
+ + markdown-it-py==4[2026-11-02 15:59:13.826459] .2.0
+
+ + mdurl==0.1.2
+
+ + pygments==2.21.0
+
+ + rich==15.0.0
+
+
+────────────────────────────────────────────────────────────────────────────────────────
+
+
+[15:59:14] 🐍 Python dependencies were installed from /mount/src/backup-app-jn/requirements.txt using uv.
+
+Check if streamlit is installed
+
+Streamlit is already installed
+
+Collecting certifi>=2026.10.19
+
+  Downloading certifi-2026.10.23-py3-none-any.whl.metadata (2.5 kB)
+
+Downloading certifi-2026.10.23-py3-none-any.whl (135 kB)
+
+Installing collected packages: certifi
+
+  Attempting uninstall: certifi
+
+    Found existing installation: certifi 2026.10.23
+
+    Uninstalling certifi-2026.10.23:
+
+      Successfully uninstalled certifi-2026.10.23
+
+Successfully installed certifi-2026.10.23
+
+Collecting pip>=26.2.2
+
+  Downloading pip-26.2.2-py3-none-any.whl.metadata (4.6 kB)
+
+Downloading pip-26.2.2-py3-none-any.whl (1.8 MB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 74.9 MB/s  0:00:00[2026-11-02 15:59:16.010158] 
+
+Installing collected packages: pip
+
+  Attempting uninstall: pip
+
+    Found existing installation: pip 26.2.2
+
+    Uninstalling pip-26.2.2:
+
+      Successfully uninstalled pip-26.2.2
+
+Successfully installed pip-26.2.2
+
+[15:59:17] 📦 Processed dependencies!
+
+2026-11-02 15:59:19.200 Uvicorn server started on :::8501
+
+
+
+AFTER UPGRADE
+-------------------------
+requirements.txt
+-------------------------
+streamlit==1.65.0
+st-pages==1.0.1
+lxml==6.0.2
+plotly==6.6.0
+pandasql==0.7.3
+psycopg2-binary==2.9.11
+SQLAlchemy==2.0.48
+reportlab==4.4.10
+pytz==2026.1.post1
+scikit-learn==1.8.0
+python-dotenv==1.2.2
+starlette==1.3.1
+uvicorn==0.49.0
+
+
+-------------------------
+PROD container
+-------------------------
+Using uv pip install.
+
+Using Python 3.11.18 environment at: /home/adminuser/venv
+
+Resolved 51 packages in 1.01s
+
+   Building pandasql==0.7.3
+
+Downloading pillow (6.6MiB)
+
+Downloading scipy (33.7MiB)
+
+Downloading numpy (16.1MiB)
+
+Downloading pyarrow (47.7MiB)
+
+Downloading pandas (11.8MiB)
+
+Downloading sqlalchemy (3.2MiB)
+
+Downloading lxml (5.0MiB)
+
+Downloading plotly (9.5MiB)
+
+Downloading streamlit (9.8MiB)
+
+Downloading pydeck (10.9MiB)
+
+Downloading scikit-learn (8.7MiB)
+
+Downloading reportlab (1.9MiB)
+
+Downloading psycopg2-binary (4.0MiB)
+
+      Built pandasql==0.7.3
+
+ Downloaded reportlab
+
+ Downloaded sqlalchemy
+
+ Downloaded psycopg2-binary
+
+ Downloaded lxml
+
+ Downloaded pillow
+
+ Downloaded scikit-learn
+
+ Downloaded plotly
+
+ Downloaded streamlit
+
+ Downloaded pydeck
+
+ Downloaded pandas
+
+ Downloaded numpy
+
+ Downloaded scipy
+
+ Downloaded pyarrow
+
+Prepared 50 packages in 6.35s
+
+Installed 50 packages in 144ms
+
+ + altair==6.[2026-11-02 16:48:32.114636] 3.0
+
+ + anyio==4.16.0
+
+ + attrs==26.1.0
+
+ + charset-normalizer==3.5.2
+
+ + click==8.5.0
+
+ + cloudpickle==3.1.2
+
+ + greenlet==3.5.6
+
+ + h11==0.16.0
+
+ + httptools==0.9.0
+
+ + idna==3.20
+
+ [2026-11-02 16:48:32.114954] + itsdangerous==2.2.0
+
+ + jinja2==3.1.6
+
+ + joblib==1.6.0
+
+ + jsonschema==4.26.0
+
+ + jsonschema-specifications==2025.9.1
+
+ + lxml==6.0.2
+
+ + markupsafe==3.0.4
+
+ + narwhals==2.[2026-11-02 16:48:32.115160] 28.0
+
+ + numpy==2.4.6
+
+ + packaging==26.3
+
+ + pandas==3.1.0
+
+ + pandasql==0.7.3
+
+ +[2026-11-02 16:48:32.115380]  pillow==12.3.0
+
+ + plotly==6.6.0
+
+ + protobuf==7.36.2
+
+ + psycopg2-binary==2.9.11
+
+ + pyarrow==25.0.1
+
+ [2026-11-02 16:48:32.115600] + pydeck==0.9.3
+
+ + python-dateutil==4.0.0
+
+ + python-dotenv==1.2.2
+
+ + python-multipart==0.0[2026-11-02 16:48:32.115816] .33
+
+ + pytz==2026.1.post1
+
+ + referencing==0.37.0
+
+ + reportlab==4.4.10
+
+ + requests==[2026-11-02 16:48:32.115964] 2.34.2
+
+ + rpds-py==2026.9.1
+
+ + scikit-learn==1.8.0
+
+ + scipy==1.17.1
+
+ + sqlalchemy[2026-11-02 16:48:32.116122] ==2.0.48
+
+ + st-pages==1.0.1
+
+ + starlette==1.3.1
+
+ + streamlit==1.[2026-11-02 16:48:32.116252] 65.0
+
+ + threadpoolctl==3.7.0
+
+ + toml==0.10.2
+
+ + typing-extensions==4.16.0
+
+ [2026-11-02 16:48:32.116414] + tzdata==2026.6
+
+ + urllib3==2.8.0
+
+ + uvicorn==0.49.0
+
+ + watchdog==6.0.0[2026-11-02 16:48:32.116570] 
+
+ + websockets==17.4
+
+Collecting certifi>=2026.10.19
+
+  Downloading certifi-2026.10.23-py3-none-any.whl.metadata (2.5 kB)
+
+Downloading certifi-2026.10.23-py3-none-any.whl (135 kB)
+
+Installing collected packages: certifi
+
+  Attempting uninstall: certifi
+
+    Found existing installation: certifi 2026.10.23
+
+    Uninstalling certifi-2026.10.23:
+
+      Successfully uninstalled certifi-2026.10.23
+
+Successfully installed certifi-2026.10.23
+
+Collecting pip>=26.2.2
+
+  Downloading pip-26.2.2-py3-none-any.whl.metadata (4.6 kB)
+
+Downloading pip-26.2.2-py3-none-any.whl (1.8 MB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 93.1 MB/s  0:00:00[2026-11-02 16:48:33.814101] 
+
+Installing collected packages: pip
+
+  Attempting uninstall: pip
+
+    Found existing installation: pip 26.2.2
+
+    Uninstalling pip-26.2.2:
+
+      Successfully uninstalled pip-26.2.2
+
+Successfully installed pip-26.2.2
+
+Checking if Streamlit is installed
+
+Found Streamlit version 1.65.0 in the environment
+
+Detected pyarrow 25.0.1 (known segfault, apache/arrow#50471). Replacing with pyarrow<25.
+
+Using uv pip install.
+
+Using Python 3.11.18 environment at: /home/adminuser/venv
+
+Resolved 1 package in 82ms
+
+Downloading pyarrow (46.6MiB)
+
+ Downloaded pyarrow
+
+Prepared 1 package in 510ms
+
+Uninstalled 1 package in 16ms
+
+Installed 1 package in 22ms
+
+ - pyarrow[2026-11-02 16:48:37.452834] ==25.0.1
+
+ + pyarrow==24.0.0
+
+Installing rich for an improved exception logging
+
+Using uv pip install.
+
+Using Python 3.11.18 environment at: /home/adminuser/venv
+
+Resolved 4 packages in 173ms
+
+Downloading pygments (1.2MiB)
+
+ Downloaded pygments
+
+Prepared 4 packages in 70ms
+
+Installed 4 packages in 11ms
+
+ + markdown-it-py==4.2.[2026-11-02 16:48:37.972658] 0
+
+ + mdurl==0.1.2
+
+ + pygments==2.21.0
+
+ + rich==15.0.0
+
+
+────────────────────────────────────────────────────────────────────────────────────────
+
+
+[16:48:38] 🐍 Python dependencies were installed from /mount/src/backup-app-jn/requirements.txt using uv.
+
+Check if streamlit is installed
+
+Streamlit is already installed
+
+Collecting certifi>=2026.10.19
+
+  Downloading certifi-2026.10.23-py3-none-any.whl.metadata (2.5 kB)
+
+Downloading certifi-2026.10.23-py3-none-any.whl (135 kB)
+
+Installing collected packages: certifi
+
+  Attempting uninstall: certifi
+
+    Found existing installation: certifi 2026.10.23
+
+    Uninstalling certifi-2026.10.23:
+
+      Successfully uninstalled certifi-2026.10.23
+
+Successfully installed certifi-2026.10.23
+
+Collecting pip>=26.2.2
+
+  Downloading pip-26.2.2-py3-none-any.whl.metadata (4.6 kB)
+
+Downloading pip-26.2.2-py3-none-any.whl (1.8 MB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 77.2 MB/s  0:00:00[2026-11-02 16:48:40.132039] 
+
+Installing collected packages: pip
+
+  Attempting uninstall: pip
+
+    Found existing installation: pip 26.2.2
+
+    Uninstalling pip-26.2.2:
+
+      Successfully uninstalled pip-26.2.2
+
+Successfully installed pip-26.2.2
+
+[16:48:42] 📦 Processed dependencies!
+
+2026-11-02 16:48:43.343 Uvicorn server started on :::8501
