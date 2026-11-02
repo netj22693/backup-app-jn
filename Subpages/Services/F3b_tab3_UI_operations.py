@@ -99,14 +99,14 @@ def display_filter_options_f3b(data: dict):
             value=default_date,
             min_value = min_date,
             max_value = max_date,
-            format ="DD/MM/YYYY",
+            format ="DD-MM-YYYY",
             key = "key_date_input_1"
         )
 
         picked_date_to = col2.date_input(
             "To",
             value = max_date,
-            format = "DD/MM/YYYY",
+            format = "DD-MM-YYYY",
             min_value = min_date,
             max_value = max_date,
             key ="key_date_input_2")
