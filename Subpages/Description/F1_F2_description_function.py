@@ -48,7 +48,7 @@ st.write("##### Upload XML process:")
 ''
 ''
 ''
-st.image("Pictures/Function_2/F2_BPMN_HL_v5.svg")
+st.image("Pictures/Function_2/F2_BPMN_HL_v6.svg")
 ''
 ''
 ''
@@ -66,13 +66,13 @@ with tab1:
   st.image(Assets.Images.f2_xml_xsd_validation)
 
 with tab2:
-  st.image("Pictures/Function_2/F2_BPMN_HL_data_parsing_v3.svg")
+  st.image("Pictures/Function_2/F2_BPMN_HL_data_parsing_v4.svg")
 
 with tab3:
-  st.image("Pictures/Function_2/F2_BPMN_HL_data_validation_v5.svg")
+  st.image("Pictures/Function_2/F2_BPMN_HL_data_validation_v6.svg")
 
 with tab4:
-  st.image("Pictures/Function_2/F2_BPMN_HL_data_visualization_v4.svg")
+  st.image("Pictures/Function_2/F2_BPMN_HL_data_visualization_v5.svg")
 
 
 ''

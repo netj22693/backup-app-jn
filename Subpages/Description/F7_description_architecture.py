@@ -18,8 +18,8 @@ st.image(Assets.Images.architecture_detail_f7_f7b)
 ''
 ''
 tab1, tab2, tab3, tab4 = st.tabs([
-    "Function 7",
-    "Function 7B",
+    "F7",
+    "F7B",
     "Data flow F7 & F7B",
     "UI service F7 & F7B"
 ])
@@ -79,7 +79,7 @@ with tab3:
     st.image("Pictures/Function_7/F7_Variables/F7_desc_function_F7_F7B_data_flow_v5.svg", width=610)
 
 with tab4:
-    st.image("Pictures/Function_7/F7_Variables/F7_architecture_ui_v1.svg")
+    st.image("Pictures/Function_7/F7_Variables/F7_architecture_ui_v1.svg", width=580)
 
 # ===== Page navigation at the bottom ======
 ''

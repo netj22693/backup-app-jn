@@ -1,8 +1,8 @@
-- List of packadges before pandas upgrade from 3.0.3 to 3.1.0
+- Purpose: List of packages before pandas upgrade from 3.0.3 to 3.1.0
 - BEFORE and AFTER (below)
-- Only pandas has been upgrade nothing else from the dependent packadges
-- Main impact/code change due to deprication: F7 df.drop(,inplace=True) -> inplace removed will be depricated
-- After test: All Functions working fine
+- Result: Only pandas has been upgraded (nothing else from the possibly dependent packadges)
+- Reason of upgrade: F7 df.drop(,inplace=True) -> inplace removed, will be depricated
+- Test after upgrade: All Functions working fine
 
 
 BEFORE:

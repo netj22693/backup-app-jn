@@ -22,8 +22,8 @@ st.image("Pictures/Function_3/CDM/F3_F4_CDM_main_v1.svg")
 
 
 tab1, tab2 = st.tabs([
-    "Function 3",
-    "Function 4"
+    "F3",
+    "F4"
 ])
 
 with tab1:

@@ -185,7 +185,7 @@ st.write("""
 ''
 ''
 ''
-st.image("Pictures/Function_6/F6_process_flow_v1.svg")
+st.image("Pictures/Function_6/F6_process_flow_v2.svg")
 
 ''
 ''

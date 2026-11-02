@@ -41,23 +41,20 @@ st.write("""
 )
 
 ''
-tab1, tab2 = st.tabs([
-    "BPMN - Function 3",
-    "BPMN - Function 4"
+tab1, tab2, tab3 = st.tabs([
+    "BPMN - F3",
+    "BPMN - F3B",
+    "BPMN - F4"
 ])
 
 
 with tab1:
-    ''
+
     st.write("""
     - Invoice creation
     """)
     ''
-    st.image("Pictures/Function_3/F3_BPMN_process_v7.svg")
-    ''
-    ''
-    st.image("Pictures/Function_3/F3_BPMN_calculation_process_v4.svg")
-    ''
+    st.image("Pictures/Function_3/F3_BPMN_process_v8.svg")
     ''
 
     st.write("""
@@ -68,11 +65,19 @@ with tab1:
     """)
 
 with tab2:
+    st.write("""
+    - Retrospective data visualization & analytics
+    """)
     ''
+    st.image("Pictures/Function_3/F3B_BPMN_process_v1.svg", width=520)
+    ''
+    ''
+
+with tab3:
+
     st.write("""
     - Data Transformation using CDM
     """)
-    ''
     ''
     ''
     st.image("Pictures/Function_3/F4_BPMN_process_v4.svg")
@@ -82,23 +87,27 @@ with tab2:
     ''
     ''
     ''
-
+    ''
 
 ''
 ''
 ''
 st.write("##### Process flow:") 
 
-tab1, tab2 = st.tabs([
-    "Function 3",
-    "Function 4"
+tab1, tab2, tab3 = st.tabs([
+    "F3",
+    "F3B",
+    "F4"
 ])
 
 with tab1:
-    st.image("Pictures/Function_3/F3_process_flow_v1.svg")
+    st.image("Pictures/Function_3/F3_process_flow_v2.svg")
 
 with tab2:
-    st.image("Pictures/Function_4/F4_process_flow_v1.svg")
+    st.image("Pictures/Function_3/F3B_process_flow_v1.svg")
+
+with tab3:
+    st.image("Pictures/Function_4/F4_process_flow_v2.svg")
 
 
 # ===== Page navigation at the bottom ======
