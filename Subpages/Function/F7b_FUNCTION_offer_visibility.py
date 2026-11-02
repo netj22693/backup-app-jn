@@ -5,6 +5,7 @@ from datetime import date, timedelta
 import logging
 from app_logging import inicialization_logging
 from app_db_connection import db_connection
+from Subpages.Resources_config import FORMAT_CONFIG
 from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Resources_ui_objects import render_warning_info, render_info_info
 from Subpages.Services.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
@@ -310,17 +311,18 @@ with tab3:
             value=default_date,
             min_value = min_date,
             max_value = max_date,
-            format ="DD/MM/YYYY",
+            format = FORMAT_CONFIG["date"]["streamlit_widget"],
             key = "key_date_input_1"
         )
 
         picked_date_to = col2.date_input(
             "To",
             value = max_date,
-            format = "DD/MM/YYYY",
             min_value = min_date,
             max_value = max_date,
-            key ="key_date_input_2")
+            format = FORMAT_CONFIG["date"]["streamlit_widget"],
+            key ="key_date_input_2"
+            )
         
         # Extending SQL query date filter
         date_query_string = f"""
@@ -450,17 +452,18 @@ with tab4:
             value=default_date,
             min_value = min_date,
             max_value = max_date,
-            format ="DD/MM/YYYY",
+            format = FORMAT_CONFIG["date"]["streamlit_widget"],
             key = "key_date_input_tab4_1"
         )
 
         picked_date_to_tab4 = col2_tab4.date_input(
             "To",
             value = max_date,
-            format = "DD/MM/YYYY",
             min_value = min_date,
             max_value = max_date,
-            key ="key_date_input_tab4_2")
+            format = FORMAT_CONFIG["date"]["streamlit_widget"],
+            key ="key_date_input_tab4_2"
+            )
         
         # Extending SQL query date filter
         date_query_applicable = True

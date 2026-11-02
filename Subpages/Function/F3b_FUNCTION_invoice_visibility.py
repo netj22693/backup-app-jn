@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import date, timedelta
 from sqlalchemy import text
 from app_db_connection import db_connection
+from Subpages.Resources_config import FORMAT_CONFIG
 from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Resources_ui_objects import render_warning_info
 from Subpages.Operational.F3b_operational_functions import input_validation, input_safety_validation, get_order_details, get_company_logo_screen_details, input_validation_order_exists, df_styling, create_pie_chart, data_empty_fallback_info
@@ -195,17 +196,18 @@ with tab4:
             value=default_date,
             min_value = min_date,
             max_value = max_date,
-            format ="DD/MM/YYYY",
+            format = FORMAT_CONFIG["date"]["streamlit_widget"],
             key = "key_date_input_tab4_1"
         )
 
         picked_date_to_tab4 = col2_tab4.date_input(
             "To",
             value = max_date,
-            format = "DD/MM/YYYY",
             min_value = min_date,
             max_value = max_date,
-            key ="key_date_input_tab4_2")
+            format = FORMAT_CONFIG["date"]["streamlit_widget"],
+            key ="key_date_input_tab4_2"
+            )
         
         # Extending SQL query date filter
         date_query_applicable = True

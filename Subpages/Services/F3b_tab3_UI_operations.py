@@ -1,6 +1,7 @@
 import streamlit as st
 from datetime import date, timedelta
 from Subpages.Data.F3_F3B_UI_config_data import CONFIG_UI_INPUTS
+from Subpages.Resources_config import FORMAT_CONFIG
 from Subpages.Resources_ui_objects import render_warning_info
 from Subpages.Expander.APP_shared_expanders import diplay_how_to_use_filters_expander
 
@@ -99,16 +100,16 @@ def display_filter_options_f3b(data: dict):
             value=default_date,
             min_value = min_date,
             max_value = max_date,
-            format ="DD-MM-YYYY",
+            format = FORMAT_CONFIG["date"]["streamlit_widget"],
             key = "key_date_input_1"
         )
 
         picked_date_to = col2.date_input(
             "To",
             value = max_date,
-            format = "DD-MM-YYYY",
             min_value = min_date,
             max_value = max_date,
+            format = FORMAT_CONFIG["date"]["streamlit_widget"],
             key ="key_date_input_2")
         
         # Fallback info 
