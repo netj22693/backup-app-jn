@@ -7,9 +7,9 @@ st.write("# Description - Functions 3 & 4")
 ''
 ''
 st.write("""
-- **Function 3**: Creation of invoice based on user inputs (CSV, JSON or XML)
-- **Function 3B**: Visibility of already created invoices & Analytics
-- **Function 4**: Data Transfer of the invoice ; to CSV, JSON or XML
+- **Function 3**: Invoice creation based on user inputs (CSV, JSON or XML)
+- **Function 3B**: Visibility of already created invoices & analytics
+- **Function 4**: Data transformation to CSV, JSON or XML
 """
 )
 
@@ -25,7 +25,7 @@ st.image("Pictures/Architecture/Detail/F3_F3B_F4_architecture_detail_for_functio
 ''
 st.write("##### Business scenario:") 
 st.write(
-"Creation of invoice based on user input - CSV, JSON or XML. In case that user wants a different file format than was produced, there is an option of mapping/automatic file translation. The whole process is supported by DB -> invoices, history and analytics can be seen as well. "
+"Creation of invoice based on user input - CSV, JSON or XML. In case that user wants a different file format than was produced, there is an option of mapping/file transformation. The whole process is supported by DB -> invoices, history and analytics can be seen. "
 )
 ''
 ''
@@ -33,9 +33,9 @@ st.write("##### Process:")
 st.write("""
 1) User to insert inputs about an order/ a purchase
 2) Application to calculate costs
-3) User to select which file format the invoice should have 
+3) User to select which file format the invoice should be produced in
 4) Application to produce the invoice 
-5) OPTIONAL: In case of need of different format -> mapping/translation function can be used
+5) OPTIONAL: In case of need of different format -> mapping/transformation can be used
 6) The invoce, other invoices and analytics can be seen
 """
 )

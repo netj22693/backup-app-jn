@@ -15,9 +15,9 @@ def display_expander_overview_functions():
             """)
         ''
         st.write("""
-            - **F3**: Creation of invoice based on user input (CSV, JSON or XML)
+            - **F3**: Invoice creation based on user input (CSV, JSON or XML)
             - **F3B:** Invoice visibility & analytics
-            - **F4**: Data transformation of the invoices created in F3, using **CDM** (:green[**my favorit piece of logic**])
+            - **F4**: Data transformation - the invoices created in F3, using **CDM** (:green[**my favorit piece of logic**])
             """)
         ''
         st.write("""
