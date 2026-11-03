@@ -7,6 +7,7 @@ class BaseIcons:
     pie_chart = ":material/clock_loader_40:"
     code = ":material/code:"
     table = ":material/table:"
+    architecture = ":material/architecture:"
 
     success = ":material/check:"
     warning = ":material/warning:"
@@ -88,7 +89,7 @@ class UiConfigAndIcons:
         }
 
         architecture = {
-            "icon": ":material/architecture:",
+            "icon": BaseIcons.architecture,
             "label": "Application Architecture"
         }
 

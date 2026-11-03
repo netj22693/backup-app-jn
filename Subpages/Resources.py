@@ -48,6 +48,7 @@ class Assets:
         class App:
 
             app_description_architecture = "https://dataparsing.streamlit.app/APP_description_app_architecture"
+            app_description_code_architecture = "https://dataparsing.streamlit.app/~/+/APP_description_app_architecture#code-architecture"
 
             # Functions
             f1_function = "https://dataparsing.streamlit.app/F1_FUNCTION_XML_dowload"

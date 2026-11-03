@@ -1,6 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
-from Subpages.Resources_ui_objects import render_next_page, render_previous_page
+from Subpages.Resources_ui_objects import render_next_page, render_previous_page, render_specific_page
 
 
 st.write("# CDM:")
@@ -62,6 +62,9 @@ st.write("""
 - The Parsing/Translation from/to CDM happens based on **CDM config** rules which the functions use
 - The CDM config is basically the **middle data structure description** including JSON & XML paths, CSV positions, DB column names
 """)
+
+''
+render_specific_page("code_architecture")
 
 ''
 st.image("Pictures/Function_3/CDM/F3_F4_CDM_code_context_v1.svg")

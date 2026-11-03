@@ -1,6 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
-from Subpages.Resources_ui_objects import render_next_page
+from Subpages.Resources_ui_objects import render_next_page, render_specific_page
 from Video.Display_video import display_video_expander
 
 st.write("# Description - Functions 3 & 4")
@@ -94,6 +94,7 @@ with tab3:
 ''
 st.write("##### Process flow:") 
 
+
 tab1, tab2, tab3 = st.tabs([
     "F3",
     "F3B",
@@ -101,12 +102,15 @@ tab1, tab2, tab3 = st.tabs([
 ])
 
 with tab1:
+    render_specific_page("code_architecture")
     st.image("Pictures/Function_3/F3_process_flow_v2.svg")
 
 with tab2:
-    st.image("Pictures/Function_3/F3B_process_flow_v1.svg")
+    render_specific_page("code_architecture") 
+    st.image("Pictures/Function_3/F3B_process_flow_v2.svg")
 
 with tab3:
+    render_specific_page("code_architecture") 
     st.image("Pictures/Function_4/F4_process_flow_v2.svg")
 
 

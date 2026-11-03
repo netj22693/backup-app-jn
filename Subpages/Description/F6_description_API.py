@@ -1,7 +1,7 @@
 import streamlit as st
 from Subpages.Resources import Assets
 from Subpages.Resources_ui import UiConfigAndIcons
-from Subpages.Resources_ui_objects import render_function_page
+from Subpages.Resources_ui_objects import render_function_page, render_specific_page
 from app_api import api_GET_cache_10min, get_url_string_for_GET_api
 from Subpages.Services.F5_F6_statistics_api_visualization import display_statistics
 from Subpages.Data.F6_json_structures import json_api_structure_zipcodebase, json_api_structure_zipcodestack, json_scenario_1_zipcodestack, json_scenario_2_zipcodebase, json_scenario_2_zipcodestack
@@ -181,9 +181,8 @@ st.write("""
 - Few **XREF dictionaries** help to the normalization and better user experience
 """)
 
-
 ''
-''
+render_specific_page("code_architecture")
 ''
 st.image("Pictures/Function_6/F6_process_flow_v2.svg")
 

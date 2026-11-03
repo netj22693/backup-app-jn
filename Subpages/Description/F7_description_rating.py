@@ -1,6 +1,6 @@
 import streamlit as st
 from Subpages.Resources import Assets
-from Subpages.Resources_ui_objects import render_next_page, render_previous_page
+from Subpages.Resources_ui_objects import render_next_page, render_previous_page, render_specific_page
 
 st.write("# Rating")
 ''
@@ -42,6 +42,7 @@ st.write("""
 """)
 
 ''
+render_specific_page("code_architecture")
 ''
 st.image("Pictures/Function_7/F7_rating/F7_rating_principle_v2.svg")
 

@@ -85,6 +85,12 @@ def render_specific_page(page_key: str, label_customized: str | None = None):
         page = Assets.Paths.ReleaseNotes.rn
         icon = UiConfigAndIcons.Pages.release_notes["icon"]
 
+    elif page_key == "code_architecture":
+        label = "Code Architecture :material/launch:"
+        # Note: Using http link not repository path
+        page = Assets.Links.App.app_description_code_architecture
+        icon = None
+
     else:
         logging.warning(f"Page rendering - FAIL - Not existing page_key: {page_key}")
         return

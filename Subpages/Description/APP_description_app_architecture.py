@@ -82,7 +82,7 @@ with tab1:
 
 with tab2:
   ''
-  st.image("Pictures/Architecture/Functions_building_blocks_v6.svg")
+  st.image("Pictures/Architecture/Functions_building_blocks_v7.svg")
   ''
 
 with tab3:
