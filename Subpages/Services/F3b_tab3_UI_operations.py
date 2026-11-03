@@ -11,7 +11,7 @@ def multiselect_validation(values: list, text: str):
 
 
 @st.fragment
-def display_filter_options_f3b(data: dict):     
+def display_filter_options_f3b_tab3(data: dict):     
 
     diplay_how_to_use_filters_expander() 
     st.write("")

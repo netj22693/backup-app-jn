@@ -1,16 +1,17 @@
 import streamlit as st
 import pandas as pd
-from datetime import date, timedelta
 from sqlalchemy import text
 from app_db_connection import db_connection
-from Subpages.Resources_config import FORMAT_CONFIG
 from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Resources_ui_objects import render_warning_info
-from Subpages.Operational.F3b_operational_functions import input_validation, input_safety_validation, get_order_details, get_company_logo_screen_details, input_validation_order_exists, df_styling, create_pie_chart, data_empty_fallback_info
+from Subpages.Operational.F3b_operational_functions import input_validation, input_safety_validation, get_order_details, get_company_logo_screen_details, input_validation_order_exists
 from Subpages.Services.F3_load_data_from_DB import load_f3_data
-from Subpages.SQL.F3b_SQL_queries import sql_query_overview_invoices, sql_query_file_format, get_sql_part_where_date, get_sql_query_category, get_sql_query_company, get_sql_query_parcel_size, get_sql_query_currency, get_sql_query_country, get_sql_query_extra_service_type, get_sql_query_extra_service_count, get_mapping_extra_services, get_sql_query_file_format
-from Subpages.Services.F3b_tab3_UI_operations import initiate_session_state_f3b_tab3, reset_filters_f3b_tab3, display_filter_options_f3b
+from Subpages.SQL.F3b_SQL_queries import sql_query_overview_invoices
+from Subpages.SQL.F3_SQL_queries import F3InputDataQueries
+from Subpages.Services.F3b_tab3_UI_operations import initiate_session_state_f3b_tab3, reset_filters_f3b_tab3, display_filter_options_f3b_tab3
+from Subpages.Services.F3b_tab4_UI_operations import display_filter_options_f3b_tab4, initiate_session_state_f3b_tab4, reset_filters_f3b_tab4
 from Subpages.Services.F3b_tab3_execution_logic import execute_f3b_tab3_logic
+from Subpages.Services.F3b_tab4_execution_logic import execute_f3b_tab4_logic
 
 
 
@@ -29,13 +30,14 @@ tab1, tab2, tab3, tab4 = st.tabs([
 ])
 
 
+# DB engine to be distributed across all tabs
+db_engine = db_connection("F3B", True)
+
 # ================= Tab 1 ======================
 with tab1:
 
     ''
     if st.button("Show last 15 offers", width="stretch", icon=UiConfigAndIcons.Buttons.show_table):
-
-        db_engine = db_connection("F3B", True)
 
         df = pd.read_sql(sql_query_overview_invoices, db_engine)
 
@@ -70,9 +72,7 @@ with tab2:
         submit_button = st.form_submit_button(label= "Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit)
     
 
-    if submit_button:   
-
-        db_engine = db_connection("F3B", True)            
+    if submit_button:          
 
         # Trigger function 2 only in case that valid and safe input (SQL injestion) and Order number found in DB
         if not input_validation(order_input) or not input_safety_validation(order_input) or not input_validation_order_exists(db_engine, order_input) :
@@ -118,8 +118,6 @@ with tab2:
 # =================  Tab 3  ======================
 
 with tab3:
-    # DB connection -> Engine
-    db_engine = db_connection("F3", True)
 
     execution_data: dict = load_f3_data(db_engine, "F3B")
 
@@ -139,7 +137,7 @@ with tab3:
 
         initiate_session_state_f3b_tab3(execution_data)   
 
-        selected_data: dict = display_filter_options_f3b(execution_data)
+        selected_data: dict = display_filter_options_f3b_tab3(execution_data)
 
         ''
         submit_button_tab3 = st.button("Apply filters", width= "stretch", icon=UiConfigAndIcons.Buttons.apply_filters)
@@ -157,216 +155,41 @@ with tab3:
             on_click=reset_filters_f3b_tab3,
             args=(execution_data,),
             width="stretch",
-            icon=UiConfigAndIcons.Buttons.reset
+            icon=UiConfigAndIcons.Buttons.reset,
+            key="key_reset_button_f3b_tab3"
             )
 
 # =================  Tab 4  ======================
 
 with tab4:
 
-    # Default state condition
-    submit_disabled = False
-
-    # Date picker
-    ''
-    radio_state_tb4 = st.radio("Filter",options=["All invoices - no specific date","Date range"])
-
-    if radio_state_tb4 == "All invoices - no specific date":
-
-        # Extending SQL -> no extension, no additional filter
-        date_query_applicable = False
-        picked_date_from_tab4 = None
-        picked_date_to_tab4 = None
+    # Get min date for widget 
+    # Put here into main process stream tu avoid calling DB when UI/set of filters (st.fragment) and pass it as parameter
+    df_min_date = pd.read_sql_query(sql=text(F3InputDataQueries.sql_query_min_date), con=db_engine)
+    min_date = df_min_date["date"].iloc[0]  
 
 
-    if radio_state_tb4 == "Date range":
-        
-        col1_tab4, col2_tab4 = st.columns(2)
+    # Extend by default state condition
+    execution_data["key_radio_date_f3b_tab4"] = "All invoices - no specific date"
 
-        # Min date allowed
-        min_date = date(2025, 1, 1)
+    initiate_session_state_f3b_tab4()
 
-        # default = today - 30 days
-        default_date = date.today() - timedelta(days=30)
-        max_date = date.today()
-
-        
-        picked_date_from_tab4 = col1_tab4.date_input(
-            "From",
-            value=default_date,
-            min_value = min_date,
-            max_value = max_date,
-            format = FORMAT_CONFIG["date"]["streamlit_widget"],
-            key = "key_date_input_tab4_1"
-        )
-
-        picked_date_to_tab4 = col2_tab4.date_input(
-            "To",
-            value = max_date,
-            min_value = min_date,
-            max_value = max_date,
-            format = FORMAT_CONFIG["date"]["streamlit_widget"],
-            key ="key_date_input_tab4_2"
-            )
-        
-        # Extending SQL query date filter
-        date_query_applicable = True
-
-
-        # Fallback info 
-        if picked_date_from_tab4 > picked_date_to_tab4:
-            render_warning_info("**Date issue** - date **To** is farther in the past than **From**.")
-            submit_disabled = True
-  
-
+    # UI
+    selected: dict = display_filter_options_f3b_tab4(min_date)
     ''
     ''
-    submit_button_tab4 = st.button("Submit", width= "stretch", icon=UiConfigAndIcons.Buttons.submit, key="key_submit_button_tab4", disabled=submit_disabled)
+    submit_button_tab4 = st.button("Apply filters", width= "stretch", icon=UiConfigAndIcons.Buttons.apply_filters, key="key_submit_button_tab4")
 
     if submit_button_tab4:
-        db_engine = db_connection("F3B", True)
-
-        with db_engine.connect() as conn:
-
-            # Function retruning SQL WHERE condition/string, if filtering based on date applicable
-            sql_date_query_where_part = get_sql_part_where_date(date_query_applicable)
-
-            # Build of parameters date
-            params_date = {
-                "date_from" : picked_date_from_tab4,
-                "date_to" : picked_date_to_tab4,
-            }
-
-            # Build of parameters joining -> full set of parametrs
-            params = params_date
-
-            # Building of SQL queries
-            sql_query_category = get_sql_query_category(date_query_applicable, sql_date_query_where_part)
-            sql_query_company = get_sql_query_company(date_query_applicable, sql_date_query_where_part) 
-            sql_query_parcel_size = get_sql_query_parcel_size(date_query_applicable, sql_date_query_where_part)
-            sql_query_currency = get_sql_query_currency(date_query_applicable, sql_date_query_where_part)
-            sql_query_country = get_sql_query_country(date_query_applicable, sql_date_query_where_part)
-            sql_query_extra_service_type = get_sql_query_extra_service_type(date_query_applicable, sql_date_query_where_part)
-            sql_query_extra_service_count = get_sql_query_extra_service_count(date_query_applicable, sql_date_query_where_part)
-            sql_query_file_format = get_sql_query_file_format(date_query_applicable, sql_date_query_where_part)
-
-            
-            # Dataframes creation
-            with db_engine.connect() as conn:
-                df_category_grouped = pd.read_sql_query(sql=text(sql_query_category), con = conn, params=params)
-                df_company_grouped = pd.read_sql_query(sql=text(sql_query_company), con = conn, params=params)
-                df_parcel_size_grouped = pd.read_sql_query(sql=text(sql_query_parcel_size), con = conn, params=params)
-                df_currency_grouped = pd.read_sql_query(sql=text(sql_query_currency), con = conn, params=params)
-                df_country_grouped = pd.read_sql_query(sql=text(sql_query_country), con = conn, params=params)
-                df_extra_service_type_grouped = pd.read_sql_query(sql=text(sql_query_extra_service_type), con = conn, params=params)
-                df_extra_service_count_grouped = pd.read_sql_query(sql=text(sql_query_extra_service_count), con = conn, params=params)
-                df_file_format_grouped = pd.read_sql_query(sql=text(sql_query_file_format), con = conn, params=params)
+        execute_f3b_tab4_logic(db_engine, selected)
 
 
-            # mapping
-            df_extra_service_count_grouped_mapped = get_mapping_extra_services(df_extra_service_count_grouped)
-
-            # DF extract how many records -> for UI purposes
-            number_rows_category = df_category_grouped["count"].sum()
-            number_rows_extra_service_count = df_extra_service_count_grouped_mapped["count"].sum()
-            number_rows_extra_service_type = df_extra_service_type_grouped["count"].sum()
-         
-            # Styling for UI purposes -> index change + column name change
-            df_category_grouped_styled = df_styling(df_category_grouped)
-            df_company_grouped_styled = df_styling(df_company_grouped)
-            df_parcel_size_grouped_styled = df_styling(df_parcel_size_grouped)
-            df_currency_grouped_styled = df_styling(df_currency_grouped)
-            df_country_grouped_styled = df_styling(df_country_grouped)
-            df_extra_service_count_grouped_mapped_styled = df_styling(df_extra_service_count_grouped_mapped)
-            df_extra_service_type_grouped_styled = df_styling(df_extra_service_type_grouped)
-            df_file_format_grouped_styled = df_styling(df_file_format_grouped)
-
-
-            # Charts
-            # Note: built based on the DF pulled from DB (column names) not the styled one (in case of change of styling, no need to change the rest of code)
-            chart_category = create_pie_chart(df_category_grouped, "name","count")
-            chart_company = create_pie_chart(df_company_grouped, "name","count")
-            chart_parcel_size = create_pie_chart(df_parcel_size_grouped, "name","count")
-            chart_currency = create_pie_chart(df_currency_grouped, "name","count")
-            chart_country = create_pie_chart(df_country_grouped, "name","count")
-            chart_extra_service_count = create_pie_chart(df_extra_service_count_grouped_mapped, "extra_service","count")
-            chart_extra_service_type = create_pie_chart(df_extra_service_type_grouped, "name","count")
-            chart_file_format = create_pie_chart(df_file_format_grouped, "name","count")
-
-       
-            # ===== UI visualization =====
-            ''
-            ''
-            tab4_tab1, tab4_tab2, tab4_tab3, tab4_tab4, tab4_tab5 = st.tabs([
-                "Category & Size",
-                "Company & Country",
-                "Service type",
-                "Currency type",
-                "File format",
-            ])
-
-            col_layout_1 = [1.5,0.3,2]
-            col_layout_2 = [1.5,0.3,1.5]
-            
-
-            with tab4_tab1:
-                fallback = data_empty_fallback_info(df_category_grouped)
-
-                if fallback == False:
-                    st.write(f"- Split based on **category** type - total: **{number_rows_category}**:")
-                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
-                    col_tab4_1.dataframe(df_category_grouped_styled, hide_index=True)
-                    col_tab4_3.plotly_chart(chart_category, key="chart_category")
-
-                    ''
-                    st.write(f"- Split based on **size** type - total: **{number_rows_category}**:")
-                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
-                    col_tab4_1.dataframe(df_parcel_size_grouped_styled, hide_index=True)
-                    col_tab4_3.plotly_chart(chart_parcel_size, key="chart_parcel_size")
-
-            with tab4_tab2:
-                fallback = data_empty_fallback_info(df_company_grouped)
-
-                if fallback == False:
-                    st.write(f"- Split based on **delivery company** - total: **{number_rows_category}**:")
-                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
-                    col_tab4_1.dataframe(df_company_grouped_styled, hide_index=True)
-                    col_tab4_3.plotly_chart(chart_company, key="chart_company")
-                    ''
-                    st.write(f"- Split based on **selected country for delivery** - total: **{number_rows_extra_service_type}**:")
-                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
-                    col_tab4_1.dataframe(df_country_grouped_styled, hide_index=True)
-                    col_tab4_3.plotly_chart(chart_country, key="chart_country")
-
-
-            with tab4_tab3:
-                fallback = data_empty_fallback_info(df_extra_service_type_grouped)
-
-                if fallback == False:
-                    st.write(f"- Split based on **extra service purchase** - total: **{number_rows_extra_service_count}**:")
-                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
-                    col_tab4_1.dataframe(df_extra_service_count_grouped_mapped_styled, hide_index=True)
-                    col_tab4_3.plotly_chart(chart_extra_service_count, key="chart_service_count")
-                    ''
-                    st.write(f"- Split based on selected **extra service type** - total: **{number_rows_extra_service_type}**:")
-                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
-                    col_tab4_1.dataframe(df_extra_service_type_grouped_styled, hide_index=True)
-                    col_tab4_3.plotly_chart(chart_extra_service_type, key="chart_service_type")
-
-            with tab4_tab4:
-                fallback = data_empty_fallback_info(df_currency_grouped)
-
-                if fallback == False:
-                    st.write(f"- Split based on **currency** - total: **{number_rows_extra_service_count}**:")
-                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
-                    col_tab4_1.dataframe(df_currency_grouped_styled, hide_index=True)
-                    col_tab4_3.plotly_chart(chart_currency, key="chart_currency")
-
-            with tab4_tab5:
-                fallback = data_empty_fallback_info(df_file_format_grouped)
-
-                if fallback == False:
-                    st.write(f"- Split based on **invoice format** - total: **{number_rows_extra_service_count}**:")
-                    col_tab4_1, col_tab4_2, col_tab4_3 = st.columns(col_layout_1)
-                    col_tab4_1.dataframe(df_file_format_grouped_styled, hide_index=True)
-                    col_tab4_3.plotly_chart(chart_file_format, key="chart_file_format")
+    # ===== Reset button =====
+    st.write("-" *10)
+    st.button(
+        "Reset filters",
+        on_click=reset_filters_f3b_tab4,
+        width="stretch",
+        icon=UiConfigAndIcons.Buttons.reset,
+        key="key_reset_button_f4b_tab3"
+        )
