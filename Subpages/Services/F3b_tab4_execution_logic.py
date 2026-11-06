@@ -3,7 +3,7 @@ import pandas as pd
 from sqlalchemy import text, Engine
 from Subpages.SQL.F3b_SQL_queries import get_sql_part_where_date, get_sql_query_category, get_sql_query_company, get_sql_query_parcel_size, get_sql_query_currency, get_sql_query_country, get_sql_query_extra_service_type, get_sql_query_extra_service_count, get_mapping_extra_services, get_sql_query_file_format
 from Subpages.Operational.F3b_operational_functions import df_styling, create_pie_chart, data_empty_fallback_info
-from Subpages.Dialog.F3b_dialog import display_input_warning_toast
+from Subpages.Dialog.APP_universal_dialog import display_input_warning_toast
 
 
 def execute_f3b_tab4_logic(

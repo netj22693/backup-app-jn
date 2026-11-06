@@ -17,12 +17,14 @@ def display_state_flow():
     st.write("")
     st.image(Assets.Images.f7_state_flow, width = 750)
 
-def display_state_flow_expander():
+def display_state_flow_expander(additional_text: bool = True):
 
     with st.expander("State flow", icon=UiConfigAndIcons.Expanders.state_flow):
         st.image(Assets.Images.f7_state_flow, width = 750)
-        st.write("")
-        st.write(" - For manual **Approve/Reject** - Go to **Search for specific offer** tab and search for the offer.")
+
+        if additional_text:
+            st.write("")
+            st.write(" - For manual **Approve/Reject** - Go to **Search for specific offer** tab and search for the offer.")
 
 
 # ======= Offer visualization function - UI =======

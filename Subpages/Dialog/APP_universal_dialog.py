@@ -12,3 +12,19 @@ def display_download_complete_toast():
         duration= UiConfigAndIcons.Toasts.duration["standard_notification"],
         icon= UiConfigAndIcons.Toasts.success
     )
+
+
+
+def display_input_warning_toast():
+
+    '''
+    - Warning toast tight to multiselects (0 options selected)
+    - Triggered after Apply filters button
+    - Currently used in: F3B (TAB3, TAB4) and F7B (TAB3, TAB4)
+    '''
+
+    st.toast(
+        f"**Incorrect input** - Fix it and use the **Apply filters** button again.",
+        duration= UiConfigAndIcons.Toasts.duration["standard_notification"],
+        icon= UiConfigAndIcons.Toasts.warning
+    )

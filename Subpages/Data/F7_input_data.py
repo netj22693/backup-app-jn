@@ -122,6 +122,18 @@ CORRECTION_LIST = [
     {"city1" : "Munich" , "city2" : "Jihlava", "distance": 458},
 ]
 
+# Currency
+CURRENCY_COUNTRY = {
+    "euro": {
+        "country": ["at", "de", "pl", "sk"],
+        "currency_priority": 2
+    },
+    "koruna": {
+        "country": ["cz"],
+        "currency_priority": 1
+    }
+}
+
 # Dataset impacting costs based on exchange rate value
 COST_CRITERIA = {
     "kc": [

@@ -12,7 +12,7 @@ from Subpages.Services.F7_DB_mapping import mapping_transport_type, mapping_serv
 from Subpages.Services.F7_PDF import create_pdf
 from Subpages.Services.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
 from Subpages.Expander.F7_expanders import display_expander_transport_type_comparison, display_expander_truck, display_expander_sla, display_expander_extra_services, display_expander_fragile_goods, display_expander_danger_goods, display_expander_door_to_door, display_expander_unit_price, display_expander_currency_and_rate, display_expander_train, display_expander_air, display_expander_city_overview
-from Subpages.Data.F7_input_data import DATASET_CITIES, CORRECTION_LIST, COST_CRITERIA, PRICE_TRANSPORT, DTD_OPTIONS, DTD_CALCULATION_VALUES, SLA_CRITERIA, EXTRA_SERVICE_PRICE, UNIT_DISTANCE, TRANSPORT_SPEED, ROUND_TO
+from Subpages.Data.F7_input_data import DATASET_CITIES, CORRECTION_LIST, COST_CRITERIA, PRICE_TRANSPORT, DTD_OPTIONS, DTD_CALCULATION_VALUES, SLA_CRITERIA, EXTRA_SERVICE_PRICE, UNIT_DISTANCE, TRANSPORT_SPEED, ROUND_TO, CURRENCY_COUNTRY
 from Subpages.Services.F7_Go_green import call_go_green
 from Subpages.Operational.F7_operational_functions import create_offer_number, data_parsing_api, create_df_cost_trend, create_df_extra_time, create_list_transport, create_df_default_costs, determin_square_price_per_rate, get_list_cities_if_transport_available, create_df_transport_overview, get_list_cities, build_pie_chart, delivery_date_time, create_pie_chart, ui_country_selector, get_currency_option, get_list_available_transport_based_on_selected_cities, get_price_per_square, create_df_particular_transport_overview, get_price_changed_per_service_type, get_extra_time_per_service_sla, ui_input_formatter, ui_door_to_door_selector, ui_transport_offer, get_prices_extra_services, input_validation, input_validation_shipment_value, get_coordinates, L0_is_in_correction_list, get_calculation_price_distance, get_calculation_price_distance_air, get_calculation_delivery_time, get_door_to_door_time_truck, get_door_to_door_time_train_airplane, get_calculation_time_break, get_door_to_door_cost_and_distance, determin_cet_cest, format_transport_value, format_transport_value_using_zero
 
@@ -352,7 +352,7 @@ to_country, to_city, country_code_to = ui_country_selector(
 )
 
 
-currency = get_currency_option(from_country,to_country)
+currency = get_currency_option(CURRENCY_COUNTRY, from_country,to_country)
 
 # UI
 ''

@@ -66,9 +66,9 @@ def create_df_cost_trend(currency: str, a:dict) -> pd.DataFrame:
 
     df = pd.DataFrame([
         {
-            "Rule": x["rule_text"],
+        "Rule": x["rule_text"],
         "Impact (%)": x["impact_pct"],
-            "Impact": x["cost_trend"]
+        "Impact": x["cost_trend"]
         }
         for x in a[currency]
     ])
@@ -250,7 +250,7 @@ def get_list_cities(a: dict, country_code: str) -> tuple[list, int]:
     return list_country, count
 
 
-def get_currency_option(country_code_from: str, country_code_to: str) -> list:
+def get_currency_option(config_data: dict, country_code_from: str, country_code_to: str) -> list:
 
     '''
     Function to provide currency to offer on UI based on selected countries
@@ -258,20 +258,9 @@ def get_currency_option(country_code_from: str, country_code_to: str) -> list:
     Currency priority is for sorting of the list    
     '''
 
-    country = {
-        "euro": {
-            "country": ["at", "de", "pl", "sk"],
-            "currency_priority": 2
-        },
-        "koruna": {
-            "country": ["cz"],
-            "currency_priority": 1
-        }
-    }
-
     list_currency = []
 
-    for currency_name, currency_data in country.items():
+    for currency_name, currency_data in config_data.items():
 
         countries = currency_data["country"]
 
@@ -283,7 +272,7 @@ def get_currency_option(country_code_from: str, country_code_to: str) -> list:
             list_currency.append(currency_name)
 
 
-    return sorted(list_currency, key=lambda x: country[x]["currency_priority"])
+    return sorted(list_currency, key=lambda x: config_data[x]["currency_priority"])
             
 
 def get_list_available_transport_based_on_selected_cities(dataset: dict, country_code_from: str, country_code_to: str, from_city: str, to_city: str):
@@ -717,9 +706,9 @@ def build_pie_chart(list_cities: list, list_cities_transport: list, title: str) 
     difference = count_list_cities - count_list_cities_transport
 
     df = pd.DataFrame({
-                "Number" : [count_list_cities_transport , difference],
-                "Result" : ["Available", "Not available",]
-                })
+        "Number" : [count_list_cities_transport , difference],
+        "Result" : ["Available", "Not available",]
+        })
     
    
     # Calling function for pie chart

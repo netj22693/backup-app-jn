@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from sqlalchemy import text, Engine
 from Subpages.Resources_ui_objects import render_info_info
-from Subpages.Dialog.F3b_dialog import display_input_warning_toast
+from Subpages.Dialog.APP_universal_dialog import display_input_warning_toast
 from Subpages.Universal.Creation_of_parameters_for_SQL import create_parameters_for_sql
 from Subpages.SQL.F3b_SQL_queries import get_sql_query_f3b_tab_3
 from Subpages.Universal.Universal_functions import adjust_index_in_df, singular_or_plural
