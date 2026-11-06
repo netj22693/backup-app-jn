@@ -1,3 +1,57 @@
+
+# ===== Universal function for state validation =====
+def get_sql_query_offer_state_validation(limit: bool = False, offer: bool = False, states: None | str = None) -> str:
+
+    '''
+    - Universal function for state validation 
+    - Query builder
+    - Related to State flow feature
+    - Context: Operational validation (when app runs, to cover state actuall state chnages instead of scheduler) -> query for that
+    - Used in: TAB1, TAB2, TAB3 and will be in TAB4
+    '''
+
+    state_condition = (
+        "'CREATED','APPROVED','TRANSPORT_PREPARATION','TRANSPORT_ON_THE_WAY'"
+        if states is None
+        else states
+    )
+
+
+    limit_condition = (
+        "LIMIT :limit"
+        if limit
+        else ""
+    )
+
+    offer_condition = (
+        "AND a.offer_id = :offer_id"
+        if offer
+        else ""
+    )
+
+    query = f"""
+    SELECT 
+        a.offer_id,
+        a.offer_state,
+        a.created_utc,
+        a.approve_till_utc,
+        a.delivery_at_utc,
+        a.transport_start_utc
+                                
+    FROM function7.offer a
+                    
+    WHERE 
+        a.offer_state IN({state_condition})
+        {offer_condition}  
+
+    ORDER BY a.offer_id DESC
+
+    {limit_condition}
+    ;"""
+
+    return query
+
+
 # ==== TAB 1 ======
 
 sql_query_table_overview = """
@@ -24,41 +78,7 @@ ORDER BY a.offer_id DESC
 LIMIT 30
 ;"""
 
-
-sql_query_offer_status_validation_df = """
-SELECT 
-    a.offer_id,
-    a.offer_state,
-    a.created_utc,
-    a.approve_till_utc,
-    a.delivery_at_utc,
-    a.transport_start_utc
-                            
-FROM function7.offer a
-                
-WHERE a.offer_state IN('CREATED','APPROVED','TRANSPORT_PREPARATION','TRANSPORT_ON_THE_WAY')
-
-ORDER BY a.offer_id DESC
-
-LIMIT 30
-;"""
-
-# This one is used in TAB 2
-sql_query_offer_status_validation_single = """
-SELECT 
-    a.offer_id,
-    a.offer_state,
-    a.created_utc,
-    a.approve_till_utc,
-    a.delivery_at_utc,
-    a.transport_start_utc
-                            
-FROM function7.offer a
-WHERE a.offer_id = :offer_id
-    AND a.offer_state IN('CREATED','APPROVED','TRANSPORT_PREPARATION','TRANSPORT_ON_THE_WAY')
-;"""
-
-
+   
 # ==== TAB 2 ====
 
 sql_offer_exists = """
