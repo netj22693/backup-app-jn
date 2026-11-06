@@ -10,7 +10,7 @@ from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Resources_ui_objects import render_warning_info, render_info_info
 from Subpages.Services.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
 from Subpages.SQL.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, sql_query_offer_status_validation_df, sql_query_offer_status_validation_single, sql_query_logs, sql_query_offer_rating, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes
-from Subpages.Data.F7_input_data import tranport_types_list, dataset_cities, states_dict
+from Subpages.Data.F7_input_data import tranport_types_list, DATASET_CITIES, STATES_CONFIG
 from Subpages.Operational.F7b_operational_functions import change_state_in_db, input_validation, operational_update_of_states, display_state_and_symbol_mapped, display_offer_logs, mapping_states, get_styling_colors, df_styling_index_set_1, data_empty_fallback_info, create_pie_chart, df_change_column_name, get_parameters_countries, reset_filters_f7b_tab3
 from Subpages.Services.F7b_UI_functions import display_state_flow, display_state_flow_expander, display_offer_visualization_ui
 from Subpages.Services.F7b_rating_function import make_rating_validation, display_offer_rating_ui_info, display_offer_rating_ui_tab
@@ -55,7 +55,7 @@ with tab1:
         # Query into DB + DF column adjustment
         df = pd.read_sql(sql_query_table_overview,db_engine)
 
-        df = mapping_states(df, states_dict)
+        df = mapping_states(df, STATES_CONFIG)
 
 
         # UI + Styled DF visualization
@@ -168,7 +168,7 @@ with tab2:
 
                     with tab2_tab1:
 
-                        display_state_and_symbol_mapped(row_offer["offer_state"], states_dict)
+                        display_state_and_symbol_mapped(row_offer["offer_state"], STATES_CONFIG)
 
                         display_offer_rating_ui_info(rating_end, df_table_offer_rating)
 
@@ -187,7 +187,7 @@ with tab2:
 
 
                     with tab2_tab2:
-                        display_state_and_symbol_mapped(row_offer["offer_state"], states_dict)
+                        display_state_and_symbol_mapped(row_offer["offer_state"], STATES_CONFIG)
 
                         if row_offer["offer_state"] == "CREATED":
 
@@ -213,7 +213,7 @@ with tab2:
                             ''
 
                         # Logs table   
-                        display_offer_logs(db_engine, sql_query_logs, offer_id, states_dict)
+                        display_offer_logs(db_engine, sql_query_logs, offer_id, STATES_CONFIG)
 
                     # State flow
                     with tab2_tab3:
@@ -231,7 +231,7 @@ with tab3:
     submit_disabled = False
 
     #From the dataset -> parse keys -> create list of countries for multiselect
-    list_countries = dataset_cities.keys()
+    list_countries = DATASET_CITIES.keys()
 
     list_countries_upper = []
     for country in list_countries:

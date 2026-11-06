@@ -12,7 +12,7 @@ from Subpages.Services.F7_DB_mapping import mapping_transport_type, mapping_serv
 from Subpages.Services.F7_PDF import create_pdf
 from Subpages.Services.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
 from Subpages.Expander.F7_expanders import display_expander_transport_type_comparison, display_expander_truck, display_expander_sla, display_expander_extra_services, display_expander_fragile_goods, display_expander_danger_goods, display_expander_door_to_door, display_expander_unit_price, display_expander_currency_and_rate, display_expander_train, display_expander_air, display_expander_city_overview
-from Subpages.Data.F7_input_data import dataset_cities, correction_list_data, criteria_dict, price_dict, dtd_options_dict, dtd_calculation_values_dict, sla_dict, extra_service_dict, UNIT_DISTANCE, TRANSPORT_SPEED, ROUND_TO
+from Subpages.Data.F7_input_data import DATASET_CITIES, CORRECTION_LIST, COST_CRITERIA, PRICE_TRANSPORT, DTD_OPTIONS, DTD_CALCULATION_VALUES, SLA_CRITERIA, EXTRA_SERVICE_PRICE, UNIT_DISTANCE, TRANSPORT_SPEED, ROUND_TO
 from Subpages.Services.F7_Go_green import call_go_green
 from Subpages.Operational.F7_operational_functions import create_offer_number, data_parsing_api, create_df_cost_trend, create_df_extra_time, create_list_transport, create_df_default_costs, determin_square_price_per_rate, get_list_cities_if_transport_available, create_df_transport_overview, get_list_cities, build_pie_chart, delivery_date_time, create_pie_chart, ui_country_selector, get_currency_option, get_list_available_transport_based_on_selected_cities, get_price_per_square, create_df_particular_transport_overview, get_price_changed_per_service_type, get_extra_time_per_service_sla, ui_input_formatter, ui_door_to_door_selector, ui_transport_offer, get_prices_extra_services, input_validation, input_validation_shipment_value, get_coordinates, L0_is_in_correction_list, get_calculation_price_distance, get_calculation_price_distance_air, get_calculation_delivery_time, get_door_to_door_time_truck, get_door_to_door_time_train_airplane, get_calculation_time_break, get_door_to_door_cost_and_distance, determin_cet_cest, format_transport_value, format_transport_value_using_zero
 
@@ -22,7 +22,7 @@ from Subpages.Operational.F7_operational_functions import create_offer_number, d
 # ============================================================
 
 # Input creation - variables
-list_transport = create_list_transport(price_dict)
+list_transport = create_list_transport(PRICE_TRANSPORT)
 
 # API call - get exhange rates
 
@@ -36,44 +36,44 @@ usd_to_czk_rate, usd_to_eur_rate = data_parsing_api(api_response_data)
 
 
 # Creation of DFs per currency for UI purposes
-criteria_dataset_kc = create_df_cost_trend("kc", criteria_dict)
-criteria_dataset_eur = create_df_cost_trend("eur", criteria_dict)
+criteria_dataset_kc = create_df_cost_trend("kc", COST_CRITERIA)
+criteria_dataset_eur = create_df_cost_trend("eur", COST_CRITERIA)
 
 
 price_list = {
 
     "koruna" : {
-        "Truck" : determin_square_price_per_rate(price_dict, criteria_dict, "kc", 'truck', usd_to_czk_rate),
-        "Train" : determin_square_price_per_rate(price_dict, criteria_dict, "kc", 'train', usd_to_czk_rate),
-        "Airplane" : determin_square_price_per_rate(price_dict, criteria_dict, "kc", 'airplane', usd_to_czk_rate)
+        "Truck" : determin_square_price_per_rate(PRICE_TRANSPORT, COST_CRITERIA, "kc", 'truck', usd_to_czk_rate),
+        "Train" : determin_square_price_per_rate(PRICE_TRANSPORT, COST_CRITERIA, "kc", 'train', usd_to_czk_rate),
+        "Airplane" : determin_square_price_per_rate(PRICE_TRANSPORT, COST_CRITERIA, "kc", 'airplane', usd_to_czk_rate)
         },
     "euro" : {
-        "Truck" : determin_square_price_per_rate(price_dict, criteria_dict, "eur", 'truck', usd_to_eur_rate),
-        "Train" : determin_square_price_per_rate(price_dict, criteria_dict, "eur", 'train', usd_to_eur_rate),
-        "Airplane" : determin_square_price_per_rate(price_dict, criteria_dict, "eur", 'airplane', usd_to_eur_rate)
+        "Truck" : determin_square_price_per_rate(PRICE_TRANSPORT, COST_CRITERIA, "eur", 'truck', usd_to_eur_rate),
+        "Train" : determin_square_price_per_rate(PRICE_TRANSPORT, COST_CRITERIA, "eur", 'train', usd_to_eur_rate),
+        "Airplane" : determin_square_price_per_rate(PRICE_TRANSPORT, COST_CRITERIA, "eur", 'airplane', usd_to_eur_rate)
     }
 }
 
 # Lists and counts for UI widgets and Statistic charts   
-train_at, count_train_at = get_list_cities_if_transport_available(dataset_cities, 'at', 'train')
-train_cz, count_train_cz = get_list_cities_if_transport_available(dataset_cities, 'cz', 'train')
-train_de, count_train_de = get_list_cities_if_transport_available(dataset_cities, 'de', 'train')
-train_pl, count_train_pl = get_list_cities_if_transport_available(dataset_cities, 'pl', 'train')
-train_sk, count_train_sk = get_list_cities_if_transport_available(dataset_cities, 'sk', 'train')
+train_at, count_train_at = get_list_cities_if_transport_available(DATASET_CITIES, 'at', 'train')
+train_cz, count_train_cz = get_list_cities_if_transport_available(DATASET_CITIES, 'cz', 'train')
+train_de, count_train_de = get_list_cities_if_transport_available(DATASET_CITIES, 'de', 'train')
+train_pl, count_train_pl = get_list_cities_if_transport_available(DATASET_CITIES, 'pl', 'train')
+train_sk, count_train_sk = get_list_cities_if_transport_available(DATASET_CITIES, 'sk', 'train')
 
 
-air_at, count_air_at = get_list_cities_if_transport_available(dataset_cities, 'at', 'air')
-air_cz, count_air_cz = get_list_cities_if_transport_available(dataset_cities, 'cz', 'air')
-air_de, count_air_de = get_list_cities_if_transport_available(dataset_cities, 'de', 'air')
-air_pl, count_air_pl = get_list_cities_if_transport_available(dataset_cities, 'pl', 'air')
-air_sk, count_air_sk = get_list_cities_if_transport_available(dataset_cities, 'sk', 'air')
+air_at, count_air_at = get_list_cities_if_transport_available(DATASET_CITIES, 'at', 'air')
+air_cz, count_air_cz = get_list_cities_if_transport_available(DATASET_CITIES, 'cz', 'air')
+air_de, count_air_de = get_list_cities_if_transport_available(DATASET_CITIES, 'de', 'air')
+air_pl, count_air_pl = get_list_cities_if_transport_available(DATASET_CITIES, 'pl', 'air')
+air_sk, count_air_sk = get_list_cities_if_transport_available(DATASET_CITIES, 'sk', 'air')
 
 
-list_at_az, count_list_at = get_list_cities(dataset_cities, 'at')
-list_cz_az, count_list_cz = get_list_cities(dataset_cities, 'cz')
-list_de_az, count_list_de = get_list_cities(dataset_cities, 'de')
-list_pl_az, count_list_pl = get_list_cities(dataset_cities, 'pl')
-list_sk_az, count_list_sk = get_list_cities(dataset_cities, 'sk')
+list_at_az, count_list_at = get_list_cities(DATASET_CITIES, 'at')
+list_cz_az, count_list_cz = get_list_cities(DATASET_CITIES, 'cz')
+list_de_az, count_list_de = get_list_cities(DATASET_CITIES, 'de')
+list_pl_az, count_list_pl = get_list_cities(DATASET_CITIES, 'pl')
+list_sk_az, count_list_sk = get_list_cities(DATASET_CITIES, 'sk')
 
 
 # Note: in the current business logic Truck is available in every city as mode of transport
@@ -157,11 +157,11 @@ with st.expander("Delivery area - Central Europe", icon=UiConfigAndIcons.Expande
 
 
 display_expander_city_overview(
-    create_df_transport_overview(dataset_cities, 'at'),
-    create_df_transport_overview(dataset_cities, 'cz'),
-    create_df_transport_overview(dataset_cities, 'de'),
-    create_df_transport_overview(dataset_cities, 'sk'),
-    create_df_transport_overview(dataset_cities, 'pl')
+    create_df_transport_overview(DATASET_CITIES, 'at'),
+    create_df_transport_overview(DATASET_CITIES, 'cz'),
+    create_df_transport_overview(DATASET_CITIES, 'de'),
+    create_df_transport_overview(DATASET_CITIES, 'sk'),
+    create_df_transport_overview(DATASET_CITIES, 'pl')
 )
 
 with st.expander("City statistics - Dashboard", icon = ":material/analytics:"):
@@ -319,8 +319,8 @@ display_expander_currency_and_rate(
     usd_to_eur_rate,
     criteria_dataset_kc,
     criteria_dataset_eur,
-    create_df_default_costs(price_dict, list_transport, "kc", "Koruna"),
-    create_df_default_costs(price_dict, list_transport, "eur", "euro")
+    create_df_default_costs(PRICE_TRANSPORT, list_transport, "kc", "Koruna"),
+    create_df_default_costs(PRICE_TRANSPORT, list_transport, "eur", "euro")
 )
 
 # UI Filters 
@@ -364,7 +364,7 @@ selected_currency = st.radio(
 )
 
 
-transport_options_list = get_list_available_transport_based_on_selected_cities(dataset_cities, from_country, to_country, from_city,to_city)
+transport_options_list = get_list_available_transport_based_on_selected_cities(DATASET_CITIES, from_country, to_country, from_city,to_city)
 
 # UI
 ''
@@ -416,16 +416,16 @@ urgency = st.radio("Delivery service:", urgency_offer, index=1, captions=[
 
 ''
 ''
-display_expander_sla(create_df_extra_time(sla_dict, list_transport))
+display_expander_sla(create_df_extra_time(SLA_CRITERIA, list_transport))
 
 
 if urgency  == 'Express' or urgency == 'Slow':
-    price_square = get_price_changed_per_service_type(sla_dict, price_square, selected_transport, urgency)
+    price_square = get_price_changed_per_service_type(SLA_CRITERIA, price_square, selected_transport, urgency)
 
     # TAB 2 values
-    price_square_tab2_truck = get_price_changed_per_service_type(sla_dict, price_square_tab2_truck, 'Truck', urgency)
-    price_square_tab2_train = get_price_changed_per_service_type(sla_dict, price_square_tab2_train, 'Train', urgency)
-    price_square_tab2_air = get_price_changed_per_service_type(sla_dict, price_square_tab2_air, 'Airplane', urgency) 
+    price_square_tab2_truck = get_price_changed_per_service_type(SLA_CRITERIA, price_square_tab2_truck, 'Truck', urgency)
+    price_square_tab2_train = get_price_changed_per_service_type(SLA_CRITERIA, price_square_tab2_train, 'Train', urgency)
+    price_square_tab2_air = get_price_changed_per_service_type(SLA_CRITERIA, price_square_tab2_air, 'Airplane', urgency) 
 
 
 # IMPORTANT: Airplane has a different way of calculating price per square
@@ -439,11 +439,11 @@ price_square_tab2_air = price_square_tab2_air / UNIT_DISTANCE
 
 
 # Get values of extra time needed, accrodingly to selected transport mode + for all transports for TAB 2 logic
-extra_time = get_extra_time_per_service_sla(sla_dict, selected_transport, urgency)
+extra_time = get_extra_time_per_service_sla(SLA_CRITERIA, selected_transport, urgency)
 
-extra_time_tab2_truck = get_extra_time_per_service_sla(sla_dict, 'Truck', urgency)
-extra_time_tab2_train = get_extra_time_per_service_sla(sla_dict, 'Train', urgency)
-extra_time_tab2_air = get_extra_time_per_service_sla(sla_dict, 'Airplane', urgency)
+extra_time_tab2_truck = get_extra_time_per_service_sla(SLA_CRITERIA, 'Truck', urgency)
+extra_time_tab2_train = get_extra_time_per_service_sla(SLA_CRITERIA, 'Train', urgency)
+extra_time_tab2_air = get_extra_time_per_service_sla(SLA_CRITERIA, 'Airplane', urgency)
 
 
 
@@ -538,9 +538,9 @@ if check_isurance or check_fragile or check_danger is True:
         formated_shipment_value_str = ui_input_formatter(shipment_value)
         st.write(f"- Inserted value: **{formated_shipment_value_str}** {selected_currency}.")
 
-        money_insurance = get_prices_extra_services(extra_service_dict, shipment_value, check_isurance, 'insurance')
-        money_fragile = get_prices_extra_services(extra_service_dict, shipment_value, check_fragile, 'fragile')
-        money_danger  = get_prices_extra_services(extra_service_dict, shipment_value, check_danger, 'danger')
+        money_insurance = get_prices_extra_services(EXTRA_SERVICE_PRICE, shipment_value, check_isurance, 'insurance')
+        money_fragile = get_prices_extra_services(EXTRA_SERVICE_PRICE, shipment_value, check_fragile, 'fragile')
+        money_danger  = get_prices_extra_services(EXTRA_SERVICE_PRICE, shipment_value, check_danger, 'danger')
 
         # Bug fix 13-Aug-25 - this line prevents case when Truck/Train selected first -> danger goods checked -> change to 'Airplane' so the checked stays (even if the check box is locked) -> app used to calculate the danger value also for Airplane. Fix to make variable always 0
         if selected_transport == 'Airplane':
@@ -557,7 +557,7 @@ else:
 # UI
 ''
 ''
-display_expander_extra_services(extra_service_dict)
+display_expander_extra_services(EXTRA_SERVICE_PRICE)
 
 display_expander_fragile_goods()
 
@@ -569,11 +569,11 @@ display_expander_danger_goods()
 st.write("**Delivery specification - Door-to-Door:**")
 
 st.write(f"From city ({from_city} - {country_code_from}):")
-radio_dtd_from= ui_door_to_door_selector(dtd_options_dict, selected_transport, "radio_dtd_1")
+radio_dtd_from= ui_door_to_door_selector(DTD_OPTIONS, selected_transport, "radio_dtd_1")
 
 ''
 st.write(f"To city ({to_city} - {country_code_to}):")
-radio_dtd_to = ui_door_to_door_selector(dtd_options_dict, selected_transport, "radio_dtd_2")
+radio_dtd_to = ui_door_to_door_selector(DTD_OPTIONS, selected_transport, "radio_dtd_2")
     
 # UI
 ''
@@ -601,11 +601,11 @@ if st.button("Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit):
     input_validation_shipment_value(shipment_value, check_isurance, check_fragile, check_danger)
 
     # Get coordinates of selected cities -> create dict
-    from_big_r, from_big_c = get_coordinates(dataset_cities, from_country, from_city, 'big')
-    from_small_r, from_small_c = get_coordinates(dataset_cities, from_country, from_city, 'small')
+    from_big_r, from_big_c = get_coordinates(DATASET_CITIES, from_country, from_city, 'big')
+    from_small_r, from_small_c = get_coordinates(DATASET_CITIES, from_country, from_city, 'small')
 
-    to_big_r, to_big_c = get_coordinates(dataset_cities, to_country, to_city, 'big')
-    to_small_r, to_small_c = get_coordinates(dataset_cities, to_country, to_city, 'small')
+    to_big_r, to_big_c = get_coordinates(DATASET_CITIES, to_country, to_city, 'big')
+    to_small_r, to_small_c = get_coordinates(DATASET_CITIES, to_country, to_city, 'small')
 
 
     coordinates = {
@@ -626,7 +626,7 @@ if st.button("Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit):
  
     # Calculation of distance and price based on transport type
     if selected_transport == 'Truck' or selected_transport == 'Train':
-        distance, price, result = L0_is_in_correction_list(from_city, to_city, correction_list_data, price_square, UNIT_DISTANCE)
+        distance, price, result = L0_is_in_correction_list(from_city, to_city, CORRECTION_LIST, price_square, UNIT_DISTANCE)
 
         if result is not True:
             price, distance = get_calculation_price_distance(coordinates, price_square, UNIT_DISTANCE)
@@ -641,8 +641,8 @@ if st.button("Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit):
 
     # DTD calculation based on transport type
     if selected_transport == 'Truck':
-        time_dtd_from = get_door_to_door_time_truck(dtd_calculation_values_dict, radio_dtd_from)
-        time_dtd_to = get_door_to_door_time_truck(dtd_calculation_values_dict, radio_dtd_to)
+        time_dtd_from = get_door_to_door_time_truck(DTD_CALCULATION_VALUES, radio_dtd_from)
+        time_dtd_to = get_door_to_door_time_truck(DTD_CALCULATION_VALUES, radio_dtd_to)
 
         time_dtd = time_dtd_from + time_dtd_to
 
@@ -660,8 +660,8 @@ if st.button("Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit):
 
 
     if selected_transport == 'Train' or selected_transport == 'Airplane':
-        time_dtd_from, transfer_time_from, truck_time_dtd_air_train_from = get_door_to_door_time_train_airplane(dtd_calculation_values_dict, radio_dtd_from)
-        time_dtd_to, transfer_time_to, truck_time_dtd_air_train_to  = get_door_to_door_time_train_airplane(dtd_calculation_values_dict, radio_dtd_to)
+        time_dtd_from, transfer_time_from, truck_time_dtd_air_train_from = get_door_to_door_time_train_airplane(DTD_CALCULATION_VALUES, radio_dtd_from)
+        time_dtd_to, transfer_time_to, truck_time_dtd_air_train_to  = get_door_to_door_time_train_airplane(DTD_CALCULATION_VALUES, radio_dtd_to)
 
 
         time_dtd = time_dtd_from + time_dtd_to
@@ -673,8 +673,8 @@ if st.button("Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit):
 
 
     # # DTD - distance and price
-    door_from_result, from_city_extra_doortdoor = get_door_to_door_cost_and_distance(dtd_calculation_values_dict, radio_dtd_from, selected_currency, selected_transport)
-    door_to_result, to_city_extra_doortdoor = get_door_to_door_cost_and_distance(dtd_calculation_values_dict, radio_dtd_to, selected_currency, selected_transport)
+    door_from_result, from_city_extra_doortdoor = get_door_to_door_cost_and_distance(DTD_CALCULATION_VALUES, radio_dtd_from, selected_currency, selected_transport)
+    door_to_result, to_city_extra_doortdoor = get_door_to_door_cost_and_distance(DTD_CALCULATION_VALUES, radio_dtd_to, selected_currency, selected_transport)
 
 
 
@@ -687,13 +687,13 @@ if st.button("Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit):
     # Calling all the functions with Truck, Train, Air inputs
 
     # TAB 2 - Truck
-    tab2_distance_truck, tab2_price_truck, result_correction_list_tab2_truck = L0_is_in_correction_list(from_city, to_city, correction_list_data, price_square_tab2_truck, UNIT_DISTANCE)
+    tab2_distance_truck, tab2_price_truck, result_correction_list_tab2_truck = L0_is_in_correction_list(from_city, to_city, CORRECTION_LIST, price_square_tab2_truck, UNIT_DISTANCE)
 
     if result_correction_list_tab2_truck == False:
         tab2_price_truck, tab2_distance_truck = get_calculation_price_distance(coordinates, price_square_tab2_truck, UNIT_DISTANCE)
 
     # TAB 2 - Train
-    tab2_distance_train, tab2_price_train, result_correction_list_tab2_train = L0_is_in_correction_list(from_city, to_city, correction_list_data, price_square_tab2_train, UNIT_DISTANCE)
+    tab2_distance_train, tab2_price_train, result_correction_list_tab2_train = L0_is_in_correction_list(from_city, to_city, CORRECTION_LIST, price_square_tab2_train, UNIT_DISTANCE)
 
     if result_correction_list_tab2_train == False:
         tab2_price_train, tab2_distance_train = get_calculation_price_distance(coordinates, price_square_tab2_train, UNIT_DISTANCE)
@@ -710,8 +710,8 @@ if st.button("Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit):
 
     
     # Truck DTD  and Time break 
-    tab2_time_dtd_from_truck = get_door_to_door_time_truck(dtd_calculation_values_dict, radio_dtd_from)
-    tab2_time_dtd_to_truck = get_door_to_door_time_truck(dtd_calculation_values_dict, radio_dtd_to)
+    tab2_time_dtd_from_truck = get_door_to_door_time_truck(DTD_CALCULATION_VALUES, radio_dtd_from)
+    tab2_time_dtd_to_truck = get_door_to_door_time_truck(DTD_CALCULATION_VALUES, radio_dtd_to)
 
     tab2_time_dtd_truck = tab2_time_dtd_from_truck + tab2_time_dtd_to_truck
 
@@ -721,8 +721,8 @@ if st.button("Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit):
 
 
     # Train DTD
-    tab2_time_dtd_from_train, tab2_transfer_time_from_train, tab2_truck_time_dtd_from_train = get_door_to_door_time_train_airplane(dtd_calculation_values_dict, radio_dtd_from)
-    tab2_time_dtd_to_train, tab2_transfer_time_to_train, tab2_truck_time_dtd_to_train = get_door_to_door_time_train_airplane(dtd_calculation_values_dict, radio_dtd_to)
+    tab2_time_dtd_from_train, tab2_transfer_time_from_train, tab2_truck_time_dtd_from_train = get_door_to_door_time_train_airplane(DTD_CALCULATION_VALUES, radio_dtd_from)
+    tab2_time_dtd_to_train, tab2_transfer_time_to_train, tab2_truck_time_dtd_to_train = get_door_to_door_time_train_airplane(DTD_CALCULATION_VALUES, radio_dtd_to)
 
 
     tab2_time_dtd_train = tab2_time_dtd_from_train + tab2_time_dtd_to_train
@@ -731,8 +731,8 @@ if st.button("Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit):
 
 
     # Air DTD
-    tab2_time_dtd_from_air, tab2_transfer_time_from_air, tab2_truck_time_dtd_from_air = get_door_to_door_time_train_airplane(dtd_calculation_values_dict, radio_dtd_from)
-    tab2_time_dtd_to_air, tab2_transfer_time_to_air, tab2_truck_time_dtd_to_air = get_door_to_door_time_train_airplane(dtd_calculation_values_dict, radio_dtd_to)
+    tab2_time_dtd_from_air, tab2_transfer_time_from_air, tab2_truck_time_dtd_from_air = get_door_to_door_time_train_airplane(DTD_CALCULATION_VALUES, radio_dtd_from)
+    tab2_time_dtd_to_air, tab2_transfer_time_to_air, tab2_truck_time_dtd_to_air = get_door_to_door_time_train_airplane(DTD_CALCULATION_VALUES, radio_dtd_to)
 
     tab2_time_dtd_air = tab2_time_dtd_from_air + tab2_time_dtd_to_air
 
@@ -742,13 +742,13 @@ if st.button("Submit", width="stretch", icon=UiConfigAndIcons.Buttons.submit):
 
     # DTD price/costs
     # Note: the function is designed to return tuple (2 variables) ->  Return price & This *_ is unpacking to ignor the rest
-    tab2_door_to_result_truck, *_ = get_door_to_door_cost_and_distance(dtd_calculation_values_dict, radio_dtd_to, selected_currency, 'Truck')
-    tab2_door_to_result_train, *_ = get_door_to_door_cost_and_distance(dtd_calculation_values_dict, radio_dtd_to, selected_currency, 'Train')
-    tab2_door_to_result_air, *_ = get_door_to_door_cost_and_distance(dtd_calculation_values_dict, radio_dtd_to, selected_currency, 'Airplane')
+    tab2_door_to_result_truck, *_ = get_door_to_door_cost_and_distance(DTD_CALCULATION_VALUES, radio_dtd_to, selected_currency, 'Truck')
+    tab2_door_to_result_train, *_ = get_door_to_door_cost_and_distance(DTD_CALCULATION_VALUES, radio_dtd_to, selected_currency, 'Train')
+    tab2_door_to_result_air, *_ = get_door_to_door_cost_and_distance(DTD_CALCULATION_VALUES, radio_dtd_to, selected_currency, 'Airplane')
 
-    tab2_door_from_result_truck, *_ = get_door_to_door_cost_and_distance(dtd_calculation_values_dict, radio_dtd_from, selected_currency, 'Truck')
-    tab2_door_from_result_train, *_ = get_door_to_door_cost_and_distance(dtd_calculation_values_dict, radio_dtd_from, selected_currency, 'Train')
-    tab2_door_from_result_air, *_ = get_door_to_door_cost_and_distance(dtd_calculation_values_dict, radio_dtd_from, selected_currency, 'Airplane')
+    tab2_door_from_result_truck, *_ = get_door_to_door_cost_and_distance(DTD_CALCULATION_VALUES, radio_dtd_from, selected_currency, 'Truck')
+    tab2_door_from_result_train, *_ = get_door_to_door_cost_and_distance(DTD_CALCULATION_VALUES, radio_dtd_from, selected_currency, 'Train')
+    tab2_door_from_result_air, *_ = get_door_to_door_cost_and_distance(DTD_CALCULATION_VALUES, radio_dtd_from, selected_currency, 'Airplane')
 
 
     # DB connection -> Engine + getting offer number 

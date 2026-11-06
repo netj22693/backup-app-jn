@@ -17,7 +17,7 @@ tranport_types_list = ['Truck','Train','Airplane']
 
 
 # List of cities with coordinates and types of transport availability
-dataset_cities = ({
+DATASET_CITIES = ({
 "cz" : {
     "Prague" : {"big" : ["4","10"], "small" : ["10","29"], "train":"y", "air":"y"},
     "Brno" : {"big" : ["5","12"], "small" : ["14","35"], "train":"y", "air":"y"},
@@ -93,7 +93,7 @@ dataset_cities = ({
 
 
 # Correction list
-correction_list_data = [
+CORRECTION_LIST = [
     {"city1" : "Krakow" , "city2" : "Prague", "distance": 509},
     {"city1" : "Liberec" , "city2" : "Linz", "distance": 342},
     {"city1" : "Dresden" , "city2" : "Bratislava", "distance": 479},
@@ -123,7 +123,7 @@ correction_list_data = [
 ]
 
 # Dataset impacting costs based on exchange rate value
-criteria_dict = {
+COST_CRITERIA = {
     "kc": [
         {
             "min": None,
@@ -187,7 +187,7 @@ criteria_dict = {
 }
 
 # Dataset SLA
-sla_dict = {
+SLA_CRITERIA = {
 	"truck": {
 		"slow": {
 			"extra_time": 120,
@@ -237,7 +237,7 @@ sla_dict = {
 # "standard" Price per 1t/per approx 30km (one square on map) - STANDARD servide
 # "coef" - price coeficients increasing(Express delivery) or decreasign (Slow delivery) price per square
 
-price_dict = {
+PRICE_TRANSPORT = {
 	"truck": {
 		"eur": {
 			"standard": 60,
@@ -267,14 +267,14 @@ price_dict = {
 
 # These to DTD dictionaries need to corespond
 # Options per transport type
-dtd_options_dict = {
+DTD_OPTIONS = {
     "truck" : ["Within city", "10 km", "20 km"],
     "train" : ["No", "10 km", "20 km"],
     "airplane" : ["No", "10 km", "20 km"]
 }
 
 # Time needed HOURS (Truck) for DTD delivery based on selection + Prices
-dtd_calculation_values_dict = {
+DTD_CALCULATION_VALUES = {
 	"No": {
 		"distance": 0, 
 		"truck_driving": 0,
@@ -304,7 +304,7 @@ dtd_calculation_values_dict = {
 				"koruna": 0
 			},
 
-            # Note: this 'Within city' option cannot be selected on UI as part of 'Train' or 'Airplane' but it is importtant to have this OBJECT for TAB 2 purposes. Without this function will fail get_door_to_door_cost_and_distance()
+            # Note: this 'Within city' option cannot be selected on UI as part of 'Train' or 'Airplane' but it is important to have this OBJECT for TAB 2 purposes. Without this function will fail get_door_to_door_cost_and_distance()
             "train": {
 				"euro": 0,
 				"koruna": 0
@@ -355,7 +355,7 @@ dtd_calculation_values_dict = {
 }
 
 # Extra services / % values
-extra_service_dict = {
+EXTRA_SERVICE_PRICE = {
     "insurance" : 10,
     "fragile": 5,
     "danger":  7
@@ -363,40 +363,53 @@ extra_service_dict = {
 
 
 # =========== F7B UI ==========
-states_dict = {
+'''
+"terminal_state"
+    - Releated to operational_update_of_states() -> making the data displayed to user on UI always up to date (in case of long time between schedulers)
+    - Boolean says if the state is terminal and thus does not need to be checked
+    - Example: 'REJECTED' - this is terminal state which will not be changed in time
+'''
+STATES_CONFIG = {
     "CREATED": {
         "name": "Created",
         "symbol" : "⬤",
-        "color" : "255, 120, 226"
+        "color" : "255, 120, 226",
+        "terminal_state": False
     },
     "APPROVED": {
         "name": "Approved",
         "symbol" : "✔",
-        "color" : "81, 224, 54"
+        "color" : "81, 224, 54",
+        "terminal_state": False
     },
     "REJECTED": {
         "name": "Rejected",
         "symbol" : "✖",
-        "color" : "214, 0, 0"
+        "color" : "214, 0, 0",
+        "terminal_state": True
     },
     "EXPIRED": {
         "name": "Expired",
         "symbol" : "⬤",
-        "color" : "150, 148, 150"
+        "color" : "150, 148, 150",
+        "terminal_state": True
     },
     "TRANSPORT_PREPARATION": {
         "name": "Transport preparation",
         "symbol" : "▶",
-        "color" : "222, 149, 87"
+        "color" : "222, 149, 87",
+        "terminal_state": False
     },
     "TRANSPORT_ON_THE_WAY": {
         "name": "Transport on the way",
         "symbol" : "➜",
-        "color" : "16, 124, 222"
+        "color" : "16, 124, 222",
+        "terminal_state": False
     },
     "DELIVERED": {
         "name": "Delivered",
         "symbol" : "⬤",
-        "color" : "56, 161, 35"
+        "color" : "56, 161, 35",
+        "terminal_state": True
     },
 }
