@@ -1,4 +1,5 @@
 import streamlit as st
+from Subpages.Resources_ui import UiConfigAndIcons
 
 
 # ===== Rating function =====
@@ -6,42 +7,50 @@ import streamlit as st
 def rating_complete(rating_result: float | int):
     st.write(f"""
     - Overall rating score: **{rating_result} / 5 ⭐**
-    - Rating saved into DB -> :green[**Complete**]
+    - Rating -> :green[**Complete**]
     """)
 
 @st.dialog("Technical issue") 
 def rating_not_saved():
     st.write("""
-    - Rating process not complete -> :red[**Technical issue**]
+    - Rating **not** updated -> :red[**Technical issue**]
     """)
 
-@st.dialog("Rating not saved")
+@st.dialog("Rating not updated")
 def rating_already_submitted():
     st.write("""
-    - Rating process **not** complete -> :blue[**Rating already given**]
-    - There was a **concurrent user who gave the ratting** at the same time
-    - **Search/reopen the offer again** to see the rating
+    - Rating **not** updated -> :blue[**Another user has already rated this offer**]
+    - Please reopen the offer to see the given rating
     """)
 
 
 # ===== State update =====
 @st.dialog("Complete!")
 def state_change_complete(offer_id: str, new_status: str):
+
+    rule = {
+        "APPROVED": UiConfigAndIcons.UnifiedIcons.approve,
+        "REJECTED": UiConfigAndIcons.UnifiedIcons.reject
+    }  
+
+    state_icon = rule.get(new_status)
+
+    new_status = new_status.capitalize()
+
     st.write(f"""
-        - State change -> :green[**Complete**]
-        - The offer **{offer_id}** has been changed to **{new_status}**
-        """)
+    - The offer **{offer_id}** set as **{new_status}** {state_icon}
+    - State update -> :green[**Complete**]
+    """)
 
 @st.dialog("Technical issue") 
 def state_change_not_complete():
     st.write("""
-        - State change **was not** complete -> :red[**Technical issue**]
-        """)
+    - State **not** updated -> :red[**Technical issue**]
+    """)
 
-@st.dialog("Status not updated") 
-def state_change_not_concurrency(offer_id: str):
+@st.dialog("State not updated") 
+def state_change_not_complete_concurrency():
     st.write(f"""
-    - Status **not** updated {offer_id} -> :blue[**Already Approved/Rejected**]
-    - There was a **concurrent user who updated** at the same time
-    - **Search/reopen the offer again** to see the state
+    - State **not** updated -> :blue[**Another user has already changed the state**]
+    - Please reopen the offer to see the state
     """)

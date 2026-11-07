@@ -214,7 +214,7 @@ with tab2:
                                 on_click=change_state_in_db,
                                 args=(db_engine, offer_id, row_offer["offer_state"], "APPROVED"),
                                 width="stretch",
-                                icon = ":material/check_circle:"
+                                icon = UiConfigAndIcons.UnifiedIcons.approve
                                 ):
                                     pass
                                 
@@ -223,7 +223,7 @@ with tab2:
                                 on_click = change_state_in_db,
                                 args=(db_engine, offer_id, row_offer["offer_state"], "REJECTED"),
                                 width="stretch",
-                                icon = ":material/cancel:"
+                                icon = UiConfigAndIcons.UnifiedIcons.reject
                                 ):
                                     pass
 

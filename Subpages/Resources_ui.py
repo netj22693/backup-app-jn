@@ -13,6 +13,9 @@ class BaseIcons:
     warning = ":material/warning:"
     info = ":material/info:"
 
+    approve = ":material/check_circle:"
+    reject = ":material/cancel:"
+
 '''
 class UiConfigAndIcons
 - For direct import into the code
@@ -26,6 +29,12 @@ class UiConfigAndIcons:
         airplane = ":material/travel:"
         # ---------------------------------------------
     
+    class UnifiedIcons:
+        # Icons which will be just reused 
+        # Have a context of widgets
+        approve = BaseIcons.approve
+        reject = BaseIcons.reject 
+
     class InfoText:
         # st.success()
         success = BaseIcons.success
@@ -42,6 +51,8 @@ class UiConfigAndIcons:
         reset = ":material/delete:"
         show_table = BaseIcons.table
         show_pie_chart = BaseIcons.pie_chart
+        approve = BaseIcons.approve
+        reject = BaseIcons.reject
 
         open_new_tab = {
             "icon": ":material/launch:",

@@ -4,10 +4,10 @@ import plotly.express as px
 import logging
 from app_logging import inicialization_logging
 from Subpages.Resources_ui_objects import render_warning_info, render_info_info
-from Subpages.Dialog.F7b_dialog import state_change_complete, state_change_not_complete, state_change_not_concurrency
+from Subpages.Dialog.F7b_dialog import state_change_complete, state_change_not_complete, state_change_not_complete_concurrency
 from pandas.io.formats.style import Styler
 from sqlalchemy import text
-from typing import Optional, Dict, Tuple
+from typing import Optional
 from datetime import datetime, timezone
 from sqlalchemy import Engine, Column, String, DateTime, Integer, update
 from sqlalchemy.orm import declarative_base, Session
@@ -312,7 +312,7 @@ def change_state_in_db(engine: Engine, offer_id: str, was_state: str, new_state:
 
                     logging.warning(f"F7B - DB update: State change APPROVED/REJECTED - FAIL - CONCURRENCY: offer {offer_id}")
 
-                    state_change_not_concurrency(offer_id)
+                    state_change_not_complete_concurrency()
 
         except Exception as e:
             logging.warning(f"F7B - DB update: State change APPROVED/REJECTED - FAIL - Exception: {e}")
