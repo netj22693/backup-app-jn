@@ -1,4 +1,1 @@
-import streamlit as st
-from Subpages.Resources import Assets
-from Subpages.Resources_ui import UiConfigAndIcons
-from Subpages.Resources_ui_objects import render_next_page, render_previous_page
+from Subpages.Data.F3_F4_xml_json_structures import xml_message_example
