@@ -309,29 +309,26 @@ logging.warning(
     f"| PAGE: {pg.url_path}"
 )
 
+import importlib.util
 import importlib.metadata as metadata
-import sys
 import logging
 
-logging.warning(f"PYTHON VERSION: {sys.version}")
+spec = importlib.util.find_spec("tornado")
 
-packages = [
-    "streamlit",
-    "tornado",
-    "websockets",
-    "uvicorn",
-    "protobuf",
-    "pandas",
-    "numpy",
-    "pyarrow",
-    "altair",
-    "anyio",
-]
+logging.warning(f"TORNADO MODULE SPEC: {spec}")
 
-for package in packages:
-    try:
-        version = metadata.version(package)
-    except metadata.PackageNotFoundError:
-        version = "NOT FOUND"
+if spec is not None:
+    import tornado
+    logging.warning(f"TORNADO FILE: {tornado.__file__}")
+    logging.warning(
+        f"TORNADO VERSION ATTRIBUTE: "
+        f"{getattr(tornado, 'version', 'UNKNOWN')}"
+    )
 
-    logging.warning(f"PACKAGE CHECK | {package}: {version}")
+try:
+    logging.warning(
+        f"STREAMLIT TORNADO REQUIREMENT: "
+        f"{[r for r in metadata.requires('streamlit') or [] if 'tornado' in r.lower()]}"
+        )
+except Exception as e:
+    logging.warning(f"STREAMLIT REQUIREMENT CHECK ERROR: {e}")
