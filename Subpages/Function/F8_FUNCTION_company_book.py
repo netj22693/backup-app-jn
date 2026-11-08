@@ -11,14 +11,14 @@ from Subpages.SQL.F8_SQL_queries import sql_query_number_companies, sql_query_nu
 
 
 # Diagnostics
-import uuid
-import logging
-from app_logging import inicialization_logging
-inicialization_logging()
-run_id = uuid.uuid4().hex[:8]
-logging.warning(
-    f"F8 SCRIPT START | SESSION: {st.session_state['_debug_session_id']} | RUN: {run_id}"
-)
+# import uuid
+# import logging
+# from app_logging import inicialization_logging
+# inicialization_logging()
+# run_id = uuid.uuid4().hex[:8]
+# logging.warning(
+#     f"F8 SCRIPT START | SESSION: {st.session_state['_debug_session_id']} | RUN: {run_id}"
+# )
 
 # ==== Business data - lists the F8 works with ====
 country_list = ["AT","CZ","DE","PL","SK"]
