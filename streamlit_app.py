@@ -240,7 +240,7 @@ pg = st.navigation(
             app_description_architecture
             ],
             
-        "TESTING": [test_1, test_2],
+        # "TESTING": [test_1, test_2],
 
         "Functions 1 and 2" : [
             F1_F2_description,
