@@ -1,6 +1,6 @@
-from Subpages.Resources_ui_objects import render_next_page
+import streamlit as st
 from Subpages.Resources import Assets
-
-render_next_page(
-    page= Assets.Paths.Description.f3_f4_erd
-)
+from Subpages.Resources_ui import UiConfigAndIcons
+from Subpages.Resources_ui_objects import render_next_page, render_previous_page
+from Subpages.Dialog.APP_universal_dialog import display_download_complete_toast
+from Subpages.Data.F3_F4_xml_json_structures import xml_message_example, xsd_as_string, json_message_example, json_schema, json_structure_rules_header, json_structure_rules_detail, json_structure_rules_transportation, xsd_structure_rules_header, xsd_structure_rules_detail, xsd_structure_rules_transportation
