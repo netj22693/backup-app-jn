@@ -310,25 +310,18 @@ logging.warning(
 )
 
 import importlib.util
-import importlib.metadata as metadata
 import logging
 
-spec = importlib.util.find_spec("tornado")
+modules = [
+    "streamlit.web.server",
+    "streamlit.web.server.server",
+    "tornado",
+    "tornado.web",
+]
 
-logging.warning(f"TORNADO MODULE SPEC: {spec}")
-
-if spec is not None:
-    import tornado
-    logging.warning(f"TORNADO FILE: {tornado.__file__}")
-    logging.warning(
-        f"TORNADO VERSION ATTRIBUTE: "
-        f"{getattr(tornado, 'version', 'UNKNOWN')}"
-    )
-
-try:
-    logging.warning(
-        f"STREAMLIT TORNADO REQUIREMENT: "
-        f"{[r for r in metadata.requires('streamlit') or [] if 'tornado' in r.lower()]}"
-        )
-except Exception as e:
-    logging.warning(f"STREAMLIT REQUIREMENT CHECK ERROR: {e}")
+for module in modules:
+    try:
+        spec = importlib.util.find_spec(module)
+        logging.warning(f"MODULE CHECK | {module}: {spec}")
+    except Exception as e:
+        logging.warning(f"MODULE CHECK | {module}: ERROR {e}")
