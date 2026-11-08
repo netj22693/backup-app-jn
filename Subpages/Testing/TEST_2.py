@@ -1,5 +1,5 @@
-from Subpages.Data.F7_input_data import DATASET_CITIES
+from Subpages.Virtual_Assistant.FVA_answers import ANSWERS
 import streamlit as st
 
-st.write(DATASET_CITIES)
+st.write(ANSWERS)
 
