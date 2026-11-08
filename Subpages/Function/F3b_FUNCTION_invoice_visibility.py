@@ -15,18 +15,18 @@ from Subpages.Services.F3b_tab4_execution_logic import execute_f3b_tab4_logic
 
 
 # Diagnostics
-import uuid
-import logging
-from app_logging import inicialization_logging
-inicialization_logging()
+# import uuid
+# import logging
+# from app_logging import inicialization_logging
+# inicialization_logging()
 
-if "_debug_session_id" not in st.session_state:
-    st.session_state["_debug_session_id"] = uuid.uuid4().hex[:8]
+# if "_debug_session_id" not in st.session_state:
+#     st.session_state["_debug_session_id"] = uuid.uuid4().hex[:8]
 
-run_id = uuid.uuid4().hex[:8]
-logging.warning(
-    f"F3B SCRIPT START | SESSION: {st.session_state['_debug_session_id']} | RUN: {run_id}"
-)
+# run_id = uuid.uuid4().hex[:8]
+# logging.warning(
+#     f"F3B SCRIPT START | SESSION: {st.session_state['_debug_session_id']} | RUN: {run_id}"
+# )
 
 # ================ Application Screen - INPUT Buttons ========================
 st.write("# Find your invoice:")
