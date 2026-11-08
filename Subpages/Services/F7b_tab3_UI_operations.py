@@ -70,7 +70,6 @@ def display_filter_options_f7b_tab3(data: dict):
     state = st.multiselect(
         "Offer state:",
         label_visibility="collapsed",
-        default = provide_quick_select_states(quick_select, data["state"]),
         options = data["state"],
         key="key_mlts_state_f7b_tab3"
         )
