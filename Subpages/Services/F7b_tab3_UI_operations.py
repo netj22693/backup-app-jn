@@ -40,7 +40,7 @@ def multiselect_validation(values: list, text: str):
             render_warning_info(f"At least 1 {text} needs to be selected.")
 
 
-@st.fragment
+# @st.fragment
 def display_filter_options_f7b_tab3(data: dict):
 
     diplay_how_to_use_filters_expander()

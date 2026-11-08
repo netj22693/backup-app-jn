@@ -5,7 +5,7 @@ from Subpages.Resources_config import FORMAT_CONFIG
 from Subpages.Resources_ui_objects import render_warning_info
 from Subpages.Expander.APP_shared_expanders import diplay_how_to_use_filters_expander
 
-@st.fragment()
+# @st.fragment()
 def display_filter_options_f3b_tab4(min_date: date) -> dict:
 
     diplay_how_to_use_filters_expander() 

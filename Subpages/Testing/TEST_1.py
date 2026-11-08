@@ -191,7 +191,7 @@ with tab3:
         st.write("nad blockem")   
 
 
-        @st.fragment
+        # @st.fragment
         def test_ui(
             submit_disabled,
             checkbox_date,

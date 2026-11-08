@@ -308,20 +308,3 @@ logging.warning(
     f"APP RUN | SESSION: {st.session_state['_debug_session_id']} "
     f"| PAGE: {pg.url_path}"
 )
-
-import importlib.util
-import logging
-
-modules = [
-    "streamlit.web.server",
-    "streamlit.web.server.server",
-    "tornado",
-    "tornado.web",
-]
-
-for module in modules:
-    try:
-        spec = importlib.util.find_spec(module)
-        logging.warning(f"MODULE CHECK | {module}: {spec}")
-    except Exception as e:
-        logging.warning(f"MODULE CHECK | {module}: ERROR {e}")
