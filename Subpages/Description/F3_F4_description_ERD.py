@@ -1,6 +1,7 @@
 import streamlit as st
 from Subpages.Resources import Assets
 from Subpages.Resources_ui_objects import render_function_page, render_previous_page
+from Subpages.Data.F3_F4_xml_json_structures import xml_message_example
 
 
 st.write("# DB & ERD:")
