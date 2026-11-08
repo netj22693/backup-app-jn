@@ -1,5 +1,6 @@
 import pandas as pd
 import logging
+from typing import Literal
 from app_logging import inicialization_logging
 
 
@@ -43,3 +44,23 @@ def adjust_index_in_df(df: pd.DataFrame, operation: str = "PLUS", num: int = 1) 
         logging.warning("Universal function - adjust_index_in_df() - FAIL - Incorrect operation")
 
     return df
+
+
+def extract_keys_from_dict_and_adjust(
+        data: dict,
+        operation: Literal["capitalize", "upper"] | None = None,
+        sorting: bool = False
+        ) -> list:  
+
+    data_list = list(data.keys())
+    
+    if operation == "capitalize":
+        data_list = [x.capitalize() for x in data_list]
+
+    if operation == "upper":
+        data_list = [x.upper() for x in data_list]
+
+    if sorting:
+        data_list.sort()
+
+    return data_list

@@ -9,13 +9,15 @@ from Subpages.Resources_config import FORMAT_CONFIG
 from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Resources_ui_objects import render_warning_info, render_info_info
 from Subpages.Services.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
-from Subpages.SQL.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, sql_query_logs, sql_query_offer_rating, get_sql_query_tab_3, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes, get_sql_query_offer_state_validation
-from Subpages.Data.F7_input_data import tranport_types_list, DATASET_CITIES, STATES_CONFIG
-from Subpages.Operational.F7b_operational_functions import change_state_in_db, input_validation, operational_update_of_states, display_state_and_symbol_mapped, display_offer_logs, mapping_states, get_styling_colors, df_styling_index_set_1, data_empty_fallback_info, create_pie_chart, df_change_column_name, get_parameters_countries, reset_filters_f7b_tab3
+from Subpages.SQL.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, sql_query_logs, sql_query_offer_rating, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes, get_sql_query_offer_state_validation
+from Subpages.Data.F7_input_data import DATASET_CITIES, STATES_CONFIG, TRANSPORT_SPEED, CURRENCY_COUNTRY, STATES_UI_GROUPS
+from Subpages.Operational.F7b_operational_functions import change_state_in_db, input_validation, operational_update_of_states, display_state_and_symbol_mapped, display_offer_logs, mapping_states, get_styling_colors, df_styling_index_set_1, data_empty_fallback_info, create_pie_chart, df_change_column_name, get_parameters_countries, get_list_states, get_min_date_offer
 from Subpages.Services.F7b_UI_functions import display_state_flow, display_state_flow_expander, display_offer_visualization_ui
+from Subpages.Services.F7b_tab3_UI_operations import initiate_session_state_f7b_tab3, display_filter_options_f7b_tab3, reset_filters_f7b_tab3
+from Subpages.Services.F7b_tab3_execution_logic import execute_f7b_tab3_logic
 from Subpages.Services.F7b_rating_function import make_rating_validation, display_offer_rating_ui_info, display_offer_rating_ui_tab
-from Subpages.Universal.Universal_functions import singular_or_plural
-from Subpages.Universal.Creation_of_parameters_for_SQL import create_parameters_for_sql
+from Subpages.Universal.Universal_functions import singular_or_plural, extract_keys_from_dict_and_adjust
+
 
 
 # Inicialization of logging
@@ -245,195 +247,52 @@ with tab2:
 # ====================== TAB 3 ======================
 with tab3: 
 
-    # Default state condition
-    submit_disabled = False
+    execution_data = {
+    "country": extract_keys_from_dict_and_adjust(
+        DATASET_CITIES,
+        operation="upper",
+        sorting=True
+        ),
 
-    #From the dataset -> parse keys -> create list of countries for multiselect
-    list_countries = DATASET_CITIES.keys()
+    "transport": extract_keys_from_dict_and_adjust(
+        TRANSPORT_SPEED,
+        operation="capitalize",
+        sorting=True
+        ),
+    "currency": extract_keys_from_dict_and_adjust(
+        CURRENCY_COUNTRY,
+        sorting=True
+        ),
+    "quick_select_state": list(STATES_UI_GROUPS.values()),
+    "state": get_list_states(STATES_CONFIG),
+    "slider_rows" : 20,
+    "checkbox_date" : False,
+    "min_date": get_min_date_offer(db_engine)
+    }
 
-    list_countries_upper = []
-    for country in list_countries:
-        upper = country.upper()
-        list_countries_upper.append(upper)
+    initiate_session_state_f7b_tab3(execution_data)
 
-    # Preparation of lists for multiselects
-    list_countries_upper.sort()
-    tranport_types_list.sort()
+    selected_data: dict = display_filter_options_f7b_tab3(execution_data)
 
-    currency_list = ['euro','koruna']
-    currency_list.sort()
-
-    # Initiating session states for purpose/possibility of reseting filters
-    if "key_mlts_country_from_f7b_tab3" not in st.session_state:
-        st.session_state["key_mlts_country_from_f7b_tab3"] = list_countries_upper
-
-    if "key_mlts_country_to_f7b_tab3" not in st.session_state:
-        st.session_state["key_mlts_country_to_f7b_tab3"] = list_countries_upper
-
-    if "key_mlts_transport_f7b_tab3" not in st.session_state:
-        st.session_state["key_mlts_transport_f7b_tab3"] = tranport_types_list
-
-    if "key_mlts_currency_f7b_tab3" not in st.session_state:
-        st.session_state["key_mlts_currency_f7b_tab3"] = currency_list
-
-    if "key_sld_number_rows_f7b_tab3" not in st.session_state:
-        st.session_state["key_sld_number_rows_f7b_tab3"] = 20
-    
-    if "key_checkbox_date_f7b_tab3"  not in st.session_state:
-        st.session_state["key_checkbox_date_f7b_tab3"] = False
-
-    # ============ UI filter ============ 
-    # Multiselect - Country from
     ''
-    selected_coutry_from = st.multiselect("Country from", options=list_countries_upper, key="key_mlts_country_from_f7b_tab3")
+    submit_button_tab3 = st.button("Apply filters", width= "stretch", icon=UiConfigAndIcons.Buttons.apply_filters)
 
-    if len(selected_coutry_from) == 0:
-        render_warning_info("At least 1 country needs to be selected.")
+    if submit_button_tab3:
 
-    # Multiselect - Country to
-    selected_coutry_to = st.multiselect("Country to", options=list_countries_upper, key="key_mlts_country_to_f7b_tab3")
-
-    if len(selected_coutry_to) == 0:
-        render_warning_info("At least 1 country needs to be selected.")
-    
-    # Multiselect - Transport type
-    selected_transport = st.multiselect("Transport", options=tranport_types_list, key="key_mlts_transport_f7b_tab3")
-
-    if len(selected_transport) == 0:
-        render_warning_info("At least 1 transport needs to be selected.")
-
-    # Multiselect - Currency
-    selected_currency = st.multiselect("Currency", options=currency_list, key="key_mlts_currency_f7b_tab3")
-
-    if len(selected_currency) == 0:
-        render_warning_info("At least 1 currency needs to be selected.")
-
-    # Date picker
-    ''
-    checkbox_state = st.checkbox("Filtering based on date", key="key_checkbox_date_f7b_tab3")
-
-    if checkbox_state == True:
-        
-        col1, col2 = st.columns(2)
-
-        # Min date allowed
-        min_date = date(2025, 1, 1)
-
-        # default = today - 30 days
-        default_date = date.today() - timedelta(days=30)
-        max_date = date.today()
-
-        
-        picked_date_from = col1.date_input(
-            "From",
-            value=default_date,
-            min_value = min_date,
-            max_value = max_date,
-            format = FORMAT_CONFIG["date"]["streamlit_widget"],
-            key = "key_date_input_1"
+        execute_f7b_tab3_logic(
+            db_engine,
+            selected_data
         )
-
-        picked_date_to = col2.date_input(
-            "To",
-            value = max_date,
-            min_value = min_date,
-            max_value = max_date,
-            format = FORMAT_CONFIG["date"]["streamlit_widget"],
-            key ="key_date_input_2"
-            )
         
-        # Extending SQL query date filter
-        date_query_string = f"""
-        AND
-        TO_DATE(a.created_date, 'DD-Mon-YY') BETWEEN DATE '{picked_date_from}' AND DATE '{picked_date_to}'
-        """
-
-        # Fallback info 
-        if picked_date_from > picked_date_to:
-            render_warning_info("**Date issue** - date **To** is farther in the past than **From**.")
-            submit_disabled = True
-
-    
-    if checkbox_state == False:
-
-        # Extending SQL -> no extension, no additional filter
-        date_query_string = ""
-        
-
-    # Slider - number of rows
-    ''
-    number_rows = st.slider("Number of records to be shown", min_value=5, max_value=50, step=5, label_visibility="visible", key="key_sld_number_rows_f7b_tab3")
-
-
-    # ===== Submit button -> triggering query into DB =====
-
-    ''
-    ''
-    if any(not x for x in [
-        selected_coutry_from,
-        selected_coutry_to,
-        selected_transport,
-        selected_currency
-    ]):
-        submit_disabled = True
-
-  
-    submit_button_tab3 = st.button("Submit", width= "stretch", icon=UiConfigAndIcons.Buttons.submit, disabled=submit_disabled)
-
     # ===== Reset button =====
     st.write("-" *10)
     st.button(
         "Reset filters",
         on_click=reset_filters_f7b_tab3,
-        args=(list_countries_upper, tranport_types_list, currency_list),
+        args=(execution_data,),
         width="stretch",
         icon=UiConfigAndIcons.Buttons.reset
         )
-
-
-    if submit_button_tab3:
-        
-        # Creation of parameter for SQL query 
-        # The query uses IN() and stadard parametrization approach horribly slowed the query down -> this approach with f-string in query works better (parametrization like this prevents from SQL injestion)
-        params_transport, str_for_sql_in_transport = create_parameters_for_sql(selected_transport, "t")
-        params_currency, str_for_sql_in_currency = create_parameters_for_sql(selected_currency, "c")
-        params_country_from, str_for_sql_in_country_from = create_parameters_for_sql(selected_coutry_from, "cf")
-        params_country_to, str_for_sql_in_country_to = create_parameters_for_sql(selected_coutry_to, "ct")
-
-        # Marging of the dictionaries to have 1 dictionary with all parameters
-        params_full = params_transport | params_currency | params_country_from | params_country_to
-
-        # Gettign SQL query with inserted variables (variables = keys in paramters to be able to match "key" : "value" when query into DB triggered)
-        sql_query_tab_3 = get_sql_query_tab_3(number_rows, date_query_string, str_for_sql_in_transport, str_for_sql_in_currency, str_for_sql_in_country_from, str_for_sql_in_country_to)
-
-        with db_engine.connect() as conn:
-            df_table_tab_3 = pd.read_sql_query(sql=text(sql_query_tab_3), con=conn, params=params_full)
-
-        if df_table_tab_3.empty == True:
-            render_info_info("**No result** - There is no record found in DB.")
-
-        else:
-            # Dataframe styling 
-            df_table_tab_3[" "] = df_table_tab_3.index + 1
-            df_table_tab_3 = df_table_tab_3.set_index(" ")
-
-            df_table_tab_3_styled = df_table_tab_3.style.format({
-            "Final price": "{:,.2f}",
-            })
-
-            # Info message to the user that there is not that many records as expected
-            rows_from_db = df_table_tab_3.index
-            rows_from_db = rows_from_db[-1]
-            
-            ''
-            if rows_from_db != number_rows:
-
-                s = singular_or_plural(rows_from_db)
-
-                render_info_info(f"There is only **{rows_from_db} record{s}** matching the selected criteria.")
-
-            st.dataframe(df_table_tab_3_styled)
-
 
 # ====================== TAB 4 ======================
 with tab4: 
@@ -500,7 +359,14 @@ with tab4:
     if submit_button_tab4:
 
         # Build of parameters countries
-        params_countries = get_parameters_countries(list_countries_upper)
+        # Note 08-Nov-2026: It seems that I had some idea here but didn't finish it. These params are not used
+        params_countries = get_parameters_countries(
+                extract_keys_from_dict_and_adjust(
+                DATASET_CITIES,
+                operation="upper",
+                sorting=True
+                )
+            )
 
         # Build of parameters date
         params_date = {
@@ -510,7 +376,6 @@ with tab4:
 
         # Build of parameters joining -> full set of parametrs
         params = params_date | params_countries
-
 
         # Function retruning SQL WHERE condition/string, if filtering based on date applicable
         sql_date_query_where_part = get_sql_part_where_date(date_query_applicable)
@@ -545,11 +410,12 @@ with tab4:
             df_currency_grouped = pd.read_sql_query(sql=text(sql_query_currency), con = conn, params=params)
             df_routes = pd.read_sql_query(sql=text(sql_query_routes), con = conn, params=params)
 
-            df_at = pd.read_sql_query(sql=text(sql_query_from_to_country_at), con = conn, params=params)
-            df_cz = pd.read_sql_query(sql=text(sql_query_from_to_country_cz), con = conn, params=params)
-            df_de = pd.read_sql_query(sql=text(sql_query_from_to_country_de), con = conn, params=params)
-            df_pl = pd.read_sql_query(sql=text(sql_query_from_to_country_pl), con = conn, params=params)
-            df_sk = pd.read_sql_query(sql=text(sql_query_from_to_country_sk), con = conn, params=params)
+            # Note 08-Nov-2026: It seems that I had some idea here but didn't finish it. These variables don't look to be used. 
+            # df_at = pd.read_sql_query(sql=text(sql_query_from_to_country_at), con = conn, params=params)
+            # df_cz = pd.read_sql_query(sql=text(sql_query_from_to_country_cz), con = conn, params=params)
+            # df_de = pd.read_sql_query(sql=text(sql_query_from_to_country_de), con = conn, params=params)
+            # df_pl = pd.read_sql_query(sql=text(sql_query_from_to_country_pl), con = conn, params=params)
+            # df_sk = pd.read_sql_query(sql=text(sql_query_from_to_country_sk), con = conn, params=params)
 
             df_top_city_from = pd.read_sql_query(sql=text(sql_query_top_city_from), con = conn, params=params)
             df_top_city_to = pd.read_sql_query(sql=text(sql_query_top_city_to), con = conn, params=params)

@@ -153,6 +153,7 @@ def display_release_notes_expander_f7():
         icon= UiConfigAndIcons.Pages.release_notes["icon"]
         ):	
         st.write("""
+            - **v72.2** - F7B - TAB 3 execution model rebuilt & extension of filtering options & better UI/UX - 08-Nov-2026
             - **v69.8** - F7 - DB insert service optimized to commit data insert only in case that all database operations succeed - 14-Sep-2026
             - **v69.7** - F7 - Adjusted to use the same UI offer visualization as F7B (now unified cross-function) - 13-Sep-2026
             - **v69.1** - F7 - Centralized API handling - 04-Sep-2026

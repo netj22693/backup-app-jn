@@ -12,10 +12,6 @@ TRANSPORT_SPEED = {
 }
 
 
-# type of transport
-tranport_types_list = ['Truck','Train','Airplane']
-
-
 # List of cities with coordinates and types of transport availability
 DATASET_CITIES = ({
 "cz" : {
@@ -375,6 +371,14 @@ EXTRA_SERVICE_PRICE = {
 
 
 # =========== F7B UI ==========
+STATES_UI_GROUPS = {
+    0: "All",
+    1: "Delivered",
+    2: "Pending decision",
+    3: "Ongoing flow",
+    4: "Early termination"
+}
+
 '''
 "terminal_state"
     - Releated to operational_update_of_states() -> making the data displayed to user on UI always up to date (in case of long time between schedulers)
@@ -386,42 +390,79 @@ STATES_CONFIG = {
         "name": "Created",
         "symbol" : "⬤",
         "color" : "255, 120, 226",
-        "terminal_state": False
+        "terminal_state": False,
+        "ui_group": 2
     },
     "APPROVED": {
         "name": "Approved",
         "symbol" : "✔",
         "color" : "81, 224, 54",
-        "terminal_state": False
+        "terminal_state": False,
+        "ui_group": 3
     },
     "REJECTED": {
         "name": "Rejected",
         "symbol" : "✖",
         "color" : "214, 0, 0",
-        "terminal_state": True
+        "terminal_state": True,
+        "ui_group": 4
     },
     "EXPIRED": {
         "name": "Expired",
         "symbol" : "⬤",
         "color" : "150, 148, 150",
-        "terminal_state": True
+        "terminal_state": True,
+        "ui_group": 4
     },
     "TRANSPORT_PREPARATION": {
         "name": "Transport preparation",
         "symbol" : "▶",
         "color" : "222, 149, 87",
-        "terminal_state": False
+        "terminal_state": False,
+        "ui_group": 3
     },
     "TRANSPORT_ON_THE_WAY": {
         "name": "Transport on the way",
         "symbol" : "➜",
         "color" : "16, 124, 222",
-        "terminal_state": False
+        "terminal_state": False,
+        "ui_group": 3
     },
     "DELIVERED": {
         "name": "Delivered",
         "symbol" : "⬤",
         "color" : "56, 161, 35",
-        "terminal_state": True
+        "terminal_state": True,
+        "ui_group": 1
     },
+}
+
+
+CONFIG_VALIDATE_CRITERIA_F7B_TAB3 = {
+    "country_from":{
+        "df_column":"Country from",
+        "selected_data_column": "country_from",
+        "ui_text": "Country from"
+    },
+    "country_to":{
+        "df_column":"Country to",
+        "selected_data_column": "country_to",
+        "ui_text": "Country to"
+    },
+    "transport":{
+        "df_column":"Transport",
+        "selected_data_column": "transport",
+        "ui_text": "Transport",
+    },
+    "currency":{
+        "df_column":"Currency",
+        "selected_data_column": "currency",
+        "ui_text": "Currency"
+    },
+    "state":{
+        "df_column":"State",
+        "selected_data_column": "state",
+        "ui_text": "State"
+
+    }
 }

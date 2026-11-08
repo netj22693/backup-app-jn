@@ -202,17 +202,31 @@ WHERE n.offer_id = :offer_id
 
 # ==== TAB 3 ====
 
-def get_sql_query_tab_3(input_number_rows: int, date_filter: str, input_transport: str, input_currency: str, input_country_from: str, input_country_to: str) -> str:
+def get_sql_query_f7b_tab3(
+        transport: str, 
+        currency: str, 
+        country_from: str,
+        country_to: str,
+        state: str,
+        checkbox_date: bool
+    ) -> str:
 
-    sql_query_tab_3 = f"""
+    date_condition = (
+        "AND TO_DATE(a.created_date, 'DD-Mon-YY') BETWEEN DATE :date_from AND DATE :date_to"
+        if checkbox_date
+        else ""
+    )
+
+    query = f"""
     SELECT 
         a.offer_id as "Offer id",
+        a.offer_state as "State",
         f.label as "Transport",
         b.from_country "Country from",
         b.from_city "From",
         b.to_country "Country to",
         b.to_city as "To",
-        a.created_date as "Created day",
+        TO_DATE(a.created_date, 'DD-Mon-YY') as "Created day",
         a.created_time as "Created time",
         i.label as "Time zone",
         a.expected_delivery as "Expected delivery",
@@ -226,20 +240,19 @@ def get_sql_query_tab_3(input_number_rows: int, date_filter: str, input_transpor
         INNER JOIN function7.currency_detail j ON (a.currency = j.currency_id)
 
     WHERE 
-        f.label IN({input_transport}) AND
-        j.label IN({input_currency}) AND
-        b.from_country IN ({input_country_from}) AND
-        b.to_country IN ({input_country_to})
+        f.label IN({transport}) AND
+        j.label IN({currency}) AND
+        b.from_country IN ({country_from}) AND
+        b.to_country IN ({country_to}) AND
+        a.offer_state IN ({state})
 
-        -- part of the query built in the code based on if conditions
-        {date_filter} 
+        {date_condition} 
                     
     ORDER BY a.offer_id DESC
-    LIMIT {input_number_rows}
-"""
+    LIMIT :number_rows
+    """
     
-    return sql_query_tab_3
-
+    return query
 
 # ==== TAB 4 ====
 

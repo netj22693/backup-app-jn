@@ -8,7 +8,7 @@ from Subpages.Dialog.F7b_dialog import state_change_complete, state_change_not_c
 from pandas.io.formats.style import Styler
 from sqlalchemy import text
 from typing import Optional
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 from sqlalchemy import Engine, Column, String, DateTime, Integer, update
 from sqlalchemy.orm import declarative_base, Session
 
@@ -17,6 +17,22 @@ from sqlalchemy.orm import declarative_base, Session
 # ===== Inicialization for logging ===== 
 inicialization_logging()
 
+
+# ===== Data from DB =====
+def get_min_date_offer(db_engine: Engine) -> date:
+
+    query = """
+    SELECT 
+        TO_DATE(a.created_date, 'DD-Mon-YY') as "created_date"
+    FROM function7.offer a
+    ORDER BY created_date
+    LIMIT 1
+    """
+
+    with db_engine.connect() as conn:
+        df = pd.read_sql_query(sql=text(query), con=conn)
+
+    return df["created_date"].iloc[0]
 
 # ===== Data stying =====
 def style_row(row: pd.Series, colors: pd.Series, column_name: str):
@@ -46,7 +62,7 @@ def get_columns_styled(df: pd.DataFrame, color_mapping: dict) -> Styler:
 
     return df.style.apply(style_row, axis=1)
 
-
+# ===== Data mapping =====
 def mapping_states(df: pd.DataFrame, mapping_dict: dict) -> pd.DataFrame:
 
 
@@ -62,6 +78,24 @@ def mapping_states(df: pd.DataFrame, mapping_dict: dict) -> pd.DataFrame:
 
     return df
 
+
+def mapping_states_for_db(config_data: dict, states: list) -> list:
+
+    '''
+    - Reverse mapping 
+    - Direction: UI -> DB
+    - Example: Transport on the way -> TRANSPORT_ON_THE_WAY
+    '''
+    mapped = []
+
+    for state in states:
+        for key, value in config_data.items():
+            ui_name = value["name"]
+            if ui_name == state:
+                mapped.append(key)
+                break 
+
+    return mapped
 
 
 def get_styling_colors(df: pd.DataFrame) -> Styler:
@@ -341,6 +375,19 @@ def change_state_in_db(engine: Engine, offer_id: str, was_state: str, new_state:
             logging.warning(f"F7B - DB update: State change - FAIL - Exception: {e}")
 
 
+# ===== State - parsing =====
+def get_list_states(data: dict) -> list:
+
+    states = []
+
+    for value in data.values():
+        state = value["name"]
+        states.append(state)
+
+    states.sort()
+
+    return states
+
 # ===== State change function ===== 
 def operational_update_of_states(df: pd.DataFrame, db_engine: Engine):
 
@@ -437,6 +484,19 @@ def operational_update_of_states(df: pd.DataFrame, db_engine: Engine):
         )
         
 
+def exclude_terminal_states(states: list, config_data: dict) -> list:
+
+    filtered = []
+
+    for state in states:
+        for key, value in config_data.items():
+            if state == key:
+                terminal_state = value["terminal_state"]
+                if not terminal_state:
+                    filtered.append(key)
+            
+    return filtered 
+
 
 # ===== Input validation ===== 
 def input_validation(input: str) -> Optional[str]:
@@ -463,17 +523,3 @@ def input_validation(input: str) -> Optional[str]:
     else:
         render_warning_info(f"**Invalid offer format** - Valid format is **numeric**, either with prefix **F7-XXX** or without **XXX**.")
         return None
-
-# ===== Reset button ===== 
-def reset_filters_f7b_tab3(list_countries_upper: list, tranport_types_list: list, currency_list: list):
-
-    '''
-    Reset button to clear all applied filters
-    '''
-
-    st.session_state["key_mlts_country_from_f7b_tab3"] = list_countries_upper
-    st.session_state["key_mlts_country_to_f7b_tab3"] = list_countries_upper
-    st.session_state["key_mlts_transport_f7b_tab3"] = tranport_types_list
-    st.session_state["key_mlts_currency_f7b_tab3"] = currency_list
-    st.session_state["key_checkbox_date_f7b_tab3"] = False
-    st.session_state["key_sld_number_rows_f7b_tab3"] = 20
