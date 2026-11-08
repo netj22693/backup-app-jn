@@ -8,6 +8,15 @@ from Subpages.SQL.F5b_SQL_queries import sql_query_exchange_rate_data
 from Subpages.Services.F5b_charts import create_chart
 from Subpages.Operational.F5b_operational_functions import get_date_range, df_split_data_clean_up, df_clean_up_for_ui, extract_variables_from_df
 
+# Diagnostics
+import uuid
+import logging
+from app_logging import inicialization_logging
+inicialization_logging()
+run_id = uuid.uuid4().hex[:8]
+logging.warning(f"F5B SCRIPT START | {run_id}")
+
+
 # =================== App UI  ===================
 st.write("# Exchange Rate - Trend:")
 ''

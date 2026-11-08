@@ -14,6 +14,13 @@ from Subpages.Services.F3b_tab3_execution_logic import execute_f3b_tab3_logic
 from Subpages.Services.F3b_tab4_execution_logic import execute_f3b_tab4_logic
 
 
+# Diagnostics
+import uuid
+import logging
+from app_logging import inicialization_logging
+inicialization_logging()
+run_id = uuid.uuid4().hex[:8]
+logging.warning(f"F3B SCRIPT START | {run_id}")
 
 # ================ Application Screen - INPUT Buttons ========================
 st.write("# Find your invoice:")
