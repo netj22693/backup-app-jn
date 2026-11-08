@@ -1,2 +1,5 @@
-from Subpages.Dialog.APP_universal_dialog import display_download_complete_toast
+from Subpages.Data.F7_input_data import DATASET_CITIES
+import streamlit as st
+
+st.write(DATASET_CITIES)
 

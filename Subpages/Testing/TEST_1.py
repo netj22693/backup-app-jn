@@ -1,1 +1,4 @@
-from Subpages.Data.F3_F4_xml_json_structures import xml_message_example
+from Subpages.Resources import HELLO_STATEMENT
+import streamlit as st
+
+st.write(HELLO_STATEMENT)
