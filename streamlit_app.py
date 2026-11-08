@@ -308,3 +308,30 @@ logging.warning(
     f"APP RUN | SESSION: {st.session_state['_debug_session_id']} "
     f"| PAGE: {pg.url_path}"
 )
+
+import importlib.metadata as metadata
+import sys
+import logging
+
+logging.warning(f"PYTHON VERSION: {sys.version}")
+
+packages = [
+    "streamlit",
+    "tornado",
+    "websockets",
+    "uvicorn",
+    "protobuf",
+    "pandas",
+    "numpy",
+    "pyarrow",
+    "altair",
+    "anyio",
+]
+
+for package in packages:
+    try:
+        version = metadata.version(package)
+    except metadata.PackageNotFoundError:
+        version = "NOT FOUND"
+
+    logging.warning(f"PACKAGE CHECK | {package}: {version}")
