@@ -14,7 +14,9 @@ import logging
 from app_logging import inicialization_logging
 inicialization_logging()
 run_id = uuid.uuid4().hex[:8]
-logging.warning(f"F5B SCRIPT START | {run_id}")
+logging.warning(
+    f"F5B SCRIPT START | SESSION: {st.session_state['_debug_session_id']} | RUN: {run_id}"
+)
 
 
 # =================== App UI  ===================
