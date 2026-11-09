@@ -240,7 +240,7 @@ pg = st.navigation(
             app_description_architecture
             ],
             
-        "TESTING": [test_1, test_2],
+        # "TESTING": [test_1, test_2],
 
         "Functions 1 and 2" : [
             F1_F2_description,
@@ -292,19 +292,3 @@ pg.run()
 st.sidebar.caption(
     f"Do you like this app? :) LinkedIn [Here]({Assets.Links.External.linked_in})"
 )
-
-
-# Diagnostics
-# import uuid
-# import logging
-# from app_logging import inicialization_logging
-
-# inicialization_logging()
-
-# if "_debug_session_id" not in st.session_state:
-#     st.session_state["_debug_session_id"] = uuid.uuid4().hex[:8]
-
-# logging.warning(
-#     f"APP RUN | SESSION: {st.session_state['_debug_session_id']} "
-#     f"| PAGE: {pg.url_path}"
-# )

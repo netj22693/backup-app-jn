@@ -1,0 +1,17 @@
+-----------------------------------------------------
+---- Multiple user sessions impacting each other ----
+-----------------------------------------------------
+● Impact: Very high
+● Spotted: 08-Nov-2026 
+● Fixed: 09-Nov-2026 
+● Issue description: 
+    - User 1 (U1 - browser window), User 2 (U2 - anonymous window)
+    - Some Functions (F3B, F4, F5B, F7B, ...) and pages (F3 Description JSON, ...) caused reload of screan of the other user
+    - This was happening as part of fresh open of the app after reboot (e.g. F3B open -> multiple reruns of script, F3B open 2nd -> all was working fine )
+    - E.g. U1 used F3B (multiple reruns), U2 opened F5B -> it caused reload of page of U1
+
+● Root cause:
+    - Probably wrong approach of importing of functions, variables, etc from shared modules/.py files
+
+● Fix:  
+    - Into Subpages. folders was put __init__.py file 

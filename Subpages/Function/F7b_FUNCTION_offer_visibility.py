@@ -19,18 +19,6 @@ from Subpages.Services.F7b_rating_function import make_rating_validation, displa
 from Subpages.Universal.Universal_functions import singular_or_plural, extract_keys_from_dict_and_adjust
 
 
-# Diagnostics
-# import uuid
-# import logging
-# from app_logging import inicialization_logging
-# inicialization_logging()
-# run_id = uuid.uuid4().hex[:8]
-# logging.warning(
-#     f"F7B SCRIPT START | SESSION: {st.session_state['_debug_session_id']} | RUN: {run_id}"
-# )
-
-
-
 # Inicialization of logging
 inicialization_logging()
 

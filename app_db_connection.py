@@ -24,8 +24,6 @@ def db_connection(function_id: str, dialog_to_display: bool) -> Engine:
     function_id: FX -> id of function which call the db_connect() -> for logic of dialog window
     ''' 
 
-    # Diagnostics
-    # logging.warning(f"{function_id} DB CONNECTION CALLED")
 
     # Load secrets
     password = st.secrets["neon"]["password"]

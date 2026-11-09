@@ -10,16 +10,6 @@ from Subpages.Operational.F8_operational_functions import boolean_to_string_for_
 from Subpages.SQL.F8_SQL_queries import sql_query_number_companies, sql_query_number_branches, sql_query_company_overview, sql_query_branch_info_df, sql_query_branch_df,sql_query_branch_for_map, sql_query_branch_size, sql_query_company_table, get_sql_query_international_domestic, determin_transport_for_db_query, mapping_country, mapping_transport_type, create_df_branches_country, create_pin_column
 
 
-# Diagnostics
-# import uuid
-# import logging
-# from app_logging import inicialization_logging
-# inicialization_logging()
-# run_id = uuid.uuid4().hex[:8]
-# logging.warning(
-#     f"F8 SCRIPT START | SESSION: {st.session_state['_debug_session_id']} | RUN: {run_id}"
-# )
-
 # ==== Business data - lists the F8 works with ====
 country_list = ["AT","CZ","DE","PL","SK"]
 country_list.sort()
