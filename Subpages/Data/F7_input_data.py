@@ -195,45 +195,63 @@ COST_CRITERIA = {
 }
 
 # Dataset SLA
+DELIVERY_SERVICE = {
+    1 : {
+        "name":"slow",
+        "ui_description": "5-10 days to get cargo ready to go",
+        "ui_order": 3
+    },
+    2 : {
+        "name": "standard",
+        "ui_description": "Within 2-3 days cargo should be ready to go",
+        "ui_order": 2
+    },
+    3 : {
+        "name":"express",
+        "ui_description": "Fast administration process -> delivery as soon as possible",
+        "ui_order": 1
+    }
+}
+
 SLA_CRITERIA = {
 	"truck": {
-		"slow": {
+		DELIVERY_SERVICE[1]["name"]: {
 			"extra_time": 120,
             "coef" : 0.4
 		},
-		"standard": {
+		DELIVERY_SERVICE[2]["name"]: {
 			"extra_time": 32,
             "coef" : None
 		},
-		"express": {
+		DELIVERY_SERVICE[3]["name"]: {
 			"extra_time": 6,
             "coef" : 0.4
 		}
 	},
 	"train": {
-		"slow": {
+		DELIVERY_SERVICE[1]["name"]: {
 			"extra_time": 120,
             "coef" : 0.5
 		},
-		"standard": {
+		DELIVERY_SERVICE[2]["name"]: {
 			"extra_time": 48,
             "coef" : None
 		},
-		"express": {
+		DELIVERY_SERVICE[3]["name"]: {
 			"extra_time": 10,
             "coef" : 0.5
 		}
 	},
 	"airplane": {
-		"slow": {
+		DELIVERY_SERVICE[1]["name"]: {
 			"extra_time": 240,
             "coef": 0.1
 		},
-		"standard": {
+		DELIVERY_SERVICE[2]["name"]: {
 			"extra_time": 72,
             "coef" : None
 		},
-		"express": {
+		DELIVERY_SERVICE[3]["name"]: {
 			"extra_time": 2,
             "coef": 0.7
 		}

@@ -756,6 +756,27 @@ def ui_door_to_door_selector(dtd_options: dict, selected_transport: str, key: st
     return selected_value
 
 
+def display_delivery_service_radio_button(data: dict) -> str:
+
+    sorted_data = sorted(
+        data.values(),
+        key=lambda item: item["ui_order"]
+    )
+
+
+    # Validation if no duplicates
+    ui_orders = [item["ui_order"] for item in data.values()]
+
+    if len(ui_orders) != len(set(ui_orders)):
+        raise ValueError("Duplicated ui_order values in delivery service config.")
+
+
+    options = [item["name"].capitalize() for item in sorted_data]
+    captions = [item["ui_description"] for item in sorted_data]
+
+    return st.radio("Delivery service:", options=options, index=1, captions=captions)
+
+
 def ui_transport_offer() -> int:
 
     '''
