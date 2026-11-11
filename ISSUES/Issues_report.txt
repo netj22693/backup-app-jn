@@ -15,3 +15,40 @@
 
 ● Fix:  
     - Into Subpages. folders was put __init__.py file 
+
+
+● Scenarios: 
+
+Opened: Function F3B TAB 3
+---------------------------------
+Issue:
+F2: 2. XML - Parsing                    - 1. click rerun  - 2. click NO rerun
+F4: 4. Invoice - Data Transformation    - 2. click rerun, - 1. click rerun 
+
+PASSED
+
+
+Opened: Function F5B
+---------------------------------
+Issue:
+F4: 4. Invoice - Data Transformation    - 1. click NO rerun
+F2: 2. XML - Parsing                    - 2. click NO rerun
+
+PASSED 
+
+Opened: Function F7B TAB3
+---------------------------------
+Issue:
+F4: 4. Invoice - Data Transformation   	- 1. click rerun, - 2. click rerun,
+F2: 2. XML - Parsing                    - 2. click rerun, - 1. click rerun
+
+PASSED
+
+
+Opened: 4. Invoice - Data Transformation
+---------------------------------
+Issue:
+F7B: Function F7B TAB3			- 1. click rerun, - 2. click rerun,
+F2: 2. XML - Parsing   			- 2. click NO rerun - 1. click NO rerun
+
+PASSED
