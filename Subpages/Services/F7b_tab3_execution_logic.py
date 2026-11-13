@@ -5,7 +5,7 @@ from Subpages.Data.F7_input_data import STATES_CONFIG, CONFIG_VALIDATE_CRITERIA_
 from Subpages.Dialog.APP_universal_dialog import display_input_warning_toast
 from Subpages.Resources_ui_objects import render_info_info
 from Subpages.Operational.F7b_operational_functions import mapping_states_for_db, exclude_terminal_states, operational_update_of_states, mapping_states, get_styling_colors
-from Subpages.SQL.F7b_SQL_queries import get_sql_query_offer_state_validation, get_sql_query_f7b_tab3
+from Subpages.SQL.F7b_SQL_queries import get_sql_query_offer_state_validation, get_sql_query_f7b_tab3, create_sql_string_price
 from Subpages.Universal.Creation_of_parameters_for_SQL import create_parameters_for_sql
 from Subpages.Universal.Universal_functions import singular_or_plural
 from Subpages.Services.APP_validate_criteria import validate_criteria_not_in_final_result
@@ -66,30 +66,54 @@ def execute_f7b_tab3_logic(
         operational_update_of_states(df_sanity_check, db_engine)
     # -------------------------------------------------------------------------
 
-    # Creation of parameter for SQL query 
+     # Creation of parameter for SQL query 
     params_transport, str_for_sql_in_transport = create_parameters_for_sql(multiselect_obj["transport"], "t")
     params_currency, str_for_sql_in_currency = create_parameters_for_sql(multiselect_obj["currency"], "c")
     params_country_from, str_for_sql_in_country_from = create_parameters_for_sql(multiselect_obj["country_from"], "cf")
     params_country_to, str_for_sql_in_country_to = create_parameters_for_sql(multiselect_obj["country_to"], "ct")
-    params_state, str_for_sql_in_state = create_parameters_for_sql(states_mapped, "st")
+    params_state, str_for_sql_in_state = create_parameters_for_sql(states_mapped, "st")  
     
     # Marging of the dictionaries to have 1 dictionary with all parameters
     params_full = params_transport | params_currency | params_country_from | params_country_to | params_state
 
-    if selected_data["date"]["checkbox"] == True:
+    params_full["number_rows"] = selected_data["number_rows"]
+
+    if selected_data["date"]["applicable"]:
         params_full["date_from"] = date_from
         params_full["date_to"] = date_to
 
-    params_full["number_rows"] = selected_data["number_rows"]
+
+    params_delivery_service, str_for_sql_in_delivery_service = (
+        create_parameters_for_sql(multiselect_obj["delivery_service"], "ds")
+        if selected_data["delivery_service"]["applicable"]
+        else ({}, "")
+    )
+
+    params_dtd, str_for_sql_in_dtd = (
+        create_parameters_for_sql(multiselect_obj["door_to_door"], "dtd")
+        if selected_data["door_to_door"]["applicable"]
+        else ({}, "")
+    )
+
+    sql_condition_price, params_price = (
+        create_sql_string_price(selected_data["price"]["range"])
+        if selected_data["price"]["applicable"]
+        else (None, {})
+    )
+
+    params_full = params_full | params_price | params_delivery_service | params_dtd
 
 
     sql_query_tab_3 = get_sql_query_f7b_tab3(
+        selected_data,
         str_for_sql_in_transport,
         str_for_sql_in_currency,
         str_for_sql_in_country_from,
         str_for_sql_in_country_to,
         str_for_sql_in_state,
-        selected_data["date"]["checkbox"]
+        str_for_sql_in_delivery_service, 
+        str_for_sql_in_dtd,
+        sql_condition_price,
         )
 
     with db_engine.connect() as conn:

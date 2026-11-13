@@ -10,8 +10,8 @@ from Subpages.Resources_ui import UiConfigAndIcons
 from Subpages.Resources_ui_objects import render_warning_info, render_info_info
 from Subpages.Services.F7_UI_image_generator import provide_ui_image_path, provide_ui_color_coding_image
 from Subpages.SQL.F7b_SQL_queries import sql_query_table_overview, sql_offer_exists, sql_table_offer, sql_table_delivery, sql_table_costs, sql_table_extra_steps_time, sql_table_sla, sql_query_logs, sql_query_offer_rating, get_sql_query_transport, get_sql_query_service, get_sql_query_from_country, get_sql_query_to_country, get_sql_query_dtd_with_without, get_sql_query_currency, get_sql_query_from_to_country, get_sql_part_where_date, get_sql_query_city, get_sql_query_routes, get_sql_query_offer_state_validation
-from Subpages.Data.F7_input_data import DATASET_CITIES, STATES_CONFIG, TRANSPORT_SPEED, CURRENCY_COUNTRY, STATES_UI_GROUPS
-from Subpages.Operational.F7b_operational_functions import change_state_in_db, input_validation, operational_update_of_states, display_state_and_symbol_mapped, display_offer_logs, mapping_states, get_styling_colors, df_styling_index_set_1, data_empty_fallback_info, create_pie_chart, df_change_column_name, get_parameters_countries, get_list_states, get_min_date_offer
+from Subpages.Data.F7_input_data import DATASET_CITIES, STATES_CONFIG, TRANSPORT_SPEED, CURRENCY_COUNTRY, STATES_UI_GROUPS, DELIVERY_SERVICE
+from Subpages.Operational.F7b_operational_functions import change_state_in_db, input_validation, operational_update_of_states, display_state_and_symbol_mapped, display_offer_logs, mapping_states, get_styling_colors, df_styling_index_set_1, data_empty_fallback_info, create_pie_chart, df_change_column_name, get_parameters_countries, get_list_states, get_min_date_offer, get_currency_db_values
 from Subpages.Services.F7b_UI_functions import display_state_flow, display_state_flow_expander, display_offer_visualization_ui
 from Subpages.Services.F7b_tab3_UI_operations import initiate_session_state_f7b_tab3, display_filter_options_f7b_tab3, reset_filters_f7b_tab3
 from Subpages.Services.F7b_tab3_execution_logic import execute_f7b_tab3_logic
@@ -246,27 +246,45 @@ with tab2:
 # ====================== TAB 3 ======================
 with tab3: 
 
-    execution_data = {
-    "country": extract_keys_from_dict_and_adjust(
-        DATASET_CITIES,
-        operation="upper",
-        sorting=True
-        ),
+    delivery_service = sorted(
+        item["name"].capitalize()
+        for item in DELIVERY_SERVICE.values()
+    )
 
-    "transport": extract_keys_from_dict_and_adjust(
-        TRANSPORT_SPEED,
-        operation="capitalize",
-        sorting=True
-        ),
-    "currency": extract_keys_from_dict_and_adjust(
+    currency = extract_keys_from_dict_and_adjust(
         CURRENCY_COUNTRY,
         sorting=True
-        ),
-    "quick_select_state": list(STATES_UI_GROUPS.values()),
-    "state": get_list_states(STATES_CONFIG),
-    "slider_rows" : 20,
-    "checkbox_date" : False,
-    "min_date": get_min_date_offer(db_engine)
+        )
+
+    execution_data = {
+        "country": extract_keys_from_dict_and_adjust(
+            DATASET_CITIES,
+            operation="upper",
+            sorting=True
+            ),
+
+        "transport": extract_keys_from_dict_and_adjust(
+            TRANSPORT_SPEED,
+            operation="capitalize",
+            sorting=True
+            ),
+        "currency": extract_keys_from_dict_and_adjust(
+            CURRENCY_COUNTRY,
+            sorting=True
+            ),
+        "currency_values": get_currency_db_values(db_engine, currency),
+        "quick_select_state": list(STATES_UI_GROUPS.values()),
+        "state": get_list_states(STATES_CONFIG),
+        "door_to_door": ["No DtD", "DtD From","DtD To", "DtD From & To"],
+        "slider_rows" : 20,
+        "min_date": get_min_date_offer(db_engine),
+        "delivery_service": delivery_service,
+        "toggle" : {
+            "date" : False,
+            "price" : False,
+            "delivery_service" : False,
+            "dtd" : False,
+        }
     }
 
     initiate_session_state_f7b_tab3(execution_data)

@@ -64,3 +64,7 @@ def extract_keys_from_dict_and_adjust(
         data_list.sort()
 
     return data_list
+
+
+def format_integer_number(value: int | float) -> str:
+    return f"{value:,.0f}".replace(",", " ")

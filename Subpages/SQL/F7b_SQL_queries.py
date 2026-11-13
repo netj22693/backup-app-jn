@@ -201,20 +201,85 @@ WHERE n.offer_id = :offer_id
 """
 
 # ==== TAB 3 ====
+def create_sql_string_price(data: dict) -> str | dict:
+
+    '''
+    - SQL string condition builder
+    - Price range based on dynamic UI widget - 1 or more currencies
+    '''
+
+    params = {}
+    query = """AND ( """
+
+    count = 1
+
+    for key, value in data.items():
+        min_value = value["min"]
+        max_value = value["max"]
+
+        currency_param = f"{key}{count}"
+        min_param = f"min_{key}{count}"
+        max_param = f"max_{key}{count}"
+
+        params[currency_param] = key
+        params[min_param] = min_value
+        params[max_param] = max_value
+
+
+        if count > 1:
+            query += " OR "
+
+        condition = f"(j.label = :{currency_param} AND final_price BETWEEN :{min_param} AND :{max_param})"
+
+        query += condition
+
+        if count == len(data):
+            query += " )"
+
+        count += 1
+
+    return query, params 
+
 
 def get_sql_query_f7b_tab3(
+        selected_data: dict,
         transport: str, 
         currency: str, 
         country_from: str,
         country_to: str,
         state: str,
-        checkbox_date: bool
-    ) -> str:
+        delivery_service: str,
+        door_to_door: str,
+        sql_condition_price: str | None
+    ) -> str:   
+
+    '''
+    - Dynamic query builder
+    - ALL the inputs are parametrized -> the inserted strings are strings of parameters
+    '''
+
+    price_condition = (
+        sql_condition_price
+        if sql_condition_price is not None
+        else ""
+    )
+
+    door_to_door_condition = (
+        f'AND x."Door-to-Door" IN({door_to_door})'
+        if selected_data["door_to_door"]["applicable"]
+        else ""
+    )
 
     date_condition = (
         "AND TO_DATE(a.created_date, 'DD-Mon-YY') BETWEEN DATE :date_from AND DATE :date_to"
-        if checkbox_date
+        if selected_data["date"]["applicable"]
         else ""
+    )
+
+    delivery_service_condition = (
+        f"AND g.label IN({delivery_service})"
+        if selected_data["delivery_service"]["applicable"]
+        else ""        
     )
 
     query = f"""
@@ -231,13 +296,28 @@ def get_sql_query_f7b_tab3(
         i.label as "Time zone",
         a.expected_delivery as "Expected delivery",
         a.final_price as "Final price",
-        j.label as "Currency"                    
+        j.label as "Currency",
+        g.label as "Delivery service",
+        x."Door-to-Door",
+        b.from_dtd "DtD From [km]",
+        b.to_dtd "DtD To [km]"         
                     
     FROM function7.offer a
         INNER JOIN function7.delivery b ON (a.offer_id = b.offer_id)
         INNER JOIN function7.transport_type f ON (a.transport = f.transport_id)
         INNER JOIN function7.time_zone i ON (a.time_zone = i.zone_id)
         INNER JOIN function7.currency_detail j ON (a.currency = j.currency_id)
+        INNER JOIN function7.service g ON (a.service = g.service_id)
+
+        CROSS JOIN LATERAL (
+            SELECT
+                CASE
+                    WHEN b.from_dtd = 0 AND b.to_dtd = 0 THEN 'No DtD'
+                    WHEN b.from_dtd > 0 AND b.to_dtd = 0 THEN 'DtD From'
+                    WHEN b.from_dtd = 0 AND b.to_dtd > 0 THEN 'DtD To'
+                    ELSE 'DtD From & To'
+                END AS "Door-to-Door"
+            ) x
 
     WHERE 
         f.label IN({transport}) AND
@@ -245,7 +325,10 @@ def get_sql_query_f7b_tab3(
         b.from_country IN ({country_from}) AND
         b.to_country IN ({country_to}) AND
         a.offer_state IN ({state})
+        {door_to_door_condition}
 
+        {delivery_service_condition}
+        {price_condition}
         {date_condition} 
                     
     ORDER BY a.offer_id DESC

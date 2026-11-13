@@ -460,27 +460,43 @@ CONFIG_VALIDATE_CRITERIA_F7B_TAB3 = {
     "country_from":{
         "df_column":"Country from",
         "selected_data_column": "country_from",
-        "ui_text": "Country from"
+        "ui_text": "Country from",
+        "always_available": True
     },
     "country_to":{
         "df_column":"Country to",
         "selected_data_column": "country_to",
-        "ui_text": "Country to"
+        "ui_text": "Country to",
+        "always_available": True
     },
     "transport":{
         "df_column":"Transport",
         "selected_data_column": "transport",
         "ui_text": "Transport",
+        "always_available": True
     },
     "currency":{
         "df_column":"Currency",
         "selected_data_column": "currency",
-        "ui_text": "Currency"
+        "ui_text": "Currency",
+        "always_available": True
     },
     "state":{
         "df_column":"State",
         "selected_data_column": "state",
-        "ui_text": "State"
-
-    }
+        "ui_text": "State",
+        "always_available": True
+    },
+    "delivery_service":{
+        "df_column":"Delivery service",
+        "selected_data_column": "delivery_service",
+        "ui_text": "Delivery service",
+        "always_available": False
+    },
+    "door_to_door":{
+        "df_column":"Door-to-Door",
+        "selected_data_column": "door_to_door",
+        "ui_text": "Door-to-Door",
+        "always_available": False
+    },
 }

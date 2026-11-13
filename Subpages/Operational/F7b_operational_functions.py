@@ -34,7 +34,53 @@ def get_min_date_offer(db_engine: Engine) -> date:
 
     return df["created_date"].iloc[0]
 
-# ===== Data stying =====
+
+def get_currency_db_values(db_engine: Engine, currency: list) -> dict:
+
+    query = """
+    SELECT
+        floor(min(a.final_price)) as "min",
+        ceil(max(a.final_price)) as "max",
+        ceil(avg(a.final_price)) as "avg",
+        floor(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY final_price)) as "median"
+
+    FROM function7.offer a 
+        INNER JOIN function7.currency_detail j ON (a.currency = j.currency_id)
+
+    WHERE
+        j.label = :currency
+    HAVING COUNT(*) > 0
+    """
+    values = {}
+
+    try: 
+        for item in currency:
+            param = {"currency": item}
+
+            with db_engine.connect() as conn:
+                df = pd.read_sql_query(sql=text(query), con=conn, params=param)
+
+                df = pd.read_sql_query(
+                    sql=text(query),
+                    con=conn,
+                    params={"currency": item}
+                )
+
+                if not df.empty:
+                    values[item] = {
+                        "min": df.loc[0, "min"],
+                        "max": df.loc[0, "max"],
+                        "avg": df.loc[0, "avg"],
+                        "median": df.loc[0, "median"],
+                    }
+
+    except Exception as e:
+        logging.error(f"F7B - Operational function: get_currency_db_values() - FAIL - Exception: {e}")
+
+    return values
+
+
+# ===== Data styling =====
 def style_row(row: pd.Series, colors: pd.Series, column_name: str):
     rgb = colors.loc[row.name]
 
