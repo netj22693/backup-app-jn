@@ -60,6 +60,7 @@ st.write(f"""
 - Link to [GitHub]({Assets.Links.External.git_hub}) repository
 - Modular monolith 
 - Specific Functions are built to share data as contracts
+- Configuration-driven architecture
 """
 )
 ''
