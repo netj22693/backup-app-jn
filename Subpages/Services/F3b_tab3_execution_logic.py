@@ -5,7 +5,9 @@ from Subpages.Resources_ui_objects import render_info_info
 from Subpages.Dialog.APP_universal_dialog import display_input_warning_toast
 from Subpages.Universal.Creation_of_parameters_for_SQL import create_parameters_for_sql
 from Subpages.SQL.F3b_SQL_queries import get_sql_query_f3b_tab_3
+from Subpages.Data.F3b_input_data import CONFIG_VALIDATE_CRITERIA_F3B_TAB3
 from Subpages.Universal.Universal_functions import adjust_index_in_df, singular_or_plural
+from Subpages.Services.APP_validate_criteria import validate_criteria_not_in_final_result
 
 def execute_f3b_tab3_logic(
     db_engine : Engine,
@@ -15,8 +17,8 @@ def execute_f3b_tab3_logic(
     # ===== The selected data split into smaller objects cleaner code =====
     multiselect_obj = selected_data["multiselect"]
 
-    customer = selected_data["text"]["customer"]
-    product = selected_data["text"]["product"]
+    customer = selected_data["text_search"]["customer"]
+    product = selected_data["text_search"]["product"]
 
     date_from = selected_data["date"]["from"]
     date_to = selected_data["date"]["to"]
@@ -53,17 +55,17 @@ def execute_f3b_tab3_logic(
     # f"%{variable}%" - preperation of wild cards for SQL parameter
 
 
-    if selected_data["text"]["checkbox"] == True:
+    if selected_data["text_search"]["applicable"]:
         if len(customer) > 0:
             params_full["customer"] = f"%{customer}%"
-            selected_data["text"]["customer_applicable"] = True
+            selected_data["text_search"]["customer_applicable"] = True
 
         if len(product) > 0:
             params_full["product"] = f"%{product}%"
-            selected_data["text"]["product_applicable"] = True
+            selected_data["text_search"]["product_applicable"] = True
 
 
-    if selected_data["date"]["checkbox"] == True:
+    if selected_data["date"]["applicable"]:
         params_full["date_from"] = date_from
         params_full["date_to"] = date_to
 
@@ -79,9 +81,9 @@ def execute_f3b_tab3_logic(
         str_for_sql_in_transport_company,
         str_for_sql_in_transport_parcel_size,
         str_for_sql_in_transport_file_format,
-        selected_data["date"]["checkbox"],
-        selected_data["text"]["customer_applicable"],
-        selected_data["text"]["product_applicable"]
+        selected_data["date"]["applicable"],
+        selected_data["text_search"]["customer_applicable"],
+        selected_data["text_search"]["product_applicable"]
         )
 
     with db_engine.connect() as conn:
@@ -96,7 +98,7 @@ def execute_f3b_tab3_logic(
 
         df_table_tab_3_styled = df_table_tab_3.style.format({
         "Product price": "{:,.2f}",
-        "Extra service price": "{:,.2f}",
+        "Additional service price": "{:,.2f}",
         "Transport price": "{:,.2f}",
         "Total sum": "{:,.2f}",
         })
@@ -111,5 +113,9 @@ def execute_f3b_tab3_logic(
             s = singular_or_plural(rows_from_db)
 
             render_info_info(f"There is only **{rows_from_db} record{s}** matching the selected criteria.")
+
+        
+        # Validation which of the selected options are not part of the result -> info note to the user
+        validate_criteria_not_in_final_result(df_table_tab_3, selected_data, CONFIG_VALIDATE_CRITERIA_F3B_TAB3)
 
         st.dataframe(df_table_tab_3_styled)

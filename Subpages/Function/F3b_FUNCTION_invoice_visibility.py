@@ -126,13 +126,16 @@ with tab3:
         # UI will not render this tab3 and will continue to tab4
 
     else:
+
         # Extend by default state conditions
-        execution_data["submit_disabled"] = False
-        execution_data["checkbox_date"] = False
-        execution_data["checkbox_text"] = False
+        execution_data.setdefault("toggle", {})
+        execution_data["toggle"]["date"] = False
+        execution_data["toggle"]["text_search"] = False
+
         execution_data["customer_applicable"] = False
         execution_data["product_applicable"] = False
         execution_data["number_rows"] = 20
+
 
         initiate_session_state_f3b_tab3(execution_data)   
 

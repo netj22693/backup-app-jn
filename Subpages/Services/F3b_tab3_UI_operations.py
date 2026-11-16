@@ -81,9 +81,9 @@ def display_filter_options_f3b_tab3(data: dict):
 
     # Date picker
     st.write("")
-    checkbox_date = st.checkbox("Filtering based on date", key="key_checkbox_date_f3b_tab3")
+    toggle_date = st.toggle("Date", key="key_toggle_date_f3b_tab3")
 
-    if checkbox_date == True:
+    if toggle_date:
         
         col1, col2 = st.columns(2)
 
@@ -118,14 +118,16 @@ def display_filter_options_f3b_tab3(data: dict):
 
         # UI space -> in case that Date picker is displayed
         st.write("")
+        st.write("")
+
     else: 
         picked_date_from = None
         picked_date_to = None
 
     # Text search
-    checkbox_text = st.checkbox("Filtering based on text search", key="key_checkbox_text_f3b_tab3")
+    toggle_text = st.toggle("Customer & Product", key="key_toggle_text_search_f3b_tab3")
 
-    if checkbox_text == True:
+    if toggle_text:
         customer = st.text_input(
             f"{CONFIG_UI_INPUTS['customer']['icon']} {CONFIG_UI_INPUTS['customer']['name']}",
             max_chars=CONFIG_UI_INPUTS['customer']['limit'],
@@ -138,13 +140,17 @@ def display_filter_options_f3b_tab3(data: dict):
             help=CONFIG_UI_INPUTS['product']['help_f3b']
             ).strip()
 
+        # UI space
+        st.write("")
+
     else: 
         customer = None
         product = None
 
     # Slider - number of rows
     st.write("")
-    number_rows = st.slider("Number of records to be shown", min_value=5, max_value=50, step=5, label_visibility="visible", key="key_sld_number_rows_f3b_tab3")
+    st.write("")
+    number_rows = st.slider("Number of records to display", min_value=5, max_value=50, step=5, label_visibility="visible", key="key_sld_number_rows_f3b_tab3")
 
 
     return {
@@ -160,15 +166,15 @@ def display_filter_options_f3b_tab3(data: dict):
             },
 
         # ** Default value -> will change, if text input passes validation
-        "text":{
-            "checkbox": checkbox_text,          # bool
+        "text_search":{
+            "applicable": toggle_text,          # bool
             "customer": customer,               # str | None
             "customer_applicable": False,       # **
             "product": product,                 # str | None
             "product_applicable": False,        # ** 
         },
         "date": {
-            "checkbox": checkbox_date, # bool
+            "applicable": toggle_date, # bool
             "from": picked_date_from, # datetime.date(2025, 11, 12) | None
             "to": picked_date_to, # datetime.date(2025, 11, 12) | None          
         },
@@ -183,6 +189,7 @@ def initiate_session_state_f3b_tab3(data: dict[str, list | bool | int]):
     - Initiating session states for purpose/possibility of reseting filters
     '''
 
+    # Multiselect
     if "key_category_options_f3b_tab3" not in st.session_state:
         st.session_state["key_category_options_f3b_tab3"] = data["category_options"]
 
@@ -204,14 +211,16 @@ def initiate_session_state_f3b_tab3(data: dict[str, list | bool | int]):
     if "key_file_format_options_f3b_tab3"  not in st.session_state:
         st.session_state["key_file_format_options_f3b_tab3"] = data["file_format_options"]
 
+    # Slider
     if "key_sld_number_rows_f3b_tab3" not in st.session_state:
         st.session_state["key_sld_number_rows_f3b_tab3"] = data["number_rows"]
-    
-    if "key_checkbox_date_f3b_tab3"  not in st.session_state:
-        st.session_state["key_checkbox_date_f3b_tab3"] = data["checkbox_date"]
 
-    if "key_checkbox_text_f3b_tab3"  not in st.session_state:
-        st.session_state["key_checkbox_text_f3b_tab3"] = data["checkbox_text"]
+    # Toggle
+    if "key_toggle_date_f3b_tab3"  not in st.session_state:
+        st.session_state["key_toggle_date_f3b_tab3"] = data["toggle"]["date"]
+
+    if "key_toggle_text_search_f3b_tab3"  not in st.session_state:
+        st.session_state["key_toggle_text_search_f3b_tab3"] = data["toggle"]["text_search"]
 
 
 def reset_filters_f3b_tab3(data: dict[str, list | bool | int]):
@@ -220,6 +229,7 @@ def reset_filters_f3b_tab3(data: dict[str, list | bool | int]):
     Reset button to clear all applied filters
     '''
 
+    # Multiselect
     st.session_state["key_category_options_f3b_tab3"] = data["category_options"]
     st.session_state["key_transport_company_options_f3b_tab3"] = data["transport_company_options"]
     st.session_state["key_currency_options_f3b_tab3"] = data["currency_options"]
@@ -227,6 +237,10 @@ def reset_filters_f3b_tab3(data: dict[str, list | bool | int]):
     st.session_state["key_country_options_f3b_tab3"] = data["country_options"]
     st.session_state["key_parcel_size_options_f3b_tab3"] = data["parcel_size_options"]
     st.session_state["key_file_format_options_f3b_tab3"] = data["file_format_options"]
+
+    # Slider
     st.session_state["key_sld_number_rows_f3b_tab3"] = data["number_rows"]
-    st.session_state["key_checkbox_date_f3b_tab3"] = data["checkbox_date"]
-    st.session_state["key_checkbox_text_f3b_tab3"] = data["checkbox_text"]
+
+    # Toggle
+    st.session_state["key_toggle_date_f3b_tab3"] = data["toggle"]["date"]
+    st.session_state["key_toggle_text_search_f3b_tab3"] = data["toggle"]["text_search"]

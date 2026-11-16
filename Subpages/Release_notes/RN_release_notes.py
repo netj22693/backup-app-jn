@@ -71,6 +71,7 @@ def display_release_notes_expander_f3_f4():
        
         st.write("""
         - F3 & F3B:
+            - **v72.5** - F3B - TAB3 extended by info & validation of selects not in range of result - 16-Nov-2026
             - **v72.0** - F3B - TAB4 change of execution logic -> faster set of filters - 03-Nov-2026
             - **v71.7** - F3B - TAB3 customized search release - 01-Nov-2026
             - **v71.6** - F3 - DB load function extended by logic for F3B tab3 data load & UI config centralized - 30-Oct-2026
