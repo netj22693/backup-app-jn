@@ -3,10 +3,10 @@ from Subpages.Resources import Assets
 from Subpages.Resources_ui import UiConfigAndIcons
 
 
-# ============= LOGO - SHARED ON ALL PAGES ==========
+# ============= Sidebar setup ========================
 st.set_page_config(initial_sidebar_state="auto") 
 
-# ============= LOGO - SHARED ON ALL PAGES ==========
+# ============= LOGO - SHARED ON ALL PAGES ===========
 st.logo("Pictures/V2_pictures/Logo_7.png", size='large')
 
 
