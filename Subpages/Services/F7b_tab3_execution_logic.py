@@ -120,6 +120,7 @@ def execute_f7b_tab3_logic(
         df_table_tab_3 = pd.read_sql_query(sql=text(sql_query_tab_3), con=conn, params=params_full)
 
     if df_table_tab_3.empty:
+        st.write("")
         render_info_info("**No result** - There is no record found in DB.")
 
     else:
