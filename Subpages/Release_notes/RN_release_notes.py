@@ -74,7 +74,7 @@ def display_release_notes_expander_f3_f4():
             - **v72.5** - F3B - TAB3 extended by info & validation of selects not in range of result - 16-Nov-2026
             - **v72.0** - F3B - TAB4 change of execution logic -> faster set of filters - 03-Nov-2026
             - **v71.7** - F3B - TAB3 customized search release - 01-Nov-2026
-            - **v71.6** - F3 - DB load function extended by logic for F3B tab3 data load & UI config centralized - 30-Oct-2026
+            - **v71.6** - F3 - DB load function extended by logic for F3B TAB3 data load & UI config centralized - 30-Oct-2026
             - **v70.8** - F3 - Caching of data loaded from DB -> increased speed of processing - 09-Oct-2026
             - **v70.7** - F3 - Logic of warning of unusual user inputs in context of selected category added & Extension of user input validations - 09-Oct-2026
             - **v70.6** - F3 - Info price table and extra services are pulled from DB -> more interactive UI - 08-Oct-2026
@@ -154,8 +154,9 @@ def display_release_notes_expander_f7():
         icon= UiConfigAndIcons.Pages.release_notes["icon"]
         ):	
         st.write("""
-            - **v72.4** - F7B - TAB 3 New filters added: Price, Delivery service, Door-to-Door - 13-Nov-2026
-            - **v72.2** - F7B - TAB 3 execution model rebuilt & extension of filtering options & better UI/UX - 08-Nov-2026
+            - **v72.6** - F7B - TAB4 execution model rebuilt & filter offer states added - 22-Nov-2026
+            - **v72.4** - F7B - TAB3 New filters added: Price, Delivery service, Door-to-Door - 13-Nov-2026
+            - **v72.2** - F7B - TAB3 execution model rebuilt & extension of filtering options & better UI/UX - 08-Nov-2026
             - **v69.8** - F7 - DB insert service optimized to commit data insert only in case that all database operations succeed - 14-Sep-2026
             - **v69.7** - F7 - Adjusted to use the same UI offer visualization as F7B (now unified cross-function) - 13-Sep-2026
             - **v69.1** - F7 - Centralized API handling - 04-Sep-2026
@@ -164,7 +165,7 @@ def display_release_notes_expander_f7():
             - **v68.2** - F7B - Offer rating function released - 27-Aug-2026
             - **v68.1** - F7B - Code refactoring -> simplification - 25-Aug-2026
             - **v68.0** - F7 - Sequence in DB set -> allows concurrent users - 16-Aug-2026
-            - **v67.5** - F7B upgrade of UI for better visualization of offer states TAB 1, TAB 2 - 09-Aug-2026
+            - **v67.5** - F7B upgrade of UI for better visualization of offer states TAB1, TAB2 - 09-Aug-2026
             - **v67.2** - F7 refactored time calculation, F7B STATE logic extended - 07-Aug-2026
             - **v67.1** - F7B - GitHub Action cron job for STATE changes - 05-Aug-2026
             - **v67.0** - F7 & F7B - Offer STATES introduced - pilot version - 04-Aug-2026
@@ -206,9 +207,9 @@ def display_release_notes_expander_f8():
         - **v68.7** - Centralized DB connection handling - 02-Sep-2026
         - **v64.6** - TABs extended by country flags + Company info expander added - 02-July-2026
         - **v64.5** - DFs extended by PINs and colored -> better visualization on UI - 01-July-2026
-        - **v64.4** - TAB 4 Branch info released - 28-Jun-2026
-        - **v64.2** - DB design changed & TAB 2 extended also by MAP - 18-Jun-2026
-        - **v64.1** - TAB 1 extended by MAP to visualize branches - 17-Jun-2026
+        - **v64.4** - TAB4 Branch info released - 28-Jun-2026
+        - **v64.2** - DB design changed & TAB2 extended also by MAP - 18-Jun-2026
+        - **v64.1** - TAB1 extended by MAP to visualize branches - 17-Jun-2026
         - **v64.0** - Code refactoring & clean up - 17-Jun-2026
         - **v52.5** - Function description extended by Video Guide - 05-Dec-2025
         - **v36.9** - 'branch' table introduced -> SQL results better customized - 05-Nov-2025

@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 import logging
 from app_logging import inicialization_logging
 from Subpages.Resources_ui_objects import render_warning_info, render_info_info
@@ -170,14 +169,6 @@ def get_styling_colors(df: pd.DataFrame) -> Styler:
     return df_style
 
 
-def df_styling_index_set_1(input_df: pd.DataFrame) -> pd.DataFrame:
-
-    input_df[" "] = input_df.index + 1
-    input_df = input_df.set_index(" ")
-
-    return input_df
-
-
 def df_change_column_name(input_df: pd.DataFrame) -> pd.DataFrame:
     
     dict_names = {
@@ -205,20 +196,6 @@ def get_parameters_countries(country_list: list) -> dict:
         params_dict[param] = item
 
     return params_dict
-
-# ===== Charts =====
-def create_pie_chart(df_input, x_data, y_data):
-    
-    chart = px.pie(
-    df_input, 
-    names = df_input[f"{x_data}"],
-    values = df_input[f"{y_data}"]
-    )
-
-    # Adjustment to see 2 decimals always in the chart
-    chart.update_traces(texttemplate="%{percent:.2%}")
-
-    return chart
 
 
 
@@ -288,6 +265,22 @@ def display_offer_logs(db_engine: Engine, sql_query: str, offer_id: str, mapping
                 "St": ""
             }
         )
+
+
+def mapping_state_db_to_ui(df: pd.DataFrame, config: dict)-> pd.DataFrame:
+
+    for index, row in df.iterrows():
+
+        state = config.get(row["offer_state"])
+
+        if state is None:
+            continue
+
+        df.loc[index, "offer_state"] = state["name"]
+
+    return df
+
+
 
 # ===== UI fallback =====
 def data_empty_fallback_info(input_df: pd.DataFrame):
@@ -569,3 +562,7 @@ def input_validation(input: str) -> Optional[str]:
     else:
         render_warning_info(f"**Invalid offer format** - Valid format is **numeric**, either with prefix **F7-XXX** or without **XXX**.")
         return None
+
+# ===== DF operation ===== 
+def sum_values_in_df(df: pd.DataFrame, column: str = "Count") -> int:
+    return df[column].sum()

@@ -1,3 +1,4 @@
+import streamlit as st
 import pandas as pd
 from Subpages.Resources_ui_objects import render_info_info
 
@@ -73,3 +74,18 @@ def validate_criteria_not_in_final_result(df: pd.DataFrame, selected_data: dict,
 
     if show_info:
         render_info_info(ui_text_build)
+
+    else:
+        # Workaround
+        # Note: st.empty() keeps the UI structure consistent.
+        # Issue: If an info note was displayed in the previous run but is no longer applicable in the current run, Streamlit resets the selected tab to tab1.
+        
+        # Reproduction:
+        # - Info -> click tab4 -> Info: tab4 stays selected
+        # - Info -> click tab4 -> No Info: resets to tab1
+        # - No Info -> click tab4 -> No Info: tab4 stays selected
+        # - No Info -> click tab4 -> Info: resets to tab1
+        
+        # Fix: Always render a placeholder to preserve UI consistency and prevent the selected tab from unexpectedly resetting.
+
+        st.empty()

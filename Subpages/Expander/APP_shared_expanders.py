@@ -6,7 +6,7 @@ def diplay_how_to_use_filters_expander():
 
     '''
     - Help to user to navigate throught the buttons and principle
-    - Shared expander between F3B TAB3 and F7B TAB3
+    - Shared expander between F3B and F7B (TAB3, TAB4)
     - These are sharing the same execution logic
     '''
 

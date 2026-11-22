@@ -500,3 +500,13 @@ CONFIG_VALIDATE_CRITERIA_F7B_TAB3 = {
         "always_available": False
     },
 }
+
+
+CONFIG_VALIDATE_CRITERIA_F7B_TAB4 = {
+    "state":{
+        "df_column":"offer_state",
+        "selected_data_column": "state",
+        "ui_text": "State",
+        "always_available": True
+    }
+}
