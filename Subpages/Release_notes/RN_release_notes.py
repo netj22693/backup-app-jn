@@ -8,6 +8,7 @@ def display_release_notes_expander_app_specific():
         ):	
 
        st.write("""
+        - **v72.7** - DB Engine creation reworked (using cache) -> reduces time (1,6 → 0,0001 s.) to create Engine and make DB handshake - 22-Nov-2026
         - **v71.4** - Unification of info/fallback notifications by wrappers implemented across Functions - 21-Oct-2026
         - **v71.0** - Centralized UI components and introduced reusable rendering wrappers - 16-Oct-2026        
         - **v70.9** - Created a modular function with extended logic for video selection, rendering and display - 13-Oct-2026
