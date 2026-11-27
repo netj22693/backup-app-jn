@@ -136,12 +136,12 @@ class Assets:
                 "Function 2 - Happy path": {
                     "path":"Video/F2_videoguide_happy_path_v1.mp4",
                     "released": "06-10-2026",
-                    "outdated": False
+                    "outdated": True
                 },
                 "Function 2 - Unhappy path": {
                     "path":"Video/F2_videoguide_unhappy_path_v1.mp4",
                     "released": "06-10-2026",
-                    "outdated": False
+                    "outdated": True
                 }
             }
 
