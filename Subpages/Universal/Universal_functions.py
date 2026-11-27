@@ -1,5 +1,6 @@
 import pandas as pd
 import logging
+import streamlit as st
 from typing import Literal
 from app_logging import inicialization_logging
 
@@ -14,6 +15,7 @@ Purpose of this .py file
 inicialization_logging()
 
 
+
 def singular_or_plural(input_value: int | float) -> str:
     """
     Used for determining if day/days, hour/hours, route/routes, etc.
@@ -23,7 +25,7 @@ def singular_or_plural(input_value: int | float) -> str:
     else:
         return "s"
 
-
+# ===== DF operations =====
 def adjust_index_in_df(df: pd.DataFrame, operation: str = "PLUS", num: int = 1) -> pd.DataFrame:
     '''
     Moves DF indexes up/down based on parameters 'operation' and 'number'
@@ -46,6 +48,20 @@ def adjust_index_in_df(df: pd.DataFrame, operation: str = "PLUS", num: int = 1) 
     return df
 
 
+def display_df_index_hidden(df: pd.DataFrame):
+
+    '''
+    Simple wrapper
+    '''
+
+    st.dataframe(
+        df,
+        hide_index=True,
+        width="stretch"
+        )
+
+
+# ===== Dictionary operations =====
 def extract_keys_from_dict_and_adjust(
         data: dict,
         operation: Literal["capitalize", "upper"] | None = None,

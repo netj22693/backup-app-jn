@@ -1,108 +1,156 @@
 import streamlit as st
 import time
 import pandas as pd
+import pandasql as ps
 from pandas.io.formats.style import Styler
 import plotly.express as px
 from xml.etree.ElementTree import Element
 from plotly.graph_objects import Figure
 from Subpages.Resources_ui_objects import render_success_info, render_warning_info
 
-# ======= Data validation -> displays on UI ======
-def data_validation(total_sum: float, sum_price: float, currency: str) -> str:
 
-    result = total_sum - sum_price
+# ======= SQL to DF ======
+def run_sql_query_df(sql_query, df):
+
+    '''
+    - SQL to DF
+    - Set specifically for F2 using data_table_sql created in F2 code/script
+    '''
+
+    result = ps.sqldf(sql_query, {"data_table_sql": df})
+    return result
+
+
+# ======= Data validation -> displays on UI ======
+def data_validation(
+        total_sum: float,
+        sum_product_price: float,
+        currency: str
+        ) -> tuple[str, bool]:
+
+    result = total_sum - sum_product_price
     
     if result != 0:
 
         TEXT = f"""
         Not Passed
         - **Total sum** in the XML invoice is: **{total_sum:.2f}** {currency}
-        - But **summary of prices** in detail lines is: **{sum_price:.2f}** {currency}
+        - But **summary of prices** in detail lines is: **{sum_product_price:.2f}** {currency}
         """
 
         render_warning_info(TEXT)
 
         # This string is NOT app state but str/text to appear in the .txt doc
-        return "Sum total - Not passed"
+        return "Sum total - Not passed ⚠︎", False
 
 
     else:
         render_success_info("Passed")
+
         # This string is NOT app state but str/text to appear in the .txt doc
-        return "Sum total - Passed"
+        return "Sum total - Passed", True
 
 
-def data_validation_services(value_total_sum_services_fl: float, sum_price_warranty: float, sum_price_insurance: float, currency: str) -> str:
+def data_validation_services(
+        total_sum_services: float,
+        sum_services: float,
+        currency: str
+        ) -> tuple[str, bool]:
 
-    result = value_total_sum_services_fl - sum_price_warranty - sum_price_insurance
-    sum_warranty_insurance = sum_price_warranty + sum_price_insurance
+    result = total_sum_services - sum_services
 
-    
+   
     if result != 0:
 
         TEXT = f"""
         Not Passed
-        - **Total sum SERVICES** in the XML invoice is: **{value_total_sum_services_fl:.2f}** {currency}
-        - But **summary of prices** in detail lines is **{sum_warranty_insurance:.2f}** {currency}."""
+        - **Total sum SERVICES** in the XML invoice is: **{total_sum_services:.2f}** {currency}
+        - But **summary of prices** in detail lines is **{sum_services:.2f}** {currency}."""
 
         render_warning_info(TEXT)
  
         # This string is NOT app state but str/text to appear in the .txt doc
-        return ("Services - Not passed")
+        return ("Services - Not passed ⚠︎"), False
 
     else:
         render_success_info("Passed")
+
         # This string is NOT app state but str/text to appear in the .txt doc
-        return "Services - Passed"
+        return "Services - Passed", True
 
 
+# ======= Logic of F2 warning UI info ======
 
-# ======= Functions for parsing ======
-def data_parsing_find(root: Element, findall_value: str, find_value: str, to_float: bool, to_list: bool) -> str | float | list:
+def get_warning_scenario(v1: bool, v2: bool) -> str:
 
-    c = []
-    for a in root.findall(findall_value):
-        b = a.find(find_value).text
-        c.append(b)
-    
-    value = c[0]
+    '''
+    True = Validation passed
+    False = Validation NOT passed
+    ''' 
 
-    if to_list == False:
-        if to_float == True:
-            return float(value)
+    if v1 == True and v2 == True:
+        scenario = "NONE"
 
-        else:
-            return value
-    
+    elif v1 == True and v2 == False:
+        scenario = "V2_ONLY"
+
+    elif v1 == False and v2 == True:
+        scenario = "V1_ONLY"
+   
+    elif v1 == False and v2 == False:
+        scenario = "BOTH"
+
+    return scenario
+
+
+def display_warning_f2(
+    scenario: str,
+    expected_scenario: list[str],
+    text_config: dict[str, str] | None = None
+    ):
+
+
+    if text_config is None:
+        text_config = {}
+
+
+    warning_text = {}
+
+    if scenario in (expected_scenario):
+        badge = f":orange-badge[:material/warning:]"
+        result = True
+
+        if text_config:
+            for key, value in text_config.items():
+                update = f":orange-badge[:material/warning: {value}]"
+                warning_text[key] = update
+
     else:
-        return c
+        badge = ""
+        result = False
+
+    return badge, warning_text, result
+
+# ======= Functions for parsing - SPECIFIC FOR FUNCTION 2 ======
+'''
+- These parsing functions are specifically tailored for needs of F2
+- NOT to be reused anywhere else
+'''
 
 
+def f2_xml_data_parsing_find_including_additional_services(
+        root: Element,
+        findall_value: str,
+        find_value: str,
+        condition_type: str,
+        find_value_after_condition: str,
+        find_value_if_not_none: str
+        ) -> float:
 
-def data_parsing_get(root: Element, findall_value: str, get_value: str) -> list:
-
-    c = []
-    for a in root.findall(findall_value):
-        b = a.get(get_value)
-        c.append(b)
-
-    return c
-
-
-def data_parsing_find_conditional(root: Element, findall_value: str, find_value: str, condition_type: str, find_value_after_condition: str) -> list :
-
-    c = []
-    for a in root.findall(findall_value):
-        condition = a.find(find_value).text
-
-        if condition == condition_type:
-            b = a.find(find_value_after_condition).text
-            c.append(b)
-
-    return c
-
-
-def data_parsing_including_additional_services(root: Element, findall_value: str, find_value: str, condition_type: str, find_value_after_condition: str, find_value_if_not_none: str) -> float:
+    '''
+    - Parsing function specifically tailored for needs of F2
+    - NOT to be reused anywhere else
+    '''
 
     b = []
     for a in root.findall(findall_value):
@@ -122,7 +170,16 @@ def data_parsing_including_additional_services(root: Element, findall_value: str
 
     return b
 
-def data_parsing_find_conditional_with_none_condition(root: Element, findall_value: str, find_value: str) -> float:
+def f2_xml_data_parsing_find_conditional_with_none_condition(
+        root: Element,
+        findall_value: str,
+        find_value: str
+        ) -> float:
+
+    '''
+    - Parsing function specifically tailored for needs of F2
+    - NOT to be reused anywhere else
+    '''
 
     c = []
     for a in root.findall(findall_value):
@@ -144,38 +201,6 @@ def data_parsing_find_conditional_with_none_condition(root: Element, findall_val
 
     return c
 
-# ======= Charts ======
-
-def create_pie_chart(df: pd.DataFrame, chart_names:str, chart_values: str, chart_title:str, drop: bool) -> Figure:
-
-    # Drop rows with 0 costs to do not appear in the chart
-    if drop == True:
-        index = df[(df['Costs'] == 0)].index
-        df.drop(index, inplace=True)
-
-    fig_pie = px.pie(
-        df, 
-        names = chart_names,
-        values = chart_values,
-        title = chart_title
-        )
-    
-    # To see 2 decimals always in the chart
-    fig_pie.update_traces(texttemplate="%{percent:.2%}")
-
-    return fig_pie
-
-
-def create_bar_chart(df: pd.DataFrame, x_values:str | list, y_values:str | list, title: str) -> Figure:
-
-    fig_bar = px.bar(
-        df, 
-        x= x_values,
-        y= y_values,
-        title= title,
-        )
-
-    return fig_bar
 
 # ======= DF styling ======
 
@@ -195,15 +220,15 @@ def df_styling(df: pd.DataFrame) -> Styler:
     formats = {
         "Price": decimals,
         "Additional service price": decimals,
-        "sum price": decimals,
+        "Sum price": decimals,
         "% ratio": decimals,
-        "sum add. services": decimals,
-        "sum price + add. services": decimals,
-        "average price": decimals,
-        "average price WITH add. services": decimals,
+        "Sum add. services": decimals,
+        "Sum price + add. services": decimals,
+        "Avg product price": decimals,
+        "Avg price WITH add. services": decimals,
         "Δ delta": decimals,
-        "sum": decimals,
-        "average" : decimals
+        "Sum": decimals,
+        "Avg" : decimals
     }
 
     new_formats = {}
@@ -214,12 +239,6 @@ def df_styling(df: pd.DataFrame) -> Styler:
             new_formats[k] = v
   
     return df.style.format(new_formats)
-
-
-# ======= Warnign multiselect ======
-def display_warning_multiselect():
-
-    st.warning("Select at lease 1 category to see overview table and charts")
 
 
 # ======= UTC time ======
@@ -242,130 +261,3 @@ def get_utc_time_custom_string() -> str:
     
     return str(date_custom +" | " + day_custom_2 +" | " + time_custom + " UTC")
 
-
-# ====== Main filtering logic Multiselects, Sliders, dynamic DF =======
-def get_filtered_df_including_ui_filters(df:pd.DataFrame) -> pd.DataFrame:
-
-    '''
-    - Function including 4 widgets (2 multiselect + 2 sliders)
-    - Allowing to sequentially pass values based on filterinf from widget/filter 1 -> 4 from top to bottom -> dynamic values/widgets
-    - Including IF/ELSE statements/logic due to limitation of Streamlit st.multiselect() not having a parameter strictly restricting that at least 1 chip/option need to be always selected. Currently Streamlit allows 0 chips -> that's why this fallback logic was built to keep the rest of widgets/filters working and no crash  
-    '''
-
-    # Creation of unique values from lists -> purpose: filters
-    unique_value = df['Category'].unique()
-    unique_value = sorted(df["Category"].dropna().unique().tolist())
-
-    # Multiselect filter - Category
-    ''
-    filter_multiselect_category = st.multiselect(
-        "Select Category",
-        unique_value,
-        default = unique_value,
-        help = "Select category which you want to see. Multiple categories allowed"
-    )  
-
-    # This if/else statement is workarounf to st.multiselect() which has no parametr strictly having at least on 1 (chip) in the multiselect. In case that 0 chips -> this IF statement is triggered
-    if len(filter_multiselect_category) == 0:
-        display_warning_multiselect()
-
-        # IMPORTANT (!) - This returns 'zero-row DataFrame' -> keeps column names, but 0 rows -> this step keeps the other filters/widgets working as it is passing empty DF but existing DF.
-        df_filtered = df.iloc[0:0]  
-
-        min_value_price = 0.00
-        max_value_price = 1.00
-        min_value_ads = 0.00
-        max_value_ads = 1.00
-
-
-    else:
-        df_filtered = df[
-        (df["Category"].isin(filter_multiselect_category))]
-
-        min_value_price = df_filtered['Price'].min()
-        max_value_price = df_filtered['Price'].max()
-
-    # Fallback to keep Slider functioning in case of the same values (1 row in DF -> min and max is the same value -> slider needs different)
-    if min_value_price == max_value_price:
-        max_value_price = max_value_price + 1
-
- 
-    # Slider - price 
-    ''
-    from_price, to_price = st.slider(
-        "Filter Price",
-        min_value = min_value_price,
-        max_value = max_value_price,
-        value= [min_value_price, max_value_price],
-        step = 10.00,
-        help = "Select range of prices you want to see"
-    )
-
-
-    df_filtered = df[
-        (df["Category"].isin(filter_multiselect_category))
-        & ((df["Price"] <= to_price) & (df["Price"] >= from_price))
-    ]
-
-    unique_add_ser = df_filtered['Additional service'].unique()
-    unique_add_ser = sorted(df_filtered['Additional service'].dropna().unique().tolist())
-
-    # Multiselect filter - Additional service
-    ''
-    ''
-    filter_multiselect_add_serv = st.multiselect(
-        "Select Additional service",
-        unique_add_ser,
-        default= unique_add_ser,
-        help = "Select additional service which you want to see. Multiple categories allowed"
-        )
-
-    # This if/else statement is workarounf to st.multiselect() which has no parametr strictly having at least on 1 (chip) in the multiselect. In case that 0 chips -> this IF statement is triggered
-    if len(filter_multiselect_add_serv) == 0 or len(filter_multiselect_category) == 0:
-        display_warning_multiselect()
-
-        # IMPORTANT (!) - This returns 'zero-row DataFrame' -> keeps column names, but 0 rows -> this step keeps the other filters/widgets working as it is passing empty DF but existing DF.
-        df_filtered = df.iloc[0:0]
-
-        min_value_ads = 0.00
-        max_value_ads = 1.00
-    
-    else:
-        df_filtered = df[
-            (df["Category"].isin(filter_multiselect_category))
-            & ((df["Price"] <= to_price) & (df["Price"] >= from_price))
-            & (df["Additional service"].isin(filter_multiselect_add_serv))
-        ]
-        
-
-        min_value_ads = df_filtered['Additional service price'].min()
-        max_value_ads = df_filtered['Additional service price'].max()
-
-
-        # Fallback to keep Slider functioning in case of the same values (1 row in DF -> min and max is the same value -> slider needs different) 
-        if min_value_ads == max_value_ads:
-            max_value_ads = max_value_ads + 1 
-    
-
-
-    # Slider - price additional services
-    ''
-    from_price_ads, to_price_ads = st.slider(
-        "Filter Price of Additional Services",
-        min_value = min_value_ads,
-        max_value = max_value_ads,
-        value= [min_value_ads, max_value_ads],
-        step = 5.00,
-        help = "Select range of prices you want to see"
-    )
-    
-   
-    # Final set of filters applied into the dataframe/table throught this part of code
-    df_filtered = df[
-    (df["Category"].isin(filter_multiselect_category))
-    & ((df["Price"] <= to_price) & (df["Price"] >= from_price))
-    & (df["Additional service"].isin(filter_multiselect_add_serv))
-    & ((df["Additional service price"] <= to_price_ads) & (df["Additional service price"] >= from_price_ads))
-    ]
-
-    return df_filtered

@@ -5,6 +5,7 @@ class BaseIcons
 '''
 class BaseIcons:
     pie_chart = ":material/clock_loader_40:"
+    bar_chart = ":material/bar_chart:"
     code = ":material/code:"
     table = ":material/table:"
     architecture = ":material/architecture:"
@@ -34,6 +35,12 @@ class UiConfigAndIcons:
         # Have a context of widgets
         approve = BaseIcons.approve
         reject = BaseIcons.reject 
+
+        warning = BaseIcons.warning
+
+        pie_chart = BaseIcons.pie_chart
+        bar_chart = BaseIcons.bar_chart
+        table = BaseIcons.table
 
     class InfoText:
         # st.success()

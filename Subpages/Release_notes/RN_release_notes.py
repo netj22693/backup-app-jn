@@ -49,11 +49,12 @@ def display_release_notes_expander_f1_f2():
         st.write("")
         st.write("""
         - F2:
+            - **v72.8** - Change of execution logic & Code refactoring & UI refresh (highlighting incorrect data) - 27-Nov-2026
             - **v67.8** - XML Schema/XSD validation - limited to 30 detail lines - 13-Aug-2026
             - **v64.8** - Widgets/filters - logic rebuilt to be more dynamic - 05-July-2026
             - **v64.7** - Major code refactoring & clean up - 03-July-2026
             - **v52.3** - Function description extended by Video Guide - 03-Dec-2025
-            - **v35.4** - Plotly() arguments adjusted, deprication will happen end of 2025  - 20-Oct-2025
+            - **v35.4** - Plotly() arguments adjusted, deprication will happen end of 2025 - 20-Oct-2025
             - **v16.4** - Better visualization in dataframes - 2 decimals always - 22-July-2025
             - **v16.2** - New expander (SQL 4 - average values) - 22-July-2025
             - **v15.0** - Input XML validated against XSD (new feature built) - 11-July-2025

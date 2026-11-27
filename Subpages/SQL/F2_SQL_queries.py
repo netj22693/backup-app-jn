@@ -4,7 +4,7 @@
 sql_query_no_items_product_category = """
 SELECT
     category,
-    count(*) as 'count' 
+    count(*) as 'Count' 
 FROM
     data_table_sql
 GROUP BY
@@ -17,7 +17,7 @@ ORDER BY
 sql_query_no_items_with_additional_service = """
 SELECT 
     Additional_service as 'Additional service',
-    count(*) as 'count'
+    count(*) as 'Count'
 FROM
     data_table_sql
 WHERE 
@@ -32,7 +32,7 @@ ORDER BY
 sql_query_no_items_without_additional_service = """
 SELECT
     Additional_service as 'Additional service',
-    count(*) as 'count'
+    count(*) as 'Count'
 FROM
     data_table_sql
 WHERE 
@@ -107,8 +107,8 @@ def get_sql_query_percentage_product_prices_category(value: str) -> str:
     query = f"""
     SELECT
         category,
-        count(*) as 'count',
-        sum(price) as 'sum price',
+        count(*) as 'Count',
+        sum(price) as 'Sum price',
         round(((sum(price)/'{value}')*100),2) as '% ratio'
     FROM
         data_table_sql
@@ -127,9 +127,9 @@ def get_sql_query_percentage_product_prices_category_inc_add_serv(value: str) ->
     query = f"""
     SELECT
         category,
-        count(*) as 'count',
-        sum(price+Additional_service_price) as 'sum price + add. services',
-        round(((sum(price+Additional_service_price)/'{value}')*100),2) as '% ratio'
+        count(*) as 'Count',
+        sum(price + Additional_service_price) as 'Sum price + add. services',
+        round(((sum(price + Additional_service_price)/'{value}')*100),2) as '% ratio'
     FROM
         data_table_sql
     GROUP BY
@@ -147,8 +147,8 @@ def get_sql_query_percentage_add_services(value: str) -> str:
     query = f"""
     SELECT
         category,
-        count(*) as 'count',
-        sum(Additional_service_price) as 'sum add. services',
+        count(*) as 'Count',
+        sum(Additional_service_price) as 'Sum add. services',
         round(((sum(Additional_service_price)/'{value}')*100),2) as '% ratio'
     FROM
         data_table_sql
@@ -164,11 +164,11 @@ def get_sql_query_percentage_add_services(value: str) -> str:
 
 # ==== SQL 4 ==== 
 # AVG Price without additional services
-sql_query_avg_price = """
+sql_query_avg_product_price = """
 SELECT 
     category,
-    count(Price) as 'count',
-    round(avg(Price), 2) as 'average price'
+    count(Price) as 'Count',
+    round(avg(Price), 2) as 'Avg product price'
 FROM
     data_table_sql
 GROUP BY
@@ -183,8 +183,8 @@ ORDER BY
 sql_query_avg_price_with_add_serv = """
 SELECT 
     category,
-    count(*) as 'count',
-    round((sum(Price) + sum(Additional_service_price))/count(*), 2) as 'average price WITH add. services',
+    count(*) as 'Count',
+    round((sum(Price) + sum(Additional_service_price))/count(*), 2) as 'Avg price WITH add. services',
     round(((sum(Price) + sum(Additional_service_price))/count(*) - avg(Price)), 2) as 'Δ delta'
 FROM
     data_table_sql
@@ -199,10 +199,10 @@ ORDER BY
 # AVG Price of additional services
 sql_query_avg_price_of_add_serv = """
 SELECT 
-    Additional_service, 
-    count(*) as 'count',
-    sum(Additional_service_price) as 'sum',
-    round(sum(Additional_service_price)/count(*), 2) as 'average'
+    Additional_service as 'Additional service', 
+    count(*) as 'Count',
+    sum(Additional_service_price) as 'Sum',
+    round(sum(Additional_service_price)/count(*), 2) as 'Avg'
 FROM
     data_table_sql
 WHERE 
